@@ -1,6 +1,6 @@
 import { Card, CardContent, TextareaAutosize, TextField, Typography } from '@material-ui/core'
 import Layout from '../../components/layout'
-import { useStyles } from './experiment.style';
+import { useStyles } from '../../styles/experiment.style';
 
 export default function Experiment() {
   const classes = useStyles();

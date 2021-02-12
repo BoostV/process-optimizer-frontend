@@ -7,3 +7,5 @@ export const useStyles = makeStyles(theme => ({
     maxWidth: 500,
   },
 }));
+
+export default useStyles
