@@ -22,6 +22,15 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 docker build -t process-optimizer-frontend .
 docker run -p 3000:3000 process-optimzer-frontend
 ```
+## Local development with docker
+
+The included script "dockeryarn.sh" can be used as substitute for yarn if you have docker installed and don't want to use natively installed node installation
+
+```bash
+./dockeryarn.sh install
+./dockeryarn.sh dev
+
+```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
