@@ -7,7 +7,7 @@ export default function Layout ( {children}) {
         <a>Home</a>
       </Link>
       <br/>
-      <Link href="/experiment/experiment">
+      <Link href="/experiment/123">
         <a>Experiment</a>
       </Link>
       {children}
