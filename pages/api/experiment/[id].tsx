@@ -38,8 +38,8 @@ export default (req: NextApiRequest, res: NextApiResponse<Experiment>) => {
       res.json(store || { id: queryId })
       break
     case 'PUT':
-      db[queryId] = body
-      writeToFile(path.join(dbFolder, `${queryId}.json`), body)
+      db[queryId] = JSON.parse(body)
+      writeToFile(path.join(dbFolder, `${queryId}.json`), db[queryId])
       res.json({ id: queryId })
       break  
     default:

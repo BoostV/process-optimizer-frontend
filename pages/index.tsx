@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Layout from "../components/layout";
-import ExperimentLoader from "../components/exploader"
 
 export default function Home() {
   return (
@@ -11,7 +10,6 @@ export default function Home() {
       </Head>
       <Layout>
         <h1>Welcome!</h1>
-        <ExperimentLoader/>
       </Layout>
     </div>
   );
