@@ -36,12 +36,12 @@ describe('/api/experiment/[id]', () => {
       method: 'PUT',
       query: {
         id: 'newID'
-      },
-      body: {
-        id: 'newID',
-        payload: 'testPayload'
       }
     });
+    req._setBody(JSON.stringify({
+      id: 'newID',
+      payload: 'testPayload'
+    }));
 
     handleExperimentId(req, res);
 
@@ -69,12 +69,12 @@ describe('/api/experiment/[id]', () => {
       method: 'PUT',
       query: {
         id: 'newID'
-      },
-      body: {
-        id: 'newID',
-        payload: 'testPayload'
       }
     });
+    req._setBody(JSON.stringify({
+      id: 'newID',
+      payload: 'testPayload'
+    }));
     process.env.DB_FOLDER=fs.mkdtempSync(tmpFolderPrefix)
     console.log(process.env.DB_FOLDER)
 
