@@ -13,7 +13,10 @@
     "@material-ui/icons": "^4.11.2",
     "next": "10.0.3",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "react-hook-form": "^6.15.1",
+    "swr": "^0.4.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@testing-library/dom": "^7.29.4",
@@ -21,10 +24,13 @@
     "@testing-library/react": "^11.2.5",
     "@types/node": "^14.14.22",
     "@types/react": "^17.0.0",
+    "@types/rimraf": "^3.0.0",
     "babel-jest": "^26.6.3",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^26.6.3",
     "jest-dom": "^4.0.0",
+    "node-mocks-http": "^1.10.1",
+    "rimraf": "^3.0.2",
     "typescript": "^4.1.3"
   }
 }

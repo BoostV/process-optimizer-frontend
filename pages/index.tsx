@@ -1,7 +1,5 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-import Link from 'next/link'
-import Layout from '../components/layout'
+import Head from "next/head";
+import Layout from "../components/layout";
 
 export default function Home() {
   return (
@@ -10,9 +8,9 @@ export default function Home() {
         <title>Brownie Bee</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-     <Layout>
+      <Layout>
         <h1>Welcome!</h1>
-     </Layout>
+      </Layout>
     </div>
-  )
+  );
 }
