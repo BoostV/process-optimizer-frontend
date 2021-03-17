@@ -44,12 +44,6 @@ export type Info = {
   description: string;
 }
 
-type EmptyExperiment = {
-  id: string;
-}
-
-export type LoadedExperiment = EmptyExperiment | Experiment
-
 export default function Experiment() {
   const router = useRouter()
   const { experimentid } = router.query
@@ -59,14 +53,14 @@ export default function Experiment() {
 
   const [tabIndex, setTabIndex] = useState(0)
   
-  //TODO: How to submit data after reducer has updated it?
+  //TODO: Reducer may not be done updated before data is submitted
   const onSubmit = async (data: Info) => {
     saveExperiment(data)
     fetch(`/api/experiment/${experimentid}`, {method: 'PUT', body: JSON.stringify(state)})
   }
 
   let initialState: Experiment = {
-    id: undefined,
+    id: "",
     info: {
       name: "",
       description: "",
@@ -85,14 +79,25 @@ export default function Experiment() {
     dispatch({ type: 'EXPERIMENT_SAVED', payload: info})
   }
 
-  function loadExperiment(experiment: LoadedExperiment) {
+  function loadExperiment(experiment: Experiment) {
     dispatch({ type: 'EXPERIMENT_LOADED', payload: experiment})
   }
 
+  function loadOrCreateExperiment() {
+    if (experiment !== undefined) {
+      let loadedExperiment: Experiment = experiment
+      if (experiment.info === undefined) {
+        loadedExperiment = {
+          ...initialState,
+          id: experiment.id
+        }
+      }
+      loadExperiment(loadedExperiment)  
+   }
+  }
+
   useEffect(() => {
-    if (experiment) {
-      loadExperiment(experiment as LoadedExperiment)  
-    }
+    loadOrCreateExperiment()
   }, [experiment])
 
   if (error) return <div>Failed to load experiment</div>;
@@ -105,8 +110,8 @@ export default function Experiment() {
 
           <Grid container spacing={3}>
             <Grid item xs={12}>
-            <Typography variant="h4" gutterBottom>
-                Experiment {experiment.id} - {experiment.name} 
+              <Typography variant="h4" gutterBottom>
+                Experiment {state.id} - {state.info.name} 
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -116,7 +121,7 @@ export default function Experiment() {
                     <TextField 
                       name="name" 
                       label="Name" 
-                      required 
+                      required
                       inputRef={register}/>
                     <br/>
                     <br/>
