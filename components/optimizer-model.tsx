@@ -1,7 +1,9 @@
 import { Typography } from '@material-ui/core'
+import { Experiment } from '../pages/experiment/[experimentid]'
+import { experimentReducer } from '../reducers/reducers'
 
 type OptimizerModelProps = {
-  data?: any,
+  experiment: Experiment
 }
 
 export default function OptimizerModel(props: OptimizerModelProps) {
@@ -11,7 +13,14 @@ export default function OptimizerModel(props: OptimizerModelProps) {
         <Typography variant="h6" gutterBottom>
           Model for optimizer
         </Typography>
-          Values
+        
+        {props.experiment.categoricalVariables.map((item, index) => (
+          <div key={index}>{item.name} {item.description} {item.minVal} {item.maxVal}</div>
+        ))}
+
+        {props.experiment.valueVariables.map((item, index) => (
+          <div></div>  
+        ))}
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { CategoricalVariable, ValueVariable, Experiment, Info } from "../pages/experiment/[experimentid]"
+import { CategoricalVariable, ValueVariable, Experiment, Info, LoadedExperiment } from "../pages/experiment/[experimentid]"
 
 export type CategoricalVariableAddedAction = {
   type: 'CATEGORICAL_VARIABLE_ADDED',
@@ -11,29 +11,37 @@ export type ValueVariableAddedAction = {
 }
 
 export type InfoAddedAction = {
-  type: 'INFO_ADDED',
+  type: 'EXPERIMENT_SAVED',
   payload: Info
 }
 
-export type Action = CategoricalVariableAddedAction | ValueVariableAddedAction | InfoAddedAction
+export type ExperimentLoadedAction = {
+  type: 'EXPERIMENT_LOADED',
+  payload: LoadedExperiment
+}
+
+export type Action = CategoricalVariableAddedAction | ValueVariableAddedAction | InfoAddedAction | ExperimentLoadedAction
 
 export const experimentReducer = (state: Experiment, action: Action) => {
-  if (action.type == 'CATEGORICAL_VARIABLE_ADDED') {
-    let newCategoricalVariables = state.categoricalVariables
-    newCategoricalVariables.push(action.payload)
-    console.log('state', {
-      ...state,
-      categoricalVariables: newCategoricalVariables
-    })
-    return {
-      ...state,
-      categoricalVariables: newCategoricalVariables
-    }
-  }
-  if (action.type === 'INFO_ADDED') {
-    return {
-      ...state,
-      info: action.payload
-    }
+  switch (action.type) {
+    case 'EXPERIMENT_LOADED':
+      return {
+        ...state,
+        id: action.payload.id,
+      }
+    case 'CATEGORICAL_VARIABLE_ADDED':
+      let newCategoricalVariables = state.categoricalVariables
+      newCategoricalVariables.push(action.payload)
+      return {
+        ...state,
+        categoricalVariables: newCategoricalVariables
+      }
+    case 'EXPERIMENT_SAVED':
+      return {
+        ...state,
+        info: action.payload
+      }
+    default: 
+      return state
   }
 }

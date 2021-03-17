@@ -28,14 +28,13 @@ export default function VariableValue(props: VariableValueProps) {
         />
         <br />
         <br />
-        Options
-        <br />
+        <Typography>Options</Typography>
         <TextField
           name="option"
           label="Option"
         />
         <br />
-        <Button variant="outlined" onClick={() => console.log('click')} size="small">Add option</Button>
+        <Button variant="outlined" onClick={() => console.log('add option')} size="small">Add option</Button>
         <br />
         <br />
         <Button type="submit" variant="outlined">Add variable</Button>

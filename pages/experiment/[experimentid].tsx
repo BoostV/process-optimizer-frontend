@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import useSwr from "swr";
-import { Button, Card, CardContent, Grid, TextField, Typography } from '@material-ui/core'
+import { Button, Card, CardContent, Grid, Radio, TextField, Typography } from '@material-ui/core'
 import Layout from '../../components/layout'
 import { useStyles } from '../../styles/experiment.style';
 import { useForm } from "react-hook-form";
@@ -8,7 +8,7 @@ import VariableCategorical from '../../components/variable-categorical';
 import VariableValue from '../../components/variable-value';
 import OptimizerModel from '../../components/optimizer-model';
 import OptimizerConfigurator from '../../components/optimizer-configurator';
-import { useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { experimentReducer } from '../../reducers/reducers';
 
 const fetcher = async (url: string) => (await fetch(url)).json();
@@ -33,6 +33,7 @@ type Option = {
 }
 
 export type Experiment = {
+  id: string | undefined,
   info: Info;
   categoricalVariables: CategoricalVariable[];
   valueVariables: ValueVariable[];
@@ -43,21 +44,29 @@ export type Info = {
   description: string;
 }
 
+type EmptyExperiment = {
+  id: string;
+}
+
+export type LoadedExperiment = EmptyExperiment | Experiment
+
 export default function Experiment() {
   const router = useRouter()
   const { experimentid } = router.query
   const { data: experiment, error } = useSwr(`/api/experiment/${experimentid}`, fetcher);
   const classes = useStyles();
   const { register, handleSubmit, watch, errors } = useForm<Info>();
-  //const onSubmit = async (data: Inputs) => fetch(`/api/experiment/${experimentid}`, {method: 'PUT', body: JSON.stringify(data)})
+
+  const [tabIndex, setTabIndex] = useState(0)
   
   //TODO: How to submit data after reducer has updated it?
   const onSubmit = async (data: Info) => {
     saveExperiment(data)
-    console.log('submit', JSON.stringify(data), state)
+    fetch(`/api/experiment/${experimentid}`, {method: 'PUT', body: JSON.stringify(state)})
   }
 
   let initialState: Experiment = {
+    id: undefined,
     info: {
       name: "",
       description: "",
@@ -66,7 +75,6 @@ export default function Experiment() {
     valueVariables: [],
   }
 
-  //TODO: Set initial state to experiment -> third param of useReducer?
   const [state, dispatch] = useReducer(experimentReducer, initialState)
 
   function addCategoricalVariable(categoricalVariable: CategoricalVariable) {
@@ -74,8 +82,18 @@ export default function Experiment() {
   }
 
   function saveExperiment(info: Info) {
-    dispatch({ type: 'INFO_ADDED', payload: info})
+    dispatch({ type: 'EXPERIMENT_SAVED', payload: info})
   }
+
+  function loadExperiment(experiment: LoadedExperiment) {
+    dispatch({ type: 'EXPERIMENT_LOADED', payload: experiment})
+  }
+
+  useEffect(() => {
+    if (experiment) {
+      loadExperiment(experiment as LoadedExperiment)  
+    }
+  }, [experiment])
 
   if (error) return <div>Failed to load experiment</div>;
   if (!experiment) return <div>Loading...</div>;
@@ -111,14 +129,35 @@ export default function Experiment() {
                     <br />
                     <br />
                   </form>
+
                   <Card>
                     <CardContent>
-                      <VariableCategorical onAdded={(data: CategoricalVariable) => addCategoricalVariable(data)} />
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardContent>
-                      <VariableValue />
+                      <Grid container spacing={0}>
+                        <Grid item xs={6}>
+                          <Radio
+                            checked={tabIndex === 0}
+                            onChange={() => {setTabIndex(0)}}
+                          />
+                          <Typography>Categorical</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Radio
+                            checked={tabIndex === 1}
+                            onChange={() => {setTabIndex(1)}}
+                          />
+                          <Typography>Value</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <br/>
+                          <br/>
+                          {tabIndex === 0 &&
+                            <VariableCategorical onAdded={(data: CategoricalVariable) => addCategoricalVariable(data)} />
+                          }
+                          {tabIndex === 1 &&
+                            <VariableValue />
+                          }
+                        </Grid>
+                      </Grid>
                     </CardContent>
                   </Card>
                   <br />
@@ -130,7 +169,7 @@ export default function Experiment() {
             <Grid item xs={4}>
               <Card>
                 <CardContent>
-                  <OptimizerModel />
+                  <OptimizerModel experiment={state}/>
                 </CardContent>
               </Card>
             </Grid>
