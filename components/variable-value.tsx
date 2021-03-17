@@ -19,14 +19,12 @@ export default function VariableValue(props: VariableValueProps) {
         <TextField 
           name="name" 
           label="Name" 
-          required 
           />
           <br />
           <br />
         <TextField
           name="description"
           label="Description"
-          required
         />
         <br />
         <br />
@@ -35,7 +33,6 @@ export default function VariableValue(props: VariableValueProps) {
         <TextField
           name="option"
           label="Option"
-          required
         />
         <br />
         <Button variant="outlined" onClick={() => console.log('click')} size="small">Add option</Button>

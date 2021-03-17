@@ -49,8 +49,8 @@ export default function Experiment() {
   const { data: experiment, error } = useSwr(`/api/experiment/${experimentid}`, fetcher);
   const classes = useStyles();
   const { register, handleSubmit, watch, errors } = useForm<Inputs>();
-  //const onSubmit = async (data: Inputs) => fetch(`/api/experiment/${experimentid}`, {method: 'PUT', body: JSON.stringify(data)})
-  const onSubmit = async (data: Inputs) => console.log('submit', JSON.stringify(data), state)
+  const onSubmit = async (data: Inputs) => fetch(`/api/experiment/${experimentid}`, {method: 'PUT', body: JSON.stringify(data)})
+  //const onSubmit = async (data: Inputs) => console.log('submit', JSON.stringify(data), state)
 
   let initialState: Experiment = {
     name: "",
@@ -106,7 +106,11 @@ export default function Experiment() {
               <Card>
                 <CardContent>
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    <TextField name="name" label="Name" required inputRef={register}/>
+                    <TextField 
+                      name="name" 
+                      label="Name" 
+                      required 
+                      inputRef={register}/>
                     <br/>
                     <br/>
                     <TextField

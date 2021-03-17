@@ -19,35 +19,30 @@ export default function VariableCategorical(props: VariableCategoricalProps) {
           <TextField 
             name="name" 
             label="Name" 
-            required 
             />
             <br />
             <br />
           <TextField
             name="description"
             label="Description"
-            required
           />
           <br />
           <br />
           <TextField
             name="minVal"
             label="minVal"
-            required
           />
           <br />
           <br />
           <TextField
             name="maxVal"
             label="maxVal"
-            required
           />
           <br />
           <br />
           <TextField
             name="order"
             label="Order"
-            required
           />
           <br />
           <br />
