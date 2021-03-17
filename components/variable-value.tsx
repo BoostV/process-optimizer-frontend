@@ -1,59 +1,47 @@
-import { Button, TextField, Typography } from '@material-ui/core'
-import { useForm } from "react-hook-form";
+import { Button, TextField, Typography } from '@material-ui/core';
 
 type Inputs = {
   name: string,
   description: string,
-  options: string[]
+  options: string[],
   order: string,
 };
 
-type VariableValueProps = {
-  onAdded: (data: Inputs) => void,
-}
+type VariableValueProps = {}
 
-export default function Variablevalue(props: VariableValueProps) {
-  const { register, handleSubmit, watch, errors } = useForm<Inputs>();
-  const onHandleSubmit = async (data: Inputs) => props.onAdded(data)
+export default function VariableValue(props: VariableValueProps) {
 
   return (
       <>
         <Typography variant="h6" gutterBottom>
           Add new variable (value)
         </Typography>
-        <form onSubmit={handleSubmit(onHandleSubmit)}>
-          <TextField 
-            name="name" 
-            label="Name" 
-            required 
-            inputRef={register}/>
-            <br />
-            <br />
-          <TextField
-            name="description"
-            label="Description"
-            required
-            inputRef={register}
+        <TextField 
+          name="name" 
+          label="Name" 
+          required 
           />
           <br />
           <br />
-          Options
-          <br />
-
-          <TextField
-            name="option"
-            label="Option"
-            required
-            inputRef={register}
-          />
-
-          <br />
-          <Button variant="outlined" onClick={() => console.log('click')} size="small">Add option</Button>
-
-          <br />
-          <br />
-          <Button type="submit" variant="contained">Add variable</Button>
-        </form>
+        <TextField
+          name="description"
+          label="Description"
+          required
+        />
+        <br />
+        <br />
+        Options
+        <br />
+        <TextField
+          name="option"
+          label="Option"
+          required
+        />
+        <br />
+        <Button variant="outlined" onClick={() => console.log('click')} size="small">Add option</Button>
+        <br />
+        <br />
+        <Button type="submit" variant="outlined">Add variable</Button>
     </>
   )
 }
