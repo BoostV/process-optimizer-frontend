@@ -1,11 +1,11 @@
 import { Button, TextField, Typography } from '@material-ui/core'
 
 type VariableCategoricalInputs = {
-  name: string,
-  description: string,
-  minVal: string,
-  maxVal: string,
-  order: string,
+  name: string;
+  description: string;
+  minVal: string;
+  maxVal: string;
+  order: string;
 };
 
 type VariableCategoricalProps = {}

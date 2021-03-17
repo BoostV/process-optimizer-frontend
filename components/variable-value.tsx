@@ -1,10 +1,10 @@
 import { Button, TextField, Typography } from '@material-ui/core';
 
 type Inputs = {
-  name: string,
-  description: string,
-  options: string[],
-  order: string,
+  name: string;
+  description: string;
+  options: string[];
+  order: string;
 };
 
 type VariableValueProps = {}
