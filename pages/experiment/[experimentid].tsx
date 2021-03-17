@@ -39,32 +39,36 @@ export default function Experiment() {
               </Typography>
             </Grid>
             <Grid item xs={4}>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <TextField name="name" label="Name" required inputRef={register}/>
-                <br/>
-                <br/>
-                <TextField
-                  name="description"
-                  label="Description"
-                  required
-                  inputRef={register}
-                />
-                <br />
-                <br />
-                <Card>
-                  <CardContent>
-                    <VariableCategorical />
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent>
-                    <VariableValue />
-                  </CardContent>
-                </Card>
-                <br />
-                <br />
-                <Button type="submit" variant="contained">Save</Button>
-              </form>
+              <Card>
+                <CardContent>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <TextField name="name" label="Name" required inputRef={register}/>
+                    <br/>
+                    <br/>
+                    <TextField
+                      name="description"
+                      label="Description"
+                      required
+                      inputRef={register}
+                    />
+                    <br />
+                    <br />
+                    <Card>
+                      <CardContent>
+                        <VariableCategorical />
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent>
+                        <VariableValue />
+                      </CardContent>
+                    </Card>
+                    <br />
+                    <br />
+                    <Button type="submit" variant="contained">Save</Button>
+                  </form>
+                </CardContent>
+              </Card>
             </Grid>
             <Grid item xs={4}>
               <Card>
