@@ -4,6 +4,7 @@ import { Card, CardContent, TextareaAutosize, TextField, Typography } from '@mat
 import Layout from '../../components/layout'
 import { useStyles } from '../../styles/experiment.style';
 import { useForm } from "react-hook-form";
+import VariableCategorical from '../../components/variable-categorical';
 
 const fetcher = async (url: string) => (await fetch(url)).json();
 
@@ -31,19 +32,22 @@ export default function Experiment() {
             Experiment {experiment.id} - {experiment.name} 
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField name="name" label="Name" variant="outlined" required inputRef={register}/>
+            <TextField name="name" label="Name" required inputRef={register}/>
             <br/>
             <br/>
             <TextField
               name="description"
               label="Description"
-              multiline
-              variant="outlined"
               required
               inputRef={register}
             />
+            <br />
+            <br />
             <input type="submit" />
           </form>
+
+          <VariableCategorical />
+
         </CardContent>
       </Card>
     </Layout>
