@@ -1,4 +1,4 @@
-import { TextField, Typography } from '@material-ui/core'
+import { Button, TextField, Typography } from '@material-ui/core'
 import { useForm } from "react-hook-form";
 
 type Inputs = {
@@ -9,14 +9,18 @@ type Inputs = {
   order: string,
 };
 
-export default function VariableCategorical() {
+type VariableCategoricalProps = {
+  onAdded: (data: Inputs) => void,
+}
+
+export default function VariableCategorical(props: VariableCategoricalProps) {
   const { register, handleSubmit, watch, errors } = useForm<Inputs>();
-  const onHandleSubmit = async (data: Inputs) => console.log(data)
+  const onHandleSubmit = async (data: Inputs) => props.onAdded(data)
 
   return (
       <>
-          <Typography variant="h5" gutterBottom>
-            Add new variable 
+          <Typography variant="h6" gutterBottom>
+            Add new variable (categorical)
           </Typography>
           <form onSubmit={handleSubmit(onHandleSubmit)}>
             <TextField 
@@ -58,7 +62,7 @@ export default function VariableCategorical() {
             />
             <br />
             <br />
-            <input type="submit" />
+            <Button type="submit" variant="contained">Add variable</Button>
           </form>
       </>
   )

@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router'
 import useSwr from "swr";
-import { Card, CardContent, TextareaAutosize, TextField, Typography } from '@material-ui/core'
+import { Card, CardContent, Grid, TextareaAutosize, TextField, Typography } from '@material-ui/core'
 import Layout from '../../components/layout'
 import { useStyles } from '../../styles/experiment.style';
 import { useForm } from "react-hook-form";
 import VariableCategorical from '../../components/variable-categorical';
+import Variablevalue from '../../components/variable-value';
 
 const fetcher = async (url: string) => (await fetch(url)).json();
 
@@ -28,25 +29,37 @@ export default function Experiment() {
     <Layout>
       <Card className={classes.experimentContainer}>
         <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Experiment {experiment.id} - {experiment.name} 
-          </Typography>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField name="name" label="Name" required inputRef={register}/>
-            <br/>
-            <br/>
-            <TextField
-              name="description"
-              label="Description"
-              required
-              inputRef={register}
-            />
-            <br />
-            <br />
-            <input type="submit" />
-          </form>
 
-          <VariableCategorical />
+          <Grid container spacing={3}>
+            <Grid item xs={4}>
+              <Typography variant="h4" gutterBottom>
+                Experiment {experiment.id} - {experiment.name} 
+              </Typography>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <TextField name="name" label="Name" required inputRef={register}/>
+                <br/>
+                <br/>
+                <TextField
+                  name="description"
+                  label="Description"
+                  required
+                  inputRef={register}
+                />
+                <br />
+                <br />
+                <input type="submit" />
+              </form>
+              <VariableCategorical onAdded={(data) => {console.log('var cat data', data)}}/>
+              <Variablevalue onAdded={(data) => {console.log('var val data', data)}}/>
+            </Grid>
+            <Grid item xs={4}>
+              Model for optimizer
+            </Grid>
+            <Grid item xs={4}>
+              Configure optimizer
+            </Grid>
+
+          </Grid>
 
         </CardContent>
       </Card>
