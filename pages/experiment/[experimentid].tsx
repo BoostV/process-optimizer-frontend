@@ -137,6 +137,9 @@ export default function Experiment() {
 
                   <Card>
                     <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        Add new variable
+                      </Typography>
                       <Grid container spacing={0}>
                         <Grid item xs={6}>
                           <Radio

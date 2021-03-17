@@ -13,9 +13,6 @@ export default function VariableValue(props: VariableValueProps) {
 
   return (
       <>
-        <Typography variant="h6" gutterBottom>
-          Add new variable (value)
-        </Typography>
         <TextField 
           name="name" 
           label="Name" 

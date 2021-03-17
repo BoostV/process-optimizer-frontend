@@ -14,9 +14,6 @@ export default function VariableCategorical(props: VariableCategoricalProps) {
   return (
       <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="h6" gutterBottom>
-          Add new variable (categorical)
-        </Typography>
           <TextField
             name="name" 
             label="Name" 
