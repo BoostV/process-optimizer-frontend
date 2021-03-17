@@ -1,52 +1,59 @@
 import { Button, TextField, Typography } from '@material-ui/core'
+import { useForm } from 'react-hook-form';
+import { CategoricalVariable } from '../pages/experiment/[experimentid]'
 
-type VariableCategoricalInputs = {
-  name: string;
-  description: string;
-  minVal: string;
-  maxVal: string;
-  order: string;
-};
-
-type VariableCategoricalProps = {}
+type VariableCategoricalProps = {
+  onAdded: (data: CategoricalVariable) => void
+}
 
 export default function VariableCategorical(props: VariableCategoricalProps) {
+
+  const { register, handleSubmit, watch, errors } = useForm<CategoricalVariable>();
+  const onSubmit = async (data: CategoricalVariable) => props.onAdded(data)
+
   return (
       <>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Typography variant="h6" gutterBottom>
           Add new variable (categorical)
         </Typography>
-          <TextField 
+          <TextField
             name="name" 
             label="Name" 
+            inputRef={register}
             />
             <br />
             <br />
           <TextField
             name="description"
             label="Description"
+            inputRef={register}
           />
           <br />
           <br />
           <TextField
             name="minVal"
             label="minVal"
+            inputRef={register}
           />
           <br />
           <br />
           <TextField
             name="maxVal"
             label="maxVal"
+            inputRef={register}
           />
           <br />
           <br />
           <TextField
             name="order"
             label="Order"
+            inputRef={register}
           />
           <br />
           <br />
-          <Button variant="outlined">Add variable</Button>
+          <Button variant="outlined" type="submit">Add variable</Button>
+        </form>
       </>
   )
 }

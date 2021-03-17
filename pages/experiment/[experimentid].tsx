@@ -9,15 +9,11 @@ import VariableValue from '../../components/variable-value';
 import OptimizerModel from '../../components/optimizer-model';
 import OptimizerConfigurator from '../../components/optimizer-configurator';
 import { useReducer } from 'react';
+import { experimentReducer } from '../../reducers/reducers';
 
 const fetcher = async (url: string) => (await fetch(url)).json();
 
-type Inputs = {
-  name: string;
-  description: string;
-};
-
-type CategoricalVariable = {
+export type CategoricalVariable = {
   name: string;
   description: string;
   minVal: string;
@@ -25,7 +21,7 @@ type CategoricalVariable = {
   order: string;
 }
 
-type ValueVariable = {
+export type ValueVariable = {
   name: string;
   description: string;
   options: Option[];
@@ -36,11 +32,15 @@ type Option = {
   value: string;
 }
 
-type Experiment = {
-  name: string;
-  description: string;
+export type Experiment = {
+  info: Info;
   categoricalVariables: CategoricalVariable[];
   valueVariables: ValueVariable[];
+}
+
+export type Info = {
+  name: string;
+  description: string;
 }
 
 export default function Experiment() {
@@ -48,42 +48,33 @@ export default function Experiment() {
   const { experimentid } = router.query
   const { data: experiment, error } = useSwr(`/api/experiment/${experimentid}`, fetcher);
   const classes = useStyles();
-  const { register, handleSubmit, watch, errors } = useForm<Inputs>();
-  const onSubmit = async (data: Inputs) => fetch(`/api/experiment/${experimentid}`, {method: 'PUT', body: JSON.stringify(data)})
-  //const onSubmit = async (data: Inputs) => console.log('submit', JSON.stringify(data), state)
+  const { register, handleSubmit, watch, errors } = useForm<Info>();
+  //const onSubmit = async (data: Inputs) => fetch(`/api/experiment/${experimentid}`, {method: 'PUT', body: JSON.stringify(data)})
+  
+  //TODO: How to submit data after reducer has updated it?
+  const onSubmit = async (data: Info) => {
+    saveExperiment(data)
+    console.log('submit', JSON.stringify(data), state)
+  }
 
   let initialState: Experiment = {
-    name: "",
-    description: "",
+    info: {
+      name: "",
+      description: "",
+    },
     categoricalVariables: [],
     valueVariables: [],
   }
 
-  type CategoricalVariableAddedAction = {
-    type: 'CATEGORICAL_VARIABLE_ADDED',
-    payload: CategoricalVariable 
-  }
-
-  type ValueVariableAddedAction = {
-    type: 'VALUE_VARIABLE_ADDED',
-    payload: ValueVariable 
-  }
-
-  type Action = CategoricalVariableAddedAction | ValueVariableAddedAction
-
-  const reducer = (state: Experiment, action: Action) => {
-    if (action.type == 'CATEGORICAL_VARIABLE_ADDED') {
-      console.log('CATEGORICAL_VARIABLE_ADDED', state)
-      state.categoricalVariables.push(action.payload)
-      return state
-    }
-  }
-
   //TODO: Set initial state to experiment -> third param of useReducer?
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(experimentReducer, initialState)
 
   function addCategoricalVariable(categoricalVariable: CategoricalVariable) {
-    dispatch({ type: 'CATEGORICAL_VARIABLE_ADDED', payload: categoricalVariable });
+    dispatch({ type: 'CATEGORICAL_VARIABLE_ADDED', payload: categoricalVariable })
+  }
+
+  function saveExperiment(info: Info) {
+    dispatch({ type: 'INFO_ADDED', payload: info})
   }
 
   if (error) return <div>Failed to load experiment</div>;
@@ -94,8 +85,6 @@ export default function Experiment() {
       <Card className={classes.experimentContainer}>
         <CardContent>
 
-          <Button onClick={() => {addCategoricalVariable({name: 'n', description: 'd', minVal: '1', maxVal: '2', order: '1'})}}>Reducer dummy button</Button>
-
           <Grid container spacing={3}>
             <Grid item xs={12}>
             <Typography variant="h4" gutterBottom>
@@ -105,7 +94,7 @@ export default function Experiment() {
             <Grid item xs={4}>
               <Card>
                 <CardContent>
-                  <form onSubmit={handleSubmit(onSubmit)}>
+                  <form id="experimentForm" onSubmit={handleSubmit(onSubmit)}>
                     <TextField 
                       name="name" 
                       label="Name" 
@@ -121,20 +110,20 @@ export default function Experiment() {
                     />
                     <br />
                     <br />
-                    <Card>
-                      <CardContent>
-                        <VariableCategorical />
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardContent>
-                        <VariableValue />
-                      </CardContent>
-                    </Card>
-                    <br />
-                    <br />
-                    <Button type="submit" variant="contained">Save</Button>
                   </form>
+                  <Card>
+                    <CardContent>
+                      <VariableCategorical onAdded={(data: CategoricalVariable) => addCategoricalVariable(data)} />
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardContent>
+                      <VariableValue />
+                    </CardContent>
+                  </Card>
+                  <br />
+                  <br />
+                  <Button variant="contained" type="submit" form="experimentForm">Save</Button>
                 </CardContent>
               </Card>
             </Grid>
