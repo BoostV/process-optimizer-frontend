@@ -1,6 +1,6 @@
 import { Button, TextField, Typography } from '@material-ui/core'
 import { useForm } from 'react-hook-form';
-import { CategoricalVariable } from '../pages/experiment/[experimentid]'
+import { CategoricalVariable } from '../types/common';
 
 type VariableCategoricalProps = {
   onAdded: (data: CategoricalVariable) => void

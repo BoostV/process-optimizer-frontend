@@ -1,9 +1,9 @@
 import { Typography } from '@material-ui/core'
-import { Experiment } from '../pages/experiment/[experimentid]'
-import { experimentReducer } from '../reducers/reducers'
+import { rootReducer } from '../reducers/reducers'
+import { ExperimentType } from '../types/common'
 
 type OptimizerModelProps = {
-  experiment: Experiment
+  experiment: ExperimentType
 }
 
 export default function OptimizerModel(props: OptimizerModelProps) {

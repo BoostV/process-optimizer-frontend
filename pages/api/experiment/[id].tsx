@@ -1,10 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs';
 import path from 'path';
-
-interface Experiment {
-  id: string
-}
+import { ExperimentType } from '../../../types/common';
+import { emptyExperiment } from '../../../store';
 
 const db = {}
 
@@ -21,7 +19,7 @@ const writeToFile = (file: string, data: object) => {
   fs.writeFileSync(file, JSON.stringify(data))
 }
 
-export default (req: NextApiRequest, res: NextApiResponse<Experiment>) => {
+export default (req: NextApiRequest, res: NextApiResponse<ExperimentType>) => {
   const {
     query: { id },
     method,
@@ -35,13 +33,13 @@ export default (req: NextApiRequest, res: NextApiResponse<Experiment>) => {
   switch (method) {
     case 'GET':
       const store = db[queryId] || readFromFile(path.join(dbFolder, `${queryId}.json`))
-      res.json(store || { id: queryId })
+      res.json(store || { ...emptyExperiment, id: queryId })
       break
     case 'PUT':
       db[queryId] = JSON.parse(body)
       writeToFile(path.join(dbFolder, `${queryId}.json`), db[queryId])
-      res.json({ id: queryId })
-      break  
+      res.json(db[queryId])
+      break
     default:
       res.setHeader('Allow', ['GET', 'PUT'])
       res.status(405).end(`Method ${method} Not Allowed`)
