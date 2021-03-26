@@ -8,7 +8,7 @@ import CategoricalVariable from '../../components/categorical-variable';
 import OptimizerModel from '../../components/optimizer-model';
 import OptimizerConfigurator from '../../components/optimizer-configurator';
 import { ChangeEvent, useReducer, useState } from 'react';
-import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer } from '../../reducers/reducers';
+import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED } from '../../reducers/reducers';
 import { ValueVariableType, ExperimentType } from '../../types/common';
 import { initialState } from '../../store';
 
@@ -40,6 +40,10 @@ export default function Experiment() {
 
   function addValueVariable(valueVariable: ValueVariableType) {
     dispatch({ type: VALUE_VARIABLE_ADDED, payload: valueVariable })
+  }
+
+  function deleteValueVariable(valueVariable: ValueVariableType) {
+    dispatch({ type: VALUE_VARIABLE_DELETED, payload: valueVariable })
   }
 
   function updateExperiment(experiment: ExperimentType) {
@@ -125,14 +129,15 @@ export default function Experiment() {
                   </Card>
                   <br />
                   <br />
-                  <Button variant="contained" onClick={onSave}>Save</Button>
                 </CardContent>
               </Card>
             </Grid>
             <Grid item xs={4}>
               <Card>
                 <CardContent>
-                  <OptimizerModel experiment={state.experiment as ExperimentType}/>
+                  <OptimizerModel 
+                    experiment={state.experiment}
+                    onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} />
                 </CardContent>
               </Card>
             </Grid>
@@ -143,6 +148,7 @@ export default function Experiment() {
                 </CardContent>
               </Card>
             </Grid>
+            <Button variant="contained" onClick={onSave}>Save</Button>
           </Grid>
         </CardContent>
       </Card>

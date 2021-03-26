@@ -8,8 +8,11 @@ type ValueVariableProps = {
 
 export default function ValueVariable(props: ValueVariableProps) {
 
-  const { register, handleSubmit, watch, errors } = useForm<ValueVariableType>();
-  const onSubmit = async (data: ValueVariableType) => props.onAdded(data)
+  const { register, handleSubmit, reset, watch, errors } = useForm<ValueVariableType>();
+  const onSubmit = async (data: ValueVariableType) => {
+    props.onAdded(data)
+    reset()
+  }
 
   return (
       <>

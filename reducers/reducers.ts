@@ -5,6 +5,7 @@ export const EXPERIMENT_UPDATED = 'EXPERIMENT_SAVED'
 export const EXPERIMENT_NAME_UPDATED = 'EXPERIMENT_NAME_UPDATED'
 export const EXPERIMENT_DESCRIPTION_UPDATED = 'EXPERIMENT_DESCRIPTION_UPDATED'
 export const VALUE_VARIABLE_ADDED = 'VALUE_VARIABLE_ADDED'
+export const VALUE_VARIABLE_DELETED = 'VALUE_VARIABLE_DELETED'
 export const CATEGORICAL_VARIABLE_ADDED = 'CATEGORICAL_VARIABLE_ADDED'
 
 export type CategoricalVariableAddedAction = {
@@ -14,6 +15,11 @@ export type CategoricalVariableAddedAction = {
 
 export type ValueVariableAddedAction = {
   type: typeof VALUE_VARIABLE_ADDED
+  payload: ValueVariableType
+}
+
+export type ValueVariableDeletedAction = {
+  type: typeof VALUE_VARIABLE_DELETED
   payload: ValueVariableType
 }
 
@@ -33,19 +39,16 @@ export type ExperimentDescriptionUpdatedAction = {
 }
 
 export type Action = ExperimentAction
-type ExperimentAction = CategoricalVariableAddedAction | ValueVariableAddedAction | ExperimentUpdatedAction | ExperimentNameUpdatedAction | ExperimentDescriptionUpdatedAction
+type ExperimentAction = CategoricalVariableAddedAction | ValueVariableAddedAction | ValueVariableDeletedAction | ExperimentUpdatedAction | ExperimentNameUpdatedAction | ExperimentDescriptionUpdatedAction
 
 export const rootReducer = (state: State, action: Action) => {
   switch (action.type) {
     case EXPERIMENT_UPDATED:
     case EXPERIMENT_NAME_UPDATED:
     case EXPERIMENT_DESCRIPTION_UPDATED:
-      return {
-        ...state,
-        experiment: experimentReducer(state.experiment, action)
-      }
     case CATEGORICAL_VARIABLE_ADDED:
     case VALUE_VARIABLE_ADDED:
+    case VALUE_VARIABLE_DELETED:
       return {
         ...state,
         experiment: experimentReducer(state.experiment, action)
@@ -78,12 +81,19 @@ const experimentReducer = (experimentState: ExperimentType, action: ExperimentAc
         }
       }
     case VALUE_VARIABLE_ADDED:
-      //TODO: Fix shallow copy issue
-      let newValueVariables = experimentState.valueVariables
-      newValueVariables.push(action.payload)
+      let varsAfterAdd = experimentState.valueVariables.slice()
+      varsAfterAdd.splice(experimentState.valueVariables.length, 0, action.payload)
       return {
         ...experimentState,
-        valueVariables: newValueVariables
+        valueVariables: varsAfterAdd
+      }
+    case VALUE_VARIABLE_DELETED:
+      let varsAfterDelete = experimentState.valueVariables.slice()
+      let indexOfDelete = experimentState.valueVariables.indexOf(action.payload)
+      varsAfterDelete.splice(indexOfDelete, 1)
+      return {
+        ...experimentState,
+        valueVariables: varsAfterDelete
       }
   }
 }
