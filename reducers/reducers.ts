@@ -1,38 +1,51 @@
 import { State } from "../store"
-import { CategoricalVariable, ExperimentType, Info, ValueVariable } from "../types/common"
+import { ValueVariableType, ExperimentType, CategoricalVariableType } from "../types/common"
 
-export const EXPERIMENT_LOADED = 'EXPERIMENT_LOADED'
-export const EXPERIMENT_SAVED = 'EXPERIMENT_SAVED'
-export const CATEGORICAL_VARIABLE_ADDED = 'CATEGORICAL_VARIABLE_ADDED'
+export const EXPERIMENT_UPDATED = 'EXPERIMENT_SAVED'
+export const EXPERIMENT_NAME_UPDATED = 'EXPERIMENT_NAME_UPDATED'
+export const EXPERIMENT_DESCRIPTION_UPDATED = 'EXPERIMENT_DESCRIPTION_UPDATED'
 export const VALUE_VARIABLE_ADDED = 'VALUE_VARIABLE_ADDED'
+export const CATEGORICAL_VARIABLE_ADDED = 'CATEGORICAL_VARIABLE_ADDED'
 
 export type CategoricalVariableAddedAction = {
-  type: typeof CATEGORICAL_VARIABLE_ADDED,
-  payload: CategoricalVariable 
+  type: typeof CATEGORICAL_VARIABLE_ADDED
+  payload: CategoricalVariableType
 }
 
 export type ValueVariableAddedAction = {
-  type: typeof VALUE_VARIABLE_ADDED,
-  payload: ValueVariable
+  type: typeof VALUE_VARIABLE_ADDED
+  payload: ValueVariableType
 }
 
-export type InfoAddedAction = {
-  type: typeof EXPERIMENT_SAVED,
-  payload: Info
-}
-
-export type ExperimentLoadedAction = {
-  type: typeof EXPERIMENT_LOADED,
+export type ExperimentUpdatedAction = {
+  type: typeof EXPERIMENT_UPDATED
   payload: ExperimentType
 }
 
+export type ExperimentNameUpdatedAction = {
+  type: typeof EXPERIMENT_NAME_UPDATED
+  payload: String
+}
+
+export type ExperimentDescriptionUpdatedAction = {
+  type: typeof EXPERIMENT_DESCRIPTION_UPDATED
+  payload: String
+}
+
 export type Action = ExperimentAction
-type ExperimentAction = CategoricalVariableAddedAction | ValueVariableAddedAction | InfoAddedAction | ExperimentLoadedAction
+type ExperimentAction = CategoricalVariableAddedAction | ValueVariableAddedAction | ExperimentUpdatedAction | ExperimentNameUpdatedAction | ExperimentDescriptionUpdatedAction
 
 export const rootReducer = (state: State, action: Action) => {
   switch (action.type) {
-    //TODO Something like "action in ExperimentAction" instead of ||
-    case EXPERIMENT_LOADED || EXPERIMENT_SAVED || CATEGORICAL_VARIABLE_ADDED || VALUE_VARIABLE_ADDED:
+    case EXPERIMENT_UPDATED:
+    case EXPERIMENT_NAME_UPDATED:
+    case EXPERIMENT_DESCRIPTION_UPDATED:
+      return {
+        ...state,
+        experiment: experimentReducer(state.experiment, action)
+      }
+    case CATEGORICAL_VARIABLE_ADDED:
+    case VALUE_VARIABLE_ADDED:
       return {
         ...state,
         experiment: experimentReducer(state.experiment, action)
@@ -44,22 +57,33 @@ export const rootReducer = (state: State, action: Action) => {
 
 const experimentReducer = (experimentState: ExperimentType, action: ExperimentAction) => {
   switch (action.type) {
-    case EXPERIMENT_LOADED:
+    case EXPERIMENT_UPDATED:
       return {
         ...action.payload
       }
-    case CATEGORICAL_VARIABLE_ADDED:
-      //TODO: Fix shallow copy issue
-      let newCategoricalVariables = experimentState.categoricalVariables
-      newCategoricalVariables.push(action.payload)
+    case EXPERIMENT_NAME_UPDATED:
       return {
         ...experimentState,
-        categoricalVariables: newCategoricalVariables
+        info: {
+          ...experimentState.info,
+          name: action.payload
+        }
       }
-    case EXPERIMENT_SAVED:
+    case EXPERIMENT_DESCRIPTION_UPDATED:
       return {
         ...experimentState,
-        info: action.payload
+        info: {
+          ...experimentState.info,
+          description: action.payload
+        }
+      }
+    case VALUE_VARIABLE_ADDED:
+      //TODO: Fix shallow copy issue
+      let newValueVariables = experimentState.valueVariables
+      newValueVariables.push(action.payload)
+      return {
+        ...experimentState,
+        valueVariables: newValueVariables
       }
   }
 }

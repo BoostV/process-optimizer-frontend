@@ -1,16 +1,16 @@
 export type ExperimentType = {
-  id: string | undefined,
+  id: string,
   info: Info;
-  categoricalVariables: CategoricalVariable[];
-  valueVariables: ValueVariable[];
+  categoricalVariables: CategoricalVariableType[];
+  valueVariables: ValueVariableType[];
 }
 
-export type Info = {
+type Info = {
   name: string;
   description: string;
 }
 
-export type CategoricalVariable = {
+export type ValueVariableType = {
   name: string;
   description: string;
   minVal: string;
@@ -18,7 +18,7 @@ export type CategoricalVariable = {
   order: string;
 }
 
-export type ValueVariable = {
+export type CategoricalVariableType = {
   name: string;
   description: string;
   options: Option[];

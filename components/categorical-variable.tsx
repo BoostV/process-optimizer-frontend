@@ -7,9 +7,9 @@ type Inputs = {
   order: string;
 };
 
-type VariableValueProps = {}
+type CategoricalVariableProps = {}
 
-export default function VariableValue(props: VariableValueProps) {
+export default function CategoricalVariable(props: CategoricalVariableProps) {
 
   return (
       <>

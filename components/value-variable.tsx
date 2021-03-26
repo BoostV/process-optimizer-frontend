@@ -1,15 +1,15 @@
 import { Button, TextField, Typography } from '@material-ui/core'
 import { useForm } from 'react-hook-form';
-import { CategoricalVariable } from '../types/common';
+import { ValueVariableType } from '../types/common';
 
-type VariableCategoricalProps = {
-  onAdded: (data: CategoricalVariable) => void
+type ValueVariableProps = {
+  onAdded: (data: ValueVariableType) => void
 }
 
-export default function VariableCategorical(props: VariableCategoricalProps) {
+export default function ValueVariable(props: ValueVariableProps) {
 
-  const { register, handleSubmit, watch, errors } = useForm<CategoricalVariable>();
-  const onSubmit = async (data: CategoricalVariable) => props.onAdded(data)
+  const { register, handleSubmit, watch, errors } = useForm<ValueVariableType>();
+  const onSubmit = async (data: ValueVariableType) => props.onAdded(data)
 
   return (
       <>

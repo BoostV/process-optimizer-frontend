@@ -26,22 +26,28 @@ export default (req: NextApiRequest, res: NextApiResponse<ExperimentType>) => {
     body
   } = req
   const queryId = Array.isArray(id) ? id[0] : id
-  const dbFolder = process.env.DB_FOLDER || '/tmp'
-  if (!fs.existsSync(dbFolder)) {
-    fs.mkdirSync(dbFolder)
+
+  if (queryId !== undefined && queryId !== "undefined") {
+    const dbFolder = process.env.DB_FOLDER || '/tmp'
+    if (!fs.existsSync(dbFolder)) {
+      fs.mkdirSync(dbFolder)
+    }
+    switch (method) {
+      case 'GET':
+        const store = db[queryId] || readFromFile(path.join(dbFolder, `${queryId}.json`))
+        res.json(store || { ...emptyExperiment, id: queryId })
+        break
+      case 'PUT':
+        db[queryId] = JSON.parse(body)
+        writeToFile(path.join(dbFolder, `${queryId}.json`), db[queryId])
+        res.json(db[queryId])
+        break
+      default:
+        res.setHeader('Allow', ['GET', 'PUT'])
+        res.status(405).end(`Method ${method} Not Allowed`)
+    }
   }
-  switch (method) {
-    case 'GET':
-      const store = db[queryId] || readFromFile(path.join(dbFolder, `${queryId}.json`))
-      res.json(store || { ...emptyExperiment, id: queryId })
-      break
-    case 'PUT':
-      db[queryId] = JSON.parse(body)
-      writeToFile(path.join(dbFolder, `${queryId}.json`), db[queryId])
-      res.json(db[queryId])
-      break
-    default:
-      res.setHeader('Allow', ['GET', 'PUT'])
-      res.status(405).end(`Method ${method} Not Allowed`)
-  }
+
 }
+
+  
