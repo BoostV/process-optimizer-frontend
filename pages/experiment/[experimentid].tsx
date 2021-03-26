@@ -136,7 +136,7 @@ export default function Experiment() {
               <Card>
                 <CardContent>
                   <OptimizerModel 
-                    experiment={state.experiment}
+                    experiment={state.experiment as ExperimentType}
                     onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} />
                 </CardContent>
               </Card>
