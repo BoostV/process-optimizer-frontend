@@ -7,9 +7,15 @@ export const EXPERIMENT_DESCRIPTION_UPDATED = 'EXPERIMENT_DESCRIPTION_UPDATED'
 export const VALUE_VARIABLE_ADDED = 'VALUE_VARIABLE_ADDED'
 export const VALUE_VARIABLE_DELETED = 'VALUE_VARIABLE_DELETED'
 export const CATEGORICAL_VARIABLE_ADDED = 'CATEGORICAL_VARIABLE_ADDED'
+export const CATEGORICAL_VARIABLE_DELETED = 'CATEGORICAL_VARIABLE_DELETED'
 
 export type CategoricalVariableAddedAction = {
   type: typeof CATEGORICAL_VARIABLE_ADDED
+  payload: CategoricalVariableType
+}
+
+export type CategoricalVariableDeletedAction = {
+  type: typeof CATEGORICAL_VARIABLE_DELETED
   payload: CategoricalVariableType
 }
 
@@ -39,7 +45,14 @@ export type ExperimentDescriptionUpdatedAction = {
 }
 
 export type Action = ExperimentAction
-type ExperimentAction = CategoricalVariableAddedAction | ValueVariableAddedAction | ValueVariableDeletedAction | ExperimentUpdatedAction | ExperimentNameUpdatedAction | ExperimentDescriptionUpdatedAction
+type ExperimentAction = 
+    CategoricalVariableAddedAction 
+  | CategoricalVariableDeletedAction 
+  | ValueVariableAddedAction 
+  | ValueVariableDeletedAction 
+  | ExperimentUpdatedAction 
+  | ExperimentNameUpdatedAction 
+  | ExperimentDescriptionUpdatedAction
 
 export const rootReducer = (state: State, action: Action) => {
   switch (action.type) {
@@ -47,6 +60,7 @@ export const rootReducer = (state: State, action: Action) => {
     case EXPERIMENT_NAME_UPDATED:
     case EXPERIMENT_DESCRIPTION_UPDATED:
     case CATEGORICAL_VARIABLE_ADDED:
+    case CATEGORICAL_VARIABLE_DELETED:
     case VALUE_VARIABLE_ADDED:
     case VALUE_VARIABLE_DELETED:
       return {
@@ -94,6 +108,21 @@ const experimentReducer = (experimentState: ExperimentType, action: ExperimentAc
       return {
         ...experimentState,
         valueVariables: varsAfterDelete
+      }
+    case CATEGORICAL_VARIABLE_ADDED:
+      let catVarsAfterAdd = experimentState.categoricalVariables.slice()
+      catVarsAfterAdd.splice(experimentState.categoricalVariables.length, 0, action.payload)
+      return {
+        ...experimentState,
+        categoricalVariables: catVarsAfterAdd
+      }
+    case CATEGORICAL_VARIABLE_DELETED:
+      let catVarsAfterDelete = experimentState.categoricalVariables.slice()
+      let indexOfCatDelete = experimentState.categoricalVariables.indexOf(action.payload)
+      catVarsAfterDelete.splice(indexOfCatDelete, 1)
+      return {
+        ...experimentState,
+        categoricalVariables: catVarsAfterDelete
       }
   }
 }

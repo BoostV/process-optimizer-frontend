@@ -1,9 +1,10 @@
 import { Typography } from '@material-ui/core'
-import { ExperimentType, ValueVariableType } from '../types/common'
+import { CategoricalVariableType, ExperimentType, ValueVariableType } from '../types/common'
 
 type OptimizerModelProps = {
   experiment: ExperimentType
   onDeleteValueVariable: (valueVariable: ValueVariableType) => void
+  onDeleteCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
 }
 
 export default function OptimizerModel(props: OptimizerModelProps) {
@@ -21,7 +22,9 @@ export default function OptimizerModel(props: OptimizerModelProps) {
         ))}
 
         {props.experiment.categoricalVariables.map((item, index) => (
-          <div></div>  
+          <div key={index}>
+            {item.name} {item.description} <span onClick={() => {props.onDeleteCategoricalVariable(item)}}>Delete</span>
+          </div>  
         ))}
     </>
   )

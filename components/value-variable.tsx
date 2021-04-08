@@ -1,4 +1,4 @@
-import { Button, TextField, Typography } from '@material-ui/core'
+import { Button, TextField } from '@material-ui/core'
 import { useForm } from 'react-hook-form';
 import { ValueVariableType } from '../types/common';
 
@@ -16,7 +16,7 @@ export default function ValueVariable(props: ValueVariableProps) {
 
   return (
       <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             name="name" 
             label="Name" 

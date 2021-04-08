@@ -8,8 +8,8 @@ import CategoricalVariable from '../../components/categorical-variable';
 import OptimizerModel from '../../components/optimizer-model';
 import OptimizerConfigurator from '../../components/optimizer-configurator';
 import { ChangeEvent, useReducer, useState } from 'react';
-import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED } from '../../reducers/reducers';
-import { ValueVariableType, ExperimentType } from '../../types/common';
+import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED } from '../../reducers/reducers';
+import { ValueVariableType, ExperimentType, CategoricalVariableType } from '../../types/common';
 import { initialState } from '../../store';
 
 const fetcher = async (url: string) => (await fetch(url)).json()
@@ -44,6 +44,14 @@ export default function Experiment() {
 
   function deleteValueVariable(valueVariable: ValueVariableType) {
     dispatch({ type: VALUE_VARIABLE_DELETED, payload: valueVariable })
+  }
+  
+  function addCategoricalVariable(categoricalVariable: CategoricalVariableType) {
+    dispatch({ type: CATEGORICAL_VARIABLE_ADDED, payload: categoricalVariable})
+  }
+
+  function deleteCategoricalVariable(categoricalVariable: CategoricalVariableType) {
+    dispatch({ type: CATEGORICAL_VARIABLE_DELETED, payload: categoricalVariable })
   }
 
   function updateExperiment(experiment: ExperimentType) {
@@ -121,7 +129,7 @@ export default function Experiment() {
                             <ValueVariable onAdded={(data: ValueVariableType) => addValueVariable(data)} />
                           }
                           {radioIndex === 1 &&
-                            <CategoricalVariable />
+                            <CategoricalVariable onAdded={(data: CategoricalVariableType) => addCategoricalVariable(data)} />
                           }
                         </Grid>
                       </Grid>
@@ -137,7 +145,8 @@ export default function Experiment() {
                 <CardContent>
                   <OptimizerModel 
                     experiment={state.experiment as ExperimentType}
-                    onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} />
+                    onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} 
+                    onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => {deleteCategoricalVariable(categoricalVariable)}}/>
                 </CardContent>
               </Card>
             </Grid>
