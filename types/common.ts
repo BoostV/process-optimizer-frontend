@@ -15,14 +15,14 @@ export type ValueVariableType = {
   description: string;
   minVal: string;
   maxVal: string;
-  order: string;
+  order?: string;
 }
 
 export type CategoricalVariableType = {
   name: string;
   description: string;
   options: Option[];
-  order: string;
+  order?: string;
 }
 
 type Option = {
