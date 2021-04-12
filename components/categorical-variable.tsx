@@ -1,6 +1,8 @@
 import { Button, TextField, Typography } from '@material-ui/core';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CategoricalVariableType } from '../types/common';
+import CategoricalVariableOptions from './categorical-variable-options';
 
 type Inputs = {
   name: string;
@@ -14,10 +16,12 @@ type CategoricalVariableProps = {
 }
 
 export default function CategoricalVariable(props: CategoricalVariableProps) {
+  const [options, setOptions] = useState([])
 
   const { register, handleSubmit, reset, watch, errors } = useForm<CategoricalVariableType>();
   const onSubmit = async (data: CategoricalVariableType) => {
-    props.onAdded(data)
+    props.onAdded({...data, options})
+    setOptions([])
     reset()
   }
 
@@ -39,13 +43,17 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           <br />
           <br />
           <Typography>Options</Typography>
-          <TextField
-            name="option"
-            label="Option"
-          />
-          <br />
-          <Button variant="outlined" onClick={() => console.log('add option')} size="small">Add option</Button>
-          <br />
+
+          {options.map((item, index) => (
+            <div key={index}>
+              {item}
+            </div>
+          ))}
+
+          <CategoricalVariableOptions onOptionAdded={(option: String) => {
+            setOptions([...options, option])
+          }}/>
+          
           <br />
           <Button type="submit" variant="outlined">Add variable</Button>
         </form>
