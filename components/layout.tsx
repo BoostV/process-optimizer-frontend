@@ -6,7 +6,7 @@ export default function Layout ( {children}) {
       <Link href="/">
         <a>Home</a>
       </Link>
-      <br/>
+      <span> | </span>
       <Link href="/experiment/123">
         <a>Experiment</a>
       </Link>

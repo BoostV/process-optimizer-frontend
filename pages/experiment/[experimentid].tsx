@@ -183,10 +183,10 @@ export default function Experiment() {
           <br/>
           <Grid container spacing={3}>
             <Grid item xs={1}>
-              <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
+              <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="secondary">Save</Button>
             </Grid>
             <Grid item xs={1}>
-              <Button variant="contained" color="primary" disabled>Run</Button>
+              <Button variant="contained" color="secondary" disabled>Run</Button>
             </Grid>
           </Grid>        
         </CardContent>
