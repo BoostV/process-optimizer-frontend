@@ -36,12 +36,12 @@ export type ExperimentUpdatedAction = {
 
 export type ExperimentNameUpdatedAction = {
   type: typeof EXPERIMENT_NAME_UPDATED
-  payload: String
+  payload: string
 }
 
 export type ExperimentDescriptionUpdatedAction = {
   type: typeof EXPERIMENT_DESCRIPTION_UPDATED
-  payload: String
+  payload: string
 }
 
 export type Action = ExperimentAction

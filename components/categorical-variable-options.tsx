@@ -2,7 +2,7 @@ import { Button, TextField } from '@material-ui/core';
 import { ChangeEvent, useState } from 'react';
 
 type CategoricalVariableOptionProps = {
-  onOptionAdded: (data: String) => void
+  onOptionAdded: (data: string) => void
 }
 
 export default function CategoricalVariableOptions(props: CategoricalVariableOptionProps) {

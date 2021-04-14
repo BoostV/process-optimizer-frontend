@@ -8,6 +8,13 @@ export const emptyExperiment: ExperimentType = {
   },
   categoricalVariables: [],
   valueVariables: [],
+  optimizerConfig: {
+    baseEstimater: "GP",
+    acqFunc: "gp_hedge",
+    initialPoints: 3,
+    kappa: 1.96,
+    xi: 0.01,
+  }
 }
 
 export type State = {

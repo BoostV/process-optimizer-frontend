@@ -45,13 +45,6 @@ export default function ValueVariable(props: ValueVariableProps) {
           />
           <br />
           <br />
-          <TextField
-            name="order"
-            label="Order"
-            inputRef={register}
-          />
-          <br />
-          <br />
           <Button variant="outlined" type="submit">Add variable</Button>
         </form>
       </>

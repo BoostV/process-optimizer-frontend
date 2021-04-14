@@ -26,17 +26,25 @@ export default function Experiment() {
     {
       onSuccess: (data: ExperimentType) => {
         updateExperiment(data)
-      }
+      },
+      revalidateOnFocus: false,
     });
+
   const classes = useStyles();
-
   const [radioIndex, setRadioIndex] = useState(0)
+  const [state, dispatch] = useReducer(rootReducer, initialState)
 
-  const onSave = async () => {
-    fetch(`/api/experiment/${experimentid}`, {method: 'PUT', body: JSON.stringify(state.experiment)})
+  function isDirty() {
+    //return JSON.stringify(experiment) !== JSON.stringify(state.experiment) 
+    return false
   }
 
-  const [state, dispatch] = useReducer(rootReducer, initialState)
+  const onSave = async () => {
+    fetch(`/api/experiment/${experimentid}`, {method: 'PUT', body: JSON.stringify(state.experiment)}).then(
+      (response: Response) => {},
+      (error: any) => console.error('fetch error', error)
+    )
+  }
 
   function addValueVariable(valueVariable: ValueVariableType) {
     dispatch({ type: VALUE_VARIABLE_ADDED, payload: valueVariable })
@@ -58,11 +66,11 @@ export default function Experiment() {
     dispatch({ type: EXPERIMENT_UPDATED, payload: experiment})
   }
 
-  function updateName(name: String) {
+  function updateName(name: string) {
     dispatch({ type: EXPERIMENT_NAME_UPDATED, payload: name})
   }
 
-  function updateDescription(description: String) {
+  function updateDescription(description: string) {
     dispatch({ type: EXPERIMENT_DESCRIPTION_UPDATED, payload: description})
   }
 
@@ -76,7 +84,7 @@ export default function Experiment() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Typography variant="h4" gutterBottom>
-                Experiment {state.experiment.id}
+                Experiment {state.experiment.id} {isDirty() && '(unsaved)'}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -108,14 +116,14 @@ export default function Experiment() {
                         Add new variable
                       </Typography>
                       <Grid container spacing={0}>
-                        <Grid item xs={6}>
+                        <Grid item xs={3}>
                           <Radio
                             checked={radioIndex === 0}
                             onChange={() => {setRadioIndex(0)}}
                           />
                           <Typography>Value</Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={9}>
                           <Radio
                             checked={radioIndex === 1}
                             onChange={() => {setRadioIndex(1)}}
@@ -153,11 +161,11 @@ export default function Experiment() {
             <Grid item xs={4}>
               <Card>
                 <CardContent>
-                  <OptimizerConfigurator />
+                  <OptimizerConfigurator config={state.experiment.optimizerConfig}/>
                 </CardContent>
               </Card>
             </Grid>
-            <Button variant="contained" onClick={onSave}>Save</Button>
+            <Button variant="contained" className={isDirty() ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
           </Grid>
         </CardContent>
       </Card>

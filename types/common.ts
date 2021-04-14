@@ -1,30 +1,35 @@
 export type ExperimentType = {
-  id: string,
-  info: Info;
-  categoricalVariables: CategoricalVariableType[];
-  valueVariables: ValueVariableType[];
+  id: string
+  info: Info
+  categoricalVariables: CategoricalVariableType[]
+  valueVariables: ValueVariableType[]
+  optimizerConfig: OptimizerConfig
 }
 
 type Info = {
-  name: string;
-  description: string;
+  name: string
+  description: string
 }
 
 export type ValueVariableType = {
-  name: string;
-  description: string;
-  minVal: string;
-  maxVal: string;
-  order?: string;
+  name: string
+  description: string
+  minVal: string
+  maxVal: string
+  order?: string
 }
 
 export type CategoricalVariableType = {
-  name: string;
-  description: string;
-  options: Option[];
-  order?: string;
+  name: string
+  description: string
+  options: string[]
+  order?: string
 }
 
-type Option = {
-  value: string;
+export type OptimizerConfig = {
+  baseEstimater: string
+  acqFunc: string
+  initialPoints: number
+  kappa: number
+  xi: number
 }
