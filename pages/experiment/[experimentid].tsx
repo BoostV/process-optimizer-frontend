@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import useSwr from "swr";
-import { Button, Card, CardContent, Grid, Radio, TextField, Typography } from '@material-ui/core'
+import { Button, Card, CardContent, Grid, IconButton, Radio, Snackbar, TextField, Typography } from '@material-ui/core'
 import Layout from '../../components/layout'
 import { useStyles } from '../../styles/experiment.style';
 import ValueVariable from '../../components/value-variable';
@@ -34,6 +34,7 @@ export default function Experiment() {
   const [radioIndex, setRadioIndex] = useState(0)
   const [state, dispatch] = useReducer(rootReducer, initialState)
   const [isDirty, setDirty] = useState(false)
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false)
 
   useEffect(() => {
     if (experiment && JSON.stringify(experiment) !== JSON.stringify(state.experiment)) {
@@ -43,9 +44,16 @@ export default function Experiment() {
 
   const onSave = async () => {
     fetch(`/api/experiment/${experimentid}`, {method: 'PUT', body: JSON.stringify(state.experiment)}).then(
-      (response: Response) => setDirty(false),
+      (response: Response) => {
+        setDirty(false)
+        setSnackbarOpen(true)
+      },
       (error: any) => console.error('fetch error', error)
     )
+  }
+
+  function handleCloseSnackbar() {
+    setSnackbarOpen(false)
   }
 
   function addValueVariable(valueVariable: ValueVariableType) {
@@ -145,8 +153,6 @@ export default function Experiment() {
                       </Grid>
                     </CardContent>
                   </Card>
-                  <br />
-                  <br />
                 </CardContent>
               </Card>
             </Grid>
@@ -167,10 +173,31 @@ export default function Experiment() {
                 </CardContent>
               </Card>
             </Grid>
-            <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
           </Grid>
+          <br/>
+          <br/>
+          <Grid container spacing={3}>
+            <Grid item xs={1}>
+              <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
+            </Grid>
+            <Grid item xs={1}>
+              <Button variant="contained" color="primary" disabled>Run</Button>
+            </Grid>
+          </Grid>        
         </CardContent>
       </Card>
+      
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={isSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        message="Experiment saved"
+      />
+
     </Layout>
   )
 }
