@@ -1,5 +1,5 @@
 import { State } from "../store"
-import { ValueVariableType, ExperimentType, CategoricalVariableType } from "../types/common"
+import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig } from "../types/common"
 
 export const EXPERIMENT_UPDATED = 'EXPERIMENT_SAVED'
 export const EXPERIMENT_NAME_UPDATED = 'EXPERIMENT_NAME_UPDATED'
@@ -8,6 +8,7 @@ export const VALUE_VARIABLE_ADDED = 'VALUE_VARIABLE_ADDED'
 export const VALUE_VARIABLE_DELETED = 'VALUE_VARIABLE_DELETED'
 export const CATEGORICAL_VARIABLE_ADDED = 'CATEGORICAL_VARIABLE_ADDED'
 export const CATEGORICAL_VARIABLE_DELETED = 'CATEGORICAL_VARIABLE_DELETED'
+export const CONFIGURATION_UPDATED = 'CONFIGURATION_UPDATED'
 
 export type CategoricalVariableAddedAction = {
   type: typeof CATEGORICAL_VARIABLE_ADDED
@@ -44,6 +45,11 @@ export type ExperimentDescriptionUpdatedAction = {
   payload: string
 }
 
+export type ConfigurationUpdatedAction = {
+  type: typeof CONFIGURATION_UPDATED
+  payload: OptimizerConfig
+}
+
 export type Action = ExperimentAction
 type ExperimentAction = 
     CategoricalVariableAddedAction 
@@ -53,6 +59,7 @@ type ExperimentAction =
   | ExperimentUpdatedAction 
   | ExperimentNameUpdatedAction 
   | ExperimentDescriptionUpdatedAction
+  | ConfigurationUpdatedAction
 
 export const rootReducer = (state: State, action: Action) => {
   switch (action.type) {
@@ -63,6 +70,7 @@ export const rootReducer = (state: State, action: Action) => {
     case CATEGORICAL_VARIABLE_DELETED:
     case VALUE_VARIABLE_ADDED:
     case VALUE_VARIABLE_DELETED:
+    case CONFIGURATION_UPDATED:
       return {
         ...state,
         experiment: experimentReducer(state.experiment, action)
@@ -123,6 +131,11 @@ const experimentReducer = (experimentState: ExperimentType, action: ExperimentAc
       return {
         ...experimentState,
         categoricalVariables: catVarsAfterDelete
+      }
+    case CONFIGURATION_UPDATED:
+      return {
+        ...experimentState,
+        optimizerConfig: action.payload
       }
   }
 }

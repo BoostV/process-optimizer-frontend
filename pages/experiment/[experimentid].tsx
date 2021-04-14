@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import useSwr from "swr";
-import { Button, Card, CardContent, Grid, IconButton, Radio, Snackbar, TextField, Typography } from '@material-ui/core'
+import { Button, Card, CardContent, Grid, Radio, Snackbar, TextField, Typography } from '@material-ui/core'
 import Layout from '../../components/layout'
 import { useStyles } from '../../styles/experiment.style';
 import ValueVariable from '../../components/value-variable';
@@ -8,8 +8,8 @@ import CategoricalVariable from '../../components/categorical-variable';
 import OptimizerModel from '../../components/optimizer-model';
 import OptimizerConfigurator from '../../components/optimizer-configurator';
 import { ChangeEvent, useEffect, useReducer, useState } from 'react';
-import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED } from '../../reducers/reducers';
-import { ValueVariableType, ExperimentType, CategoricalVariableType } from '../../types/common';
+import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, CONFIGURATION_UPDATED } from '../../reducers/reducers';
+import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig } from '../../types/common';
 import { initialState } from '../../store';
 
 const fetcher = async (url: string) => (await fetch(url)).json()
@@ -82,6 +82,10 @@ export default function Experiment() {
 
   function updateDescription(description: string) {
     dispatch({ type: EXPERIMENT_DESCRIPTION_UPDATED, payload: description})
+  }
+
+  function updateOptimizerConfiguration(config: OptimizerConfig) {
+    dispatch({ type: CONFIGURATION_UPDATED, payload: config})
   }
 
   if (error) return <div>Failed to load experiment</div>;
@@ -169,7 +173,7 @@ export default function Experiment() {
             <Grid item xs={3}>
               <Card>
                 <CardContent>
-                  <OptimizerConfigurator config={state.experiment.optimizerConfig}/>
+                  <OptimizerConfigurator config={state.experiment.optimizerConfig} onConfigUpdated={(config: OptimizerConfig) => updateOptimizerConfiguration(config)}/>
                 </CardContent>
               </Card>
             </Grid>

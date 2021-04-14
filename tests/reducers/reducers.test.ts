@@ -1,6 +1,6 @@
-import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
+import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
 import { State } from "../../store";
-import { CategoricalVariableType, ExperimentType, ValueVariableType } from "../../types/common";
+import { CategoricalVariableType, ExperimentType, OptimizerConfig, ValueVariableType } from "../../types/common";
 
 describe("experiment reducer", () => {
   const initState: State = {
@@ -21,6 +21,13 @@ describe("experiment reducer", () => {
         minVal: "100",
         maxVal: "200",
       }],
+      optimizerConfig: {
+        baseEstimater: "GP",
+        acqFunc: "gp_hedge",
+        initialPoints: 3,
+        kappa: 1.96,
+        xi: 0.01,
+      }
     }
   }
 
@@ -42,6 +49,13 @@ describe("experiment reducer", () => {
         minVal: "101",
         maxVal: "201",
       }],
+      optimizerConfig: {
+        baseEstimater: "GP",
+        acqFunc: "gp_hedge",
+        initialPoints: 4,
+        kappa: 1.96,
+        xi: 0.01,
+      }
     }
 
     const action: ExperimentUpdatedAction = {
@@ -78,7 +92,14 @@ describe("experiment reducer", () => {
           minVal: "100",
           maxVal: "200",
         }],
-      }
+        optimizerConfig: {
+          baseEstimater: "GP",
+          acqFunc: "gp_hedge",
+          initialPoints: 3,
+          kappa: 1.96,
+          xi: 0.01,
+        },
+      },
     })
   })
 
@@ -106,6 +127,13 @@ describe("experiment reducer", () => {
           minVal: "100",
           maxVal: "200",
         }],
+        optimizerConfig: {
+          baseEstimater: "GP",
+          acqFunc: "gp_hedge",
+          initialPoints: 3,
+          kappa: 1.96,
+          xi: 0.01,
+        },
       }
     })
   })
@@ -142,7 +170,14 @@ describe("experiment reducer", () => {
           maxVal: "200",
         },
         payload],
-      }
+        optimizerConfig: {
+          baseEstimater: "GP",
+          acqFunc: "gp_hedge",
+          initialPoints: 3,
+          kappa: 1.96,
+          xi: 0.01,
+        },
+      } 
     })
   })
 
@@ -172,6 +207,13 @@ describe("experiment reducer", () => {
           options: [],
         }],
         valueVariables: [],
+        optimizerConfig: {
+          baseEstimater: "GP",
+          acqFunc: "gp_hedge",
+          initialPoints: 3,
+          kappa: 1.96,
+          xi: 0.01,
+        },
       }
     })
   })
@@ -207,6 +249,13 @@ describe("experiment reducer", () => {
           minVal: "100",
           maxVal: "200",
         }],
+        optimizerConfig: {
+          baseEstimater: "GP",
+          acqFunc: "gp_hedge",
+          initialPoints: 3,
+          kappa: 1.96,
+          xi: 0.01,
+        },
       }
     })
   })
@@ -237,6 +286,50 @@ describe("experiment reducer", () => {
           minVal: "100",
           maxVal: "200",
         }],
+        optimizerConfig: {
+          baseEstimater: "GP",
+          acqFunc: "gp_hedge",
+          initialPoints: 3,
+          kappa: 1.96,
+          xi: 0.01,
+        },
+      }
+    })
+  })
+
+  it("should update configuration", async () => {
+    const payload: OptimizerConfig = {
+      baseEstimater: "GP",
+      acqFunc: "gp_hedge",
+      initialPoints: 4,
+      kappa: 1.97,
+      xi: 0.02,
+    }
+
+    const action: ConfigurationUpdatedAction = {
+      type: CONFIGURATION_UPDATED,
+      payload
+    }
+
+    expect(rootReducer(initState, action)).toEqual({
+      experiment:{
+        id: "1234",
+        info: {
+          name: "Cake",
+          description: "Yummy",
+        },
+        categoricalVariables: [{
+          name: "Icing",
+          description: "Sugary",
+          options: [],
+        }],
+        valueVariables: [{
+          name: "Water",
+          description: "Wet",
+          minVal: "100",
+          maxVal: "200",
+        }],
+        optimizerConfig: payload,
       }
     })
   })

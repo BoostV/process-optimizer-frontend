@@ -4,13 +4,14 @@ import { OptimizerConfig } from '../types/common';
 
 type OptimizerConfiguratorProps = {
   config: OptimizerConfig,
+  onConfigUpdated: (config: OptimizerConfig) => void,
 }
 
 export default function OptimizerConfigurator(props: OptimizerConfiguratorProps) {
 
   const { register, handleSubmit, reset, watch, errors } = useForm<OptimizerConfig>();
   const onSubmit = async (config: OptimizerConfig) => {
-    console.log('submit', {...config, baseEstimater: props.config.baseEstimater, acqFunc: props.config.acqFunc})
+    props.onConfigUpdated({...config, baseEstimater: props.config.baseEstimater, acqFunc: props.config.acqFunc})
   }
 
   return (
