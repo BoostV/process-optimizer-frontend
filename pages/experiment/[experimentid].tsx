@@ -11,6 +11,7 @@ import { ChangeEvent, useEffect, useReducer, useState } from 'react';
 import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, CONFIGURATION_UPDATED } from '../../reducers/reducers';
 import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig } from '../../types/common';
 import { initialState } from '../../store';
+import { Alert } from '@material-ui/lab';
 
 const fetcher = async (url: string) => (await fetch(url)).json()
 
@@ -93,7 +94,7 @@ export default function Experiment() {
 
   return (
     <Layout>
-      <Card className={classes.experimentContainer}>
+      <Card className={[classes.experimentContainer, isDirty ? classes.experimentContainerDirty : ''].join(' ')}>
         <CardContent>
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -190,17 +191,10 @@ export default function Experiment() {
           </Grid>        
         </CardContent>
       </Card>
-      
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        open={isSnackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        message="Experiment saved"
-      />
+
+      <Snackbar open={isSnackbarOpen} autoHideDuration={3000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="success">Experiment saved</Alert>
+      </Snackbar>
 
     </Layout>
   )
