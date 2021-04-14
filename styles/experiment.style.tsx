@@ -4,6 +4,7 @@ export const useStyles = makeStyles(theme => ({
   experimentContainer: {
     marginTop: theme.spacing(4),
     minWidth: 1200,
+    maxWidth: 1800,
   },
   saveButtonDirty: {
     backgroundColor: theme.palette.success.main,

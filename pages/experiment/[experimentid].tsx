@@ -7,7 +7,7 @@ import ValueVariable from '../../components/value-variable';
 import CategoricalVariable from '../../components/categorical-variable';
 import OptimizerModel from '../../components/optimizer-model';
 import OptimizerConfigurator from '../../components/optimizer-configurator';
-import { ChangeEvent, useReducer, useState } from 'react';
+import { ChangeEvent, useEffect, useReducer, useState } from 'react';
 import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED } from '../../reducers/reducers';
 import { ValueVariableType, ExperimentType, CategoricalVariableType } from '../../types/common';
 import { initialState } from '../../store';
@@ -33,15 +33,17 @@ export default function Experiment() {
   const classes = useStyles();
   const [radioIndex, setRadioIndex] = useState(0)
   const [state, dispatch] = useReducer(rootReducer, initialState)
+  const [isDirty, setDirty] = useState(false)
 
-  function isDirty() {
-    //return JSON.stringify(experiment) !== JSON.stringify(state.experiment) 
-    return false
-  }
+  useEffect(() => {
+    if (experiment && JSON.stringify(experiment) !== JSON.stringify(state.experiment)) {
+      setDirty(true)
+    }
+  }, [state.experiment])
 
   const onSave = async () => {
     fetch(`/api/experiment/${experimentid}`, {method: 'PUT', body: JSON.stringify(state.experiment)}).then(
-      (response: Response) => {},
+      (response: Response) => setDirty(false),
       (error: any) => console.error('fetch error', error)
     )
   }
@@ -84,10 +86,10 @@ export default function Experiment() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Typography variant="h4" gutterBottom>
-                Experiment {state.experiment.id} {isDirty() && '(unsaved)'}
+                Experiment {state.experiment.id} {isDirty && '(unsaved)'}
               </Typography>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <Card>
                 <CardContent>
                   <form>
@@ -148,7 +150,7 @@ export default function Experiment() {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <Card>
                 <CardContent>
                   <OptimizerModel 
@@ -158,14 +160,14 @@ export default function Experiment() {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <Card>
                 <CardContent>
                   <OptimizerConfigurator config={state.experiment.optimizerConfig}/>
                 </CardContent>
               </Card>
             </Grid>
-            <Button variant="contained" className={isDirty() ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
+            <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
           </Grid>
         </CardContent>
       </Card>
