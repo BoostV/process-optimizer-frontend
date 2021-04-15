@@ -16,15 +16,15 @@ declare module '@material-ui/core/styles/createPalette' {
 export const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#39889c',
+      main: 'rgba(0,121,145,1)',
     },
     secondary: {
-      main: '#1be6d4',
-      dark: '#17ccbc',
+      main: 'rgba(27,230,212,1)',
+      dark: 'rgba(23,204,188,1)',
     },
     custom: {
       background: {
-        main: '#39889c',
+        main: 'linear-gradient(90deg, rgba(0,121,145,1) 30%, rgba(143,205,186,1) 100%)',
       }
     }
   }

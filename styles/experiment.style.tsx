@@ -5,7 +5,7 @@ export const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(4),
     minWidth: 1200,
     maxWidth: 1800,
-    backgroundColor: theme.palette.custom.background.main,
+    background: theme.palette.custom.background.main,
     color: 'white',
   },
   experimentContainerDirty: {
