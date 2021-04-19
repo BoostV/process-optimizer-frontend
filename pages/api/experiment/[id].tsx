@@ -20,7 +20,8 @@ const writeToFile = (file: string, data: object) => {
 }
 
 const runExperiment = async (experiment: ExperimentType) => {
-  return fetch('https://worldtimeapi.org/api/ip')
+  const API_SERVER = process.env.API_SERVER || 'http://localhost:9090/v1.0'
+  return fetch(`${API_SERVER}/optimizer?Xi=${experiment.optimizerConfig.xi}&yi=1&kappa=${experiment.optimizerConfig.kappa}`)
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType>) => {
@@ -49,7 +50,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
         const experiment = JSON.parse(body)
         const result: ExperimentResultType = { 
           id: experiment.id, 
-          rawResult: (await (await runExperiment(experiment)).json()).datetime
+          rawResult: (await (await runExperiment(experiment)).text())
         }
         res.json(result)
         break
