@@ -76,7 +76,6 @@ describe('/api/experiment/[id]', () => {
       payload: 'testPayload'
     }));
     process.env.DB_FOLDER=fs.mkdtempSync(tmpFolderPrefix)
-    console.log(process.env.DB_FOLDER)
 
     handleExperimentId(req, res);
 
@@ -84,7 +83,7 @@ describe('/api/experiment/[id]', () => {
     
 
     const outputFolder = process.env.DB_FOLDER;
-    const expectedFileName = path.join(outputFolder, 'newId.json')
+    const expectedFileName = path.join(outputFolder, 'newID.json')
     expect(fs.accessSync(expectedFileName, fs.constants.R_OK)).toBeTruthy
 
   });
