@@ -1,4 +1,4 @@
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
+import { Button, Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
 import { CategoricalVariableType, ExperimentType, ValueVariableType } from '../types/common'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { ReactNode } from 'react'
@@ -26,7 +26,8 @@ export default function OptimizerModel(props: OptimizerModelProps) {
   }
 
   return (
-      <>
+    <Card>
+      <CardContent>
         <Typography variant="h6" gutterBottom>
           Model for optimizer
         </Typography>
@@ -92,6 +93,7 @@ export default function OptimizerModel(props: OptimizerModelProps) {
             </Table>
           </>
         }
-    </>
+      </CardContent>
+    </Card>
   )
 }

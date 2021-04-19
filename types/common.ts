@@ -12,7 +12,7 @@ export type ExperimentResultType = {
   rawResult: string
 }
 
-type Info = {
+export type Info = {
   name: string
   description: string
 }
