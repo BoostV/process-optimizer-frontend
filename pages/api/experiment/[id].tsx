@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs';
 import path from 'path';
-import { ExperimentType } from '../../../types/common';
+import { ExperimentResultType, ExperimentType } from '../../../types/common';
 import { emptyExperiment } from '../../../store';
 
 const db = {}
@@ -19,7 +19,11 @@ const writeToFile = (file: string, data: object) => {
   fs.writeFileSync(file, JSON.stringify(data))
 }
 
-export default (req: NextApiRequest, res: NextApiResponse<ExperimentType>) => {
+const runExperiment = async (experiment: ExperimentType) => {
+  return fetch('https://worldtimeapi.org/api/ip')
+}
+
+export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType>) => {
   const {
     query: { id },
     method,
@@ -40,6 +44,14 @@ export default (req: NextApiRequest, res: NextApiResponse<ExperimentType>) => {
         db[queryId] = JSON.parse(body)
         writeToFile(path.join(dbFolder, `${queryId}.json`), db[queryId])
         res.json(db[queryId])
+        break
+      case 'POST':
+        const experiment = JSON.parse(body)
+        const result: ExperimentResultType = { 
+          id: experiment.id, 
+          rawResult: (await (await runExperiment(experiment)).json()).datetime
+        }
+        res.json(result)
         break
       default:
         res.setHeader('Allow', ['GET', 'PUT'])

@@ -6,8 +6,8 @@ import { useStyles } from '../../styles/experiment.style';
 import OptimizerModel from '../../components/optimizer-model';
 import OptimizerConfigurator from '../../components/optimizer-configurator';
 import { useEffect, useReducer, useState } from 'react';
-import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, CONFIGURATION_UPDATED } from '../../reducers/reducers';
-import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig } from '../../types/common';
+import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, CONFIGURATION_UPDATED, RESULT_REGISTERED } from '../../reducers/reducers';
+import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig, ExperimentResultType } from '../../types/common';
 import { initialState } from '../../store';
 import { Alert } from '@material-ui/lab';
 import ModelEditor from '../../components/model-editor';
@@ -51,8 +51,25 @@ export default function Experiment() {
     )
   }
 
+  const onRun = async () => {
+    try {
+      const response: Response = await fetch(`/api/experiment/${experimentid}`, {method: 'POST', body: JSON.stringify(state.experiment)})
+      const result: ExperimentResultType = await response.json()
+          registerResult(result)
+          setDirty(true)
+          //setSnackbarOpen(true)
+    } catch (error ){
+      console.error('fetch error', error)
+    }
+    
+  }
+
   function handleCloseSnackbar() {
     setSnackbarOpen(false)
+  }
+
+  function registerResult(result: ExperimentResultType) {
+    dispatch({ type: RESULT_REGISTERED, payload: result })
   }
 
   function addValueVariable(valueVariable: ValueVariableType) {
@@ -97,7 +114,7 @@ export default function Experiment() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Typography variant="h4" gutterBottom>
-                Experiment {state.experiment.id} {isDirty && '(unsaved)'}
+                Experiment {state.experiment.id} {isDirty && '(unsaved)'} [{state.experiment.results.rawResult || 'No results'}] 
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -127,7 +144,7 @@ export default function Experiment() {
               <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="secondary">Save</Button>
             </Grid>
             <Grid item xs={1}>
-              <Button variant="contained" color="secondary" disabled>Run</Button>
+              <Button variant="contained" color="secondary" onClick={onRun}>Run</Button>
             </Grid>
           </Grid>        
         </CardContent>
