@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { ExperimentResultType, ExperimentType } from '../../../types/common';
 import { emptyExperiment } from '../../../store';
+import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
 
 const db = {}
 
@@ -21,7 +22,9 @@ const writeToFile = (file: string, data: object) => {
 
 const runExperiment = async (experiment: ExperimentType) => {
   const API_SERVER = process.env.API_SERVER || 'http://localhost:9090/v1.0'
-  return fetch(`${API_SERVER}/optimizer?Xi=${experiment.optimizerConfig.xi}&yi=1&kappa=${experiment.optimizerConfig.kappa}`)
+  const api = new DefaultApi(new Configuration({basePath: API_SERVER, fetchApi: fetch}))
+  const request: OptimizerRunRequest = { params: "", yi: 1.0, xi: experiment.optimizerConfig.xi, kappa: experiment.optimizerConfig.kappa }
+  return api.optimizerRun(request)
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType>) => {
@@ -50,7 +53,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
         const experiment = JSON.parse(body)
         const result: ExperimentResultType = { 
           id: experiment.id, 
-          rawResult: (await (await runExperiment(experiment)).text())
+          rawResult: await runExperiment(experiment)
         }
         res.json(result)
         break

@@ -34,6 +34,12 @@ The included script "dockeryarn.sh" can be used as substitute for yarn if you ha
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Update OpenAPI client
+
+When the process-optimizer-api changes run the following command with the desired version tag and commit the resulting changes.
+
+    docker run --rm -it --volume $(pwd):/local openapitools/openapi-generator-cli generate -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v0.0.1/optimizerapi/openapi/specification.yml -g typescript-fetch -o /local/openapi 
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
