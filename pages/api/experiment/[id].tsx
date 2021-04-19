@@ -29,7 +29,6 @@ const runExperiment = async (experiment: ExperimentType) => {
   cfg.initialPoints = Number(cfg.initialPoints)
   cfg.kappa = Number(cfg.kappa)
   cfg.xi = Number(cfg.xi)
-  console.log(cfg)
   const request: OptimizerRunRequest = {experiment: {data: [], optimizerConfig: cfg}}
   return api.optimizerRun(request)
 }
