@@ -1,4 +1,4 @@
-import { Button, TextField, Typography } from '@material-ui/core'
+import { Button, Card, CardContent, TextField, Typography } from '@material-ui/core'
 import { useForm } from 'react-hook-form';
 import { OptimizerConfig } from '../types/common';
 
@@ -15,52 +15,56 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
   }
 
   return (
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="h6" gutterBottom>Configure optimizer</Typography>
+    <Card>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Typography variant="h6" gutterBottom>Configure optimizer</Typography>
 
-        <TextField
-          disabled
-          defaultValue={props.config.baseEstimater}
-          name="baseEstimater"
-          label="Base estimater"
-          inputRef={register}
-        />
-        <br />
-        <br />
-        <TextField
-          disabled
-          defaultValue={props.config.acqFunc}
-          name="acqFunc"
-          label="Acq func"
-          inputRef={register}
-        />
-        <br />
-        <br />
-        <TextField
-          defaultValue={props.config.initialPoints}
-          name="initialPoints"
-          label="N initial points"
-          inputRef={register}
-        />
-        <br />
-        <br />
-        <TextField
-        defaultValue={props.config.kappa}
-          name="kappa"
-          label="Kappa"
-          inputRef={register}
-        />
-        <br />
-        <br />
-        <TextField
-          defaultValue={props.config.xi}
-          name="xi"
-          label="Xi"
-          inputRef={register}
-        />
-        <br/>
-        <br/>
-      <Button variant="outlined" type="submit">Update</Button>
-    </form>
+          <TextField
+            disabled
+            defaultValue={props.config.baseEstimater}
+            name="baseEstimater"
+            label="Base estimater"
+            inputRef={register}
+          />
+          <br />
+          <br />
+          <TextField
+            disabled
+            defaultValue={props.config.acqFunc}
+            name="acqFunc"
+            label="Acq func"
+            inputRef={register}
+          />
+          <br />
+          <br />
+          <TextField
+            defaultValue={props.config.initialPoints}
+            name="initialPoints"
+            label="N initial points"
+            inputRef={register}
+          />
+          <br />
+          <br />
+          <TextField
+          defaultValue={props.config.kappa}
+            name="kappa"
+            label="Kappa"
+            inputRef={register}
+          />
+          <br />
+          <br />
+          <TextField
+            defaultValue={props.config.xi}
+            name="xi"
+            label="Xi"
+            inputRef={register}
+          />
+          <br/>
+          <br/>
+          <Button variant="outlined" type="submit">Update</Button>
+        </form>
+      </CardContent>
+    </Card>
   )
 }

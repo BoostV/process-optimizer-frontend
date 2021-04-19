@@ -1,17 +1,16 @@
 import { useRouter } from 'next/router'
 import useSwr from "swr";
-import { Button, Card, CardContent, Grid, Radio, Snackbar, TextField, Typography } from '@material-ui/core'
+import { Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
 import Layout from '../../components/layout'
 import { useStyles } from '../../styles/experiment.style';
-import ValueVariable from '../../components/value-variable';
-import CategoricalVariable from '../../components/categorical-variable';
 import OptimizerModel from '../../components/optimizer-model';
 import OptimizerConfigurator from '../../components/optimizer-configurator';
-import { ChangeEvent, useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, CONFIGURATION_UPDATED } from '../../reducers/reducers';
 import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig } from '../../types/common';
 import { initialState } from '../../store';
 import { Alert } from '@material-ui/lab';
+import ModelEditor from '../../components/model-editor';
 
 const fetcher = async (url: string) => (await fetch(url)).json()
 
@@ -32,7 +31,6 @@ export default function Experiment() {
     });
 
   const classes = useStyles();
-  const [radioIndex, setRadioIndex] = useState(0)
   const [state, dispatch] = useReducer(rootReducer, initialState)
   const [isDirty, setDirty] = useState(false)
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
@@ -103,80 +101,23 @@ export default function Experiment() {
               </Typography>
             </Grid>
             <Grid item xs={3}>
-              <Card>
-                <CardContent>
-                  <form>
-                    <TextField 
-                      name="name" 
-                      label="Name" 
-                      value={state.experiment.info.name}
-                      required
-                      onChange={(e: ChangeEvent) => updateName((e.target as HTMLInputElement).value)}
-                    />
-                    <br/>
-                    <br/>
-                    <TextField
-                      name="info.description"
-                      label="Description"
-                      value={state.experiment.info.description}
-                      required
-                      onChange={(e: ChangeEvent) => updateDescription((e.target as HTMLInputElement).value)}
-                    />
-                    <br />
-                    <br />
-                  </form>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Add new variable
-                      </Typography>
-                      <Grid container spacing={0}>
-                        <Grid item xs={3}>
-                          <Radio
-                            checked={radioIndex === 0}
-                            onChange={() => {setRadioIndex(0)}}
-                          />
-                          <Typography>Value</Typography>
-                        </Grid>
-                        <Grid item xs={9}>
-                          <Radio
-                            checked={radioIndex === 1}
-                            onChange={() => {setRadioIndex(1)}}
-                          />
-                          <Typography>Categorical</Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <br/>
-                          <br/>
-                          {radioIndex === 0 &&
-                            <ValueVariable onAdded={(data: ValueVariableType) => addValueVariable(data)} />
-                          }
-                          {radioIndex === 1 &&
-                            <CategoricalVariable onAdded={(data: CategoricalVariableType) => addCategoricalVariable(data)} />
-                          }
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                  </Card>
-                </CardContent>
-              </Card>
+              <ModelEditor 
+                experiment={state.experiment}
+                updateName={(name: string) => updateName(name)}
+                updateDescription={(description: string) => updateDescription(description)}
+                addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}
+                addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)}/>
             </Grid>
             <Grid item xs={6}>
-              <Card>
-                <CardContent>
-                  <OptimizerModel 
-                    experiment={state.experiment as ExperimentType}
-                    onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} 
-                    onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => {deleteCategoricalVariable(categoricalVariable)}}/>
-                </CardContent>
-              </Card>
+              <OptimizerModel 
+                experiment={state.experiment}
+                onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} 
+                onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => {deleteCategoricalVariable(categoricalVariable)}}/>
             </Grid>
             <Grid item xs={3}>
-              <Card>
-                <CardContent>
-                  <OptimizerConfigurator config={state.experiment.optimizerConfig} onConfigUpdated={(config: OptimizerConfig) => updateOptimizerConfiguration(config)}/>
-                </CardContent>
-              </Card>
+              <OptimizerConfigurator 
+                config={state.experiment.optimizerConfig} 
+                onConfigUpdated={(config: OptimizerConfig) => updateOptimizerConfiguration(config)}/>
             </Grid>
           </Grid>
           <br/>
