@@ -26,9 +26,8 @@ export default (req: NextApiRequest, res: NextApiResponse<ExperimentType>) => {
     body
   } = req
   const queryId = Array.isArray(id) ? id[0] : id
-
   if (queryId !== undefined && queryId !== "undefined") {
-    const dbFolder = process.env.DB_FOLDER || '/tmp'
+    const dbFolder = process.env.DB_FOLDER || 'tmp'
     if (!fs.existsSync(dbFolder)) {
       fs.mkdirSync(dbFolder)
     }
