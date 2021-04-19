@@ -22,7 +22,7 @@ describe("experiment reducer", () => {
         maxVal: "200",
       }],
       optimizerConfig: {
-        baseEstimater: "GP",
+        baseEstimator: "GP",
         acqFunc: "gp_hedge",
         initialPoints: 3,
         kappa: 1.96,
@@ -50,7 +50,7 @@ describe("experiment reducer", () => {
         maxVal: "201",
       }],
       optimizerConfig: {
-        baseEstimater: "GP",
+        baseEstimator: "GP",
         acqFunc: "gp_hedge",
         initialPoints: 4,
         kappa: 1.96,
@@ -93,7 +93,7 @@ describe("experiment reducer", () => {
           maxVal: "200",
         }],
         optimizerConfig: {
-          baseEstimater: "GP",
+          baseEstimator: "GP",
           acqFunc: "gp_hedge",
           initialPoints: 3,
           kappa: 1.96,
@@ -128,7 +128,7 @@ describe("experiment reducer", () => {
           maxVal: "200",
         }],
         optimizerConfig: {
-          baseEstimater: "GP",
+          baseEstimator: "GP",
           acqFunc: "gp_hedge",
           initialPoints: 3,
           kappa: 1.96,
@@ -171,7 +171,7 @@ describe("experiment reducer", () => {
         },
         payload],
         optimizerConfig: {
-          baseEstimater: "GP",
+          baseEstimator: "GP",
           acqFunc: "gp_hedge",
           initialPoints: 3,
           kappa: 1.96,
@@ -208,7 +208,7 @@ describe("experiment reducer", () => {
         }],
         valueVariables: [],
         optimizerConfig: {
-          baseEstimater: "GP",
+          baseEstimator: "GP",
           acqFunc: "gp_hedge",
           initialPoints: 3,
           kappa: 1.96,
@@ -250,7 +250,7 @@ describe("experiment reducer", () => {
           maxVal: "200",
         }],
         optimizerConfig: {
-          baseEstimater: "GP",
+          baseEstimator: "GP",
           acqFunc: "gp_hedge",
           initialPoints: 3,
           kappa: 1.96,
@@ -287,7 +287,7 @@ describe("experiment reducer", () => {
           maxVal: "200",
         }],
         optimizerConfig: {
-          baseEstimater: "GP",
+          baseEstimator: "GP",
           acqFunc: "gp_hedge",
           initialPoints: 3,
           kappa: 1.96,
@@ -299,7 +299,7 @@ describe("experiment reducer", () => {
 
   it("should update configuration", async () => {
     const payload: OptimizerConfig = {
-      baseEstimater: "GP",
+      baseEstimator: "GP",
       acqFunc: "gp_hedge",
       initialPoints: 4,
       kappa: 1.97,

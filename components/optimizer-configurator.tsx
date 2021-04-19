@@ -11,7 +11,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
   const { config } = props
   const { register, handleSubmit, reset, watch, errors } = useForm<OptimizerConfig>();
   const onSubmit = async (config: OptimizerConfig) => {
-    props.onConfigUpdated({...config, baseEstimater: props.config.baseEstimater, acqFunc: props.config.acqFunc})
+    props.onConfigUpdated({...config, baseEstimator: props.config.baseEstimator, acqFunc: props.config.acqFunc})
   }
 
   return (
@@ -22,9 +22,9 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
 
           <TextField
             disabled
-            defaultValue={config.baseEstimater}
-            name="baseEstimater"
-            label="Base estimater"
+            defaultValue={config.baseEstimator}
+            name="baseEstimator"
+            label="Base estimator"
             inputRef={register}
           />
           <br />

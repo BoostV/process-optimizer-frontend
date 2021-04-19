@@ -33,7 +33,7 @@ export type CategoricalVariableType = {
 }
 
 export type OptimizerConfig = {
-  baseEstimater: string
+  baseEstimator: string
   acqFunc: string
   initialPoints: number
   kappa: number
