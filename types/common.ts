@@ -4,6 +4,12 @@ export type ExperimentType = {
   categoricalVariables: CategoricalVariableType[]
   valueVariables: ValueVariableType[]
   optimizerConfig: OptimizerConfig
+  results: ExperimentResultType
+}
+
+export type ExperimentResultType = {
+  id: string
+  rawResult: string
 }
 
 type Info = {
