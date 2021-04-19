@@ -4,6 +4,7 @@ import path from 'path';
 import { ExperimentResultType, ExperimentType } from '../../../types/common';
 import { emptyExperiment } from '../../../store';
 import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
+import { ExperimentOptimizerConfig } from '../../../openapi/models'
 
 const db = {}
 
@@ -23,7 +24,13 @@ const writeToFile = (file: string, data: object) => {
 const runExperiment = async (experiment: ExperimentType) => {
   const API_SERVER = process.env.API_SERVER || 'http://localhost:9090/v1.0'
   const api = new DefaultApi(new Configuration({basePath: API_SERVER, fetchApi: fetch}))
-  const request: OptimizerRunRequest = { params: "", yi: 1.0, xi: experiment.optimizerConfig.xi, kappa: experiment.optimizerConfig.kappa }
+  // const request: OptimizerRunRequest = { params: "", yi: 1.0, xi: experiment.optimizerConfig.xi, kappa: experiment.optimizerConfig.kappa }
+  const cfg: ExperimentOptimizerConfig = experiment.optimizerConfig
+  cfg.initialPoints = Number(cfg.initialPoints)
+  cfg.kappa = Number(cfg.kappa)
+  cfg.xi = Number(cfg.xi)
+  console.log(cfg)
+  const request: OptimizerRunRequest = {experiment: {data: [], optimizerConfig: cfg}}
   return api.optimizerRun(request)
 }
 

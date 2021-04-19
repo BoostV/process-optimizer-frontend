@@ -1,4 +1,9 @@
 apis/DefaultApi.ts
 apis/index.ts
 index.ts
+models/Experiment.ts
+models/ExperimentData.ts
+models/ExperimentOptimizerConfig.ts
+models/ExperimentOptimizerConfigSpace.ts
+models/index.ts
 runtime.ts

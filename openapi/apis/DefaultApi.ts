@@ -14,12 +14,14 @@
 
 
 import * as runtime from '../runtime';
+import {
+    Experiment,
+    ExperimentFromJSON,
+    ExperimentToJSON,
+} from '../models';
 
 export interface OptimizerRunRequest {
-    params?: string;
-    xi?: number;
-    yi?: number;
-    kappa?: number;
+    experiment: Experiment;
 }
 
 /**
@@ -31,31 +33,22 @@ export class DefaultApi extends runtime.BaseAPI {
      * Run optimizer with the specified parameters
      */
     async optimizerRunRaw(requestParameters: OptimizerRunRequest): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters.experiment === null || requestParameters.experiment === undefined) {
+            throw new runtime.RequiredError('experiment','Required parameter requestParameters.experiment was null or undefined when calling optimizerRun.');
+        }
+
         const queryParameters: any = {};
-
-        if (requestParameters.params !== undefined) {
-            queryParameters['params'] = requestParameters.params;
-        }
-
-        if (requestParameters.xi !== undefined) {
-            queryParameters['Xi'] = requestParameters.xi;
-        }
-
-        if (requestParameters.yi !== undefined) {
-            queryParameters['yi'] = requestParameters.yi;
-        }
-
-        if (requestParameters.kappa !== undefined) {
-            queryParameters['kappa'] = requestParameters.kappa;
-        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        headerParameters['Content-Type'] = 'application/json';
+
         const response = await this.request({
             path: `/optimizer`,
-            method: 'GET',
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
+            body: ExperimentToJSON(requestParameters.experiment),
         });
 
         return new runtime.TextApiResponse(response) as any;
