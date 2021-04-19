@@ -119,7 +119,7 @@ export default function Experiment() {
             </Grid>
             <Grid item xs={3}>
               <ModelEditor 
-                experiment={state.experiment}
+                info={state.experiment.info}
                 updateName={(name: string) => updateName(name)}
                 updateDescription={(description: string) => updateDescription(description)}
                 addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}

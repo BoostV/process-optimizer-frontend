@@ -8,7 +8,7 @@ type OptimizerConfiguratorProps = {
 }
 
 export default function OptimizerConfigurator(props: OptimizerConfiguratorProps) {
-
+  const { config } = props
   const { register, handleSubmit, reset, watch, errors } = useForm<OptimizerConfig>();
   const onSubmit = async (config: OptimizerConfig) => {
     props.onConfigUpdated({...config, baseEstimater: props.config.baseEstimater, acqFunc: props.config.acqFunc})
@@ -22,7 +22,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
 
           <TextField
             disabled
-            defaultValue={props.config.baseEstimater}
+            defaultValue={config.baseEstimater}
             name="baseEstimater"
             label="Base estimater"
             inputRef={register}
@@ -31,7 +31,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
           <br />
           <TextField
             disabled
-            defaultValue={props.config.acqFunc}
+            defaultValue={config.acqFunc}
             name="acqFunc"
             label="Acq func"
             inputRef={register}
@@ -39,7 +39,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
           <br />
           <br />
           <TextField
-            defaultValue={props.config.initialPoints}
+            defaultValue={config.initialPoints}
             name="initialPoints"
             label="N initial points"
             inputRef={register}
@@ -47,7 +47,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
           <br />
           <br />
           <TextField
-          defaultValue={props.config.kappa}
+          defaultValue={config.kappa}
             name="kappa"
             label="Kappa"
             inputRef={register}
@@ -55,7 +55,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
           <br />
           <br />
           <TextField
-            defaultValue={props.config.xi}
+            defaultValue={config.xi}
             name="xi"
             label="Xi"
             inputRef={register}

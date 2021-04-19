@@ -1,11 +1,11 @@
 import { Card, CardContent, Grid, Radio, TextField, Typography } from '@material-ui/core'
 import { ChangeEvent, useState } from 'react';
-import { CategoricalVariableType, ExperimentType, ValueVariableType } from '../types/common';
+import { CategoricalVariableType, Info, ValueVariableType } from '../types/common';
 import CategoricalVariable from './categorical-variable';
 import ValueVariable from './value-variable';
 
 type ModelEditorProps = {
-  experiment: ExperimentType
+  info: Info
   updateName: (name: string) => void
   updateDescription: (description: string) => void
   addValueVariable: (valueVariable: ValueVariableType) => void
@@ -13,6 +13,7 @@ type ModelEditorProps = {
 }
 
 export default function ModelEditor(props: ModelEditorProps) {
+  const { info } = props
   const [radioIndex, setRadioIndex] = useState(0)
 
   return (
@@ -22,7 +23,7 @@ export default function ModelEditor(props: ModelEditorProps) {
           <TextField 
             name="name" 
             label="Name" 
-            value={props.experiment.info.name}
+            value={info.name}
             required
             onChange={(e: ChangeEvent) => props.updateName((e.target as HTMLInputElement).value)}
           />
@@ -31,7 +32,7 @@ export default function ModelEditor(props: ModelEditorProps) {
           <TextField
             name="info.description"
             label="Description"
-            value={props.experiment.info.description}
+            value={info.description}
             required
             onChange={(e: ChangeEvent) => props.updateDescription((e.target as HTMLInputElement).value)}
           />
