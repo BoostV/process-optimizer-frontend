@@ -21,10 +21,10 @@ import { exists, mapValues } from '../runtime';
 export interface ExperimentData {
     /**
      * 
-     * @type {Array<number>}
+     * @type {Array}
      * @memberof ExperimentData
      */
-    xi?: Array<number>;
+    xi?: Array;
     /**
      * 
      * @type {number}

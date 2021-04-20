@@ -38,7 +38,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 When the process-optimizer-api changes run the following command with the desired version tag and commit the resulting changes.
 
-    docker run --rm -it -u $(id -u ${USER}):$(id -g ${USER}) --volume $(pwd):/local openapitools/openapi-generator-cli generate -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v0.0.1/optimizerapi/openapi/specification.yml -g typescript-fetch -o /local/openapi 
+    docker run --rm -it -u $(id -u ${USER}):$(id -g ${USER}) --volume $(pwd):/local openapitools/openapi-generator-cli generate --skip-validate-spec -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v0.0.1/optimizerapi/openapi/specification.yml -g typescript-fetch -o /local/openapi 
 
 ## Learn More
 

@@ -29,8 +29,8 @@ const runExperiment = async (experiment: ExperimentType) => {
   // TODO data is currently hard coded
   const request: OptimizerRunRequest = {experiment: {
     data: [
-      // {xi: [1,2,3], yi: 1},
-      // {xi: [2,2,3], yi: 0.2}
+      {xi: [651,56,722,"Ræv"], yi: 1},
+      {xi: [651,42,722,"Ræv"], yi: 0.2}
     ], 
     optimizerConfig: {
     acqFunc: cfg.acqFunc,
