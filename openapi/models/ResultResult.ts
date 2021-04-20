@@ -21,6 +21,12 @@ import { exists, mapValues } from '../runtime';
 export interface ResultResult {
     /**
      * 
+     * @type {string}
+     * @memberof ResultResult
+     */
+    pickled?: string;
+    /**
+     * 
      * @type {Array<number>}
      * @memberof ResultResult
      */
@@ -37,6 +43,7 @@ export function ResultResultFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
+        'pickled': !exists(json, 'pickled') ? undefined : json['pickled'],
         'next': !exists(json, 'next') ? undefined : json['next'],
     };
 }
@@ -50,6 +57,7 @@ export function ResultResultToJSON(value?: ResultResult | null): any {
     }
     return {
         
+        'pickled': value.pickled,
         'next': value.next,
     };
 }
