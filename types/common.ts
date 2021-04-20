@@ -52,3 +52,5 @@ export type ValueDataPointType = {
   name: string
   value: number
 }
+
+export type SpaceType = {name:string, from: number, to: number}[]

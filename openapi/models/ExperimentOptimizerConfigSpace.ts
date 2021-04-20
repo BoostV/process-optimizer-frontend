@@ -21,6 +21,12 @@ import { exists, mapValues } from '../runtime';
 export interface ExperimentOptimizerConfigSpace {
     /**
      * 
+     * @type {string}
+     * @memberof ExperimentOptimizerConfigSpace
+     */
+    name?: string;
+    /**
+     * 
      * @type {number}
      * @memberof ExperimentOptimizerConfigSpace
      */
@@ -43,6 +49,7 @@ export function ExperimentOptimizerConfigSpaceFromJSONTyped(json: any, ignoreDis
     }
     return {
         
+        'name': !exists(json, 'name') ? undefined : json['name'],
         'from': !exists(json, 'from') ? undefined : json['from'],
         'to': !exists(json, 'to') ? undefined : json['to'],
     };
@@ -57,6 +64,7 @@ export function ExperimentOptimizerConfigSpaceToJSON(value?: ExperimentOptimizer
     }
     return {
         
+        'name': value.name,
         'from': value.from,
         'to': value.to,
     };

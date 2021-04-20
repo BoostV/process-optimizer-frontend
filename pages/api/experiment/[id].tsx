@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs';
 import path from 'path';
-import { ExperimentResultType, ExperimentType } from '../../../types/common';
+import { ExperimentResultType, ExperimentType, SpaceType } from '../../../types/common';
 import { emptyExperiment } from '../../../store';
 import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
 import { ExperimentOptimizerConfig } from '../../../openapi/models'
@@ -25,11 +25,12 @@ const runExperiment = async (experiment: ExperimentType) => {
   const API_SERVER = process.env.API_SERVER || 'http://localhost:9090/v1.0'
   const api = new DefaultApi(new Configuration({basePath: API_SERVER, fetchApi: fetch}))
   const cfg = experiment.optimizerConfig
+  const space = calculateSpace(experiment)
   // TODO data is currently hard coded
   const request: OptimizerRunRequest = {experiment: {
     data: [
-      {xi: [1,2], yi: 1},
-      {xi: [2,2], yi: 0.2}
+      {xi: [1,2,3], yi: 1},
+      {xi: [2,2,3], yi: 0.2}
     ], 
     optimizerConfig: {
     acqFunc: cfg.acqFunc,
@@ -37,10 +38,7 @@ const runExperiment = async (experiment: ExperimentType) => {
     initialPoints: Number(cfg.initialPoints),
     kappa: Number(cfg.kappa),
     xi: Number(cfg.xi),
-    space: [
-      {from: 1, to: 2},
-      {from: 1, to: 2}
-    ]
+    space: space
   }}}
   return api.optimizerRun(request)
 }
@@ -83,4 +81,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
 
 }
 
+const calculateSpace = (experiment: ExperimentType): SpaceType => {
+  return experiment.valueVariables.map(v => { return {name: v.name, from: Number(v.minVal), to: Number(v.maxVal)}})
+}
   

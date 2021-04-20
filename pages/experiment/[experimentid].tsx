@@ -143,6 +143,11 @@ export default function Experiment() {
               <OptimizerConfigurator 
                 config={state.experiment.optimizerConfig} 
                 onConfigUpdated={(config: OptimizerConfig) => updateOptimizerConfiguration(config)}/>
+                <Card>
+                  <CardContent>
+                  Next experiment: {JSON.parse(state.experiment.results.rawResult).result.next.join(',')}
+                  </CardContent>
+                </Card>
             </Grid>
           </Grid>
           <br/>
