@@ -114,7 +114,8 @@ export default function Experiment() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Typography variant="h4" gutterBottom>
-                Experiment {state.experiment.id} {isDirty && '(unsaved)'} [{state.experiment.results.rawResult || 'No results'}] 
+                {/* Experiment {state.experiment.id} {isDirty && '(unsaved)'} [{state.experiment.results.rawResult || 'No results'}]  */}
+                Experiment {state.experiment.id} {isDirty && '(unsaved)'}
               </Typography>
             </Grid>
             <Grid item xs={3}>

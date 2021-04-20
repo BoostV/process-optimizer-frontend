@@ -18,7 +18,8 @@ export const emptyExperiment: ExperimentType = {
   results: {
     id: "",
     rawResult: ""
-  }
+  },
+  dataPoints: []
 }
 
 export type State = {
