@@ -43,8 +43,8 @@ export function ExperimentDataFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'xi': !exists(json, 'Xi') ? undefined : json['Xi'],
-        'yi': !exists(json, 'Yi') ? undefined : json['Yi'],
+        'xi': !exists(json, 'xi') ? undefined : json['xi'],
+        'yi': !exists(json, 'yi') ? undefined : json['yi'],
     };
 }
 
@@ -57,8 +57,8 @@ export function ExperimentDataToJSON(value?: ExperimentData | null): any {
     }
     return {
         
-        'Xi': value.xi,
-        'Yi': value.yi,
+        'xi': value.xi,
+        'yi': value.yi,
     };
 }
 

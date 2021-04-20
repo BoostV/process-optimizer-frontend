@@ -24,12 +24,21 @@ const writeToFile = (file: string, data: object) => {
 const runExperiment = async (experiment: ExperimentType) => {
   const API_SERVER = process.env.API_SERVER || 'http://localhost:9090/v1.0'
   const api = new DefaultApi(new Configuration({basePath: API_SERVER, fetchApi: fetch}))
-  // const request: OptimizerRunRequest = { params: "", yi: 1.0, xi: experiment.optimizerConfig.xi, kappa: experiment.optimizerConfig.kappa }
-  const cfg: ExperimentOptimizerConfig = experiment.optimizerConfig
-  cfg.initialPoints = Number(cfg.initialPoints)
-  cfg.kappa = Number(cfg.kappa)
-  cfg.xi = Number(cfg.xi)
-  const request: OptimizerRunRequest = {experiment: {data: [], optimizerConfig: cfg}}
+  const cfg = experiment.optimizerConfig
+  // TODO data is currently hard coded
+  const request: OptimizerRunRequest = {experiment: {
+    data: [
+      {xi: [1], yi: 1},
+      {xi: [2], yi: 0.2}
+    ], 
+    optimizerConfig: {
+    acqFunc: cfg.acqFunc,
+    baseEstimator: cfg.baseEstimator,
+    initialPoints: Number(cfg.initialPoints),
+    kappa: Number(cfg.kappa),
+    xi: Number(cfg.xi),
+    space: [{from: 1, to: 2}]
+  }}}
   return api.optimizerRun(request)
 }
 
