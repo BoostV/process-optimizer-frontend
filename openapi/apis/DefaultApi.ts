@@ -18,6 +18,9 @@ import {
     Experiment,
     ExperimentFromJSON,
     ExperimentToJSON,
+    Result,
+    ResultFromJSON,
+    ResultToJSON,
 } from '../models';
 
 export interface OptimizerRunRequest {
@@ -32,7 +35,7 @@ export class DefaultApi extends runtime.BaseAPI {
     /**
      * Run optimizer with the specified parameters
      */
-    async optimizerRunRaw(requestParameters: OptimizerRunRequest): Promise<runtime.ApiResponse<string>> {
+    async optimizerRunRaw(requestParameters: OptimizerRunRequest): Promise<runtime.ApiResponse<Result>> {
         if (requestParameters.experiment === null || requestParameters.experiment === undefined) {
             throw new runtime.RequiredError('experiment','Required parameter requestParameters.experiment was null or undefined when calling optimizerRun.');
         }
@@ -51,13 +54,13 @@ export class DefaultApi extends runtime.BaseAPI {
             body: ExperimentToJSON(requestParameters.experiment),
         });
 
-        return new runtime.TextApiResponse(response) as any;
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResultFromJSON(jsonValue));
     }
 
     /**
      * Run optimizer with the specified parameters
      */
-    async optimizerRun(requestParameters: OptimizerRunRequest): Promise<string> {
+    async optimizerRun(requestParameters: OptimizerRunRequest): Promise<Result> {
         const response = await this.optimizerRunRaw(requestParameters);
         return await response.value();
     }

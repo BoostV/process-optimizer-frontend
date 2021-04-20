@@ -20,11 +20,17 @@ import { exists, mapValues } from '../runtime';
  */
 export interface ExperimentOptimizerConfigSpace {
     /**
+     * Type of the dimension. Can be category or numeric
+     * @type {string}
+     * @memberof ExperimentOptimizerConfigSpace
+     */
+    type: string;
+    /**
      * 
      * @type {string}
      * @memberof ExperimentOptimizerConfigSpace
      */
-    name?: string;
+    name: string;
     /**
      * 
      * @type {number}
@@ -37,6 +43,12 @@ export interface ExperimentOptimizerConfigSpace {
      * @memberof ExperimentOptimizerConfigSpace
      */
     to?: number;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ExperimentOptimizerConfigSpace
+     */
+    categories?: Array<string>;
 }
 
 export function ExperimentOptimizerConfigSpaceFromJSON(json: any): ExperimentOptimizerConfigSpace {
@@ -49,9 +61,11 @@ export function ExperimentOptimizerConfigSpaceFromJSONTyped(json: any, ignoreDis
     }
     return {
         
-        'name': !exists(json, 'name') ? undefined : json['name'],
+        'type': json['type'],
+        'name': json['name'],
         'from': !exists(json, 'from') ? undefined : json['from'],
         'to': !exists(json, 'to') ? undefined : json['to'],
+        'categories': !exists(json, 'categories') ? undefined : json['categories'],
     };
 }
 
@@ -64,9 +78,11 @@ export function ExperimentOptimizerConfigSpaceToJSON(value?: ExperimentOptimizer
     }
     return {
         
+        'type': value.type,
         'name': value.name,
         'from': value.from,
         'to': value.to,
+        'categories': value.categories,
     };
 }
 

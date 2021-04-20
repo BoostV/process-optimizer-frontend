@@ -32,10 +32,10 @@ import {
 export interface Result {
     /**
      * 
-     * @type {ResultPlots}
+     * @type {Array<ResultPlots>}
      * @memberof Result
      */
-    plots?: ResultPlots;
+    plots?: Array<ResultPlots>;
     /**
      * 
      * @type {ResultResult}
@@ -54,7 +54,7 @@ export function ResultFromJSONTyped(json: any, ignoreDiscriminator: boolean): Re
     }
     return {
         
-        'plots': !exists(json, 'plots') ? undefined : ResultPlotsFromJSON(json['plots']),
+        'plots': !exists(json, 'plots') ? undefined : ((json['plots'] as Array<any>).map(ResultPlotsFromJSON)),
         'result': !exists(json, 'result') ? undefined : ResultResultFromJSON(json['result']),
     };
 }
@@ -68,7 +68,7 @@ export function ResultToJSON(value?: Result | null): any {
     }
     return {
         
-        'plots': ResultPlotsToJSON(value.plots),
+        'plots': value.plots === undefined ? undefined : ((value.plots as Array<any>).map(ResultPlotsToJSON)),
         'result': ResultResultToJSON(value.result),
     };
 }

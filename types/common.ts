@@ -10,7 +10,6 @@ export type ExperimentType = {
 
 export type ExperimentResultType = {
   id: string
-  rawResult: string
   plots: {id: string, plot: string}[]
   next: number[]
 }
@@ -55,4 +54,4 @@ export type ValueDataPointType = {
   value: number
 }
 
-export type SpaceType = {name:string, from: number, to: number}[]
+export type SpaceType = {type: string, name:string, from?: number, to?: number, categories?: string[]}[]

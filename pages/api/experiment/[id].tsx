@@ -29,8 +29,8 @@ const runExperiment = async (experiment: ExperimentType) => {
   // TODO data is currently hard coded
   const request: OptimizerRunRequest = {experiment: {
     data: [
-      {xi: [1,2,3], yi: 1},
-      {xi: [2,2,3], yi: 0.2}
+      // {xi: [1,2,3], yi: 1},
+      // {xi: [2,2,3], yi: 0.2}
     ], 
     optimizerConfig: {
     acqFunc: cfg.acqFunc,
@@ -67,18 +67,17 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
         break
       case 'POST':
         const experiment = JSON.parse(body)
-        const raw = await runExperiment(experiment)
-        const json = JSON.parse(raw)
+        const json = await runExperiment(experiment)
+        console.log(json)
         const result: ExperimentResultType = { 
           id: experiment.id, 
-          rawResult: raw,
-          plots: json.plots.map(p => { return {id: p.id, plot: p.plot}}),
+          plots: json.plots && json.plots.map(p => { return {id: p.id, plot: p.plot}}),
           next: json.result.next
         }
         res.json(result)
         break
       default:
-        res.setHeader('Allow', ['GET', 'PUT'])
+        res.setHeader('Allow', ['GET', 'PUT', 'POST'])
         res.status(405).end(`Method ${method} Not Allowed`)
     }
   }
@@ -86,6 +85,8 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
 }
 
 const calculateSpace = (experiment: ExperimentType): SpaceType => {
-  return experiment.valueVariables.map(v => { return {name: v.name, from: Number(v.minVal), to: Number(v.maxVal)}})
+  const numeric: SpaceType = experiment.valueVariables.map(v => { return {type: "numeric", name: v.name, from: Number(v.minVal), to: Number(v.maxVal)}})
+  const categorial: SpaceType = experiment.categoricalVariables.map((v) => { return {type: "category", name: v.name, categories: v.options}})
+  return numeric.concat(categorial)
 }
   
