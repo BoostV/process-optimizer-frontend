@@ -130,6 +130,13 @@ export default function Experiment() {
                 experiment={state.experiment}
                 onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} 
                 onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => {deleteCategoricalVariable(categoricalVariable)}}/>
+              <Card>
+                <CardContent>
+                  <ul>
+                    {JSON.parse(state.experiment.results.rawResult).plots.map(plot =>  <li><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
+                  </ul>
+                </CardContent>
+              </Card>
             </Grid>
             <Grid item xs={3}>
               <OptimizerConfigurator 

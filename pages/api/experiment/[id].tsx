@@ -28,8 +28,8 @@ const runExperiment = async (experiment: ExperimentType) => {
   // TODO data is currently hard coded
   const request: OptimizerRunRequest = {experiment: {
     data: [
-      {xi: [1], yi: 1},
-      {xi: [2], yi: 0.2}
+      {xi: [1,2], yi: 1},
+      {xi: [2,2], yi: 0.2}
     ], 
     optimizerConfig: {
     acqFunc: cfg.acqFunc,
@@ -37,7 +37,10 @@ const runExperiment = async (experiment: ExperimentType) => {
     initialPoints: Number(cfg.initialPoints),
     kappa: Number(cfg.kappa),
     xi: Number(cfg.xi),
-    space: [{from: 1, to: 2}]
+    space: [
+      {from: 1, to: 2},
+      {from: 1, to: 2}
+    ]
   }}}
   return api.optimizerRun(request)
 }
