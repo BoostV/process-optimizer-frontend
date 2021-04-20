@@ -11,6 +11,8 @@ export type ExperimentType = {
 export type ExperimentResultType = {
   id: string
   rawResult: string
+  plots: {id: string, plot: string}[]
+  next: number[]
 }
 
 export type Info = {

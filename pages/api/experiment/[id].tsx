@@ -67,9 +67,13 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
         break
       case 'POST':
         const experiment = JSON.parse(body)
+        const raw = await runExperiment(experiment)
+        const json = JSON.parse(raw)
         const result: ExperimentResultType = { 
           id: experiment.id, 
-          rawResult: await runExperiment(experiment)
+          rawResult: raw,
+          plots: json.plots.map(p => { return {id: p.id, plot: p.plot}}),
+          next: json.result.next
         }
         res.json(result)
         break
