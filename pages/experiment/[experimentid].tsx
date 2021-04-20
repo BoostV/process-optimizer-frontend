@@ -134,7 +134,7 @@ export default function Experiment() {
               <Card>
                 <CardContent>
                   <ul>
-                    {state.experiment.results.plots.map(plot =>  <li><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
+                    {state.experiment.results.plots && state.experiment.results.plots.map(plot =>  <li><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
                   </ul>
                 </CardContent>
               </Card>
@@ -145,7 +145,7 @@ export default function Experiment() {
                 onConfigUpdated={(config: OptimizerConfig) => updateOptimizerConfiguration(config)}/>
                 <Card>
                   <CardContent>
-                  Next experiment: {state.experiment.results.next.join(',')}
+                  Next experiment: {state.experiment.results.next && state.experiment.results.next.join(',')}
                   </CardContent>
                 </Card>
             </Grid>
