@@ -11,7 +11,8 @@ export type ExperimentType = {
 export type ExperimentResultType = {
   id: string
   plots: {id: string, plot: string}[]
-  next: number[]
+  next: number[],
+  pickled: string
 }
 
 export type Info = {

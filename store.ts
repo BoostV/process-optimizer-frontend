@@ -17,7 +17,9 @@ export const emptyExperiment: ExperimentType = {
   },
   results: {
     id: "",
-    rawResult: ""
+    next: [],
+    plots: [],
+    pickled: ""
   },
   dataPoints: []
 }

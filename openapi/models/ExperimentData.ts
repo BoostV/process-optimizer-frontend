@@ -24,6 +24,7 @@ export interface ExperimentData {
      * @type {Array}
      * @memberof ExperimentData
      */
+    // @ts-ignore
     xi?: Array;
     /**
      * 
