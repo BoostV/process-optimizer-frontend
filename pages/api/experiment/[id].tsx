@@ -4,7 +4,7 @@ import path from 'path';
 import { ExperimentResultType, ExperimentType, SpaceType } from '../../../types/common';
 import { emptyExperiment } from '../../../store';
 import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
-import { ExperimentOptimizerConfig } from '../../../openapi/models'
+import { calculateData, calculateSpace } from '../../../utility/converters';
 
 const db = {}
 
@@ -28,10 +28,7 @@ const runExperiment = async (experiment: ExperimentType) => {
   const space = calculateSpace(experiment)
   // TODO data is currently hard coded
   const request: OptimizerRunRequest = {experiment: {
-    data: [
-      {xi: [651,56,722,"Ræv"], yi: 1},
-      {xi: [651,42,722,"Ræv"], yi: 0.2}
-    ], 
+    data: calculateData(experiment.categoricalVariables, experiment.valueVariables, experiment.dataPoints), 
     optimizerConfig: {
     acqFunc: cfg.acqFunc,
     baseEstimator: cfg.baseEstimator,
@@ -85,9 +82,5 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
 
 }
 
-const calculateSpace = (experiment: ExperimentType): SpaceType => {
-  const numeric: SpaceType = experiment.valueVariables.map(v => { return {type: "numeric", name: v.name, from: Number(v.minVal), to: Number(v.maxVal)}})
-  const categorial: SpaceType = experiment.categoricalVariables.map((v) => { return {type: "category", name: v.name, categories: v.options}})
-  return numeric.concat(categorial)
-}
+
   
