@@ -1,6 +1,6 @@
-import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
+import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, ResultRegisteredAction, RESULT_REGISTERED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
 import { initialState, State } from "../../store";
-import { CategoricalVariableType, ExperimentType, OptimizerConfig, ValueVariableType } from "../../types/common";
+import { CategoricalVariableType, ExperimentResultType, ExperimentType, OptimizerConfig, ValueVariableType } from "../../types/common";
 
 describe("experiment reducer", () => {
   const initState: State = {
@@ -222,6 +222,29 @@ describe("experiment reducer", () => {
       experiment:{...initState.experiment,
         optimizerConfig: payload
       }
+    })
+  })
+
+  describe("ResultRegisteredAction", () => {
+
+    it("should update result", async () => {
+      const payload: ExperimentResultType = {
+        id: "myExperiment",
+        next: [1,2,3,"Red"],
+        pickled: "pickled",
+        plots: [{id: "sample", plot: "base64encodedData"}]
+      }
+
+      const action: ResultRegisteredAction = {
+        type: RESULT_REGISTERED,
+        payload: payload
+      }
+
+      expect(rootReducer(initState, action)).toEqual({
+        experiment:{...initState.experiment,
+          results: payload
+        }
+      })
     })
   })
 
