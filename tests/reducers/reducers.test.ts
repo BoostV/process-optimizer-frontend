@@ -39,7 +39,7 @@ describe("experiment reducer", () => {
   }
 
   it("should update whole experiment", async () => {
-    const payload: ExperimentType = {...initialState,
+    const payload: ExperimentType = {
       id: "5678",
       info: {
         name: "Not cake",
@@ -64,10 +64,10 @@ describe("experiment reducer", () => {
         xi: 0.01,
       },
       results: {
-        id: "",
+        id: "123",
         next: [],
         plots: [],
-        pickled: ""
+        pickled: "123"
       },
       dataPoints: []
     }
@@ -89,38 +89,13 @@ describe("experiment reducer", () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment:{
+      experiment:{...initState.experiment,
         id: "1234",
         info: {
           name: "Muffins",
           description: "Yummy",
-        },
-        categoricalVariables: [{
-          name: "Icing",
-          description: "Sugary",
-          options: [],
-        }],
-        valueVariables: [{
-          name: "Water",
-          description: "Wet",
-          minVal: 100,
-          maxVal: 200,
-        }],
-        optimizerConfig: {
-          baseEstimator: "GP",
-          acqFunc: "gp_hedge",
-          initialPoints: 3,
-          kappa: 1.96,
-          xi: 0.01,
-        },
-        results: {
-          id: "",
-          next: [],
-          plots: [],
-          pickled: ""
-        },
-        dataPoints: []
-      },
+        }
+      }
     })
   })
 
@@ -131,37 +106,11 @@ describe("experiment reducer", () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment:{
-        id: "1234",
+      experiment:{...initState.experiment,
         info: {
           name: "Cake",
           description: "Tasty",
-        },
-        categoricalVariables: [{
-          name: "Icing",
-          description: "Sugary",
-          options: [],
-        }],
-        valueVariables: [{
-          name: "Water",
-          description: "Wet",
-          minVal: 100,
-          maxVal: 200,
-        }],
-        optimizerConfig: {
-          baseEstimator: "GP",
-          acqFunc: "gp_hedge",
-          initialPoints: 3,
-          kappa: 1.96,
-          xi: 0.01,
-        },
-        results: {
-          id: "",
-          next: [],
-          plots: [],
-          pickled: ""
-        },
-        dataPoints: []
+        }
       }
     })
   })
@@ -180,38 +129,14 @@ describe("experiment reducer", () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment:{
-        id: "1234",
-        info: {
-          name: "Cake",
-          description: "Yummy",
-        },
-        categoricalVariables: [{
-          name: "Icing",
-          description: "Sugary",
-          options: [],
-        }],
+      experiment:{...initState.experiment,
         valueVariables: [{
           name: "Water",
           description: "Wet",
           minVal: 100,
           maxVal: 200,
         },
-        payload],
-        optimizerConfig: {
-          baseEstimator: "GP",
-          acqFunc: "gp_hedge",
-          initialPoints: 3,
-          kappa: 1.96,
-          xi: 0.01,
-        },
-        results: {
-          id: "",
-          next: [],
-          plots: [],
-          pickled: ""
-        },
-        dataPoints: []
+        payload]
       } 
     })
   })
@@ -230,32 +155,8 @@ describe("experiment reducer", () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment:{
-        id: "1234",
-        info: {
-          name: "Cake",
-          description: "Yummy",
-        },
-        categoricalVariables: [{
-          name: "Icing",
-          description: "Sugary",
-          options: [],
-        }],
-        valueVariables: [],
-        optimizerConfig: {
-          baseEstimator: "GP",
-          acqFunc: "gp_hedge",
-          initialPoints: 3,
-          kappa: 1.96,
-          xi: 0.01,
-        },
-        results: {
-          id: "",
-          next: [],
-          plots: [],
-          pickled: ""
-        },
-        dataPoints: []
+      experiment:{...initState.experiment,
+        valueVariables: []
       }
     })
   })
@@ -273,38 +174,13 @@ describe("experiment reducer", () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment:{
-        id: "1234",
-        info: {
-          name: "Cake",
-          description: "Yummy",
-        },
+      experiment:{...initState.experiment,
         categoricalVariables: [{
           name: "Icing",
           description: "Sugary",
           options: [],
         },
-        payload],
-        valueVariables: [{
-          name: "Water",
-          description: "Wet",
-          minVal: 100,
-          maxVal: 200,
-        }],
-        optimizerConfig: {
-          baseEstimator: "GP",
-          acqFunc: "gp_hedge",
-          initialPoints: 3,
-          kappa: 1.96,
-          xi: 0.01,
-        },
-        results: {
-          id: "",
-          next: [],
-          plots: [],
-          pickled: ""
-        },
-        dataPoints: []
+        payload]
       }
     })
   })
@@ -322,33 +198,8 @@ describe("experiment reducer", () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment:{
-        id: "1234",
-        info: {
-          name: "Cake",
-          description: "Yummy",
-        },
-        categoricalVariables: [],
-        valueVariables: [{
-          name: "Water",
-          description: "Wet",
-          minVal: 100,
-          maxVal: 200,
-        }],
-        optimizerConfig: {
-          baseEstimator: "GP",
-          acqFunc: "gp_hedge",
-          initialPoints: 3,
-          kappa: 1.96,
-          xi: 0.01,
-        },
-        results: {
-          id: "",
-          next: [],
-          plots: [],
-          pickled: ""
-        },
-        dataPoints: []
+      experiment:{...initState.experiment,
+        categoricalVariables: []
       }
     })
   })
@@ -368,31 +219,8 @@ describe("experiment reducer", () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment:{
-        id: "1234",
-        info: {
-          name: "Cake",
-          description: "Yummy",
-        },
-        categoricalVariables: [{
-          name: "Icing",
-          description: "Sugary",
-          options: [],
-        }],
-        valueVariables: [{
-          name: "Water",
-          description: "Wet",
-          minVal: 100,
-          maxVal: 200,
-        }],
-        optimizerConfig: payload,
-        results: {
-          id: "",
-          next: [],
-          plots: [],
-          pickled: ""
-        },
-        dataPoints: []
+      experiment:{...initState.experiment,
+        optimizerConfig: payload
       }
     })
   })
