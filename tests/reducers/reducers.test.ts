@@ -1,5 +1,5 @@
 import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
-import { State } from "../../store";
+import { initialState, State } from "../../store";
 import { CategoricalVariableType, ExperimentType, OptimizerConfig, ValueVariableType } from "../../types/common";
 
 describe("experiment reducer", () => {
@@ -18,8 +18,8 @@ describe("experiment reducer", () => {
       valueVariables: [{
         name: "Water",
         description: "Wet",
-        minVal: "100",
-        maxVal: "200",
+        minVal: 100,
+        maxVal: 200,
       }],
       optimizerConfig: {
         baseEstimator: "GP",
@@ -27,12 +27,19 @@ describe("experiment reducer", () => {
         initialPoints: 3,
         kappa: 1.96,
         xi: 0.01,
-      }
+      },
+      results: {
+        id: "",
+        next: [],
+        plots: [],
+        pickled: ""
+      },
+      dataPoints: []
     }
   }
 
   it("should update whole experiment", async () => {
-    const payload: ExperimentType = {
+    const payload: ExperimentType = {...initialState,
       id: "5678",
       info: {
         name: "Not cake",
@@ -46,8 +53,8 @@ describe("experiment reducer", () => {
       valueVariables: [{
         name: "Not water",
         description: "Not wet",
-        minVal: "101",
-        maxVal: "201",
+        minVal: 101,
+        maxVal: 201,
       }],
       optimizerConfig: {
         baseEstimator: "GP",
@@ -55,7 +62,14 @@ describe("experiment reducer", () => {
         initialPoints: 4,
         kappa: 1.96,
         xi: 0.01,
-      }
+      },
+      results: {
+        id: "",
+        next: [],
+        plots: [],
+        pickled: ""
+      },
+      dataPoints: []
     }
 
     const action: ExperimentUpdatedAction = {
@@ -89,8 +103,8 @@ describe("experiment reducer", () => {
         valueVariables: [{
           name: "Water",
           description: "Wet",
-          minVal: "100",
-          maxVal: "200",
+          minVal: 100,
+          maxVal: 200,
         }],
         optimizerConfig: {
           baseEstimator: "GP",
@@ -99,6 +113,13 @@ describe("experiment reducer", () => {
           kappa: 1.96,
           xi: 0.01,
         },
+        results: {
+          id: "",
+          next: [],
+          plots: [],
+          pickled: ""
+        },
+        dataPoints: []
       },
     })
   })
@@ -124,8 +145,8 @@ describe("experiment reducer", () => {
         valueVariables: [{
           name: "Water",
           description: "Wet",
-          minVal: "100",
-          maxVal: "200",
+          minVal: 100,
+          maxVal: 200,
         }],
         optimizerConfig: {
           baseEstimator: "GP",
@@ -134,6 +155,13 @@ describe("experiment reducer", () => {
           kappa: 1.96,
           xi: 0.01,
         },
+        results: {
+          id: "",
+          next: [],
+          plots: [],
+          pickled: ""
+        },
+        dataPoints: []
       }
     })
   })
@@ -142,8 +170,8 @@ describe("experiment reducer", () => {
     const payload: ValueVariableType = {
       name: "Flour",
       description: "Wet",
-      minVal: "300",
-      maxVal: "400",
+      minVal: 300,
+      maxVal: 400,
     }
 
     const action: ValueVariableAddedAction = {
@@ -166,8 +194,8 @@ describe("experiment reducer", () => {
         valueVariables: [{
           name: "Water",
           description: "Wet",
-          minVal: "100",
-          maxVal: "200",
+          minVal: 100,
+          maxVal: 200,
         },
         payload],
         optimizerConfig: {
@@ -177,6 +205,13 @@ describe("experiment reducer", () => {
           kappa: 1.96,
           xi: 0.01,
         },
+        results: {
+          id: "",
+          next: [],
+          plots: [],
+          pickled: ""
+        },
+        dataPoints: []
       } 
     })
   })
@@ -185,8 +220,8 @@ describe("experiment reducer", () => {
     const payload: ValueVariableType = {
       name: "Water",
       description: "Wet",
-      minVal: "100",
-      maxVal: "200",
+      minVal: 100,
+      maxVal: 200,
     }
 
     const action: ValueVariableDeletedAction = {
@@ -214,6 +249,13 @@ describe("experiment reducer", () => {
           kappa: 1.96,
           xi: 0.01,
         },
+        results: {
+          id: "",
+          next: [],
+          plots: [],
+          pickled: ""
+        },
+        dataPoints: []
       }
     })
   })
@@ -246,8 +288,8 @@ describe("experiment reducer", () => {
         valueVariables: [{
           name: "Water",
           description: "Wet",
-          minVal: "100",
-          maxVal: "200",
+          minVal: 100,
+          maxVal: 200,
         }],
         optimizerConfig: {
           baseEstimator: "GP",
@@ -256,6 +298,13 @@ describe("experiment reducer", () => {
           kappa: 1.96,
           xi: 0.01,
         },
+        results: {
+          id: "",
+          next: [],
+          plots: [],
+          pickled: ""
+        },
+        dataPoints: []
       }
     })
   })
@@ -283,8 +332,8 @@ describe("experiment reducer", () => {
         valueVariables: [{
           name: "Water",
           description: "Wet",
-          minVal: "100",
-          maxVal: "200",
+          minVal: 100,
+          maxVal: 200,
         }],
         optimizerConfig: {
           baseEstimator: "GP",
@@ -293,6 +342,13 @@ describe("experiment reducer", () => {
           kappa: 1.96,
           xi: 0.01,
         },
+        results: {
+          id: "",
+          next: [],
+          plots: [],
+          pickled: ""
+        },
+        dataPoints: []
       }
     })
   })
@@ -326,10 +382,17 @@ describe("experiment reducer", () => {
         valueVariables: [{
           name: "Water",
           description: "Wet",
-          minVal: "100",
-          maxVal: "200",
+          minVal: 100,
+          maxVal: 200,
         }],
         optimizerConfig: payload,
+        results: {
+          id: "",
+          next: [],
+          plots: [],
+          pickled: ""
+        },
+        dataPoints: []
       }
     })
   })
