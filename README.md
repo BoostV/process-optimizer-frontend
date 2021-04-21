@@ -20,7 +20,7 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ```bash
 docker build -t process-optimizer-frontend .
-docker run -p 3000:3000 process-optimzer-frontend
+docker run -p 3000:3000 process-optimizer-frontend
 ```
 ## Local development with docker
 
