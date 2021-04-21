@@ -5,7 +5,7 @@ export type ExperimentType = {
   valueVariables: ValueVariableType[]
   optimizerConfig: OptimizerConfig
   results: ExperimentResultType
-  dataPoints: DataPointType[]
+  dataPoints: DataPointType[][]
 }
 
 export type ExperimentResultType = {
@@ -43,16 +43,19 @@ export type OptimizerConfig = {
   xi: number
 }
 
-export type DataPointType = CategorialDataPointType | ValueDataPointType
+export type DataPointType = CategorialDataPointType | ValueDataPointType | ScoreDataPointType
 
 export type CategorialDataPointType = {
   name: string
   value: string
 }
-
 export type ValueDataPointType = {
   name: string
   value: number
+}
+export type ScoreDataPointType = {
+  name: string
+  value: number[]
 }
 
 export type SpaceType = {type: string, name:string, from?: number, to?: number, categories?: string[]}[]

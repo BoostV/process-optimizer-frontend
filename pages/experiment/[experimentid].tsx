@@ -6,11 +6,12 @@ import { useStyles } from '../../styles/experiment.style';
 import OptimizerModel from '../../components/optimizer-model';
 import OptimizerConfigurator from '../../components/optimizer-configurator';
 import { useEffect, useReducer, useState } from 'react';
-import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, CONFIGURATION_UPDATED, RESULT_REGISTERED } from '../../reducers/reducers';
-import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig, ExperimentResultType } from '../../types/common';
+import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, CONFIGURATION_UPDATED, RESULT_REGISTERED, DATA_POINTS_ADDED } from '../../reducers/reducers';
+import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig, ExperimentResultType, DataPointType } from '../../types/common';
 import { initialState } from '../../store';
 import { Alert } from '@material-ui/lab';
 import ModelEditor from '../../components/model-editor';
+import DataPoints from '../../components/data-points';
 
 const fetcher = async (url: string) => (await fetch(url)).json()
 
@@ -104,6 +105,10 @@ export default function Experiment() {
     dispatch({ type: CONFIGURATION_UPDATED, payload: config})
   }
 
+  function addDataPoints(dataPoints: DataPointType[]) {
+    dispatch({ type: DATA_POINTS_ADDED, payload: dataPoints})
+  }
+
   if (error) return <div>Failed to load experiment</div>;
   if (!state.experiment.id) return <div>Loading...</div>;
 
@@ -113,9 +118,12 @@ export default function Experiment() {
         <CardContent>
           <Grid container spacing={3}>
             <Grid item xs={12}>
+              <Typography variant="body2">
+                {state.experiment.id}
+              </Typography>
               <Typography variant="h4" gutterBottom>
                 {/* Experiment {state.experiment.id} {isDirty && '(unsaved)'} [{state.experiment.results.rawResult || 'No results'}]  */}
-                Experiment {state.experiment.id} {isDirty && '(unsaved)'}
+                {state.experiment.info.name} {isDirty && '(unsaved)'}
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -131,23 +139,36 @@ export default function Experiment() {
                 experiment={state.experiment}
                 onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} 
                 onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => {deleteCategoricalVariable(categoricalVariable)}}/>
-              <Card>
-                <CardContent>
-                  <ul>
-                    {state.experiment.results.plots && state.experiment.results.plots.map(plot =>  <li><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
-                  </ul>
-                </CardContent>
-              </Card>
+              <br/>
+              <DataPoints 
+                experiment={state.experiment}
+                onAddDataPoints={(dataPoints: DataPointType[]) => addDataPoints(dataPoints)} />
+              <br/>
+              {state.experiment.results.plots.length > 0 &&
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Plots
+                    </Typography>
+                    <ul>
+                      {state.experiment.results.plots && state.experiment.results.plots.map(plot =>  <li><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
+                    </ul>
+                  </CardContent>
+                </Card>
+              }
             </Grid>
             <Grid item xs={3}>
               <OptimizerConfigurator 
                 config={state.experiment.optimizerConfig} 
                 onConfigUpdated={(config: OptimizerConfig) => updateOptimizerConfiguration(config)}/>
-                <Card>
-                  <CardContent>
-                  Next experiment: {state.experiment.results.next && state.experiment.results.next.join(',')}
-                  </CardContent>
-                </Card>
+              <br/>
+              <Card>
+                <CardContent>
+                  <Typography variant="body2">
+                    Next experiment: {state.experiment.results.next && state.experiment.results.next.join(',')}
+                  </Typography>
+                </CardContent>
+              </Card>
             </Grid>
           </Grid>
           <br/>

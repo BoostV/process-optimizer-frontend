@@ -1,6 +1,6 @@
-import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
-import { initialState, State } from "../../store";
-import { CategoricalVariableType, ExperimentType, OptimizerConfig, ValueVariableType } from "../../types/common";
+import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, DataPointsAddedAction, DATA_POINTS_ADDED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
+import { State } from "../../store";
+import { CategoricalVariableType, DataPointType, ExperimentType, OptimizerConfig, ValueVariableType } from "../../types/common";
 
 describe("experiment reducer", () => {
   const initState: State = {
@@ -221,6 +221,34 @@ describe("experiment reducer", () => {
     expect(rootReducer(initState, action)).toEqual({
       experiment:{...initState.experiment,
         optimizerConfig: payload
+      }
+    })
+  })
+
+  it("should add data points", async () => {
+    const payload: DataPointType[] = [
+      {
+        name: "Milk",
+        value: "200"
+      },
+      {
+        name: "Flour",
+        value: "250"
+      },
+      {
+        name: "score",
+        value: [1]
+      }
+    ]
+
+    const action: DataPointsAddedAction = {
+      type: DATA_POINTS_ADDED,
+      payload
+    }
+
+    expect(rootReducer(initState, action)).toEqual({
+      experiment:{...initState.experiment,
+        dataPoints: [payload]
       }
     })
   })

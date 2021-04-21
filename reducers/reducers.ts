@@ -1,5 +1,5 @@
 import { State } from "../store"
-import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig, ExperimentResultType } from "../types/common"
+import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig, ExperimentResultType, DataPointType } from "../types/common"
 
 export const EXPERIMENT_UPDATED = 'EXPERIMENT_SAVED'
 export const EXPERIMENT_NAME_UPDATED = 'EXPERIMENT_NAME_UPDATED'
@@ -10,6 +10,7 @@ export const CATEGORICAL_VARIABLE_ADDED = 'CATEGORICAL_VARIABLE_ADDED'
 export const CATEGORICAL_VARIABLE_DELETED = 'CATEGORICAL_VARIABLE_DELETED'
 export const CONFIGURATION_UPDATED = 'CONFIGURATION_UPDATED'
 export const RESULT_REGISTERED = 'RESULT_REGISTERED'
+export const DATA_POINTS_ADDED = 'DATA_POINTS_ADDED'
 
 export type ResultRegisteredAction = {
   type: typeof RESULT_REGISTERED
@@ -56,6 +57,11 @@ export type ConfigurationUpdatedAction = {
   payload: OptimizerConfig
 }
 
+export type DataPointsAddedAction = {
+  type: typeof DATA_POINTS_ADDED
+  payload: DataPointType[]
+}
+
 export type Action = ExperimentAction
 type ExperimentAction = 
     CategoricalVariableAddedAction 
@@ -67,6 +73,7 @@ type ExperimentAction =
   | ExperimentDescriptionUpdatedAction
   | ConfigurationUpdatedAction
   | ResultRegisteredAction
+  | DataPointsAddedAction
 
 export const rootReducer = (state: State, action: Action) => {
   switch (action.type) {
@@ -79,6 +86,7 @@ export const rootReducer = (state: State, action: Action) => {
     case VALUE_VARIABLE_DELETED:
     case CONFIGURATION_UPDATED:
     case RESULT_REGISTERED:
+    case DATA_POINTS_ADDED:
       return {
         ...state,
         experiment: experimentReducer(state.experiment, action)
@@ -149,6 +157,13 @@ const experimentReducer = (experimentState: ExperimentType, action: ExperimentAc
       return {
         ...experimentState,
         results: action.payload
+      }
+    case DATA_POINTS_ADDED:
+      let pointsAfterAdd = experimentState.dataPoints.slice()
+      pointsAfterAdd.splice(experimentState.dataPoints.length, 0, action.payload)
+      return {
+        ...experimentState,
+        dataPoints: pointsAfterAdd
       }
   }
 }
