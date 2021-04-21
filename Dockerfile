@@ -17,6 +17,7 @@ COPY package.json .
 RUN addgroup --system user && adduser --system --group user
 
 USER user
+ENV DB_FOLDER=/tmp
 
 EXPOSE 3000
 

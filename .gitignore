@@ -7,6 +7,7 @@
 
 # testing
 /coverage
+/tmp
 
 # next.js
 /.next/
@@ -34,3 +35,6 @@ yarn-error.log*
 .vercel
 .yarnrc
 db
+
+# local files used in development
+/specification.yml

@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs';
 import path from 'path';
-
-interface Experiment {
-  id: string
-}
+import { ExperimentResultType, ExperimentType, SpaceType } from '../../../types/common';
+import { emptyExperiment } from '../../../store';
+import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
+import { calculateData, calculateSpace } from '../../../utility/converters';
 
 const db = {}
 
@@ -21,29 +21,66 @@ const writeToFile = (file: string, data: object) => {
   fs.writeFileSync(file, JSON.stringify(data))
 }
 
-export default (req: NextApiRequest, res: NextApiResponse<Experiment>) => {
+const runExperiment = async (experiment: ExperimentType) => {
+  const API_SERVER = process.env.API_SERVER || 'http://localhost:9090/v1.0'
+  const api = new DefaultApi(new Configuration({basePath: API_SERVER, fetchApi: fetch}))
+  const cfg = experiment.optimizerConfig
+  const space = calculateSpace(experiment)
+  // TODO data is currently hard coded
+  const request: OptimizerRunRequest = {experiment: {
+    data: calculateData(experiment.categoricalVariables, experiment.valueVariables, experiment.dataPoints), 
+    optimizerConfig: {
+    acqFunc: cfg.acqFunc,
+    baseEstimator: cfg.baseEstimator,
+    initialPoints: Number(cfg.initialPoints),
+    kappa: Number(cfg.kappa),
+    xi: Number(cfg.xi),
+    space: space
+  }}}
+  return api.optimizerRun(request)
+}
+
+export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType>) => {
   const {
     query: { id },
     method,
     body
   } = req
   const queryId = Array.isArray(id) ? id[0] : id
-  const dbFolder = process.env.DB_FOLDER || '/tmp'
-  if (!fs.existsSync(dbFolder)) {
-    fs.mkdirSync(dbFolder)
+  if (queryId !== undefined && queryId !== "undefined") {
+    const dbFolder = process.env.DB_FOLDER || 'tmp'
+    if (!fs.existsSync(dbFolder)) {
+      fs.mkdirSync(dbFolder)
+    }
+    switch (method) {
+      case 'GET':
+        const store = db[queryId] || readFromFile(path.join(dbFolder, `${queryId}.json`))
+        res.json(store || { ...emptyExperiment, id: queryId })
+        break
+      case 'PUT':
+        db[queryId] = JSON.parse(body)
+        writeToFile(path.join(dbFolder, `${queryId}.json`), db[queryId])
+        res.json(db[queryId])
+        break
+      case 'POST':
+        const experiment = JSON.parse(body)
+        const json = await runExperiment(experiment)
+        console.log(json)
+        const result: ExperimentResultType = { 
+          id: experiment.id, 
+          plots: json.plots && json.plots.map(p => { return {id: p.id, plot: p.plot}}),
+          next: json.result.next,
+          pickled: json.result.pickled
+        }
+        res.json(result)
+        break
+      default:
+        res.setHeader('Allow', ['GET', 'PUT', 'POST'])
+        res.status(405).end(`Method ${method} Not Allowed`)
+    }
   }
-  switch (method) {
-    case 'GET':
-      const store = db[queryId] || readFromFile(path.join(dbFolder, `${queryId}.json`))
-      res.json(store || { id: queryId })
-      break
-    case 'PUT':
-      db[queryId] = JSON.parse(body)
-      writeToFile(path.join(dbFolder, `${queryId}.json`), db[queryId])
-      res.json({ id: queryId })
-      break  
-    default:
-      res.setHeader('Allow', ['GET', 'PUT'])
-      res.status(405).end(`Method ${method} Not Allowed`)
-  }
+
 }
+
+
+  
