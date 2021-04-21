@@ -140,11 +140,9 @@ export default function Experiment() {
                 onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} 
                 onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => {deleteCategoricalVariable(categoricalVariable)}}/>
               <br/>
-              {state.experiment.dataPoints.length > 0 &&
-                <DataPoints 
-                  experiment={state.experiment}
-                  onAddDataPoints={(dataPoints: DataPointType[]) => addDataPoints(dataPoints)} />
-              }
+              <DataPoints 
+                experiment={state.experiment}
+                onAddDataPoints={(dataPoints: DataPointType[]) => addDataPoints(dataPoints)} />
               <br/>
               {state.experiment.results.plots.length > 0 &&
                 <Card>

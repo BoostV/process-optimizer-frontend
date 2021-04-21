@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@material-ui/core";
-import { ChangeEvent, useState } from "react";
-import { ExperimentType, DataPointType } from "../types/common";
+import { ChangeEvent, ReactNode, useState } from "react";
+import { ExperimentType, DataPointType, VariableType } from "../types/common";
 
 type DataPointProps = {
   experiment: ExperimentType,
@@ -8,8 +8,13 @@ type DataPointProps = {
 }
 
 export default function DataPoints(props: DataPointProps) {
+  const SCORE = "score"
   const { experiment: { valueVariables, categoricalVariables, dataPoints } } = props
   const [newDataPoints, setNewDataPoints] = useState<DataPointType[]>(createInitialNewPoints())
+  const variableNames: string[] = valueVariables.map(item => item.name)
+    .concat(categoricalVariables.map(item => item.name))
+    .concat(SCORE)
+  
 
   function createInitialNewPoints(): DataPointType[] {
     let initialPoints: DataPointType[] = [];
@@ -26,14 +31,14 @@ export default function DataPoints(props: DataPointProps) {
     props.onAddDataPoints(newDataPoints)
   }
 
-  function onNewPointChange(changePoint: DataPointType, changeIndex: number, changeValue: string) {
+  function onNewPointChange(name: string, pointIndex: number, value: string) {
     const newPoints = newDataPoints.map((point, index) => {
-      if (index !== changeIndex) {
+      if (index !== pointIndex) {
         return point
       } else {
-        const newValue: any = point.name === "score" ? [parseFloat(changeValue)] as number[]: changeValue as string
+        const newValue: any = point.name === SCORE ? [parseFloat(value)] as number[]: value as string
         return {
-          ...changePoint,
+          name,
           value: newValue
         }
       }
@@ -44,48 +49,48 @@ export default function DataPoints(props: DataPointProps) {
   return (
     <Card>
       <CardContent>
+      
         <Typography variant="h6" gutterBottom>
           Data points
         </Typography>
-          
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              {valueVariables.map((valueVar, valueVarIndex) => 
-                <TableCell key={valueVarIndex}>{valueVar.name}</TableCell>
-              )}
-              {categoricalVariables.map((catVar, catVarIndex) => 
-                <TableCell key={catVarIndex}>{catVar.name}</TableCell>
-              )}
-              <TableCell><i>Score</i></TableCell>
-            </TableRow>
-          </TableHead>
-          
-          <TableBody>
-            {dataPoints.map((points, pointsIndex) => 
-              <TableRow key={pointsIndex}>
-                {points.map((point, pointIndex) => {
-                  if (point.name === "score") {
-                    return <TableCell key={pointIndex}>{point.value[0]}</TableCell>
-                  } else {
-                    return <TableCell key={pointIndex}>{point.value}</TableCell>
-                  }
-                })}
-              </TableRow>
-            )}
-            <TableRow>
-              {dataPoints[0].map((point, pointIndex) => 
-                <TableCell key={pointIndex}>
-                  <TextField 
-                    onChange={(e: ChangeEvent) => onNewPointChange(point, pointIndex, (e.target as HTMLInputElement).value)} />
-                </TableCell>
-              )}
-            </TableRow>
+            
+        {variableNames.length > 1 &&
+          <>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  {variableNames.map((name, index) => 
+                    <TableCell key={index}>{name}</TableCell>
+                  )}
+                </TableRow>
+              </TableHead>
+              
+              <TableBody>
+                {dataPoints.map((points, pointsIndex) => 
+                  <TableRow key={pointsIndex}>
+                    {points.map((point, pointIndex) => {
+                      if (point.name === SCORE) {
+                        return <TableCell key={pointIndex}>{point.value[0]}</TableCell>
+                      } else {
+                        return <TableCell key={pointIndex}>{point.value}</TableCell>
+                      }
+                    })}
+                  </TableRow>
+                )}
+                <TableRow>
+                  {variableNames.map((name, index) => 
+                    <TableCell key={index}>
+                      <TextField onChange={(e: ChangeEvent) => onNewPointChange(name, index, (e.target as HTMLInputElement).value)} />
+                    </TableCell>
+                  )}
+                  </TableRow>
 
-          </TableBody>
-        </Table>
-        <br/>
-        <Button variant="outlined" size="small" onClick={() => onAdd()}>Add</Button>
+              </TableBody>
+            </Table>
+            <br/>
+            <Button variant="outlined" onClick={() => onAdd()}>Add</Button>
+          </>
+        }
       </CardContent>
     </Card>
   )
