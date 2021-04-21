@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@material-ui/core";
-import { ChangeEvent, ReactNode, useState } from "react";
-import { ExperimentType, DataPointType, VariableType } from "../types/common";
+import { ChangeEvent, useEffect, useState } from "react";
+import { ExperimentType, DataPointType } from "../types/common";
 
 type DataPointProps = {
   experiment: ExperimentType,
@@ -10,21 +10,18 @@ type DataPointProps = {
 export default function DataPoints(props: DataPointProps) {
   const SCORE = "score"
   const { experiment: { valueVariables, categoricalVariables, dataPoints } } = props
-  const [newDataPoints, setNewDataPoints] = useState<DataPointType[]>(createInitialNewPoints())
   const variableNames: string[] = valueVariables.map(item => item.name)
     .concat(categoricalVariables.map(item => item.name))
     .concat(SCORE)
-  
+  const [newDataPoints, setNewDataPoints] = useState<DataPointType[]>(createInitialNewPoints())
 
   function createInitialNewPoints(): DataPointType[] {
-    let initialPoints: DataPointType[] = [];
-    for (let i = 0; i < valueVariables.length + categoricalVariables.length + 1; i++) {
-      initialPoints.push({
-        name: "",
-        value: "",
-      })
-    }
-    return initialPoints
+    return variableNames.map(name => {
+      return {
+        name,
+        value: ""
+      }
+    })
   }
 
   function onAdd() {
