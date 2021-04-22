@@ -11,6 +11,12 @@ export const useStyles = makeStyles(theme => ({
   experimentContainerDirty: {
     border: '2px solid ' + theme.palette.warning.main,
   },
+  actionContainer: {
+    textAlign: "right",
+  },
+  runButton: {
+    marginLeft: theme.spacing(2),
+  },
   saveButtonDirty: {
     animationName: '$saveButton',
     animationDuration: '3s',
@@ -18,13 +24,13 @@ export const useStyles = makeStyles(theme => ({
   },
   '@keyframes saveButton': {
     '0%': {
-      backgroundColor: theme.palette.secondary.main,
+      backgroundColor: theme.palette.primary.main,
     },
     '50%': {
       backgroundColor: theme.palette.warning.main,
     },
     '100%': {
-      backgroundColor: theme.palette.secondary.main,
+      backgroundColor: theme.palette.primary.main,
     }
   }
 }));
