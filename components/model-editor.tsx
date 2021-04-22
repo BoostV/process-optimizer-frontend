@@ -1,26 +1,22 @@
-import { Card, CardContent, Grid, Radio, TextField, Typography } from '@material-ui/core'
-import { ChangeEvent, useState } from 'react';
-import { CategoricalVariableType, Info, ValueVariableType } from '../types/common';
-import CategoricalVariable from './categorical-variable';
-import ValueVariable from './value-variable';
+import { Card, CardContent, TextField } from '@material-ui/core'
+import { ChangeEvent } from 'react';
+import { Info } from '../types/common';
 
 type ModelEditorProps = {
   info: Info
   updateName: (name: string) => void
   updateDescription: (description: string) => void
-  addValueVariable: (valueVariable: ValueVariableType) => void
-  addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
 }
 
 export default function ModelEditor(props: ModelEditorProps) {
   const { info } = props
-  const [radioIndex, setRadioIndex] = useState(0)
 
   return (
     <Card>
       <CardContent>
         <form>
           <TextField 
+            fullWidth
             name="name" 
             label="Name" 
             value={info.name}
@@ -30,6 +26,7 @@ export default function ModelEditor(props: ModelEditorProps) {
           <br/>
           <br/>
           <TextField
+            fullWidth
             name="info.description"
             label="Description"
             value={info.description}
@@ -39,39 +36,6 @@ export default function ModelEditor(props: ModelEditorProps) {
           <br />
           <br />
         </form>
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Add new variable
-            </Typography>
-            <Grid container spacing={0}>
-              <Grid item xs={3}>
-                <Radio
-                  checked={radioIndex === 0}
-                  onChange={() => {setRadioIndex(0)}}
-                />
-                <Typography>Value</Typography>
-              </Grid>
-              <Grid item xs={9}>
-                <Radio
-                  checked={radioIndex === 1}
-                  onChange={() => {setRadioIndex(1)}}
-                />
-                <Typography>Categorical</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <br/>
-                <br/>
-                {radioIndex === 0 &&
-                  <ValueVariable onAdded={(valueVariable: ValueVariableType) => props.addValueVariable(valueVariable)} />
-                }
-                {radioIndex === 1 &&
-                  <CategoricalVariable onAdded={(categoricalVariable: CategoricalVariableType) => props.addCategoricalVariable(categoricalVariable)} />
-                }
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
       </CardContent>
     </Card>
   )

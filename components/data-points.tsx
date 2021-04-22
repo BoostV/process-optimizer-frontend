@@ -77,7 +77,7 @@ export default function DataPoints(props: DataPointProps) {
                 <TableRow>
                   {variableNames.map((name, index) => 
                     <TableCell key={index}>
-                      <TextField onChange={(e: ChangeEvent) => onNewPointChange(name, index, (e.target as HTMLInputElement).value)} />
+                      <TextField fullWidth onChange={(e: ChangeEvent) => onNewPointChange(name, index, (e.target as HTMLInputElement).value)} />
                     </TableCell>
                   )}
                   </TableRow>

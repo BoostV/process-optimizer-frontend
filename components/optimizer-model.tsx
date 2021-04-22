@@ -1,17 +1,20 @@
-import { Button, Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
+import { Button, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
 import { CategoricalVariableType, ExperimentType, ValueVariableType } from '../types/common'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
+import VariableEditor from './variable-editor'
 
 type OptimizerModelProps = {
   experiment: ExperimentType
   onDeleteValueVariable: (valueVariable: ValueVariableType) => void
   onDeleteCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
+  addValueVariable: (valueVariable: ValueVariableType) => void
+  addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
 }
 
 export default function OptimizerModel(props: OptimizerModelProps) {
-
   const { experiment: { valueVariables, categoricalVariables} } = props
+  const [isAddOpen, setAddOpen] = useState(false)
 
   function renderCategoricalVariableOptions(options: string[]): ReactNode[] {
     return options.map((option, optionIndex) => {
@@ -51,9 +54,9 @@ export default function OptimizerModel(props: OptimizerModelProps) {
                   <TableCell align="right">{valueVar.minVal}</TableCell>
                   <TableCell align="right">{valueVar.maxVal}</TableCell>
                   <TableCell align="right">
-                    <Button size="small" onClick={() => {props.onDeleteValueVariable(valueVar)}}>
-                      <DeleteIcon color="primary" fontSize="small"/>Delete
-                    </Button>
+                    <IconButton size="small" onClick={() => {props.onDeleteValueVariable(valueVar)}}>
+                      <DeleteIcon color="primary" fontSize="small"/>
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -83,15 +86,26 @@ export default function OptimizerModel(props: OptimizerModelProps) {
                       {renderCategoricalVariableOptions(catVar.options)}
                     </TableCell>
                     <TableCell align="right">
-                      <Button size="small" onClick={() => {props.onDeleteCategoricalVariable(catVar)}}>
-                        <DeleteIcon color="primary" fontSize="small"/>Delete
-                      </Button>
+                      <IconButton size="small" onClick={() => {props.onDeleteCategoricalVariable(catVar)}}>
+                        <DeleteIcon color="primary" fontSize="small"/>
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </>
+        }
+        <br/>
+        <br/>
+        {!isAddOpen &&
+          <Button variant="outlined" size="small" onClick={() => setAddOpen(true)}>Add variable</Button>
+        }
+        {isAddOpen &&
+          <VariableEditor 
+            addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => props.addCategoricalVariable(categoricalVariable)}
+            addValueVariable={(valueVariable: ValueVariableType) => props.addValueVariable(valueVariable)}
+            close={() => setAddOpen(false)} />
         }
       </CardContent>
     </Card>

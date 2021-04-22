@@ -117,7 +117,8 @@ export default function Experiment() {
       <Card className={[classes.experimentContainer, isDirty ? classes.experimentContainerDirty : ''].join(' ')}>
         <CardContent>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            
+            <Grid item xs={10}>
               <Typography variant="body2">
                 {state.experiment.id}
               </Typography>
@@ -126,19 +127,41 @@ export default function Experiment() {
                 {state.experiment.info.name} {isDirty && '(unsaved)'}
               </Typography>
             </Grid>
+            
+            <Grid item xs={2} className={classes.actionContainer}>
+              <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
+              <Button variant="contained" className={classes.runButton} color="primary" onClick={onRun}>Run</Button>
+            </Grid>
+
             <Grid item xs={3}>
               <ModelEditor 
                 info={state.experiment.info}
                 updateName={(name: string) => updateName(name)}
-                updateDescription={(description: string) => updateDescription(description)}
-                addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}
-                addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)}/>
+                updateDescription={(description: string) => updateDescription(description)} />
+              <br/>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">
+                    Next experiment
+                  </Typography>
+                  <Typography variant="body2">
+                    {state.experiment.results.next && state.experiment.results.next.join(',')}
+                  </Typography>
+                </CardContent>
+              </Card>
+              <br/>
+              <OptimizerConfigurator 
+                config={state.experiment.optimizerConfig} 
+                onConfigUpdated={(config: OptimizerConfig) => updateOptimizerConfiguration(config)}/>
             </Grid>
-            <Grid item xs={6}>
+
+            <Grid item xs={8} lg={7}>
               <OptimizerModel 
                 experiment={state.experiment}
                 onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} 
-                onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => {deleteCategoricalVariable(categoricalVariable)}}/>
+                onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => {deleteCategoricalVariable(categoricalVariable)}}
+                addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}
+                addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)}/>
               <br/>
               <DataPoints 
                 experiment={state.experiment}
@@ -157,34 +180,18 @@ export default function Experiment() {
                 </Card>
               }
             </Grid>
-            <Grid item xs={3}>
-              <OptimizerConfigurator 
-                config={state.experiment.optimizerConfig} 
-                onConfigUpdated={(config: OptimizerConfig) => updateOptimizerConfiguration(config)}/>
-              <br/>
-              <Card>
-                <CardContent>
-                  <Typography variant="body2">
-                    Next experiment: {state.experiment.results.next && state.experiment.results.next.join(',')}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+            <Grid item xs={2}></Grid>
           </Grid>
           <br/>
-          <br/>
-          <Grid container spacing={3}>
-            <Grid item xs={1}>
-              <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="secondary">Save</Button>
-            </Grid>
-            <Grid item xs={1}>
-              <Button variant="contained" color="secondary" onClick={onRun}>Run</Button>
-            </Grid>
-          </Grid>        
+          <br/>        
         </CardContent>
       </Card>
 
-      <Snackbar open={isSnackbarOpen} autoHideDuration={3000} onClose={handleCloseSnackbar}>
+      <Snackbar 
+        anchorOrigin={{vertical:'top', horizontal: 'center'}} 
+        open={isSnackbarOpen} 
+        autoHideDuration={3000} 
+        onClose={handleCloseSnackbar}>
         <Alert onClose={handleCloseSnackbar} severity="success">Experiment saved</Alert>
       </Snackbar>
 

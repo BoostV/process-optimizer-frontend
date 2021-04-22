@@ -32,6 +32,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
       <>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField 
+            fullWidth
             name="name" 
             label="Name"
             inputRef={register}
@@ -39,6 +40,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
             <br />
             <br />
           <TextField
+            fullWidth
             name="description"
             label="Description"
             inputRef={register}
@@ -50,7 +52,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           {options.map((option, index) => (
             <div key={index}>
               <div className={classes.option}>
-                <Typography variant="body2">{option}</Typography>
+                <Typography variant="body1">{option}</Typography>
                 <IconButton onClick={() => deleteOption(index)} size="small" aria-label="delete" color="primary">
                   <DeleteIcon /> 
                 </IconButton>

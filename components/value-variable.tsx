@@ -18,6 +18,7 @@ export default function ValueVariable(props: ValueVariableProps) {
       <>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
+            fullWidth
             name="name" 
             label="Name" 
             inputRef={register}
@@ -25,6 +26,7 @@ export default function ValueVariable(props: ValueVariableProps) {
             <br />
             <br />
           <TextField
+            fullWidth
             name="description"
             label="Description"
             inputRef={register}
@@ -32,6 +34,7 @@ export default function ValueVariable(props: ValueVariableProps) {
           <br />
           <br />
           <TextField
+            fullWidth
             name="minVal"
             label="minVal"
             inputRef={register}
@@ -39,6 +42,7 @@ export default function ValueVariable(props: ValueVariableProps) {
           <br />
           <br />
           <TextField
+            fullWidth
             name="maxVal"
             label="maxVal"
             inputRef={register}

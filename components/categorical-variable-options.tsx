@@ -1,4 +1,5 @@
-import { Button, TextField } from '@material-ui/core';
+import { Button, Grid, IconButton, TextField } from '@material-ui/core';
+import AddIcon from "@material-ui/icons/Add";
 import { ChangeEvent, useState } from 'react';
 
 type CategoricalVariableOptionProps = {
@@ -18,17 +19,22 @@ export default function CategoricalVariableOptions(props: CategoricalVariableOpt
   }
 
   return (
-    <>
-      <TextField
-        name="option"
-        label=""
-        value={option}
-        onChange={(e: ChangeEvent) => updateOption((e.target as HTMLInputElement).value)}
-      />
-      <br />
-      <Button variant="outlined" onClick={() => {onOptionAdded()}} size="small">Add option</Button>
-      <br />
-    </>
+    <Grid container spacing={1}>
+      <Grid item xs={8}>
+        <TextField
+          fullWidth
+          name="option"
+          label=""
+          value={option}
+          onChange={(e: ChangeEvent) => updateOption((e.target as HTMLInputElement).value)}
+        />
+      </Grid>
+      <Grid item xs={4}>
+        <IconButton size="small" onClick={() => onOptionAdded()}>
+          <AddIcon />
+        </IconButton>
+      </Grid>
+    </Grid>
   )
 }
 
