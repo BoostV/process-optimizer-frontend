@@ -179,7 +179,6 @@ export default function DataPoints(props: DataPointProps) {
                     
                     <EditableTableCell
                       value={item.dataPoint.name === SCORE ? item.dataPoint.value[0] : item.dataPoint.value}
-                      dataPoint={item.dataPoint} 
                       isEditMode={row.isEditMode}
                       onChange={(value: string) => onEdit(value, rowIndex, itemIndex) }/>
                   </>  
