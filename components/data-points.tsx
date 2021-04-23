@@ -98,7 +98,6 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   function onEdit(editValue: string, rowIndex: number, itemIndex: number) {
-    console.log('edit', editValue)
     setRows(
       rows.map((row, i) => {
         if (i !== rowIndex) {
@@ -140,8 +139,18 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   function onEditCancel(rowIndex: number) {
-    //setRows(dataPointEditableRows)
-    onToggleEditMode(rowIndex)
+    setRows(rows
+      .map((row, i) => {
+        if (i !== rowIndex) {
+          return row
+        } else {
+          return {
+            ...dataPointEditableRows[rowIndex]
+          }
+        }
+      }
+      )
+    )
   }
 
   function onUpdate() {
