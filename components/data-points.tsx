@@ -1,6 +1,6 @@
-import { Button, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@material-ui/core";
-import { ChangeEvent, useEffect, useState } from "react";
-import { ExperimentType, DataPointType, VariableType, DataPointTypeValue, SCORE } from "../types/common";
+import { Button, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { useState } from "react";
+import { ExperimentType, DataPointType, VariableType, DataPointTypeValue } from "../types/common";
 import EditIcon from "@material-ui/icons/Edit";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -21,6 +21,8 @@ type DataPointEditable = {
   dataPoint: DataPointType
   variable: VariableType
 }
+
+const SCORE = "score"
 
 export default function DataPoints(props: DataPointProps) {
   const { experiment: { valueVariables, categoricalVariables, dataPoints }, onUpdateDataPoints, onAddDataPoints } = props
@@ -95,7 +97,8 @@ export default function DataPoints(props: DataPointProps) {
     )
   }
 
-  function onEdit(value: string, rowIndex: number, itemIndex: number) {
+  function onEdit(editValue: string, rowIndex: number, itemIndex: number) {
+    console.log('edit', editValue)
     setRows(
       rows.map((row, i) => {
         if (i !== rowIndex) {
@@ -111,7 +114,7 @@ export default function DataPoints(props: DataPointProps) {
                   ...point,
                   dataPoint: {
                     ...point.dataPoint,
-                    value
+                    value: (point.dataPoint.name === SCORE ? [editValue] : editValue) as DataPointTypeValue
                   }
                 }
               }
@@ -175,6 +178,7 @@ export default function DataPoints(props: DataPointProps) {
                     />*/}
                     
                     <EditableTableCell
+                      value={item.dataPoint.name === SCORE ? item.dataPoint.value[0] : item.dataPoint.value}
                       dataPoint={item.dataPoint} 
                       isEditMode={row.isEditMode}
                       onChange={(value: string) => onEdit(value, rowIndex, itemIndex) }/>
