@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@material-ui/core";
 import { ChangeEvent, useEffect, useState } from "react";
-import { ExperimentType, DataPointType, VariableType, DataPointTypeValue } from "../types/common";
+import { ExperimentType, DataPointType, VariableType, DataPointTypeValue, SCORE } from "../types/common";
 import EditIcon from "@material-ui/icons/Edit";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
@@ -12,28 +12,27 @@ type DataPointProps = {
   onAddDataPoints: (dataPoints: DataPointType[]) => void
 }
 
+type DataPointEditableRow = {
+  dataPointEditables: DataPointEditable[]
+  isEditMode: Boolean
+}
+
+type DataPointEditable = {
+  dataPoint: DataPointType
+  variable: VariableType
+}
+
 export default function DataPoints(props: DataPointProps) {
-  const SCORE = "score"
   const { experiment: { valueVariables, categoricalVariables, dataPoints }, onUpdateDataPoints, onAddDataPoints } = props
   
-  const variables: VariableType[] = valueVariables.map(item => item as VariableType).concat(categoricalVariables.map(item => item as VariableType))
-
-  type DataPointEditableRow = {
-    dataPointEditables: DataPointEditable[]
-    isEditMode: Boolean
-  }
-
-  type DataPointEditable = {
-    dataPoint: DataPointType
-    variable: VariableType
-  }
+  const combinedVariables: VariableType[] = valueVariables.map(item => item as VariableType).concat(categoricalVariables.map(item => item as VariableType))
 
   const dataPointEditableRows: DataPointEditableRow[] = dataPoints.map(item => {
       return {
         dataPointEditables: item.map((item, index) => {
           return {
             dataPoint: item,
-            variable: variables[index],
+            variable: combinedVariables[index],
           }
         }),
         isEditMode: false,
@@ -41,15 +40,15 @@ export default function DataPoints(props: DataPointProps) {
     }
   )
 
+  const [rows, setRows] = useState<DataPointEditableRow[]>(dataPointEditableRows)
+
   /*const variableNames: string[] = valueVariables.map(item => item.name)
     .concat(categoricalVariables.map(item => item.name))
     .concat(SCORE)*/
 
-  const [rows, setRows] = useState<DataPointEditableRow[]>(dataPointEditableRows)
+  //const [newDataPoints, setNewDataPoints] = useState<DataPointEditable[]>(createInitialNewPoints())
 
-  const [newDataPoints, setNewDataPoints] = useState<DataPointEditable[]>(createInitialNewPoints())
-
-  function createInitialNewPoints(): DataPointEditable[] {
+  /*function createInitialNewPoints(): DataPointEditable[] {
     return dataPointEditableRows.map(name => {
       return {
         dataPoint: {
@@ -60,7 +59,7 @@ export default function DataPoints(props: DataPointProps) {
         isEditMode: false,
       }
     })
-  }
+  }*/
 
   function onAdd() {
     //onAddDataPoints(newDataPoints)
@@ -97,7 +96,6 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   function onEdit(value: string, rowIndex: number, itemIndex: number) {
-    console.log('edit', rowIndex, itemIndex, value)
     setRows(
       rows.map((row, i) => {
         if (i !== rowIndex) {
@@ -125,7 +123,6 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   function onEditConfirm(rowIndex: number) {
-    console.log('confirm', rows)  
     onUpdateDataPoints(rows
       .map(row => row.dataPointEditables
         .map(point => { 
@@ -136,6 +133,11 @@ export default function DataPoints(props: DataPointProps) {
         })
       )
     )
+    onToggleEditMode(rowIndex)
+  }
+
+  function onEditCancel(rowIndex: number) {
+    //setRows(dataPointEditableRows)
     onToggleEditMode(rowIndex)
   }
 
@@ -151,72 +153,71 @@ export default function DataPoints(props: DataPointProps) {
           Data points
         </Typography>
           
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  {rows[0].dataPointEditables.map((item, index) => 
-                    <TableCell key={index}>{item.dataPoint.name}</TableCell>
-                  )}
-                  <TableCell />
-                </TableRow>
-              </TableHead>
-              
-              <TableBody>
-                {rows.map((row, rowIndex) => 
-                  <TableRow key={rowIndex}>
-                    {row.dataPointEditables.map((item, itemIndex) => 
-                    <>
-                      {/*{item.dataPoint.name === SCORE ? item.dataPoint.value[0] : item.dataPoint.value}
-                        <TextField 
-                          value={point.name === SCORE ? point.value[0] : point.value}
-                          onChange={(e: ChangeEvent) => onDataPointEdit(point, (e.target as HTMLInputElement).value)}
-                        />*/}
-                        
-                        <EditableTableCell
-                          key={itemIndex} 
-                          dataPoint={item.dataPoint} 
-                          isEditMode={row.isEditMode}
-                          onChange={(value: string) => onEdit(value, rowIndex, itemIndex) }/>
-                      </>  
-                    )}
-                    <TableCell>
-                      {row.isEditMode ?
-                        <>
-                          <IconButton
-                            size="small"
-                            aria-label="edit"
-                            onClick={() => onEditConfirm(rowIndex)}>
-                            <CheckCircleIcon color="primary" />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            aria-label="edit"
-                            onClick={() => onToggleEditMode(rowIndex)}>
-                            <CancelIcon color="primary" />
-                          </IconButton>
-                        </> :
-                        <IconButton
-                          size="small"
-                          aria-label="edit"
-                          onClick={() => onToggleEditMode(rowIndex)}>
-                          <EditIcon color="primary" />
-                        </IconButton>
-                      } 
-                    </TableCell>
-                  </TableRow>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              {rows[0].dataPointEditables.map((item, index) => 
+                <TableCell key={index}>{item.dataPoint.name}</TableCell>
+              )}
+              <TableCell />
+            </TableRow>
+          </TableHead>
+          
+          <TableBody>
+            {rows.map((row, rowIndex) => 
+              <TableRow key={rowIndex}>
+                {row.dataPointEditables.map((item, itemIndex) => 
+                <>
+                  {/*{item.dataPoint.name === SCORE ? item.dataPoint.value[0] : item.dataPoint.value}
+                    <TextField 
+                      value={point.name === SCORE ? point.value[0] : point.value}
+                      onChange={(e: ChangeEvent) => onDataPointEdit(point, (e.target as HTMLInputElement).value)}
+                    />*/}
+                    
+                    <EditableTableCell
+                      dataPoint={item.dataPoint} 
+                      isEditMode={row.isEditMode}
+                      onChange={(value: string) => onEdit(value, rowIndex, itemIndex) }/>
+                  </>  
                 )}
-                {/*<TableRow>
-                  {variableNames.map((name, index) => 
-                    <TableCell key={index}>
-                      <TextField fullWidth onChange={(e: ChangeEvent) => onNewPointChange(name, index, (e.target as HTMLInputElement).value)} />
-                    </TableCell>
-                  )}
-                  </TableRow>*/}
+                <TableCell>
+                  {row.isEditMode ?
+                    <>
+                      <IconButton
+                        size="small"
+                        aria-label="edit"
+                        onClick={() => onEditConfirm(rowIndex)}>
+                        <CheckCircleIcon color="primary" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        aria-label="edit"
+                        onClick={() => onEditCancel(rowIndex)}>
+                        <CancelIcon color="primary" />
+                      </IconButton>
+                    </> :
+                    <IconButton
+                      size="small"
+                      aria-label="edit"
+                      onClick={() => onToggleEditMode(rowIndex)}>
+                      <EditIcon color="primary" />
+                    </IconButton>
+                  } 
+                </TableCell>
+              </TableRow>
+            )}
+            {/*<TableRow>
+              {variableNames.map((name, index) => 
+                <TableCell key={index}>
+                  <TextField fullWidth onChange={(e: ChangeEvent) => onNewPointChange(name, index, (e.target as HTMLInputElement).value)} />
+                </TableCell>
+              )}
+              </TableRow>*/}
 
-              </TableBody>
-            </Table>
-            <br/>
-            <Button variant="outlined" onClick={() => onAdd()}>Add</Button>
+          </TableBody>
+        </Table>
+        <br/>
+        <Button variant="outlined" onClick={() => onAdd()}>Add</Button>
         
       </CardContent>
     </Card>

@@ -61,4 +61,6 @@ export type ScoreDataPointType = {
   value: DataPointTypeValue
 }
 
+export const SCORE = "score"
+
 export type SpaceType = {type: string, name:string, from?: number, to?: number, categories?: string[]}[]

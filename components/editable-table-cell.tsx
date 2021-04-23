@@ -1,22 +1,21 @@
 import { TableCell, TextField } from "@material-ui/core"
 import { ChangeEvent, useState } from "react"
-import { DataPointType } from "../types/common"
+import { DataPointType, SCORE } from "../types/common"
 
 type EditableTableCellProps = {
-  key: any
   dataPoint: DataPointType
   isEditMode: Boolean
   onChange: (value: string) => void
 }
 
 export function EditableTableCell(props: EditableTableCellProps) {
-  const { key, dataPoint, isEditMode, onChange } = props
-  const [value, setValue] = useState<string>(dataPoint.name === "score" ? dataPoint.value[0] : dataPoint.value)
+  const { dataPoint, isEditMode, onChange } = props
+  const [value, setValue] = useState<string>(dataPoint.name === SCORE ? dataPoint.value[0] : dataPoint.value)
 
   return (
     <>
       {isEditMode ?
-        <TableCell key={key}>
+        <TableCell>
           <TextField 
             value={value} 
             onChange={(e: ChangeEvent) => {
@@ -26,7 +25,7 @@ export function EditableTableCell(props: EditableTableCellProps) {
             }}/>
         </TableCell>
         : 
-        <TableCell key={key}>{value}</TableCell>
+        <TableCell>{value}</TableCell>
       }
     </>
   )
