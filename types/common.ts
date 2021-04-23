@@ -35,6 +35,8 @@ export type CategoricalVariableType = {
   order?: string
 }
 
+export type VariableType = ValueVariableType | CategoricalVariableType
+
 export type OptimizerConfig = {
   baseEstimator: string
   acqFunc: string
@@ -44,18 +46,19 @@ export type OptimizerConfig = {
 }
 
 export type DataPointType = CategorialDataPointType | ValueDataPointType | ScoreDataPointType
+export type DataPointTypeValue = string | number | number[]
 
 export type CategorialDataPointType = {
   name: string
-  value: string
+  value: DataPointTypeValue
 }
 export type ValueDataPointType = {
   name: string
-  value: number
+  value: DataPointTypeValue
 }
 export type ScoreDataPointType = {
   name: string
-  value: number[]
+  value: DataPointTypeValue
 }
 
 export type SpaceType = {type: string, name:string, from?: number, to?: number, categories?: string[]}[]

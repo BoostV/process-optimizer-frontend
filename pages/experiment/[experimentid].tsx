@@ -6,7 +6,7 @@ import { useStyles } from '../../styles/experiment.style';
 import OptimizerModel from '../../components/optimizer-model';
 import OptimizerConfigurator from '../../components/optimizer-configurator';
 import { useEffect, useReducer, useState } from 'react';
-import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, CONFIGURATION_UPDATED, RESULT_REGISTERED, DATA_POINTS_ADDED } from '../../reducers/reducers';
+import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, CONFIGURATION_UPDATED, RESULT_REGISTERED, DATA_POINTS_ADDED, DATA_POINTS_UPDATED } from '../../reducers/reducers';
 import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig, ExperimentResultType, DataPointType } from '../../types/common';
 import { initialState } from '../../store';
 import { Alert } from '@material-ui/lab';
@@ -109,6 +109,10 @@ export default function Experiment() {
     dispatch({ type: DATA_POINTS_ADDED, payload: dataPoints})
   }
 
+  function updateDataPoints(dataPoints: DataPointType[][]) {
+    dispatch({ type: DATA_POINTS_UPDATED, payload: dataPoints})
+  }
+
   if (error) return <div>Failed to load experiment</div>;
   if (!state.experiment.id) return <div>Loading...</div>;
 
@@ -165,7 +169,8 @@ export default function Experiment() {
               <br/>
               <DataPoints 
                 experiment={state.experiment}
-                onAddDataPoints={(dataPoints: DataPointType[]) => addDataPoints(dataPoints)} />
+                onAddDataPoints={(dataPoints: DataPointType[]) => addDataPoints(dataPoints)} 
+                onUpdateDataPoints={(dataPoints: DataPointType[][]) => updateDataPoints(dataPoints)}/>
               <br/>
               {state.experiment.results.plots.length > 0 &&
                 <Card>

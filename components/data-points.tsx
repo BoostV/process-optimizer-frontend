@@ -1,35 +1,73 @@
-import { Button, Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@material-ui/core";
+import { Button, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@material-ui/core";
 import { ChangeEvent, useEffect, useState } from "react";
-import { ExperimentType, DataPointType } from "../types/common";
+import { ExperimentType, DataPointType, VariableType, DataPointTypeValue } from "../types/common";
+import EditIcon from "@material-ui/icons/Edit";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CancelIcon from "@material-ui/icons/Cancel";
+import { EditableTableCell } from "./editable-table-cell";
 
 type DataPointProps = {
-  experiment: ExperimentType,
-  onAddDataPoints: (dataPoints: DataPointType[]) => void,
+  experiment: ExperimentType
+  onUpdateDataPoints: (dataPoints: DataPointType[][]) => void
+  onAddDataPoints: (dataPoints: DataPointType[]) => void
 }
 
 export default function DataPoints(props: DataPointProps) {
   const SCORE = "score"
-  const { experiment: { valueVariables, categoricalVariables, dataPoints } } = props
-  const variableNames: string[] = valueVariables.map(item => item.name)
-    .concat(categoricalVariables.map(item => item.name))
-    .concat(SCORE)
-  const [newDataPoints, setNewDataPoints] = useState<DataPointType[]>(createInitialNewPoints())
+  const { experiment: { valueVariables, categoricalVariables, dataPoints }, onUpdateDataPoints, onAddDataPoints } = props
+  
+  const variables: VariableType[] = valueVariables.map(item => item as VariableType).concat(categoricalVariables.map(item => item as VariableType))
 
-  function createInitialNewPoints(): DataPointType[] {
-    return variableNames.map(name => {
+  type DataPointEditableRow = {
+    dataPointEditables: DataPointEditable[]
+    isEditMode: Boolean
+  }
+
+  type DataPointEditable = {
+    dataPoint: DataPointType
+    variable: VariableType
+  }
+
+  const dataPointEditableRows: DataPointEditableRow[] = dataPoints.map(item => {
       return {
-        name,
-        value: ""
+        dataPointEditables: item.map((item, index) => {
+          return {
+            dataPoint: item,
+            variable: variables[index],
+          }
+        }),
+        isEditMode: false,
+      }
+    }
+  )
+
+  /*const variableNames: string[] = valueVariables.map(item => item.name)
+    .concat(categoricalVariables.map(item => item.name))
+    .concat(SCORE)*/
+
+  const [rows, setRows] = useState<DataPointEditableRow[]>(dataPointEditableRows)
+
+  const [newDataPoints, setNewDataPoints] = useState<DataPointEditable[]>(createInitialNewPoints())
+
+  function createInitialNewPoints(): DataPointEditable[] {
+    return dataPointEditableRows.map(name => {
+      return {
+        dataPoint: {
+          name: "",
+          value: ""
+        },
+        variable: undefined,
+        isEditMode: false,
       }
     })
   }
 
   function onAdd() {
-    props.onAddDataPoints(newDataPoints)
+    //onAddDataPoints(newDataPoints)
   }
 
   function onNewPointChange(name: string, pointIndex: number, value: string) {
-    const newPoints = newDataPoints.map((point, index) => {
+    /*const newPoints = newDataPoints.map((point, index) => {
       if (index !== pointIndex) {
         return point
       } else {
@@ -40,7 +78,69 @@ export default function DataPoints(props: DataPointProps) {
         }
       }
     })
-    setNewDataPoints(newPoints)
+    setNewDataPoints(newPoints)*/
+  }
+
+  function onToggleEditMode(rowIndex: number) {
+    setRows(
+      rows.map((row, index) => {
+        if (index !== rowIndex) {
+          return row
+        } else {
+          return {
+            ...row,
+            isEditMode: !row.isEditMode    
+          }
+        }
+      })
+    )
+  }
+
+  function onEdit(value: string, rowIndex: number, itemIndex: number) {
+    console.log('edit', rowIndex, itemIndex, value)
+    setRows(
+      rows.map((row, i) => {
+        if (i !== rowIndex) {
+          return row
+        } else {
+          return {
+            ...row,
+            dataPointEditables: row.dataPointEditables.map((point, k) => {
+              if (k !== itemIndex) {
+                return point
+              } else {
+                return {
+                  ...point,
+                  dataPoint: {
+                    ...point.dataPoint,
+                    value
+                  }
+                }
+              }
+            })
+          }
+        }
+      })
+    )
+  }
+
+  function onEditConfirm(rowIndex: number) {
+    console.log('confirm', rows)  
+    onUpdateDataPoints(rows
+      .map(row => row.dataPointEditables
+        .map(point => { 
+          return { 
+            name: point.dataPoint.name, 
+            value: (point.dataPoint.name === SCORE ? [point.dataPoint.value] : point.dataPoint.value) as DataPointTypeValue
+          }
+        })
+      )
+    )
+    onToggleEditMode(rowIndex)
+  }
+
+  function onUpdate() {
+
   }
 
   return (
@@ -50,44 +150,74 @@ export default function DataPoints(props: DataPointProps) {
         <Typography variant="h6" gutterBottom>
           Data points
         </Typography>
-            
-        {variableNames.length > 1 &&
-          <>
+          
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  {variableNames.map((name, index) => 
-                    <TableCell key={index}>{name}</TableCell>
+                  {rows[0].dataPointEditables.map((item, index) => 
+                    <TableCell key={index}>{item.dataPoint.name}</TableCell>
                   )}
+                  <TableCell />
                 </TableRow>
               </TableHead>
               
               <TableBody>
-                {dataPoints.map((points, pointsIndex) => 
-                  <TableRow key={pointsIndex}>
-                    {points.map((point, pointIndex) => {
-                      if (point.name === SCORE) {
-                        return <TableCell key={pointIndex}>{point.value[0]}</TableCell>
-                      } else {
-                        return <TableCell key={pointIndex}>{point.value}</TableCell>
-                      }
-                    })}
+                {rows.map((row, rowIndex) => 
+                  <TableRow key={rowIndex}>
+                    {row.dataPointEditables.map((item, itemIndex) => 
+                    <>
+                      {/*{item.dataPoint.name === SCORE ? item.dataPoint.value[0] : item.dataPoint.value}
+                        <TextField 
+                          value={point.name === SCORE ? point.value[0] : point.value}
+                          onChange={(e: ChangeEvent) => onDataPointEdit(point, (e.target as HTMLInputElement).value)}
+                        />*/}
+                        
+                        <EditableTableCell
+                          key={itemIndex} 
+                          dataPoint={item.dataPoint} 
+                          isEditMode={row.isEditMode}
+                          onChange={(value: string) => onEdit(value, rowIndex, itemIndex) }/>
+                      </>  
+                    )}
+                    <TableCell>
+                      {row.isEditMode ?
+                        <>
+                          <IconButton
+                            size="small"
+                            aria-label="edit"
+                            onClick={() => onEditConfirm(rowIndex)}>
+                            <CheckCircleIcon color="primary" />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            aria-label="edit"
+                            onClick={() => onToggleEditMode(rowIndex)}>
+                            <CancelIcon color="primary" />
+                          </IconButton>
+                        </> :
+                        <IconButton
+                          size="small"
+                          aria-label="edit"
+                          onClick={() => onToggleEditMode(rowIndex)}>
+                          <EditIcon color="primary" />
+                        </IconButton>
+                      } 
+                    </TableCell>
                   </TableRow>
                 )}
-                <TableRow>
+                {/*<TableRow>
                   {variableNames.map((name, index) => 
                     <TableCell key={index}>
                       <TextField fullWidth onChange={(e: ChangeEvent) => onNewPointChange(name, index, (e.target as HTMLInputElement).value)} />
                     </TableCell>
                   )}
-                  </TableRow>
+                  </TableRow>*/}
 
               </TableBody>
             </Table>
             <br/>
             <Button variant="outlined" onClick={() => onAdd()}>Add</Button>
-          </>
-        }
+        
       </CardContent>
     </Card>
   )
