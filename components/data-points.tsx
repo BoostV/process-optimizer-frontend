@@ -1,6 +1,6 @@
 import { Card, CardContent, Typography } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import { ExperimentType, VariableType, DataPointType, TableDataRow, SCORE, TableDataPointValue } from "../types/common";
+import { ExperimentType, VariableType, DataPointType, TableDataPoint, TableDataPointValue, TableDataRow } from "../types/common";
 import { EditableTable } from "./editable-table";
 
 type DataPointProps = {
@@ -8,32 +8,41 @@ type DataPointProps = {
   onUpdateDataPoints: (dataPoints: DataPointType[][]) => void
 }
 
+const SCORE = "score"
+
 export default function DataPoints(props: DataPointProps) {
   const { experiment: { valueVariables, categoricalVariables, dataPoints }, onUpdateDataPoints } = props
-  const combinedVariables: VariableType[] = valueVariables.map(item => item as VariableType).concat(categoricalVariables.map(item => item as VariableType))
+  const combinedVariables: VariableType[] = valueVariables.concat(categoricalVariables)
   
   const newRow: TableDataRow = {
     dataPoints: combinedVariables.map((variable, i) => {
       return {
         name: variable.name,
-        value: ""
+        value: variable.options ? variable.options[0] : "",
+        options: variable.options,
       }
     }).concat({
       name: SCORE,
       value: "0",
+      options: undefined,
     }),
     isEditMode: true,
     isNew: true,
   }
   
-  const dataPointRows: TableDataRow[] = dataPoints.map(item => {
+  const dataPointRows: TableDataRow[] = dataPoints.map((item, i) => {
       return {
-        dataPoints: item,
+        dataPoints: item.map((point: TableDataPoint, k) => {
+          return {
+            ...point,
+            options: combinedVariables[k] ? combinedVariables[k].options : undefined,
+          }
+        }),
         isEditMode: false,
         isNew: false,
       }
     }
-  ).concat(newRow)
+  ).concat(newRow as any)
 
   //TODO: Use reducer?
   const [rows, setRows] = useState<TableDataRow[]>(dataPointRows)
@@ -85,7 +94,12 @@ export default function DataPoints(props: DataPointProps) {
     onUpdateDataPoints(rows
       .filter(item => row.isNew || !item.isNew)
       .map((item, i) => {
-        return item.dataPoints.map(item => item as DataPointType)
+        return item.dataPoints.map(item => {
+          return {
+            name: item.name,
+            value: item.value,
+          } as DataPointType
+        })
       })
     )
     if (row.isNew) {
@@ -132,6 +146,7 @@ export default function DataPoints(props: DataPointProps) {
         {combinedVariables.length > 0 &&
           <EditableTable
             rows={rows}
+            useArrayForValue={SCORE}
             onEdit={(editValue: string, rowIndex: number, itemIndex: number) => onEdit(editValue, rowIndex, itemIndex)}
             onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
             onEditCancel={(rowIndex: number) => onEditCancel(rowIndex)}

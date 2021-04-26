@@ -1,22 +1,35 @@
-import { TableCell, TextField } from "@material-ui/core"
+import { FormControl, MenuItem, Select, TableCell, TextField } from "@material-ui/core"
 import { ChangeEvent } from "react"
 
 type EditableTableCellProps = {
   value: string
-  isEditMode: Boolean
+  isEditMode: boolean
+  options?: string[]
   onChange: (value: string) => void
 }
 
 export function EditableTableCell(props: EditableTableCellProps) {
-  const { value, isEditMode, onChange } = props
+  const { value, isEditMode, options, onChange } = props
 
   return (
     <>
       {isEditMode ?
         <TableCell>
-          <TextField
-            value={value} 
-            onChange={(e: ChangeEvent) => onChange((e.target as HTMLInputElement).value)}/>
+          {options && options.length > 0 ?
+            <FormControl>
+              <Select
+                value={value}
+                onChange={(e: ChangeEvent<any>) => onChange(e.target.value as string)}
+                displayEmpty
+                inputProps={{ 'aria-label': 'select value' }}>
+                {options.map(item => <MenuItem value={item}>{item}</MenuItem>)}
+              </Select>
+            </FormControl>
+            :
+            <TextField
+              value={value} 
+              onChange={(e: ChangeEvent) => onChange((e.target as HTMLInputElement).value)}/>
+          }
         </TableCell>
         : 
         <TableCell>{value}</TableCell>

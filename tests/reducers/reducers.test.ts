@@ -1,6 +1,6 @@
 import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, DataPointsAddedAction, DataPointsUpdatedAction, DATA_POINTS_ADDED, DATA_POINTS_UPDATED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, ResultRegisteredAction, RESULT_REGISTERED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
 import { State } from "../../store";
-import { CategoricalVariableType, DataPointType, ExperimentResultType, ExperimentType, OptimizerConfig, ValueVariableType } from "../../types/common";
+import { DataPointType, ExperimentResultType, ExperimentType, OptimizerConfig, VariableType } from "../../types/common";
 
 describe("experiment reducer", () => {
   const initState: State = {
@@ -116,7 +116,7 @@ describe("experiment reducer", () => {
   })
 
   it("should add value variable", async () => {
-    const payload: ValueVariableType = {
+    const payload: VariableType = {
       name: "Flour",
       description: "Wet",
       minVal: 300,
@@ -142,7 +142,7 @@ describe("experiment reducer", () => {
   })
 
   it("should delete value variable", async () => {
-    const payload: ValueVariableType = {
+    const payload: VariableType = {
       name: "Water",
       description: "Wet",
       minVal: 100,
@@ -162,7 +162,7 @@ describe("experiment reducer", () => {
   })
 
   it("should add categorial variable", async () => {
-    const payload: CategoricalVariableType = {
+    const payload: VariableType = {
       name: "Fat",
       description: "Fatty",
       options: [],
@@ -186,7 +186,7 @@ describe("experiment reducer", () => {
   })
 
   it("should delete categorical variable", async () => {
-    const payload: CategoricalVariableType = {
+    const payload: VariableType = {
       name: "Icing",
       description: "Sugary",
       options: [],

@@ -1,5 +1,5 @@
 import { State } from "../store"
-import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig, ExperimentResultType, DataPointType } from "../types/common"
+import { ExperimentType, OptimizerConfig, ExperimentResultType, DataPointType, VariableType } from "../types/common"
 
 export const EXPERIMENT_UPDATED = 'EXPERIMENT_SAVED'
 export const EXPERIMENT_NAME_UPDATED = 'EXPERIMENT_NAME_UPDATED'
@@ -20,22 +20,22 @@ export type ResultRegisteredAction = {
 
 export type CategoricalVariableAddedAction = {
   type: typeof CATEGORICAL_VARIABLE_ADDED
-  payload: CategoricalVariableType
+  payload: VariableType
 }
 
 export type CategoricalVariableDeletedAction = {
   type: typeof CATEGORICAL_VARIABLE_DELETED
-  payload: CategoricalVariableType
+  payload: VariableType
 }
 
 export type ValueVariableAddedAction = {
   type: typeof VALUE_VARIABLE_ADDED
-  payload: ValueVariableType
+  payload: VariableType
 }
 
 export type ValueVariableDeletedAction = {
   type: typeof VALUE_VARIABLE_DELETED
-  payload: ValueVariableType
+  payload: VariableType
 }
 
 export type ExperimentUpdatedAction = {

@@ -3,10 +3,11 @@ import { EditableTableCell } from "./editable-table-cell"
 import EditIcon from "@material-ui/icons/Edit"
 import CheckCircleIcon from "@material-ui/icons/CheckCircle"
 import CancelIcon from "@material-ui/icons/Cancel"
-import { SCORE, TableDataRow } from "../types/common";
+import { TableDataRow } from "../types/common";
 
 type EditableTableProps = {
   rows: TableDataRow[]
+  useArrayForValue: string
   onEdit: (editValue: string, rowIndex: number, itemIndex: number) => void
   onEditConfirm: (row: TableDataRow, rowIndex: number) => void
   onEditCancel: (rowIndex: number) => void
@@ -14,7 +15,7 @@ type EditableTableProps = {
 }
 
 export function EditableTable(props: EditableTableProps) {
-  const { rows, onEdit, onEditConfirm, onEditCancel, onToggleEditMode } = props
+  const { rows, useArrayForValue, onEdit, onEditConfirm, onEditCancel, onToggleEditMode } = props
 
   return (
     <Table size="small">
@@ -32,8 +33,9 @@ export function EditableTable(props: EditableTableProps) {
             {row.dataPoints.map((item, itemIndex) => 
               <EditableTableCell
                 key={itemIndex}
-                value={item.name === SCORE ? item.value[0] : item.value}
+                value={item.name === useArrayForValue ? item.value[0] : item.value}
                 isEditMode={row.isEditMode}
+                options={item.options}
                 onChange={(value: string) => onEdit(value, rowIndex, itemIndex) }/>
             )}
             <TableCell key={rowIndex}>

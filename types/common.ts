@@ -1,8 +1,8 @@
 export type ExperimentType = {
   id: string
   info: Info
-  categoricalVariables: CategoricalVariableType[]
-  valueVariables: ValueVariableType[]
+  categoricalVariables: VariableType[]
+  valueVariables: VariableType[]
   optimizerConfig: OptimizerConfig
   results: ExperimentResultType
   dataPoints: DataPointType[][]
@@ -20,22 +20,14 @@ export type Info = {
   description: string
 }
 
-export type ValueVariableType = {
+export type VariableType = {
   name: string
   description: string
-  minVal: number
-  maxVal: number
-  order?: number
-}
-
-export type CategoricalVariableType = {
-  name: string
-  description: string
-  options: string[]
+  minVal?: number
+  maxVal?: number
+  options?: string[]
   order?: string
 }
-
-export type VariableType = ValueVariableType | CategoricalVariableType
 
 export type OptimizerConfig = {
   baseEstimator: string
@@ -68,6 +60,7 @@ export type TableDataPointValue = string | number | number[]
 export type TableDataPoint = {
   name: string
   value: TableDataPointValue
+  options?: string[] | undefined
 }
 
 export type TableDataRow = {
@@ -75,5 +68,3 @@ export type TableDataRow = {
   isEditMode: boolean
   isNew: boolean
 }
-
-export const SCORE = "score"
