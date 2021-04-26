@@ -37,7 +37,7 @@ export default function DataPoints(props: DataPointProps) {
     isNew: true,
   }
   
-  const dataPointEditableRows: DataPointRow[] = dataPoints.map(item => {
+  const dataPointRows: DataPointRow[] = dataPoints.map(item => {
       return {
         dataPoints: item,
         isEditMode: false,
@@ -46,8 +46,8 @@ export default function DataPoints(props: DataPointProps) {
     }
   ).concat(newRow)
 
-  //TODO: Reducer?
-  const [rows, setRows] = useState<DataPointRow[]>(dataPointEditableRows)
+  //TODO: Use reducer?
+  const [rows, setRows] = useState<DataPointRow[]>(dataPointRows)
 
   function onToggleEditMode(rowIndex: number) {
     setRows(
@@ -121,7 +121,7 @@ export default function DataPoints(props: DataPointProps) {
           return row
         } else {
           return {
-            ...dataPointEditableRows[rowIndex]
+            ...dataPointRows[rowIndex]
           }
         }
       })
@@ -152,11 +152,12 @@ export default function DataPoints(props: DataPointProps) {
                 <TableRow key={rowIndex}>
                   {row.dataPoints.map((item, itemIndex) => 
                     <EditableTableCell
+                      key={itemIndex}
                       value={item.name === SCORE ? item.value[0] : item.value}
                       isEditMode={row.isEditMode}
                       onChange={(value: string) => onEdit(value, rowIndex, itemIndex) }/>
                   )}
-                  <TableCell>
+                  <TableCell key={rowIndex}>
                     {row.isEditMode ?
                       <>
                         <IconButton

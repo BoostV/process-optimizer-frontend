@@ -14,7 +14,7 @@ export function EditableTableCell(props: EditableTableCellProps) {
     <>
       {isEditMode ?
         <TableCell>
-          <TextField 
+          <TextField
             value={value} 
             onChange={(e: ChangeEvent) => onChange((e.target as HTMLInputElement).value)}/>
         </TableCell>
