@@ -47,13 +47,13 @@ export function EditableTable(props: EditableTableProps) {
                     size="small"
                     aria-label="confirm edit"
                     onClick={() => onEditConfirm(row, rowIndex)}>
-                    <CheckCircleIcon color="primary" />
+                    <CheckCircleIcon color={row.isNew ? "secondary" : "primary"} />
                   </IconButton>
                   <IconButton
                     size="small"
                     aria-label="cancle edit"
                     onClick={() => onEditCancel(rowIndex)}>
-                    <CancelIcon color="primary" />
+                    <CancelIcon color={row.isNew ? "secondary" : "primary"} />
                   </IconButton>
                 </> :
                 <>

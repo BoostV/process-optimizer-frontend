@@ -22,7 +22,7 @@ export function EditableTableCell(props: EditableTableCellProps) {
                 onChange={(e: ChangeEvent<any>) => onChange(e.target.value as string)}
                 displayEmpty
                 inputProps={{ 'aria-label': 'select value' }}>
-                {options.map(item => <MenuItem value={item}>{item}</MenuItem>)}
+                {options.map((item, i) => <MenuItem key={i} value={item}>{item}</MenuItem>)}
               </Select>
             </FormControl>
             :
