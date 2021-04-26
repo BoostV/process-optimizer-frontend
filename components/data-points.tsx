@@ -1,5 +1,5 @@
 import { Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { ExperimentType, VariableType, DataPointTypeValue, DataPointType } from "../types/common";
 import EditIcon from "@material-ui/icons/Edit";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
@@ -48,6 +48,10 @@ export default function DataPoints(props: DataPointProps) {
 
   //TODO: Use reducer?
   const [rows, setRows] = useState<DataPointRow[]>(dataPointRows)
+
+  useLayoutEffect(() => {
+    setRows(dataPointRows)
+  }, [props.experiment])
 
   function onToggleEditMode(rowIndex: number) {
     setRows(
