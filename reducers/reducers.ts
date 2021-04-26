@@ -1,5 +1,5 @@
 import { State } from "../store"
-import { ExperimentType, OptimizerConfig, ExperimentResultType, DataPointType, VariableType } from "../types/common"
+import { ExperimentType, OptimizerConfig, ExperimentResultType, DataPointType, VariableType, TableDataRow } from "../types/common"
 
 export const EXPERIMENT_UPDATED = 'EXPERIMENT_SAVED'
 export const EXPERIMENT_NAME_UPDATED = 'EXPERIMENT_NAME_UPDATED'

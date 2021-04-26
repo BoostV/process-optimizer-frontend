@@ -3,6 +3,7 @@ import { EditableTableCell } from "./editable-table-cell"
 import EditIcon from "@material-ui/icons/Edit"
 import CheckCircleIcon from "@material-ui/icons/CheckCircle"
 import CancelIcon from "@material-ui/icons/Cancel"
+import AddIcon from "@material-ui/icons/Add"
 import DeleteIcon from "@material-ui/icons/Delete";
 import { TableDataRow } from "../types/common";
 
@@ -47,13 +48,14 @@ export function EditableTable(props: EditableTableProps) {
                     size="small"
                     aria-label="confirm edit"
                     onClick={() => onEditConfirm(row, rowIndex)}>
-                    <CheckCircleIcon color={row.isNew ? "secondary" : "primary"} />
+                    {row.isNew ? <AddIcon color="primary" /> : 
+                    <CheckCircleIcon color="primary" />}
                   </IconButton>
                   <IconButton
                     size="small"
                     aria-label="cancle edit"
                     onClick={() => onEditCancel(rowIndex)}>
-                    <CancelIcon color={row.isNew ? "secondary" : "primary"} />
+                    <CancelIcon color="primary" />
                   </IconButton>
                 </> :
                 <>

@@ -1,6 +1,6 @@
-import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, DataPointsAddedAction, DataPointsUpdatedAction, DATA_POINTS_ADDED, DATA_POINTS_UPDATED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, ResultRegisteredAction, RESULT_REGISTERED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
+import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, DataPointsAddedAction, DataPointsTableEditToggledAction, DataPointsUpdatedAction, DATA_POINTS_ADDED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_UPDATED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, ResultRegisteredAction, RESULT_REGISTERED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
 import { State } from "../../store";
-import { DataPointType, ExperimentResultType, ExperimentType, OptimizerConfig, VariableType } from "../../types/common";
+import { DataPointType, ExperimentResultType, ExperimentType, OptimizerConfig, TableDataPointValue, TableDataRow, VariableType } from "../../types/common";
 
 describe("experiment reducer", () => {
   const initState: State = {
@@ -249,7 +249,6 @@ describe("experiment reducer", () => {
   })
 
   describe("DataPointsUpdatedAction", () => {
-
     it("should update data points", async () => {
       const payload: DataPointType[][] = [
         [
@@ -266,7 +265,7 @@ describe("experiment reducer", () => {
   
       const action: DataPointsUpdatedAction = {
         type: DATA_POINTS_UPDATED,
-        payload: payload
+        payload
       }
   
       expect(rootReducer(initState, action)).toEqual({
@@ -277,3 +276,4 @@ describe("experiment reducer", () => {
     })
   })
 })
+

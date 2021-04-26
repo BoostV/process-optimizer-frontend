@@ -1,6 +1,7 @@
 import { Card, CardContent, Typography } from "@material-ui/core";
-import { useEffect, useState } from "react";
-import { ExperimentType, VariableType, DataPointType, TableDataPoint, TableDataPointValue, TableDataRow } from "../types/common";
+import { useEffect, useReducer, useState } from "react";
+import { dataPointsReducer, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED, DATA_POINTS_TABLE_UPDATED } from "../reducers/data-points-reducer";
+import { ExperimentType, VariableType, DataPointType, TableDataPoint, TableDataRow } from "../types/common";
 import { EditableTable } from "./editable-table";
 
 type DataPointProps = {
@@ -14,7 +15,7 @@ export default function DataPoints(props: DataPointProps) {
   const { experiment: { valueVariables, categoricalVariables, dataPoints }, onUpdateDataPoints } = props
   const combinedVariables: VariableType[] = valueVariables.concat(categoricalVariables)
   
-  const newRow: TableDataRow = {
+  const emptyRow: TableDataRow = {
     dataPoints: combinedVariables.map((variable, i) => {
       return {
         name: variable.name,
@@ -42,52 +43,38 @@ export default function DataPoints(props: DataPointProps) {
         isNew: false,
       }
     }
-  ).concat(newRow as any)
+  ).concat(emptyRow as any)
 
-  //TODO: Use reducer?
-  const [rows, setRows] = useState<TableDataRow[]>(dataPointRows)
+  const [rows, dispatch] = useReducer(dataPointsReducer, dataPointRows)
+  const [initialRows, setInitialRows] = useState<TableDataRow[]>(dataPointRows)
 
   useEffect(() => {
-    setRows(dataPointRows)
-  }, [props.experiment])
+    updateDataPoints(rows.filter(item => !item.isNew) as TableDataRow[])
+  }, [rows])
 
-  function onToggleEditMode(rowIndex: number) {
-    setRows(
-      rows.map((row, index) => {
-        if (index !== rowIndex) {
-          return row
-        } else {
-          return {
-            ...row,
-            isEditMode: !row.isEditMode
-          }
-        }
-      })
-    )
+  function toggleEditMode(rowIndex: number) {
+    dispatch({ type: DATA_POINTS_TABLE_EDIT_TOGGLED, payload: rowIndex })
   }
 
-  function onEdit(editValue: string, rowIndex: number, itemIndex: number) {
-    setRows(
-      rows.map((row, i) => {
-        if (i !== rowIndex) {
-          return row
-        } else {
-          return {
-            ...row,
-            dataPoints: row.dataPoints.map((point, k) => {
-              if (k !== itemIndex) {
-                return point
-              } else {
-                return {
-                  ...point,
-                  value: (point.name === SCORE ? [editValue] : editValue) as TableDataPointValue
-                }
-              }
-            })
-          }
-        }
-      })
-    )
+  function cancelEdit(initialRows: TableDataRow[], rowIndex: number) {
+    dispatch({ type: DATA_POINTS_TABLE_EDIT_CANCELLED, payload: { initialRows, rowIndex } })
+  }
+
+  function edit(editValue: string, rowIndex: number, itemIndex: number) {
+    dispatch({ type: DATA_POINTS_TABLE_EDITED, payload: { 
+      itemIndex,
+      rowIndex,
+      useArrayForValue: SCORE,
+      value: editValue
+    }})
+  }
+
+  function deleteRow(rowIndex: number) {
+    dispatch({ type: DATA_POINTS_TABLE_ROW_DELETED, payload: rowIndex })
+  }
+
+  function addRow(emptyRow: TableDataRow) {
+    dispatch({ type: DATA_POINTS_TABLE_ROW_ADDED, payload: emptyRow })
   }
 
   function updateDataPoints(dataRows: TableDataRow[]) {
@@ -104,44 +91,11 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   function onEditConfirm(row: TableDataRow, rowIndex: number) {
-    updateDataPoints(rows.filter(item => row.isNew || !item.isNew))
     if (row.isNew) {
-      let newRows = rows.slice().map((item, i) => {
-        if (rowIndex !== i) {
-          return item
-        } else {
-          return {
-            ...item,
-            isEditMode: false,
-            isNew: false,
-          }
-        }
-      })
-      newRows.splice(rows.length, 0, newRow)
-      setRows(newRows)
+      addRow(emptyRow)
     } else {
-      onToggleEditMode(rowIndex)
+      toggleEditMode(rowIndex)
     }
-  }
-
-  function onEditCancel(rowIndex: number) {
-    setRows(rows
-      .map((row, i) => {
-        if (i !== rowIndex) {
-          return row
-        } else {
-          return {
-            ...dataPointRows[rowIndex]
-          }
-        }
-      })
-    )
-  }
-
-  function onDelete(rowIndex: number) {
-    let rowsAfterDelete: TableDataRow[] = rows.slice()
-    rowsAfterDelete.splice(rowIndex, 1)
-    updateDataPoints(rowsAfterDelete.filter(row => !row.isNew))
   }
 
   return (
@@ -154,15 +108,14 @@ export default function DataPoints(props: DataPointProps) {
           
         {combinedVariables.length > 0 &&
           <EditableTable
-            rows={rows}
+            rows={rows as TableDataRow[]}
             useArrayForValue={SCORE}
-            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => onEdit(editValue, rowIndex, itemIndex)}
+            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => edit(editValue, rowIndex, itemIndex)}
             onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
-            onEditCancel={(rowIndex: number) => onEditCancel(rowIndex)}
-            onToggleEditMode={(rowIndex: number) => onToggleEditMode(rowIndex)}
-            onDelete={(rowIndex: number) => onDelete(rowIndex)} />
+            onEditCancel={(rowIndex: number) => cancelEdit(initialRows, rowIndex)}
+            onToggleEditMode={(rowIndex: number) => toggleEditMode(rowIndex)}
+            onDelete={(rowIndex: number) => deleteRow(rowIndex)} />
         }
-        
       </CardContent>
     </Card>
   )

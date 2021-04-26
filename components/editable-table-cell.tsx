@@ -28,7 +28,7 @@ export function EditableTableCell(props: EditableTableCellProps) {
             :
             <TextField
               value={value} 
-              onChange={(e: ChangeEvent) => onChange((e.target as HTMLInputElement).value)}/>
+              onChange={(e: ChangeEvent) => onChange("" + (e.target as HTMLInputElement).value)}/>
           }
         </TableCell>
         : 
