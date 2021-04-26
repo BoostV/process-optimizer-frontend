@@ -9,7 +9,6 @@ import { EditableTableCell } from "./editable-table-cell";
 type DataPointProps = {
   experiment: ExperimentType
   onUpdateDataPoints: (dataPoints: DataPointType[][]) => void
-  onAddDataPoints: (dataPoints: DataPointType[]) => void
 }
 
 type DataPointRow = {
@@ -21,7 +20,7 @@ type DataPointRow = {
 const SCORE = "score"
 
 export default function DataPoints(props: DataPointProps) {
-  const { experiment: { valueVariables, categoricalVariables, dataPoints }, onUpdateDataPoints, onAddDataPoints } = props
+  const { experiment: { valueVariables, categoricalVariables, dataPoints }, onUpdateDataPoints } = props
   const combinedVariables: VariableType[] = valueVariables.map(item => item as VariableType).concat(categoricalVariables.map(item => item as VariableType))
   
   const newRow: DataPointRow = {
@@ -47,6 +46,7 @@ export default function DataPoints(props: DataPointProps) {
     }
   ).concat(newRow)
 
+  //TODO: Reducer?
   const [rows, setRows] = useState<DataPointRow[]>(dataPointEditableRows)
 
   function onToggleEditMode(rowIndex: number) {
@@ -57,7 +57,7 @@ export default function DataPoints(props: DataPointProps) {
         } else {
           return {
             ...row,
-            isEditMode: !row.isEditMode    
+            isEditMode: !row.isEditMode
           }
         }
       })
@@ -95,7 +95,6 @@ export default function DataPoints(props: DataPointProps) {
         return item.dataPoints
       })
     )
-
     if (row.isNew) {
       let newRows = rows.slice().map((item, i) => {
         if (rowIndex !== i) {

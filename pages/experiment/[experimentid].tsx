@@ -105,10 +105,6 @@ export default function Experiment() {
     dispatch({ type: CONFIGURATION_UPDATED, payload: config})
   }
 
-  function addDataPoints(dataPoints: DataPointType[]) {
-    dispatch({ type: DATA_POINTS_ADDED, payload: dataPoints})
-  }
-
   function updateDataPoints(dataPoints: DataPointType[][]) {
     dispatch({ type: DATA_POINTS_UPDATED, payload: dataPoints})
   }
@@ -169,7 +165,6 @@ export default function Experiment() {
               <br/>
               <DataPoints 
                 experiment={state.experiment}
-                onAddDataPoints={(dataPoints: DataPointType[]) => addDataPoints(dataPoints)} 
                 onUpdateDataPoints={(dataPoints: DataPointType[][]) => updateDataPoints(dataPoints)}/>
               <br/>
               {state.experiment.results.plots.length > 0 &&

@@ -166,13 +166,6 @@ const experimentReducer = (experimentState: ExperimentType, action: ExperimentAc
         ...experimentState,
         results: action.payload
       }
-    case DATA_POINTS_ADDED:
-      let pointsAfterAdd = experimentState.dataPoints.slice()
-      pointsAfterAdd.splice(experimentState.dataPoints.length, 0, action.payload)
-      return {
-        ...experimentState,
-        dataPoints: pointsAfterAdd
-      }
     case DATA_POINTS_UPDATED:
       return {
         ...experimentState,

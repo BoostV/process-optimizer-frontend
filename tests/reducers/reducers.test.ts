@@ -225,34 +225,6 @@ describe("experiment reducer", () => {
     })
   })
 
-  it("should add data points", async () => {
-    const payload: DataPointType[] = [
-      {
-        name: "Milk",
-        value: "200"
-      },
-      {
-        name: "Flour",
-        value: "250"
-      },
-      {
-        name: "score",
-        value: [1]
-      }
-    ]
-
-    const action: DataPointsAddedAction = {
-      type: DATA_POINTS_ADDED,
-      payload
-    }
-
-    expect(rootReducer(initState, action)).toEqual({
-      experiment:{...initState.experiment,
-        dataPoints: [payload]
-      }
-    })
-  })
-
   describe("ResultRegisteredAction", () => {
 
     it("should update result", async () => {
@@ -276,9 +248,9 @@ describe("experiment reducer", () => {
     })
   })
 
-  describe("DataPointsEditedAction", () => {
+  describe("DataPointsUpdatedAction", () => {
 
-    it("should edit data points", async () => {
+    it("should update data points", async () => {
       const payload: DataPointType[][] = [
         [
           {
