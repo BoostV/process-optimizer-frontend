@@ -46,6 +46,7 @@ export default function DataPoints(props: DataPointProps) {
   ).concat(emptyRow as any)
 
   const [rows, dispatch] = useReducer(dataPointsReducer, dataPointRows)
+  //TODO: Using this as undo only works once (not after editing the same row multiple times)
   const [initialRows, setInitialRows] = useState<TableDataRow[]>(dataPointRows)
 
   useEffect(() => {
