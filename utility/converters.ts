@@ -1,5 +1,5 @@
 import { ExperimentData } from "../openapi"
-import { CategoricalVariableType, DataPointType, ExperimentType, ScoreDataPointType, SpaceType, ValueVariableType } from "../types/common"
+import { VariableType, DataPointType, ExperimentType, ScoreDataPointType, SpaceType } from "../types/common"
 
 export const calculateSpace = (experiment: ExperimentType): SpaceType => {
     const numeric: SpaceType = experiment.valueVariables.map(v => { return {type: "numeric", name: v.name, from: Number(v.minVal), to: Number(v.maxVal)}})
@@ -7,6 +7,6 @@ export const calculateSpace = (experiment: ExperimentType): SpaceType => {
     return numeric.concat(categorial)
   }
 const numPat = / [0-9] + /
-export const calculateData = (categorialValues: CategoricalVariableType[], numericValues: ValueVariableType[], dataPoints: DataPointType[][]): ExperimentData[] => {
+export const calculateData = (categorialValues: VariableType[], numericValues: VariableType[], dataPoints: DataPointType[][]): ExperimentData[] => {
     return dataPoints.map((run):ExperimentData => ({xi: run.filter(it => it.name !== "score").map(it => numericValues.find(p => p.name === it.name) ? Number(it.value) : it.value), yi: Number((run.filter(it => it.name === "score")[0] as ScoreDataPointType).value[0])}))
 }
