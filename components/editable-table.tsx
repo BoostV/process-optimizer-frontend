@@ -1,0 +1,68 @@
+import { IconButton, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core"
+import { EditableTableCell } from "./editable-table-cell"
+import EditIcon from "@material-ui/icons/Edit"
+import CheckCircleIcon from "@material-ui/icons/CheckCircle"
+import CancelIcon from "@material-ui/icons/Cancel"
+import { SCORE, TableDataRow } from "../types/common";
+
+type EditableTableProps = {
+  rows: TableDataRow[]
+  onEdit: (editValue: string, rowIndex: number, itemIndex: number) => void
+  onEditConfirm: (row: TableDataRow, rowIndex: number) => void
+  onEditCancel: (rowIndex: number) => void
+  onToggleEditMode: (rowIndex: number) => void
+}
+
+export function EditableTable(props: EditableTableProps) {
+  const { rows, onEdit, onEditConfirm, onEditCancel, onToggleEditMode } = props
+
+  return (
+    <Table size="small">
+      <TableHead>
+        <TableRow>
+          {rows[0].dataPoints.map((item, index) => 
+            <TableCell key={index}>{item.name}</TableCell>
+          )}
+          <TableCell />
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {rows.map((row, rowIndex) => 
+          <TableRow key={rowIndex}>
+            {row.dataPoints.map((item, itemIndex) => 
+              <EditableTableCell
+                key={itemIndex}
+                value={item.name === SCORE ? item.value[0] : item.value}
+                isEditMode={row.isEditMode}
+                onChange={(value: string) => onEdit(value, rowIndex, itemIndex) }/>
+            )}
+            <TableCell key={rowIndex}>
+              {row.isEditMode ?
+                <>
+                  <IconButton
+                    size="small"
+                    aria-label="confirm edit"
+                    onClick={() => onEditConfirm(row, rowIndex)}>
+                    <CheckCircleIcon color="primary" />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    aria-label="cancle edit"
+                    onClick={() => onEditCancel(rowIndex)}>
+                    <CancelIcon color="primary" />
+                  </IconButton>
+                </> :
+                <IconButton
+                  size="small"
+                  aria-label="toggle edit"
+                  onClick={() => onToggleEditMode(rowIndex)}>
+                  <EditIcon color="primary" />
+                </IconButton>
+              } 
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table> 
+  )
+}

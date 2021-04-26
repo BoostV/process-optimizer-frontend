@@ -62,3 +62,18 @@ export type ScoreDataPointType = {
 }
 
 export type SpaceType = {type: string, name:string, from?: number, to?: number, categories?: string[]}[]
+
+export type TableDataPointValue = string | number | number[]
+
+export type TableDataPoint = {
+  name: string
+  value: TableDataPointValue
+}
+
+export type TableDataRow = {
+  dataPoints: TableDataPoint[]
+  isEditMode: boolean
+  isNew: boolean
+}
+
+export const SCORE = "score"

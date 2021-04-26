@@ -1,29 +1,18 @@
-import { Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Card, CardContent, Typography } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import { ExperimentType, VariableType, DataPointTypeValue, DataPointType } from "../types/common";
-import EditIcon from "@material-ui/icons/Edit";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import CancelIcon from "@material-ui/icons/Cancel";
-import { EditableTableCell } from "./editable-table-cell";
+import { ExperimentType, VariableType, DataPointTypeValue, DataPointType, TableDataRow, SCORE } from "../types/common";
+import { EditableTable } from "./editable-table";
 
 type DataPointProps = {
   experiment: ExperimentType
   onUpdateDataPoints: (dataPoints: DataPointType[][]) => void
 }
 
-type DataPointRow = {
-  dataPoints: DataPointType[]
-  isEditMode: boolean
-  isNew: boolean
-}
-
-const SCORE = "score"
-
 export default function DataPoints(props: DataPointProps) {
   const { experiment: { valueVariables, categoricalVariables, dataPoints }, onUpdateDataPoints } = props
   const combinedVariables: VariableType[] = valueVariables.map(item => item as VariableType).concat(categoricalVariables.map(item => item as VariableType))
   
-  const newRow: DataPointRow = {
+  const newRow: TableDataRow = {
     dataPoints: combinedVariables.map((variable, i) => {
       return {
         name: variable.name,
@@ -37,7 +26,7 @@ export default function DataPoints(props: DataPointProps) {
     isNew: true,
   }
   
-  const dataPointRows: DataPointRow[] = dataPoints.map(item => {
+  const dataPointRows: TableDataRow[] = dataPoints.map(item => {
       return {
         dataPoints: item,
         isEditMode: false,
@@ -47,7 +36,7 @@ export default function DataPoints(props: DataPointProps) {
   ).concat(newRow)
 
   //TODO: Use reducer?
-  const [rows, setRows] = useState<DataPointRow[]>(dataPointRows)
+  const [rows, setRows] = useState<TableDataRow[]>(dataPointRows)
 
   useEffect(() => {
     setRows(dataPointRows)
@@ -92,11 +81,11 @@ export default function DataPoints(props: DataPointProps) {
     )
   }
 
-  function onEditConfirm(row: DataPointRow, rowIndex: number) {
+  function onEditConfirm(row: TableDataRow, rowIndex: number) {
     onUpdateDataPoints(rows
       .filter(item => row.isNew || !item.isNew)
       .map((item, i) => {
-        return item.dataPoints
+        return item.dataPoints.map(item => item as DataPointType)
       })
     )
     if (row.isNew) {
@@ -141,55 +130,12 @@ export default function DataPoints(props: DataPointProps) {
         </Typography>
           
         {combinedVariables.length > 0 &&
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                {rows[0].dataPoints.map((item, index) => 
-                  <TableCell key={index}>{item.name}</TableCell>
-                )}
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            
-            <TableBody>
-              {rows.map((row, rowIndex) => 
-                <TableRow key={rowIndex}>
-                  {row.dataPoints.map((item, itemIndex) => 
-                    <EditableTableCell
-                      key={itemIndex}
-                      value={item.name === SCORE ? item.value[0] : item.value}
-                      isEditMode={row.isEditMode}
-                      onChange={(value: string) => onEdit(value, rowIndex, itemIndex) }/>
-                  )}
-                  <TableCell key={rowIndex}>
-                    {row.isEditMode ?
-                      <>
-                        <IconButton
-                          size="small"
-                          aria-label="confirm edit"
-                          onClick={() => onEditConfirm(row, rowIndex)}>
-                          <CheckCircleIcon color="primary" />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          aria-label="cancle edit"
-                          onClick={() => onEditCancel(rowIndex)}>
-                          <CancelIcon color="primary" />
-                        </IconButton>
-                      </> :
-                      <IconButton
-                        size="small"
-                        aria-label="toggle edit"
-                        onClick={() => onToggleEditMode(rowIndex)}>
-                        <EditIcon color="primary" />
-                      </IconButton>
-                    } 
-                  </TableCell>
-                </TableRow>
-              )}
-
-            </TableBody>
-          </Table> 
+          <EditableTable
+            rows={rows}
+            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => onEdit(editValue, rowIndex, itemIndex)}
+            onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
+            onEditCancel={(rowIndex: number) => onEditCancel(rowIndex)}
+            onToggleEditMode={(rowIndex: number) => onToggleEditMode(rowIndex)} />
         }
         
       </CardContent>
