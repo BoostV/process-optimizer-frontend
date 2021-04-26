@@ -1,6 +1,6 @@
 import { Card, CardContent, Typography } from "@material-ui/core";
 import { useEffect, useState } from "react";
-import { ExperimentType, VariableType, DataPointTypeValue, DataPointType, TableDataRow, SCORE } from "../types/common";
+import { ExperimentType, VariableType, DataPointType, TableDataRow, SCORE, TableDataPointValue } from "../types/common";
 import { EditableTable } from "./editable-table";
 
 type DataPointProps = {
@@ -71,7 +71,7 @@ export default function DataPoints(props: DataPointProps) {
               } else {
                 return {
                   ...point,
-                  value: (point.name === SCORE ? [editValue] : editValue) as DataPointTypeValue
+                  value: (point.name === SCORE ? [editValue] : editValue) as TableDataPointValue
                 }
               }
             })
