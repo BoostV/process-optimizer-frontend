@@ -90,9 +90,8 @@ export default function DataPoints(props: DataPointProps) {
     )
   }
 
-  function onEditConfirm(row: TableDataRow, rowIndex: number) {
-    onUpdateDataPoints(rows
-      .filter(item => row.isNew || !item.isNew)
+  function updateDataPoints(dataRows: TableDataRow[]) {
+    onUpdateDataPoints(dataRows
       .map((item, i) => {
         return item.dataPoints.map(item => {
           return {
@@ -102,6 +101,10 @@ export default function DataPoints(props: DataPointProps) {
         })
       })
     )
+  }
+
+  function onEditConfirm(row: TableDataRow, rowIndex: number) {
+    updateDataPoints(rows.filter(item => row.isNew || !item.isNew))
     if (row.isNew) {
       let newRows = rows.slice().map((item, i) => {
         if (rowIndex !== i) {
@@ -135,6 +138,12 @@ export default function DataPoints(props: DataPointProps) {
     )
   }
 
+  function onDelete(rowIndex: number) {
+    let rowsAfterDelete: TableDataRow[] = rows.slice()
+    rowsAfterDelete.splice(rowIndex, 1)
+    updateDataPoints(rowsAfterDelete.filter(row => !row.isNew))
+  }
+
   return (
     <Card>
       <CardContent>
@@ -150,7 +159,8 @@ export default function DataPoints(props: DataPointProps) {
             onEdit={(editValue: string, rowIndex: number, itemIndex: number) => onEdit(editValue, rowIndex, itemIndex)}
             onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
             onEditCancel={(rowIndex: number) => onEditCancel(rowIndex)}
-            onToggleEditMode={(rowIndex: number) => onToggleEditMode(rowIndex)} />
+            onToggleEditMode={(rowIndex: number) => onToggleEditMode(rowIndex)}
+            onDelete={(rowIndex: number) => onDelete(rowIndex)} />
         }
         
       </CardContent>

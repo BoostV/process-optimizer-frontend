@@ -3,6 +3,7 @@ import { EditableTableCell } from "./editable-table-cell"
 import EditIcon from "@material-ui/icons/Edit"
 import CheckCircleIcon from "@material-ui/icons/CheckCircle"
 import CancelIcon from "@material-ui/icons/Cancel"
+import DeleteIcon from "@material-ui/icons/Delete";
 import { TableDataRow } from "../types/common";
 
 type EditableTableProps = {
@@ -12,10 +13,11 @@ type EditableTableProps = {
   onEditConfirm: (row: TableDataRow, rowIndex: number) => void
   onEditCancel: (rowIndex: number) => void
   onToggleEditMode: (rowIndex: number) => void
+  onDelete: (rowIndex: number) => void
 }
 
 export function EditableTable(props: EditableTableProps) {
-  const { rows, useArrayForValue, onEdit, onEditConfirm, onEditCancel, onToggleEditMode } = props
+  const { rows, useArrayForValue, onEdit, onEditConfirm, onEditCancel, onToggleEditMode, onDelete } = props
 
   return (
     <Table size="small">
@@ -54,12 +56,20 @@ export function EditableTable(props: EditableTableProps) {
                     <CancelIcon color="primary" />
                   </IconButton>
                 </> :
-                <IconButton
-                  size="small"
-                  aria-label="toggle edit"
-                  onClick={() => onToggleEditMode(rowIndex)}>
-                  <EditIcon color="primary" />
-                </IconButton>
+                <>
+                  <IconButton
+                    size="small"
+                    aria-label="toggle edit"
+                    onClick={() => onToggleEditMode(rowIndex)}>
+                    <EditIcon color="primary" />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    aria-label="delete"
+                    onClick={() => onDelete(rowIndex)}>
+                    <DeleteIcon color="primary" />
+                  </IconButton>
+                </>
               } 
             </TableCell>
           </TableRow>
