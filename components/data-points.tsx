@@ -47,7 +47,7 @@ export default function DataPoints(props: DataPointProps) {
 
   const initialState: DataPointsState = {
     rows: dataPointRows,
-    prevRows: []
+    prevRows: dataPointRows
   }
 
   const [state, dispatch] = useReducer(dataPointsReducer, initialState)
@@ -58,21 +58,10 @@ export default function DataPoints(props: DataPointProps) {
 
   function toggleEditMode(rowIndex: number) {
     dispatch({ type: DATA_POINTS_TABLE_EDIT_TOGGLED, payload: rowIndex })
-
-    /*let prevRowsEdited: TableDataRow[] = prevRows.slice()
-    prevRowsEdited.map((item, i) => {
-      if (i !== rowIndex) {
-        return item
-      } else {
-        rows[rowIndex]
-      }
-    })
-    setPrevRows(prevRowsEdited)
-    console.log('prevRows', prevRows)*/
   }
 
-  function cancelEdit(prevRows: TableDataRow[], rowIndex: number) {
-    dispatch({ type: DATA_POINTS_TABLE_EDIT_CANCELLED, payload: { prevRows, rowIndex } })
+  function cancelEdit(rowIndex: number) {
+    dispatch({ type: DATA_POINTS_TABLE_EDIT_CANCELLED, payload: rowIndex })
   }
 
   function edit(editValue: string, rowIndex: number, itemIndex: number) {
@@ -127,7 +116,7 @@ export default function DataPoints(props: DataPointProps) {
             useArrayForValue={SCORE}
             onEdit={(editValue: string, rowIndex: number, itemIndex: number) => edit(editValue, rowIndex, itemIndex)}
             onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
-            onEditCancel={(rowIndex: number) => cancelEdit(state.prevRows, rowIndex)}
+            onEditCancel={(rowIndex: number) => cancelEdit(rowIndex)}
             onToggleEditMode={(rowIndex: number) => toggleEditMode(rowIndex)}
             onDelete={(rowIndex: number) => deleteRow(rowIndex)} />
         }

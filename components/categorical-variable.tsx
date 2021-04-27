@@ -12,7 +12,6 @@ type CategoricalVariableProps = {
 
 export default function CategoricalVariable(props: CategoricalVariableProps) {
   const classes = useStyles()
-  //TODO: Avoid handling options separately?
   const [options, setOptions] = useState([])
 
   const { register, handleSubmit, reset, watch, errors } = useForm<VariableType>();

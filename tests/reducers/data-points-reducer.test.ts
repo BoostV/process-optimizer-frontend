@@ -1,75 +1,72 @@
 import { dataPointsReducer, DataPointsState, DataPointsTableEditCancelledAction, DataPointsTableEditedAction, DataPointsTableEditToggledAction, DataPointsTableRowAddedAction, DataPointsTableRowDeletedAction, DataPointsTableUpdatedAction, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED, DATA_POINTS_TABLE_UPDATED } from "../../reducers/data-points-reducer"
 import { TableDataRow } from "../../types/common"
 
-//TODO: Simplify by reusing state
-
 describe("data points reducer", () => {
   describe("DataPointsTableEditToggledAction", () => {
-    it("should toggle edit mode", async () => {
-      const payload = 1
+    it("should toggle edit mode and save previous row", async () => {
+      const payload = 0
 
       const action: DataPointsTableEditToggledAction = {
         type: DATA_POINTS_TABLE_EDIT_TOGGLED,
         payload
       }
 
+      const initPrevRows: TableDataRow[] = [
+        {
+          dataPoints: [
+            {
+              name: "Milk",
+              value: "100"
+            },
+            {
+              name: "score",
+              value: [1]
+            }
+          ],
+          isEditMode: false,
+          isNew: false,
+        }
+      ]
+
+      const initRows: TableDataRow[] = [
+        {
+          dataPoints: [
+            {
+              name: "Milk",
+              value: "200"
+            },
+            {
+              name: "score",
+              value: [1]
+            }
+          ],
+          isEditMode: false,
+          isNew: false,
+        }
+      ]
+
       const initState: DataPointsState = {
-        prevRows: [],
-        rows: [
-          {
-            dataPoints: [],
-            isEditMode: false,
-            isNew: false,
-          },
-          {
-            dataPoints: [],
-            isEditMode: false,
-            isNew: false,
-          }
-        ]
+        prevRows: initPrevRows,
+        rows: initRows
       }
 
       expect(dataPointsReducer(initState, action)).toEqual(
         {
-          prevRows: [],
+          prevRows: initRows,
           rows:[
-          {
-            dataPoints: [],
-            isEditMode: false,
-            isNew: false,
-          },
-          {
-            dataPoints: [],
-            isEditMode: true,
-            isNew: false,
-          }
+            {
+              ...initRows[0],
+              isEditMode: true,
+              isNew: false,
+            }
           ]}
         )
     })
   })
 
   describe("DataPointsTableEditCancelledAction", () => {
-    /*it("should cancel edit", async () => {
-      const payload = {
-        prevRows: [
-          {
-            dataPoints: [],
-            isEditMode: false,
-            isNew: false,
-          },
-          {
-            dataPoints: [
-              {
-                name: "Water",
-                value: "50"
-              }
-            ],
-            isEditMode: false,
-            isNew: false,
-          }
-        ],
-        rowIndex: 1  
-      }
+    it("should toggle edit mode and set row to prevRow", async () => {
+      const payload = 0
 
       const action: DataPointsTableEditCancelledAction = {
         type: DATA_POINTS_TABLE_EDIT_CANCELLED,
@@ -77,19 +74,24 @@ describe("data points reducer", () => {
       }
 
       const initState: DataPointsState = {
-        prevRows: [],
-        rows:
-        [
-          {
-            dataPoints: [],
-            isEditMode: false,
-            isNew: false,
-          },
+        prevRows: [
           {
             dataPoints: [
               {
                 name: "Water",
                 value: "100"
+              }
+            ],
+            isEditMode: false,
+            isNew: false,
+          }
+        ],
+        rows: [
+          {
+            dataPoints: [
+              {
+                name: "Water",
+                value: "200"
               }
             ],
             isEditMode: true,
@@ -98,8 +100,11 @@ describe("data points reducer", () => {
         ]
       }
 
-      expect(dataPointsReducer(initState, action)).toEqual(payload.prevRows)
-    })*/
+      expect(dataPointsReducer(initState, action)).toEqual({
+        prevRows: initState.prevRows,
+        rows: initState.prevRows
+      })
+    })
   })
 
   describe("DataPointsTableEditedAction", () => {
@@ -301,42 +306,44 @@ describe("data points reducer", () => {
         payload
       }
 
+      const initRows: TableDataRow[] = [
+        {
+          dataPoints: [
+            {
+              name: "Water",
+              value: "100"
+            },
+            {
+              name: "score",
+              value: [0.1]
+            }
+          ],
+          isEditMode: false,
+          isNew: false,
+        },
+        {
+          dataPoints: [
+            {
+              name: "Water",
+              value: "200"
+            },
+            {
+              name: "score",
+              value: [0.2]
+            }
+          ],
+          isEditMode: false,
+          isNew: false,
+        }
+      ]
+
       const initState: DataPointsState = {
-        prevRows: [],
-        rows:[
-          {
-            dataPoints: [
-              {
-                name: "Water",
-                value: "100"
-              },
-              {
-                name: "score",
-                value: [0.1]
-              }
-            ],
-            isEditMode: false,
-            isNew: false,
-          },
-          {
-            dataPoints: [
-              {
-                name: "Water",
-                value: "200"
-              },
-              {
-                name: "score",
-                value: [0.2]
-              }
-            ],
-            isEditMode: false,
-            isNew: false,
-          }
-        ]
+        prevRows: initRows,
+        rows: initRows
       }
 
       expect(dataPointsReducer(initState, action)).toEqual({
-          prevRows: [],
+          prevRows: initState.prevRows.slice(0, 1),
           rows: initState.rows.slice(0, 1)
         }
       )
@@ -366,37 +373,45 @@ describe("data points reducer", () => {
         payload
       }
 
+      const initRows: TableDataRow[] = [
+        {
+          dataPoints: [
+            {
+              name: "Milk",
+              value: "100"
+            },
+            {
+              name: "score",
+              value: [0.1]
+            }
+          ],
+          isEditMode: true,
+          isNew: true,
+        },
+      ]
+
       const initState: DataPointsState = {
-        prevRows: [],
-        rows: [
-          {
-            dataPoints: [
-              {
-                name: "Milk",
-                value: "100"
-              },
-              {
-                name: "score",
-                value: [0.1]
-              }
-            ],
-            isEditMode: true,
-            isNew: true,
-          },
-        ]
+        prevRows: initRows,
+        rows: initRows
       }
 
       expect(dataPointsReducer(initState, action)).toEqual({
-        prevRows: [],
-        rows:
-          [
-            {
-              ...initState.rows[0],
-              isEditMode: false,
-              isNew: false 
-            },
-            payload
-          ]
+        prevRows: [
+          {
+            ...initState.rows[0],
+            isEditMode: false,
+            isNew: false 
+          },
+          payload
+        ],
+        rows: [
+          {
+            ...initState.rows[0],
+            isEditMode: false,
+            isNew: false 
+          },
+          payload
+        ]
         }
       )
     })
