@@ -2,7 +2,7 @@ export type ExperimentType = {
   id: string
   info: Info
   categoricalVariables: CategoricalVariableType[]
-  valueVariables:  ValueVariableType[]
+  valueVariables: ValueVariableType[]
   optimizerConfig: OptimizerConfig
   results: ExperimentResultType
   dataPoints: DataPointType[][]

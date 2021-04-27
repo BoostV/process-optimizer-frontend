@@ -254,7 +254,7 @@ describe("experiment reducer", () => {
         [
           {
             name: "New point 1",
-            value: 1
+            value: "1"
           },
           {
             name: "score",
