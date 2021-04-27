@@ -2,6 +2,7 @@ import { dataPointsReducer, DataPointsState, DataPointsTableEditCancelledAction,
 import { TableDataRow } from "../../types/common"
 
 describe("data points reducer", () => {
+  
   describe("DataPointsTableEditToggledAction", () => {
     it("should toggle edit mode and save previous row", async () => {
       const payload = 0
@@ -111,7 +112,7 @@ describe("data points reducer", () => {
     it("should edit table cell - non-array value", async () => {
       const payload = {
         value: "300",
-        rowIndex: 1,
+        rowIndex: 0,
         itemIndex: 1,
         useArrayForValue: "score"
       }
@@ -124,11 +125,6 @@ describe("data points reducer", () => {
       const initState: DataPointsState = {
         prevRows: [],
         rows:[
-          {
-            dataPoints: [],
-            isEditMode: false,
-            isNew: false,
-          },
           {
             dataPoints: [
               {
@@ -150,41 +146,24 @@ describe("data points reducer", () => {
         ]
       }
 
-      expect(dataPointsReducer(initState, action)).toEqual(
-        {
-          prevRows: [],
-          rows:[
-            {
-              dataPoints: [],
-              isEditMode: false,
-              isNew: false,
-            },
-            {
-              dataPoints: [
-                {
-                  name: "Water",
-                  value: "100"
-                },
-                {
-                  name: "Milk",
-                  value: "300"
-                },
-                {
-                  name: "score",
-                  value: [0.5]
-                }
-              ],
-              isEditMode: true,
-              isNew: false,
-            }
-          ]
-        })
+      expect(dataPointsReducer(initState, action)).toEqual({
+            ...initState,
+            rows: [{
+                ...initState.rows[0],
+                dataPoints: [
+                  {...initState.rows[0].dataPoints[0]},
+                  {...initState.rows[0].dataPoints[1],
+                    value: payload.value
+                  },
+                  {...initState.rows[0].dataPoints[2]}
+                ]}
+            ]})
     })
 
     it("should edit table cell - array value", async () => {
       const payload = {
         value: "0.2",
-        rowIndex: 1,
+        rowIndex: 0,
         itemIndex: 1,
         useArrayForValue: "score"
       }
@@ -197,11 +176,6 @@ describe("data points reducer", () => {
       const initState: DataPointsState = {
         prevRows: [],
         rows:[
-          {
-            dataPoints: [],
-            isEditMode: false,
-            isNew: false,
-          },
           {
             dataPoints: [
               {
@@ -220,27 +194,15 @@ describe("data points reducer", () => {
       }
 
       expect(dataPointsReducer(initState, action)).toEqual({
-        prevRows: [],
-        rows:[
-          {
-            dataPoints: [],
-            isEditMode: false,
-            isNew: false,
-          },
-          {
+        ...initState,
+        rows: [{
+            ...initState.rows[0],
             dataPoints: [
-              {
-                name: "Water",
-                value: "100"
-              },
-              {
-                name: "score",
-                value: ["0.2"]
+              {...initState.rows[0].dataPoints[0]},
+              {...initState.rows[0].dataPoints[1],
+                value: [payload.value]
               }
-            ],
-            isEditMode: true,
-            isNew: false,
-          }
+            ]}
         ]}
       )
     })
