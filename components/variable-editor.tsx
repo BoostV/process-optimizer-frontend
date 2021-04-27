@@ -3,12 +3,12 @@ import ValueVariable from './value-variable';
 import { Card, CardContent, Grid, IconButton, Radio, Typography } from "@material-ui/core"
 import CloseIcon from "@material-ui/icons/Close";
 import { useState } from "react"
-import { VariableType } from '../types/common';
 import useStyles from '../styles/variable-editor.style';
+import { CategoricalVariableType, ValueVariableType } from '../types/common';
 
 type VariableEditorProps = {
-  addValueVariable: (valueVariable: VariableType) => void
-  addCategoricalVariable: (categoricalVariable: VariableType) => void
+  addValueVariable: (valueVariable: ValueVariableType) => void
+  addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
   close: () => void
 }
 
@@ -53,10 +53,10 @@ export default function VariableEditor(props: VariableEditorProps) {
                 <br/>
                 <br/>
                 {radioIndex === 0 &&
-                  <ValueVariable onAdded={(valueVariable: VariableType) => props.addValueVariable(valueVariable)} />
+                  <ValueVariable onAdded={(valueVariable: ValueVariableType) => props.addValueVariable(valueVariable)} />
                 }
                 {radioIndex === 1 &&
-                  <CategoricalVariable onAdded={(categoricalVariable: VariableType) => props.addCategoricalVariable(categoricalVariable)} />
+                  <CategoricalVariable onAdded={(categoricalVariable: CategoricalVariableType) => props.addCategoricalVariable(categoricalVariable)} />
                 }
               </Grid>
             </Grid>

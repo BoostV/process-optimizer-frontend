@@ -7,7 +7,7 @@ import OptimizerModel from '../../components/optimizer-model';
 import OptimizerConfigurator from '../../components/optimizer-configurator';
 import { useEffect, useReducer, useState } from 'react';
 import { VALUE_VARIABLE_ADDED, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, rootReducer, VALUE_VARIABLE_DELETED, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, CONFIGURATION_UPDATED, RESULT_REGISTERED, DATA_POINTS_ADDED, DATA_POINTS_UPDATED } from '../../reducers/reducers';
-import { VariableType, ExperimentType, OptimizerConfig, ExperimentResultType, DataPointType } from '../../types/common';
+import { ExperimentType, OptimizerConfig, ExperimentResultType, DataPointType, ValueVariableType, CategoricalVariableType } from '../../types/common';
 import { initialState } from '../../store';
 import { Alert } from '@material-ui/lab';
 import ModelEditor from '../../components/model-editor';
@@ -73,19 +73,19 @@ export default function Experiment() {
     dispatch({ type: RESULT_REGISTERED, payload: result })
   }
 
-  function addValueVariable(valueVariable: VariableType) {
+  function addValueVariable(valueVariable: ValueVariableType) {
     dispatch({ type: VALUE_VARIABLE_ADDED, payload: valueVariable })
   }
 
-  function deleteValueVariable(valueVariable: VariableType) {
+  function deleteValueVariable(valueVariable: ValueVariableType) {
     dispatch({ type: VALUE_VARIABLE_DELETED, payload: valueVariable })
   }
   
-  function addCategoricalVariable(categoricalVariable: VariableType) {
+  function addCategoricalVariable(categoricalVariable: CategoricalVariableType) {
     dispatch({ type: CATEGORICAL_VARIABLE_ADDED, payload: categoricalVariable})
   }
 
-  function deleteCategoricalVariable(categoricalVariable: VariableType) {
+  function deleteCategoricalVariable(categoricalVariable: CategoricalVariableType) {
     dispatch({ type: CATEGORICAL_VARIABLE_DELETED, payload: categoricalVariable })
   }
 
@@ -158,10 +158,10 @@ export default function Experiment() {
             <Grid item xs={8} lg={7}>
               <OptimizerModel 
                 experiment={state.experiment}
-                onDeleteValueVariable={(valueVariable: VariableType) => {deleteValueVariable(valueVariable)}} 
-                onDeleteCategoricalVariable={(categoricalVariable: VariableType) => {deleteCategoricalVariable(categoricalVariable)}}
-                addValueVariable={(valueVariable: VariableType) => addValueVariable(valueVariable)}
-                addCategoricalVariable={(categoricalVariable: VariableType) => addCategoricalVariable(categoricalVariable)}/>
+                onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} 
+                onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => {deleteCategoricalVariable(categoricalVariable)}}
+                addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}
+                addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)}/>
               <br/>
               <DataPoints 
                 experiment={state.experiment}

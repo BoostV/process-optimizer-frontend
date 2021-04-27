@@ -1,7 +1,7 @@
 import { Card, CardContent, Typography } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
 import { dataPointsReducer, DataPointsState, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED, testReducer } from "../reducers/data-points-reducer";
-import { ExperimentType, VariableType, DataPointType, TableDataPoint, TableDataRow } from "../types/common";
+import { ExperimentType, DataPointType, TableDataPoint, TableDataRow, CombinedVariableType } from "../types/common";
 import { EditableTable } from "./editable-table";
 
 type DataPointProps = {
@@ -13,7 +13,7 @@ const SCORE = "score"
 
 export default function DataPoints(props: DataPointProps) {
   const { experiment: { valueVariables, categoricalVariables, dataPoints }, onUpdateDataPoints } = props
-  const combinedVariables: VariableType[] = valueVariables.concat(categoricalVariables)
+  const combinedVariables: CombinedVariableType[] = (valueVariables as CombinedVariableType[]).concat(categoricalVariables as CombinedVariableType[])
   
   const emptyRow: TableDataRow = {
     dataPoints: combinedVariables.map((variable, i) => {

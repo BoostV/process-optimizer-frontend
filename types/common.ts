@@ -1,8 +1,8 @@
 export type ExperimentType = {
   id: string
   info: Info
-  categoricalVariables: VariableType[]
-  valueVariables: VariableType[]
+  categoricalVariables: CategoricalVariableType[]
+  valueVariables:  ValueVariableType[]
   optimizerConfig: OptimizerConfig
   results: ExperimentResultType
   dataPoints: DataPointType[][]
@@ -20,15 +20,20 @@ export type Info = {
   description: string
 }
 
-//TODO split
-export type VariableType = {
+export type CategoricalVariableType = {
   name: string
   description: string
-  minVal?: number
-  maxVal?: number
-  options?: string[]
-  order?: string
+  options: string[]
 }
+
+export type ValueVariableType = {
+  name: string
+  description: string
+  minVal: number
+  maxVal: number
+}
+
+export type VariableType = CategoricalVariableType | ValueVariableType
 
 export type OptimizerConfig = {
   baseEstimator: string
@@ -68,4 +73,12 @@ export type TableDataRow = {
   dataPoints: TableDataPoint[]
   isEditMode: boolean
   isNew: boolean
+}
+
+export type CombinedVariableType = {
+  name: string
+  description: string
+  minVal?: number
+  maxVal?: number
+  options?: string[]
 }

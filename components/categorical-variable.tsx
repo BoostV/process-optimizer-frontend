@@ -2,20 +2,20 @@ import { Button, IconButton, TextField, Typography } from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { VariableType } from '../types/common';
 import CategoricalVariableOptions from './categorical-variable-options';
 import { useStyles } from '../styles/categorical-variable.style';
+import { CategoricalVariableType } from '../types/common';
 
 type CategoricalVariableProps = {
-  onAdded: (data: VariableType) => void
+  onAdded: (data: CategoricalVariableType) => void
 }
 
 export default function CategoricalVariable(props: CategoricalVariableProps) {
   const classes = useStyles()
   const [options, setOptions] = useState([])
 
-  const { register, handleSubmit, reset, watch, errors } = useForm<VariableType>();
-  const onSubmit = async (data: VariableType) => {
+  const { register, handleSubmit, reset, watch, errors } = useForm<CategoricalVariableType>();
+  const onSubmit = async (data: CategoricalVariableType) => {
     props.onAdded({...data, options})
     setOptions([])
     reset()

@@ -1,15 +1,15 @@
 import { Button, TextField } from '@material-ui/core'
 import { useForm } from 'react-hook-form';
-import { VariableType } from '../types/common';
+import { ValueVariableType } from '../types/common';
 
 type ValueVariableProps = {
-  onAdded: (data: VariableType) => void
+  onAdded: (data: ValueVariableType) => void
 }
 
 export default function ValueVariable(props: ValueVariableProps) {
 
-  const { register, handleSubmit, reset, watch, errors } = useForm<VariableType>();
-  const onSubmit = async (data: VariableType) => {
+  const { register, handleSubmit, reset, watch, errors } = useForm<ValueVariableType>();
+  const onSubmit = async (data: ValueVariableType) => {
     props.onAdded(data)
     reset()
   }

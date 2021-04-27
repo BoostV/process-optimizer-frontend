@@ -1,15 +1,15 @@
 import { Button, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
-import { ExperimentType, VariableType } from '../types/common'
+import { CategoricalVariableType, ExperimentType, ValueVariableType } from '../types/common'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { ReactNode, useState } from 'react'
 import VariableEditor from './variable-editor'
 
 type OptimizerModelProps = {
   experiment: ExperimentType
-  onDeleteValueVariable: (valueVariable: VariableType) => void
-  onDeleteCategoricalVariable: (categoricalVariable: VariableType) => void
-  addValueVariable: (valueVariable: VariableType) => void
-  addCategoricalVariable: (categoricalVariable: VariableType) => void
+  onDeleteValueVariable: (valueVariable: ValueVariableType) => void
+  onDeleteCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
+  addValueVariable: (valueVariable: ValueVariableType) => void
+  addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
 }
 
 export default function OptimizerModel(props: OptimizerModelProps) {
@@ -103,8 +103,8 @@ export default function OptimizerModel(props: OptimizerModelProps) {
         }
         {isAddOpen &&
           <VariableEditor 
-            addCategoricalVariable={(categoricalVariable: VariableType) => props.addCategoricalVariable(categoricalVariable)}
-            addValueVariable={(valueVariable: VariableType) => props.addValueVariable(valueVariable)}
+            addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => props.addCategoricalVariable(categoricalVariable)}
+            addValueVariable={(valueVariable: ValueVariableType) => props.addValueVariable(valueVariable)}
             close={() => setAddOpen(false)} />
         }
       </CardContent>

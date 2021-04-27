@@ -1,5 +1,5 @@
 import { State } from "../store"
-import { ExperimentType, OptimizerConfig, ExperimentResultType, DataPointType, VariableType, TableDataRow } from "../types/common"
+import { ExperimentType, OptimizerConfig, ExperimentResultType, DataPointType, CategoricalVariableType, ValueVariableType } from "../types/common"
 
 export const EXPERIMENT_UPDATED = 'EXPERIMENT_SAVED'
 export const EXPERIMENT_NAME_UPDATED = 'EXPERIMENT_NAME_UPDATED'
@@ -20,22 +20,22 @@ export type ResultRegisteredAction = {
 
 export type CategoricalVariableAddedAction = {
   type: typeof CATEGORICAL_VARIABLE_ADDED
-  payload: VariableType
+  payload: CategoricalVariableType
 }
 
 export type CategoricalVariableDeletedAction = {
   type: typeof CATEGORICAL_VARIABLE_DELETED
-  payload: VariableType
+  payload: CategoricalVariableType
 }
 
 export type ValueVariableAddedAction = {
   type: typeof VALUE_VARIABLE_ADDED
-  payload: VariableType
+  payload: ValueVariableType
 }
 
 export type ValueVariableDeletedAction = {
   type: typeof VALUE_VARIABLE_DELETED
-  payload: VariableType
+  payload: ValueVariableType
 }
 
 export type ExperimentUpdatedAction = {
@@ -127,14 +127,14 @@ const experimentReducer = (experimentState: ExperimentType, action: ExperimentAc
         }
       }
     case VALUE_VARIABLE_ADDED:
-      let varsAfterAdd: VariableType[] = experimentState.valueVariables.slice()
+      let varsAfterAdd: ValueVariableType[] = experimentState.valueVariables.slice()
       varsAfterAdd.splice(experimentState.valueVariables.length, 0, action.payload)
       return {
         ...experimentState,
         valueVariables: varsAfterAdd
       }
     case VALUE_VARIABLE_DELETED:
-      let varsAfterDelete: VariableType[] = experimentState.valueVariables.slice()
+      let varsAfterDelete: ValueVariableType[] = experimentState.valueVariables.slice()
       let indexOfDelete = experimentState.valueVariables.indexOf(action.payload)
       varsAfterDelete.splice(indexOfDelete, 1)
       return {
@@ -142,14 +142,14 @@ const experimentReducer = (experimentState: ExperimentType, action: ExperimentAc
         valueVariables: varsAfterDelete
       }
     case CATEGORICAL_VARIABLE_ADDED:
-      let catVarsAfterAdd: VariableType[] = experimentState.categoricalVariables.slice()
+      let catVarsAfterAdd: CategoricalVariableType[] = experimentState.categoricalVariables.slice()
       catVarsAfterAdd.splice(experimentState.categoricalVariables.length, 0, action.payload)
       return {
         ...experimentState,
         categoricalVariables: catVarsAfterAdd
       }
     case CATEGORICAL_VARIABLE_DELETED:
-      let catVarsAfterDelete: VariableType[] = experimentState.categoricalVariables.slice()
+      let catVarsAfterDelete: CategoricalVariableType[] = experimentState.categoricalVariables.slice()
       let indexOfCatDelete = experimentState.categoricalVariables.indexOf(action.payload)
       catVarsAfterDelete.splice(indexOfCatDelete, 1)
       return {
