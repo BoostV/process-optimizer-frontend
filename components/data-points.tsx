@@ -1,6 +1,6 @@
 import { Card, CardContent, Typography } from "@material-ui/core";
-import { useEffect, useReducer, useState } from "react";
-import { dataPointsReducer, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED, DATA_POINTS_TABLE_UPDATED } from "../reducers/data-points-reducer";
+import { useEffect, useReducer } from "react";
+import { dataPointsReducer, DataPointsState, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED, testReducer } from "../reducers/data-points-reducer";
 import { ExperimentType, VariableType, DataPointType, TableDataPoint, TableDataRow } from "../types/common";
 import { EditableTable } from "./editable-table";
 
@@ -45,20 +45,34 @@ export default function DataPoints(props: DataPointProps) {
     }
   ).concat(emptyRow as any)
 
-  const [rows, dispatch] = useReducer(dataPointsReducer, dataPointRows)
-  //TODO: Using this as undo only works once (not after editing the same row multiple times)
-  const [initialRows, setInitialRows] = useState<TableDataRow[]>(dataPointRows)
+  const initialState: DataPointsState = {
+    rows: dataPointRows,
+    prevRows: []
+  }
+
+  const [state, dispatch] = useReducer(dataPointsReducer, initialState)
 
   useEffect(() => {
-    updateDataPoints(rows.filter(item => !item.isNew) as TableDataRow[])
-  }, [rows])
+    updateDataPoints(state.rows.filter(item => !item.isNew) as TableDataRow[])
+  }, [state.rows])
 
   function toggleEditMode(rowIndex: number) {
     dispatch({ type: DATA_POINTS_TABLE_EDIT_TOGGLED, payload: rowIndex })
+
+    /*let prevRowsEdited: TableDataRow[] = prevRows.slice()
+    prevRowsEdited.map((item, i) => {
+      if (i !== rowIndex) {
+        return item
+      } else {
+        rows[rowIndex]
+      }
+    })
+    setPrevRows(prevRowsEdited)
+    console.log('prevRows', prevRows)*/
   }
 
-  function cancelEdit(initialRows: TableDataRow[], rowIndex: number) {
-    dispatch({ type: DATA_POINTS_TABLE_EDIT_CANCELLED, payload: { initialRows, rowIndex } })
+  function cancelEdit(prevRows: TableDataRow[], rowIndex: number) {
+    dispatch({ type: DATA_POINTS_TABLE_EDIT_CANCELLED, payload: { prevRows, rowIndex } })
   }
 
   function edit(editValue: string, rowIndex: number, itemIndex: number) {
@@ -109,11 +123,11 @@ export default function DataPoints(props: DataPointProps) {
           
         {combinedVariables.length > 0 &&
           <EditableTable
-            rows={rows as TableDataRow[]}
+            rows={state.rows as TableDataRow[]}
             useArrayForValue={SCORE}
             onEdit={(editValue: string, rowIndex: number, itemIndex: number) => edit(editValue, rowIndex, itemIndex)}
             onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
-            onEditCancel={(rowIndex: number) => cancelEdit(initialRows, rowIndex)}
+            onEditCancel={(rowIndex: number) => cancelEdit(state.prevRows, rowIndex)}
             onToggleEditMode={(rowIndex: number) => toggleEditMode(rowIndex)}
             onDelete={(rowIndex: number) => deleteRow(rowIndex)} />
         }

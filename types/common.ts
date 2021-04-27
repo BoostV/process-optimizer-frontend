@@ -20,6 +20,7 @@ export type Info = {
   description: string
 }
 
+//TODO split
 export type VariableType = {
   name: string
   description: string
