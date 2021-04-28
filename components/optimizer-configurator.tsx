@@ -23,6 +23,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
           <TextField
             disabled
             fullWidth
+            margin="dense"
             defaultValue={config.baseEstimator}
             name="baseEstimator"
             label="Base estimator"
@@ -31,6 +32,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
           <TextField
             disabled
             fullWidth
+            margin="dense"
             defaultValue={config.acqFunc}
             name="acqFunc"
             label="Acq func"
@@ -38,6 +40,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
           />
           <TextField
             fullWidth
+            margin="dense"
             defaultValue={config.initialPoints}
             name="initialPoints"
             label="N initial points"
@@ -45,6 +48,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
           />
           <TextField
             fullWidth
+            margin="dense"
             defaultValue={config.kappa}
             name="kappa"
             label="Kappa"
@@ -52,6 +56,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
           />
           <TextField
             fullWidth
+            margin="dense"
             defaultValue={config.xi}
             name="xi"
             label="Xi"

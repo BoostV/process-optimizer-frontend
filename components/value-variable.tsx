@@ -21,24 +21,28 @@ export default function ValueVariable(props: ValueVariableProps) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             fullWidth
+            margin="dense"
             name="name" 
             label="Name" 
             inputRef={register}
             />
           <TextField
             fullWidth
+            margin="dense"
             name="description"
             label="Description"
             inputRef={register}
           />
           <TextField
             fullWidth
+            margin="dense"
             name="minVal"
             label="minVal"
             inputRef={register}
           />
           <TextField
             fullWidth
+            margin="dense"
             name="maxVal"
             label="maxVal"
             inputRef={register}

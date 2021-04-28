@@ -34,12 +34,14 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField 
             fullWidth
+            margin="dense"
             name="name" 
             label="Name"
             inputRef={register}
             />
           <TextField
             fullWidth
+            margin="dense"
             name="description"
             label="Description"
             inputRef={register}

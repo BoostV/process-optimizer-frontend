@@ -17,6 +17,7 @@ export default function ModelEditor(props: ModelEditorProps) {
         <form>
           <TextField 
             fullWidth
+            margin="dense"
             name="name" 
             label="Name" 
             value={info.name}
@@ -25,6 +26,7 @@ export default function ModelEditor(props: ModelEditorProps) {
           />
           <TextField
             fullWidth
+            margin="dense"
             name="info.description"
             label="Description"
             value={info.description}
