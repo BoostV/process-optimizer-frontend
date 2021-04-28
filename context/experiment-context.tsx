@@ -1,5 +1,6 @@
 import * as React from 'react'
 import useSwr from 'swr'
+import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
 import { Dispatch, rootReducer } from '../reducers/reducers'
 import { initialState, State } from '../store'
 import { ExperimentResultType, ExperimentType } from '../types/common'
@@ -15,8 +16,8 @@ const ExperimentContext = React.createContext<
     { state: State, dispatch: Dispatch } | undefined
 >(undefined)
 
-function ExperimentProvider({ experimentId, children }) {
-    const [state, dispatch] = React.useReducer(rootReducer, initialState)
+function ExperimentProvider({ experimentId, useLocalStorage=false, children }) {
+    const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialState) : React.useReducer(rootReducer, initialState)
 
     const { data: experiment, error }: ExperimentLoadResponse = useSwr(`/api/experiment/${experimentId}`, fetcher, 
     {
