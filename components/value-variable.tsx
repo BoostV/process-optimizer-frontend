@@ -1,4 +1,4 @@
-import { Button, TextField } from '@material-ui/core'
+import { Box, Button, TextField } from '@material-ui/core'
 import { useForm } from 'react-hook-form';
 import { ValueVariableType } from '../types/common';
 
@@ -25,33 +25,27 @@ export default function ValueVariable(props: ValueVariableProps) {
             label="Name" 
             inputRef={register}
             />
-            <br />
-            <br />
           <TextField
             fullWidth
             name="description"
             label="Description"
             inputRef={register}
           />
-          <br />
-          <br />
           <TextField
             fullWidth
             name="minVal"
             label="minVal"
             inputRef={register}
           />
-          <br />
-          <br />
           <TextField
             fullWidth
             name="maxVal"
             label="maxVal"
             inputRef={register}
           />
-          <br />
-          <br />
-          <Button disabled={isDisabled} variant="outlined" type="submit">Add</Button>
+          <Box mt={1}>
+            <Button disabled={isDisabled} variant="outlined" type="submit">Add</Button>
+          </Box>
         </form>
       </>
   )

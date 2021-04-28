@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
 import { CategoricalVariableType, ExperimentType, ValueVariableType } from '../types/common'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { ReactNode, useState } from 'react'
@@ -56,9 +56,7 @@ export default function OptimizerModel(props: OptimizerModelProps) {
         }
 
         {categoricalVariables.length > 0 &&
-          <>
-            <br/>
-            <br/>
+          <Box mt={2} mb={2}>
             <Table size="small">
               <TableHead>
                 <TableRow>
@@ -92,10 +90,8 @@ export default function OptimizerModel(props: OptimizerModelProps) {
                 ))}
               </TableBody>
             </Table>
-          </>
+          </Box>
         }
-        <br/>
-        <br/>
         {!isAddOpen &&
           <Button  
             disabled={dataPoints.length > 0} 
@@ -112,12 +108,11 @@ export default function OptimizerModel(props: OptimizerModelProps) {
         }
 
         {dataPoints.length > 0 && 
-          <div>
-            <br/>
+          <Box mt={2}>
             <Typography variant="body2" color="textSecondary">
               Note: Model cannot be updated while there are data points
             </Typography>
-          </div>
+          </Box>
         }
       </CardContent>
     </Card>

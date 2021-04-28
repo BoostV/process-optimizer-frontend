@@ -1,4 +1,4 @@
-import { Button, IconButton, TextField, Typography } from '@material-ui/core';
+import { Box, Button, IconButton, TextField, Typography } from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -38,35 +38,35 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
             label="Name"
             inputRef={register}
             />
-            <br />
-            <br />
           <TextField
             fullWidth
             name="description"
             label="Description"
             inputRef={register}
           />
-          <br />
-          <br />
           
-          <Typography>Options</Typography>
-          {options.map((option, index) => (
-            <div key={index}>
-              <div className={classes.option}>
-                <Typography variant="body1">{option}</Typography>
-                <IconButton onClick={() => deleteOption(index)} size="small" aria-label="delete" color="primary">
-                  <DeleteIcon /> 
-                </IconButton>
+          <Box mt={2}>
+            <Typography>Options</Typography>
+            {options.map((option, index) => (
+              <div key={index}>
+                <div className={classes.option}>
+                  <Typography variant="body1">{option}</Typography>
+                  <IconButton onClick={() => deleteOption(index)} size="small" aria-label="delete" color="primary">
+                    <DeleteIcon /> 
+                  </IconButton>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </Box>
 
           <CategoricalVariableOptions onOptionAdded={(option: String) => {
             setOptions([...options, option])
           }}/>
           
-          <br />
-          <Button disabled={isDisabled} variant="outlined" type="submit">Add</Button>
+          <Box mt={1}>
+            <Button disabled={isDisabled} variant="outlined" type="submit">Add</Button>
+          </Box>
+          
         </form>
     </>
   )
