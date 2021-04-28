@@ -51,8 +51,10 @@ export function EditableTable(props: EditableTableProps) {
                       size="small"
                       aria-label="confirm edit"
                       onClick={() => onEditConfirm(row, rowIndex)}>
-                      {row.isNew ? <AddIcon color="primary" /> : 
-                      <CheckCircleIcon fontSize="small" color="primary" />}
+                      {row.isNew ? 
+                        <AddIcon fontSize="small" color="primary" /> : 
+                        <CheckCircleIcon fontSize="small" color="primary" />
+                      }
                     </IconButton>
                     <IconButton
                       size="small"
