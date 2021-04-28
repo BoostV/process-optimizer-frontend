@@ -1,4 +1,5 @@
-import { ExperimentAction, rootReducer } from "../../reducers/reducers";
+import { ExperimentAction } from "../../reducers/experiment-reducers";
+import { rootReducer } from "../../reducers/reducers";
 import { State } from "../../store";
 import { CategoricalVariableType, DataPointType, ExperimentResultType, ExperimentType, OptimizerConfig, ValueVariableType } from "../../types/common";
 
