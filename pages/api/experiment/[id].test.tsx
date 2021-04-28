@@ -1,5 +1,5 @@
 import { createMocks } from 'node-mocks-http'
-import handleExperimentId from '../../../pages/api/experiment/[id]'
+import handleExperimentId from './[id]'
 import path from 'path'
 import fs from 'fs'
 import rimraf from 'rimraf'

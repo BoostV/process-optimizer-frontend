@@ -1,5 +1,5 @@
-import { dataPointsReducer, DataPointsState, DataPointsTableEditCancelledAction, DataPointsTableEditedAction, DataPointsTableEditToggledAction, DataPointsTableRowAddedAction, DataPointsTableRowDeletedAction, DataPointsTableUpdatedAction, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED, DATA_POINTS_TABLE_UPDATED } from "../../reducers/data-points-reducer"
-import { TableDataRow } from "../../types/common"
+import { dataPointsReducer, DataPointsState, DataPointsTableEditCancelledAction, DataPointsTableEditedAction, DataPointsTableEditToggledAction, DataPointsTableRowAddedAction, DataPointsTableRowDeletedAction, DataPointsTableUpdatedAction, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED, DATA_POINTS_TABLE_UPDATED } from "./data-points-reducer"
+import { TableDataRow } from "../types/common"
 
 describe("data points reducer", () => {
   

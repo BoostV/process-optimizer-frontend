@@ -1,6 +1,6 @@
-import { initialState } from "../../store"
-import { ExperimentType } from "../../types/common"
-import { calculateSpace, calculateData } from "../../utility/converters"
+import { initialState } from "../store"
+import { ExperimentType } from "../types/common"
+import { calculateSpace, calculateData } from "./converters"
 
 describe("converters", () => {
     const sampleExperiment: ExperimentType = {...initialState.experiment,
