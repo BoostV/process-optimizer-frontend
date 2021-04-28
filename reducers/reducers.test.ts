@@ -125,7 +125,7 @@ describe("experiment reducer", () => {
     }
 
     const action: ExperimentAction = {
-      type: 'addVariableValue',
+      type: 'addValueVariable',
       payload
     }
 
@@ -151,7 +151,7 @@ describe("experiment reducer", () => {
     }
 
     const action: ExperimentAction = {
-      type: 'deleteVariableValue',
+      type: 'deleteValueVariable',
       payload
     }
 

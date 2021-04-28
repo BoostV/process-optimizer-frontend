@@ -108,9 +108,9 @@ export default function Experiment() {
                                 <Grid item xs={12}>
                                     <OptimizerModel
                                         experiment={experiment}
-                                        onDeleteValueVariable={(valueVariable: ValueVariableType) => { dispatch({ type: 'deleteVariableValue', payload: valueVariable }) }}
+                                        onDeleteValueVariable={(valueVariable: ValueVariableType) => { dispatch({ type: 'deleteValueVariable', payload: valueVariable }) }}
                                         onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => { dispatch({ type: 'deleteCategorialVariable', payload: categoricalVariable }) }}
-                                        addValueVariable={(valueVariable: ValueVariableType) => dispatch({ type: 'addVariableValue', payload: valueVariable })}
+                                        addValueVariable={(valueVariable: ValueVariableType) => dispatch({ type: 'addValueVariable', payload: valueVariable })}
                                         addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => dispatch({ type: 'addCategorialVariable', payload: categoricalVariable })} />
                                 </Grid>
                                 <Grid item xs={12}>

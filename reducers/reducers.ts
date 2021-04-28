@@ -12,8 +12,8 @@ export const rootReducer = (state: State, action: Action) => {
     case 'updateExperimentDescription':
     case 'addCategorialVariable':
     case 'deleteCategorialVariable':
-    case 'addVariableValue':
-    case 'deleteVariableValue':
+    case 'addValueVariable':
+    case 'deleteValueVariable':
     case 'updateConfiguration':
     case 'registerResult':
     case 'addDataPoints':

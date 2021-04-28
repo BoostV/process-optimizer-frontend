@@ -13,11 +13,11 @@ export type ExperimentAction =
         payload: CategoricalVariableType
     }
     | {
-        type: 'addVariableValue'
+        type: 'addValueVariable'
         payload: ValueVariableType
     }
     | {
-        type: 'deleteVariableValue'
+        type: 'deleteValueVariable'
         payload: ValueVariableType
     }
     | {
@@ -67,14 +67,14 @@ export const experimentReducer = (experimentState: ExperimentType, action: Exper
                     description: action.payload
                 }
             }
-        case 'addVariableValue':
+        case 'addValueVariable':
             let varsAfterAdd: ValueVariableType[] = experimentState.valueVariables.slice()
             varsAfterAdd.splice(experimentState.valueVariables.length, 0, action.payload)
             return {
                 ...experimentState,
                 valueVariables: varsAfterAdd
             }
-        case 'deleteVariableValue':
+        case 'deleteValueVariable':
             let varsAfterDelete: ValueVariableType[] = experimentState.valueVariables.slice()
             let indexOfDelete = experimentState.valueVariables.indexOf(action.payload)
             varsAfterDelete.splice(indexOfDelete, 1)
