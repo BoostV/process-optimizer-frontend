@@ -89,7 +89,7 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
           } else {
             return {
               ...state.prevRows[rowIndexEditCancelled],
-              isEditMode: false
+              isEditMode: row.isNew
             }
           }
         })

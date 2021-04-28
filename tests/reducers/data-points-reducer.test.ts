@@ -106,6 +106,47 @@ describe("data points reducer", () => {
         rows: initState.prevRows
       })
     })
+
+    it("should set row to prevRow but not toggle edit mode for new row", async () => {
+      const payload = 0
+
+      const action: DataPointsTableEditCancelledAction = {
+        type: DATA_POINTS_TABLE_EDIT_CANCELLED,
+        payload
+      }
+
+      const initState: DataPointsState = {
+        prevRows: [
+          {
+            dataPoints: [
+              {
+                name: "Water",
+                value: ""
+              }
+            ],
+            isEditMode: true,
+            isNew: true,
+          }
+        ],
+        rows: [
+          {
+            dataPoints: [
+              {
+                name: "Water",
+                value: "100"
+              }
+            ],
+            isEditMode: true,
+            isNew: true,
+          }
+        ]
+      }
+      expect(dataPointsReducer(initState, action)).toEqual({
+        prevRows: initState.prevRows,
+        rows: initState.prevRows
+      })
+    })
+
   })
 
   describe("DataPointsTableEditedAction", () => {
