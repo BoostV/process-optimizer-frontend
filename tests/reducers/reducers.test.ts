@@ -74,7 +74,7 @@ describe("experiment reducer", () => {
     }
 
     const action: ExperimentAction = {
-      type: 'EXPERIMENT_UPDATED',
+      type: 'updateExperiment',
       payload
     }
 
@@ -85,7 +85,7 @@ describe("experiment reducer", () => {
 
   it("should update name", async () => {
     const action: ExperimentAction = {
-      type: 'EXPERIMENT_NAME_UPDATED',
+      type: 'updateExperimentName',
       payload: "Muffins"
     }
 
@@ -102,7 +102,7 @@ describe("experiment reducer", () => {
 
   it("should update description", async () => {
     const action: ExperimentAction = {
-      type: 'EXPERIMENT_DESCRIPTION_UPDATED',
+      type: 'updateExperimentDescription',
       payload: "Tasty"
     }
 
@@ -125,7 +125,7 @@ describe("experiment reducer", () => {
     }
 
     const action: ExperimentAction = {
-      type: 'VALUE_VARIABLE_ADDED',
+      type: 'addVariableValue',
       payload
     }
 
@@ -151,7 +151,7 @@ describe("experiment reducer", () => {
     }
 
     const action: ExperimentAction = {
-      type: 'VALUE_VARIABLE_DELETED',
+      type: 'deleteVariableValue',
       payload
     }
 
@@ -170,7 +170,7 @@ describe("experiment reducer", () => {
     }
 
     const action: ExperimentAction = {
-      type: 'CATEGORICAL_VARIABLE_ADDED',
+      type: 'addCategorialVariable',
       payload
     }
 
@@ -194,7 +194,7 @@ describe("experiment reducer", () => {
     }
 
     const action: ExperimentAction = {
-      type: 'CATEGORICAL_VARIABLE_DELETED',
+      type: 'deleteCategorialVariable',
       payload
     }
 
@@ -215,7 +215,7 @@ describe("experiment reducer", () => {
     }
 
     const action: ExperimentAction = {
-      type: 'CONFIGURATION_UPDATED',
+      type: 'updateConfiguration',
       payload
     }
 
@@ -237,7 +237,7 @@ describe("experiment reducer", () => {
       }
   
       const action: ExperimentAction = {
-        type: 'RESULT_REGISTERED',
+        type: 'registerResult',
         payload: payload
       }
   
@@ -265,7 +265,7 @@ describe("experiment reducer", () => {
       ]
   
       const action: ExperimentAction = {
-        type: 'DATA_POINTS_UPDATED',
+        type: 'updateDataPoints',
         payload
       }
   

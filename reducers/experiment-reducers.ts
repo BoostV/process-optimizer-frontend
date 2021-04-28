@@ -1,57 +1,57 @@
 import { CategoricalVariableType, DataPointType, ExperimentResultType, ExperimentType, OptimizerConfig, ValueVariableType } from "../types/common"
 export type ExperimentAction =
     | {
-        type: 'RESULT_REGISTERED'
+        type: 'registerResult'
         payload: ExperimentResultType
     }
     | {
-        type: 'CATEGORICAL_VARIABLE_ADDED'
+        type: 'addCategorialVariable'
         payload: CategoricalVariableType
     }
     | {
-        type: 'CATEGORICAL_VARIABLE_DELETED'
+        type: 'deleteCategorialVariable'
         payload: CategoricalVariableType
     }
     | {
-        type: 'VALUE_VARIABLE_ADDED'
+        type: 'addVariableValue'
         payload: ValueVariableType
     }
     | {
-        type: 'VALUE_VARIABLE_DELETED'
+        type: 'deleteVariableValue'
         payload: ValueVariableType
     }
     | {
-        type: 'EXPERIMENT_UPDATED'
+        type: 'updateExperiment'
         payload: ExperimentType
     }
     | {
-        type: 'EXPERIMENT_NAME_UPDATED'
+        type: 'updateExperimentName'
         payload: string
     }
     | {
-        type: 'EXPERIMENT_DESCRIPTION_UPDATED'
+        type: 'updateExperimentDescription'
         payload: string
     }
     | {
-        type: 'CONFIGURATION_UPDATED'
+        type: 'updateConfiguration'
         payload: OptimizerConfig
     }
     | {
-        type: 'DATA_POINTS_ADDED'
+        type: 'addDataPoints'
         payload: DataPointType[]
     }
     | {
-        type: 'DATA_POINTS_UPDATED'
+        type: 'updateDataPoints'
         payload: DataPointType[][]
     }
 
 export const experimentReducer = (experimentState: ExperimentType, action: ExperimentAction) => {
     switch (action.type) {
-        case 'EXPERIMENT_UPDATED':
+        case 'updateExperiment':
             return {
                 ...action.payload
             }
-        case 'EXPERIMENT_NAME_UPDATED':
+        case 'updateExperimentName':
             return {
                 ...experimentState,
                 info: {
@@ -59,7 +59,7 @@ export const experimentReducer = (experimentState: ExperimentType, action: Exper
                     name: action.payload
                 }
             }
-        case 'EXPERIMENT_DESCRIPTION_UPDATED':
+        case 'updateExperimentDescription':
             return {
                 ...experimentState,
                 info: {
@@ -67,14 +67,14 @@ export const experimentReducer = (experimentState: ExperimentType, action: Exper
                     description: action.payload
                 }
             }
-        case 'VALUE_VARIABLE_ADDED':
+        case 'addVariableValue':
             let varsAfterAdd: ValueVariableType[] = experimentState.valueVariables.slice()
             varsAfterAdd.splice(experimentState.valueVariables.length, 0, action.payload)
             return {
                 ...experimentState,
                 valueVariables: varsAfterAdd
             }
-        case 'VALUE_VARIABLE_DELETED':
+        case 'deleteVariableValue':
             let varsAfterDelete: ValueVariableType[] = experimentState.valueVariables.slice()
             let indexOfDelete = experimentState.valueVariables.indexOf(action.payload)
             varsAfterDelete.splice(indexOfDelete, 1)
@@ -82,14 +82,14 @@ export const experimentReducer = (experimentState: ExperimentType, action: Exper
                 ...experimentState,
                 valueVariables: varsAfterDelete
             }
-        case 'CATEGORICAL_VARIABLE_ADDED':
+        case 'addCategorialVariable':
             let catVarsAfterAdd: CategoricalVariableType[] = experimentState.categoricalVariables.slice()
             catVarsAfterAdd.splice(experimentState.categoricalVariables.length, 0, action.payload)
             return {
                 ...experimentState,
                 categoricalVariables: catVarsAfterAdd
             }
-        case 'CATEGORICAL_VARIABLE_DELETED':
+        case 'deleteCategorialVariable':
             let catVarsAfterDelete: CategoricalVariableType[] = experimentState.categoricalVariables.slice()
             let indexOfCatDelete = experimentState.categoricalVariables.indexOf(action.payload)
             catVarsAfterDelete.splice(indexOfCatDelete, 1)
@@ -97,17 +97,17 @@ export const experimentReducer = (experimentState: ExperimentType, action: Exper
                 ...experimentState,
                 categoricalVariables: catVarsAfterDelete
             }
-        case 'CONFIGURATION_UPDATED':
+        case 'updateConfiguration':
             return {
                 ...experimentState,
                 optimizerConfig: action.payload
             }
-        case 'RESULT_REGISTERED':
+        case 'registerResult':
             return {
                 ...experimentState,
                 results: action.payload
             }
-        case 'DATA_POINTS_UPDATED':
+        case 'updateDataPoints':
             return {
                 ...experimentState,
                 dataPoints: action.payload

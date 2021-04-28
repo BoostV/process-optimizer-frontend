@@ -77,8 +77,8 @@ export default function Experiment() {
                                 <Grid item xs={12}>
                                     <ModelEditor
                                         info={experiment.info}
-                                        updateName={(name: string) => dispatch({ type: 'EXPERIMENT_NAME_UPDATED', payload: name })}
-                                        updateDescription={(description: string) => dispatch({ type: 'EXPERIMENT_DESCRIPTION_UPDATED', payload: description })} />
+                                        updateName={(name: string) => dispatch({ type: 'updateExperimentName', payload: name })}
+                                        updateDescription={(description: string) => dispatch({ type: 'updateExperimentDescription', payload: description })} />
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -97,7 +97,7 @@ export default function Experiment() {
                                 <Grid item xs={12}>
                                     <OptimizerConfigurator
                                         config={experiment.optimizerConfig}
-                                        onConfigUpdated={(config: OptimizerConfig) => dispatch({ type: 'CONFIGURATION_UPDATED', payload: config })} />
+                                        onConfigUpdated={(config: OptimizerConfig) => dispatch({ type: 'updateConfiguration', payload: config })} />
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -108,15 +108,15 @@ export default function Experiment() {
                                 <Grid item xs={12}>
                                     <OptimizerModel
                                         experiment={experiment}
-                                        onDeleteValueVariable={(valueVariable: ValueVariableType) => { dispatch({ type: 'VALUE_VARIABLE_DELETED', payload: valueVariable }) }}
-                                        onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => { dispatch({ type: 'CATEGORICAL_VARIABLE_DELETED', payload: categoricalVariable }) }}
-                                        addValueVariable={(valueVariable: ValueVariableType) => dispatch({ type: 'VALUE_VARIABLE_ADDED', payload: valueVariable })}
-                                        addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => dispatch({ type: 'CATEGORICAL_VARIABLE_ADDED', payload: categoricalVariable })} />
+                                        onDeleteValueVariable={(valueVariable: ValueVariableType) => { dispatch({ type: 'deleteVariableValue', payload: valueVariable }) }}
+                                        onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => { dispatch({ type: 'deleteCategorialVariable', payload: categoricalVariable }) }}
+                                        addValueVariable={(valueVariable: ValueVariableType) => dispatch({ type: 'addVariableValue', payload: valueVariable })}
+                                        addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => dispatch({ type: 'addCategorialVariable', payload: categoricalVariable })} />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <DataPoints
                                         experiment={experiment}
-                                        onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'DATA_POINTS_UPDATED', payload: dataPoints })} />
+                                        onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
                                 </Grid>
                                 <Grid item xs={12}>
                                     {experiment.results.plots.length > 0 &&

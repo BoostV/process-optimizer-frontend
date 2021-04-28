@@ -22,7 +22,7 @@ function ExperimentProvider({ experimentId, children }) {
     {
       onSuccess: (data: ExperimentType) => {
         dispatch({
-            type: 'EXPERIMENT_UPDATED',
+            type: 'updateExperiment',
             payload: data
         })
       },
@@ -48,7 +48,7 @@ async function saveExperiment(experiment: ExperimentType) {
 async function runExperiment(dispatch: Dispatch, experiment: ExperimentType) {
     const response: Response = await fetch(`/api/experiment/${experiment.id}`, { method: 'POST', body: JSON.stringify(experiment) })
     const result: ExperimentResultType = await response.json()
-    dispatch({ type: 'RESULT_REGISTERED', payload: result })
+    dispatch({ type: 'registerResult', payload: result })
 }
 
 export { ExperimentProvider, useExperiment, saveExperiment, runExperiment }
