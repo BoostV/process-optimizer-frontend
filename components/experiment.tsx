@@ -20,11 +20,11 @@ export default function Experiment() {
     const [isDirty, setDirty] = useState(false)
     const [isSnackbarOpen, setSnackbarOpen] = useState(false)
 
-      useEffect(() => {
+    useEffect(() => {
         if (lastSavedExperiment && JSON.stringify(lastSavedExperiment) !== JSON.stringify(experiment)) {
-          setDirty(true)
+            setDirty(true)
         }
-      }, [experiment])
+    }, [experiment])
 
     const onSave = async () => {
         try {
@@ -107,7 +107,9 @@ export default function Experiment() {
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <OptimizerModel
-                                        experiment={experiment}
+                                        valueVariables={experiment.valueVariables}
+                                        categoricalVariables={experiment.categoricalVariables}
+                                        disabled={experiment.dataPoints.length > 0}
                                         onDeleteValueVariable={(valueVariable: ValueVariableType) => { dispatch({ type: 'deleteValueVariable', payload: valueVariable }) }}
                                         onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => { dispatch({ type: 'deleteCategorialVariable', payload: categoricalVariable }) }}
                                         addValueVariable={(valueVariable: ValueVariableType) => dispatch({ type: 'addValueVariable', payload: valueVariable })}
