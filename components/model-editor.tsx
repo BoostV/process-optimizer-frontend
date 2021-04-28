@@ -17,24 +17,22 @@ export default function ModelEditor(props: ModelEditorProps) {
         <form>
           <TextField 
             fullWidth
+            margin="dense"
             name="name" 
             label="Name" 
             value={info.name}
             required
             onChange={(e: ChangeEvent) => props.updateName((e.target as HTMLInputElement).value)}
           />
-          <br/>
-          <br/>
           <TextField
             fullWidth
+            margin="dense"
             name="info.description"
             label="Description"
             value={info.description}
             required
             onChange={(e: ChangeEvent) => props.updateDescription((e.target as HTMLInputElement).value)}
           />
-          <br />
-          <br />
         </form>
       </CardContent>
     </Card>

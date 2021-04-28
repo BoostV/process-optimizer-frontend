@@ -1,18 +1,21 @@
 import CategoricalVariable from './categorical-variable';
 import ValueVariable from './value-variable';
-import { Card, CardContent, Grid, IconButton, Radio, Typography } from "@material-ui/core"
+import { Box, Card, CardContent, Grid, IconButton, Radio, Typography } from "@material-ui/core"
 import CloseIcon from "@material-ui/icons/Close";
 import { useState } from "react"
 import useStyles from '../styles/variable-editor.style';
 import { CategoricalVariableType, ValueVariableType } from '../types/common';
 
 type VariableEditorProps = {
+  isAddVariableDisabled: boolean
   addValueVariable: (valueVariable: ValueVariableType) => void
   addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
   close: () => void
 }
 
 export default function VariableEditor(props: VariableEditorProps) {
+  const { isAddVariableDisabled, addValueVariable, addCategoricalVariable, close } = props
+
   const [radioIndex, setRadioIndex] = useState(0)
   const classes = useStyles()
 
@@ -30,7 +33,7 @@ export default function VariableEditor(props: VariableEditorProps) {
               </Grid>
 
               <Grid item xs={1}>
-                <IconButton size="small" onClick={() => props.close()}>
+                <IconButton size="small" onClick={() => close()}>
                   <CloseIcon/>
                 </IconButton>
               </Grid>
@@ -50,14 +53,18 @@ export default function VariableEditor(props: VariableEditorProps) {
                 <Typography>Categorical</Typography>
               </Grid>
               <Grid item xs={12}>
-                <br/>
-                <br/>
-                {radioIndex === 0 &&
-                  <ValueVariable onAdded={(valueVariable: ValueVariableType) => props.addValueVariable(valueVariable)} />
-                }
-                {radioIndex === 1 &&
-                  <CategoricalVariable onAdded={(categoricalVariable: CategoricalVariableType) => props.addCategoricalVariable(categoricalVariable)} />
-                }
+                <Box mt={2}>
+                  {radioIndex === 0 &&
+                    <ValueVariable 
+                      isDisabled={isAddVariableDisabled}
+                      onAdded={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)} />
+                  }
+                  {radioIndex === 1 &&
+                    <CategoricalVariable 
+                      isDisabled={isAddVariableDisabled}
+                      onAdded={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)} />
+                  }
+                </Box>
               </Grid>
             </Grid>
           </CardContent>

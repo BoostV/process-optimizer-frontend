@@ -1,16 +1,18 @@
-import { Button, TextField } from '@material-ui/core'
+import { Box, Button, TextField } from '@material-ui/core'
 import { useForm } from 'react-hook-form';
 import { ValueVariableType } from '../types/common';
 
 type ValueVariableProps = {
+  isDisabled: boolean
   onAdded: (data: ValueVariableType) => void
 }
 
 export default function ValueVariable(props: ValueVariableProps) {
+  const { isDisabled, onAdded } = props
 
   const { register, handleSubmit, reset, watch, errors } = useForm<ValueVariableType>();
   const onSubmit = async (data: ValueVariableType) => {
-    props.onAdded(data)
+    onAdded(data)
     reset()
   }
 
@@ -19,37 +21,35 @@ export default function ValueVariable(props: ValueVariableProps) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             fullWidth
+            margin="dense"
             name="name" 
             label="Name" 
             inputRef={register}
             />
-            <br />
-            <br />
           <TextField
             fullWidth
+            margin="dense"
             name="description"
             label="Description"
             inputRef={register}
           />
-          <br />
-          <br />
           <TextField
             fullWidth
+            margin="dense"
             name="minVal"
             label="minVal"
             inputRef={register}
           />
-          <br />
-          <br />
           <TextField
             fullWidth
+            margin="dense"
             name="maxVal"
             label="maxVal"
             inputRef={register}
           />
-          <br />
-          <br />
-          <Button variant="outlined" type="submit">Add variable</Button>
+          <Box mt={1}>
+            <Button disabled={isDisabled} variant="outlined" type="submit">Add</Button>
+          </Box>
         </form>
       </>
   )

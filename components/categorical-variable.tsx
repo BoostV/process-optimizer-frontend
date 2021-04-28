@@ -1,4 +1,4 @@
-import { Button, IconButton, TextField, Typography } from '@material-ui/core';
+import { Box, Button, IconButton, TextField, Typography } from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -7,16 +7,18 @@ import { useStyles } from '../styles/categorical-variable.style';
 import { CategoricalVariableType } from '../types/common';
 
 type CategoricalVariableProps = {
+  isDisabled: boolean
   onAdded: (data: CategoricalVariableType) => void
 }
 
 export default function CategoricalVariable(props: CategoricalVariableProps) {
   const classes = useStyles()
   const [options, setOptions] = useState([])
+  const { isDisabled, onAdded } = props
 
   const { register, handleSubmit, reset, watch, errors } = useForm<CategoricalVariableType>();
   const onSubmit = async (data: CategoricalVariableType) => {
-    props.onAdded({...data, options})
+    onAdded({...data, options})
     setOptions([])
     reset()
   }
@@ -32,39 +34,41 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField 
             fullWidth
+            margin="dense"
             name="name" 
             label="Name"
             inputRef={register}
             />
-            <br />
-            <br />
           <TextField
             fullWidth
+            margin="dense"
             name="description"
             label="Description"
             inputRef={register}
           />
-          <br />
-          <br />
           
-          <Typography>Options</Typography>
-          {options.map((option, index) => (
-            <div key={index}>
-              <div className={classes.option}>
-                <Typography variant="body1">{option}</Typography>
-                <IconButton onClick={() => deleteOption(index)} size="small" aria-label="delete" color="primary">
-                  <DeleteIcon /> 
-                </IconButton>
+          <Box mt={2}>
+            <Typography>Options</Typography>
+            {options.map((option, index) => (
+              <div key={index}>
+                <div className={classes.option}>
+                  <Typography variant="body1">{option}</Typography>
+                  <IconButton onClick={() => deleteOption(index)} size="small" aria-label="delete" color="primary">
+                    <DeleteIcon /> 
+                  </IconButton>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </Box>
 
           <CategoricalVariableOptions onOptionAdded={(option: String) => {
             setOptions([...options, option])
           }}/>
           
-          <br />
-          <Button type="submit" variant="outlined">Add variable</Button>
+          <Box mt={1}>
+            <Button disabled={isDisabled} variant="outlined" type="submit">Add</Button>
+          </Box>
+          
         </form>
     </>
   )

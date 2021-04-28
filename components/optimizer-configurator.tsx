@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, TextField, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, TextField, Typography } from '@material-ui/core'
 import { useForm } from 'react-hook-form';
 import { OptimizerConfig } from '../types/common';
 
@@ -22,47 +22,49 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
 
           <TextField
             disabled
+            fullWidth
+            margin="dense"
             defaultValue={config.baseEstimator}
             name="baseEstimator"
             label="Base estimator"
             inputRef={register}
           />
-          <br />
-          <br />
           <TextField
             disabled
+            fullWidth
+            margin="dense"
             defaultValue={config.acqFunc}
             name="acqFunc"
             label="Acq func"
             inputRef={register}
           />
-          <br />
-          <br />
           <TextField
+            fullWidth
+            margin="dense"
             defaultValue={config.initialPoints}
             name="initialPoints"
             label="N initial points"
             inputRef={register}
           />
-          <br />
-          <br />
           <TextField
-          defaultValue={config.kappa}
+            fullWidth
+            margin="dense"
+            defaultValue={config.kappa}
             name="kappa"
             label="Kappa"
             inputRef={register}
           />
-          <br />
-          <br />
           <TextField
+            fullWidth
+            margin="dense"
             defaultValue={config.xi}
             name="xi"
             label="Xi"
             inputRef={register}
           />
-          <br/>
-          <br/>
-          <Button variant="outlined" type="submit">Update</Button>
+          <Box mt={1}>
+            <Button variant="outlined" type="submit">Update</Button>
+          </Box>
         </form>
       </CardContent>
     </Card>

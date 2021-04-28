@@ -116,7 +116,7 @@ export default function Experiment() {
     <Layout>
       <Card className={[classes.experimentContainer, isDirty ? classes.experimentContainerDirty : ''].join(' ')}>
         <CardContent>
-          <Grid container spacing={3}>
+          <Grid container spacing={2}>
             
             <Grid item xs={10}>
               <Typography variant="body2">
@@ -134,56 +134,70 @@ export default function Experiment() {
             </Grid>
 
             <Grid item xs={3}>
-              <ModelEditor 
-                info={state.experiment.info}
-                updateName={(name: string) => updateName(name)}
-                updateDescription={(description: string) => updateDescription(description)} />
-              <br/>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">
-                    Next experiment
-                  </Typography>
-                  <Typography variant="body2">
-                    {state.experiment.results.next && state.experiment.results.next.join(',')}
-                  </Typography>
-                </CardContent>
-              </Card>
-              <br/>
-              <OptimizerConfigurator 
-                config={state.experiment.optimizerConfig} 
-                onConfigUpdated={(config: OptimizerConfig) => updateOptimizerConfiguration(config)}/>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <ModelEditor 
+                    info={state.experiment.info}
+                    updateName={(name: string) => updateName(name)}
+                    updateDescription={(description: string) => updateDescription(description)} />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6">
+                        Next experiment
+                      </Typography>
+                      <Typography variant="body2">
+                        {state.experiment.results.next && state.experiment.results.next.join(',')}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <OptimizerConfigurator 
+                    config={state.experiment.optimizerConfig} 
+                    onConfigUpdated={(config: OptimizerConfig) => updateOptimizerConfiguration(config)}/>
+                </Grid>
+              </Grid>
             </Grid>
 
             <Grid item xs={8} lg={7}>
-              <OptimizerModel 
-                experiment={state.experiment}
-                onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} 
-                onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => {deleteCategoricalVariable(categoricalVariable)}}
-                addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}
-                addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)}/>
-              <br/>
-              <DataPoints 
-                experiment={state.experiment}
-                onUpdateDataPoints={(dataPoints: DataPointType[][]) => updateDataPoints(dataPoints)}/>
-              <br/>
-              {state.experiment.results.plots.length > 0 &&
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      Plots
-                    </Typography>
-                    <ul>
-                      {state.experiment.results.plots && state.experiment.results.plots.map(plot =>  <li><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
-                    </ul>
-                  </CardContent>
-                </Card>
-              }
+
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <OptimizerModel 
+                    experiment={state.experiment}
+                    onDeleteValueVariable={(valueVariable: ValueVariableType) => {deleteValueVariable(valueVariable)}} 
+                    onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => {deleteCategoricalVariable(categoricalVariable)}}
+                    addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}
+                    addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)}/>
+                </Grid>
+                <Grid item xs={12}>
+                  <DataPoints 
+                    experiment={state.experiment}
+                    onUpdateDataPoints={(dataPoints: DataPointType[][]) => updateDataPoints(dataPoints)}/>
+                </Grid>
+                <Grid item xs={12}>
+                  {state.experiment.results.plots.length > 0 &&
+                    <Card>
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                          Plots
+                        </Typography>
+                        <ul>
+                          {state.experiment.results.plots && state.experiment.results.plots.map(plot =>  <li><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  }
+                </Grid>
+              </Grid>
+
             </Grid>
             <Grid item xs={2}></Grid>
-          </Grid>
-          <br/>
-          <br/>        
+          </Grid>    
         </CardContent>
       </Card>
 

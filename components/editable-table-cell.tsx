@@ -27,6 +27,7 @@ export function EditableTableCell(props: EditableTableCellProps) {
             </FormControl>
             :
             <TextField
+              size="small"
               value={value} 
               onChange={(e: ChangeEvent) => onChange("" + (e.target as HTMLInputElement).value)}/>
           }
