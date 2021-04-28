@@ -17,7 +17,7 @@ const ExperimentContext = React.createContext<
 >(undefined)
 
 function ExperimentProvider({ experimentId, useLocalStorage=false, children }) {
-    const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialState) : React.useReducer(rootReducer, initialState)
+    const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialState, experimentId) : React.useReducer(rootReducer, initialState)
 
     const { data: experiment, error }: ExperimentLoadResponse = useSwr(`/api/experiment/${experimentId}`, fetcher, 
     {
