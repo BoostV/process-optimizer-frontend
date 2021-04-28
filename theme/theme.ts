@@ -1,4 +1,5 @@
 import { createMuiTheme } from "@material-ui/core";
+import { themeOverrides } from "./overrides";
 
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
@@ -14,6 +15,7 @@ declare module '@material-ui/core/styles/createPalette' {
 }
 
 export const theme = createMuiTheme({
+  overrides: themeOverrides,
   palette: {
     primary: {
       main: 'rgba(0,121,145,1)',

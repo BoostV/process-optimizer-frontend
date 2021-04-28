@@ -7,12 +7,15 @@ import useStyles from '../styles/variable-editor.style';
 import { CategoricalVariableType, ValueVariableType } from '../types/common';
 
 type VariableEditorProps = {
+  isAddVariableDisabled: boolean
   addValueVariable: (valueVariable: ValueVariableType) => void
   addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
   close: () => void
 }
 
 export default function VariableEditor(props: VariableEditorProps) {
+  const { isAddVariableDisabled, addValueVariable, addCategoricalVariable, close } = props
+
   const [radioIndex, setRadioIndex] = useState(0)
   const classes = useStyles()
 
@@ -30,7 +33,7 @@ export default function VariableEditor(props: VariableEditorProps) {
               </Grid>
 
               <Grid item xs={1}>
-                <IconButton size="small" onClick={() => props.close()}>
+                <IconButton size="small" onClick={() => close()}>
                   <CloseIcon/>
                 </IconButton>
               </Grid>
@@ -53,10 +56,14 @@ export default function VariableEditor(props: VariableEditorProps) {
                 <br/>
                 <br/>
                 {radioIndex === 0 &&
-                  <ValueVariable onAdded={(valueVariable: ValueVariableType) => props.addValueVariable(valueVariable)} />
+                  <ValueVariable 
+                    isDisabled={isAddVariableDisabled}
+                    onAdded={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)} />
                 }
                 {radioIndex === 1 &&
-                  <CategoricalVariable onAdded={(categoricalVariable: CategoricalVariableType) => props.addCategoricalVariable(categoricalVariable)} />
+                  <CategoricalVariable 
+                    isDisabled={isAddVariableDisabled}
+                    onAdded={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)} />
                 }
               </Grid>
             </Grid>

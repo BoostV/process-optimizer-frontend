@@ -3,14 +3,16 @@ import { useForm } from 'react-hook-form';
 import { ValueVariableType } from '../types/common';
 
 type ValueVariableProps = {
+  isDisabled: boolean
   onAdded: (data: ValueVariableType) => void
 }
 
 export default function ValueVariable(props: ValueVariableProps) {
+  const { isDisabled, onAdded } = props
 
   const { register, handleSubmit, reset, watch, errors } = useForm<ValueVariableType>();
   const onSubmit = async (data: ValueVariableType) => {
-    props.onAdded(data)
+    onAdded(data)
     reset()
   }
 
@@ -49,7 +51,7 @@ export default function ValueVariable(props: ValueVariableProps) {
           />
           <br />
           <br />
-          <Button variant="outlined" type="submit">Add variable</Button>
+          <Button disabled={isDisabled} variant="outlined" type="submit">Add</Button>
         </form>
       </>
   )

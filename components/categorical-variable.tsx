@@ -7,16 +7,18 @@ import { useStyles } from '../styles/categorical-variable.style';
 import { CategoricalVariableType } from '../types/common';
 
 type CategoricalVariableProps = {
+  isDisabled: boolean
   onAdded: (data: CategoricalVariableType) => void
 }
 
 export default function CategoricalVariable(props: CategoricalVariableProps) {
   const classes = useStyles()
   const [options, setOptions] = useState([])
+  const { isDisabled, onAdded } = props
 
   const { register, handleSubmit, reset, watch, errors } = useForm<CategoricalVariableType>();
   const onSubmit = async (data: CategoricalVariableType) => {
-    props.onAdded({...data, options})
+    onAdded({...data, options})
     setOptions([])
     reset()
   }
@@ -64,7 +66,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           }}/>
           
           <br />
-          <Button type="submit" variant="outlined">Add variable</Button>
+          <Button disabled={isDisabled} variant="outlined" type="submit">Add</Button>
         </form>
     </>
   )
