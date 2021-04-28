@@ -1,46 +1,105 @@
-import { Button, Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from "@material-ui/core";
-import { ChangeEvent, useEffect, useState } from "react";
-import { ExperimentType, DataPointType } from "../types/common";
+import { Card, CardContent, Typography } from "@material-ui/core";
+import { useEffect, useReducer } from "react";
+import { dataPointsReducer, DataPointsState, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED } from "../reducers/data-points-reducer";
+import { ExperimentType, DataPointType, TableDataPoint, TableDataRow, CombinedVariableType } from "../types/common";
+import { EditableTable } from "./editable-table";
 
 type DataPointProps = {
-  experiment: ExperimentType,
-  onAddDataPoints: (dataPoints: DataPointType[]) => void,
+  experiment: ExperimentType
+  onUpdateDataPoints: (dataPoints: DataPointType[][]) => void
 }
 
+const SCORE = "score"
+
 export default function DataPoints(props: DataPointProps) {
-  const SCORE = "score"
-  const { experiment: { valueVariables, categoricalVariables, dataPoints } } = props
-  const variableNames: string[] = valueVariables.map(item => item.name)
-    .concat(categoricalVariables.map(item => item.name))
-    .concat(SCORE)
-  const [newDataPoints, setNewDataPoints] = useState<DataPointType[]>(createInitialNewPoints())
-
-  function createInitialNewPoints(): DataPointType[] {
-    return variableNames.map(name => {
+  const { experiment: { valueVariables, categoricalVariables, dataPoints }, onUpdateDataPoints } = props
+  const combinedVariables: CombinedVariableType[] = (valueVariables as CombinedVariableType[]).concat(categoricalVariables as CombinedVariableType[])
+  
+  const emptyRow: TableDataRow = {
+    dataPoints: combinedVariables.map((variable, i) => {
       return {
-        name,
-        value: ""
+        name: variable.name,
+        value: variable.options ? variable.options[0] : "",
+        options: variable.options,
       }
-    })
+    }).concat({
+      name: SCORE,
+      value: "0",
+      options: undefined,
+    }),
+    isEditMode: true,
+    isNew: true,
+  }
+  
+  const dataPointRows: TableDataRow[] = dataPoints.map((item, i) => {
+      return {
+        dataPoints: item.map((point: TableDataPoint, k) => {
+          return {
+            ...point,
+            options: combinedVariables[k] ? combinedVariables[k].options : undefined,
+          }
+        }),
+        isEditMode: false,
+        isNew: false,
+      }
+    }
+  ).concat(emptyRow as any)
+
+  const initialState: DataPointsState = {
+    rows: dataPointRows,
+    prevRows: dataPointRows
   }
 
-  function onAdd() {
-    props.onAddDataPoints(newDataPoints)
+  const [state, dispatch] = useReducer(dataPointsReducer, initialState)
+
+  useEffect(() => {
+    updateDataPoints(state.rows.filter(item => !item.isNew) as TableDataRow[])
+  }, [state.rows])
+
+  function toggleEditMode(rowIndex: number) {
+    dispatch({ type: DATA_POINTS_TABLE_EDIT_TOGGLED, payload: rowIndex })
   }
 
-  function onNewPointChange(name: string, pointIndex: number, value: string) {
-    const newPoints = newDataPoints.map((point, index) => {
-      if (index !== pointIndex) {
-        return point
-      } else {
-        const newValue: any = point.name === SCORE ? [parseFloat(value)] as number[]: value as string
-        return {
-          name,
-          value: newValue
-        }
-      }
-    })
-    setNewDataPoints(newPoints)
+  function cancelEdit(rowIndex: number) {
+    dispatch({ type: DATA_POINTS_TABLE_EDIT_CANCELLED, payload: rowIndex })
+  }
+
+  function edit(editValue: string, rowIndex: number, itemIndex: number) {
+    dispatch({ type: DATA_POINTS_TABLE_EDITED, payload: { 
+      itemIndex,
+      rowIndex,
+      useArrayForValue: SCORE,
+      value: editValue
+    }})
+  }
+
+  function deleteRow(rowIndex: number) {
+    dispatch({ type: DATA_POINTS_TABLE_ROW_DELETED, payload: rowIndex })
+  }
+
+  function addRow(emptyRow: TableDataRow) {
+    dispatch({ type: DATA_POINTS_TABLE_ROW_ADDED, payload: emptyRow })
+  }
+
+  function updateDataPoints(dataRows: TableDataRow[]) {
+    onUpdateDataPoints(dataRows
+      .map((item, i) => {
+        return item.dataPoints.map(item => {
+          return {
+            name: item.name,
+            value: item.value,
+          } as DataPointType
+        })
+      })
+    )
+  }
+
+  function onEditConfirm(row: TableDataRow, rowIndex: number) {
+    if (row.isNew) {
+      addRow(emptyRow)
+    } else {
+      toggleEditMode(rowIndex)
+    }
   }
 
   return (
@@ -50,43 +109,16 @@ export default function DataPoints(props: DataPointProps) {
         <Typography variant="h6" gutterBottom>
           Data points
         </Typography>
-            
-        {variableNames.length > 1 &&
-          <>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  {variableNames.map((name, index) => 
-                    <TableCell key={index}>{name}</TableCell>
-                  )}
-                </TableRow>
-              </TableHead>
-              
-              <TableBody>
-                {dataPoints.map((points, pointsIndex) => 
-                  <TableRow key={pointsIndex}>
-                    {points.map((point, pointIndex) => {
-                      if (point.name === SCORE) {
-                        return <TableCell key={pointIndex}>{point.value[0]}</TableCell>
-                      } else {
-                        return <TableCell key={pointIndex}>{point.value}</TableCell>
-                      }
-                    })}
-                  </TableRow>
-                )}
-                <TableRow>
-                  {variableNames.map((name, index) => 
-                    <TableCell key={index}>
-                      <TextField fullWidth onChange={(e: ChangeEvent) => onNewPointChange(name, index, (e.target as HTMLInputElement).value)} />
-                    </TableCell>
-                  )}
-                  </TableRow>
-
-              </TableBody>
-            </Table>
-            <br/>
-            <Button variant="outlined" onClick={() => onAdd()}>Add</Button>
-          </>
+          
+        {combinedVariables.length > 0 &&
+          <EditableTable
+            rows={state.rows as TableDataRow[]}
+            useArrayForValue={SCORE}
+            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => edit(editValue, rowIndex, itemIndex)}
+            onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
+            onEditCancel={(rowIndex: number) => cancelEdit(rowIndex)}
+            onToggleEditMode={(rowIndex: number) => toggleEditMode(rowIndex)}
+            onDelete={(rowIndex: number) => deleteRow(rowIndex)} />
         }
       </CardContent>
     </Card>

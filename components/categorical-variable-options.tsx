@@ -31,7 +31,7 @@ export default function CategoricalVariableOptions(props: CategoricalVariableOpt
       </Grid>
       <Grid item xs={4}>
         <IconButton size="small" onClick={() => onOptionAdded()}>
-          <AddIcon />
+          <AddIcon color="primary"/>
         </IconButton>
       </Grid>
     </Grid>

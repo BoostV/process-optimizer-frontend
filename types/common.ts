@@ -20,20 +20,20 @@ export type Info = {
   description: string
 }
 
+export type CategoricalVariableType = {
+  name: string
+  description: string
+  options: string[]
+}
+
 export type ValueVariableType = {
   name: string
   description: string
   minVal: number
   maxVal: number
-  order?: number
 }
 
-export type CategoricalVariableType = {
-  name: string
-  description: string
-  options: string[]
-  order?: string
-}
+export type VariableType = CategoricalVariableType | ValueVariableType
 
 export type OptimizerConfig = {
   baseEstimator: string
@@ -44,18 +44,41 @@ export type OptimizerConfig = {
 }
 
 export type DataPointType = CategorialDataPointType | ValueDataPointType | ScoreDataPointType
+export type DataPointTypeValue = string | number | number[]
 
 export type CategorialDataPointType = {
   name: string
-  value: string
+  value: DataPointTypeValue
 }
 export type ValueDataPointType = {
   name: string
-  value: number
+  value: DataPointTypeValue
 }
 export type ScoreDataPointType = {
   name: string
-  value: number[]
+  value: DataPointTypeValue
 }
 
 export type SpaceType = {type: string, name:string, from?: number, to?: number, categories?: string[]}[]
+
+export type TableDataPointValue = string | number | number[]
+
+export type TableDataPoint = {
+  name: string
+  value: TableDataPointValue
+  options?: string[] | undefined
+}
+
+export type TableDataRow = {
+  dataPoints: TableDataPoint[]
+  isEditMode: boolean
+  isNew: boolean
+}
+
+export type CombinedVariableType = {
+  name: string
+  description: string
+  minVal?: number
+  maxVal?: number
+  options?: string[]
+}

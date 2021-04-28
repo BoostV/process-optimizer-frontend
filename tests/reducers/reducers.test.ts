@@ -1,4 +1,4 @@
-import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, DataPointsAddedAction, DATA_POINTS_ADDED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, ResultRegisteredAction, RESULT_REGISTERED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
+import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, DataPointsAddedAction, DataPointsTableEditToggledAction, DataPointsUpdatedAction, DATA_POINTS_ADDED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_UPDATED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, ResultRegisteredAction, RESULT_REGISTERED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
 import { State } from "../../store";
 import { CategoricalVariableType, DataPointType, ExperimentResultType, ExperimentType, OptimizerConfig, ValueVariableType } from "../../types/common";
 
@@ -225,34 +225,6 @@ describe("experiment reducer", () => {
     })
   })
 
-  it("should add data points", async () => {
-    const payload: DataPointType[] = [
-      {
-        name: "Milk",
-        value: "200"
-      },
-      {
-        name: "Flour",
-        value: "250"
-      },
-      {
-        name: "score",
-        value: [1]
-      }
-    ]
-
-    const action: DataPointsAddedAction = {
-      type: DATA_POINTS_ADDED,
-      payload
-    }
-
-    expect(rootReducer(initState, action)).toEqual({
-      experiment:{...initState.experiment,
-        dataPoints: [payload]
-      }
-    })
-  })
-
   describe("ResultRegisteredAction", () => {
 
     it("should update result", async () => {
@@ -275,4 +247,33 @@ describe("experiment reducer", () => {
       })
     })
   })
+
+  describe("DataPointsUpdatedAction", () => {
+    it("should update data points", async () => {
+      const payload: DataPointType[][] = [
+        [
+          {
+            name: "New point 1",
+            value: "1"
+          },
+          {
+            name: "score",
+            value: [2]
+          }
+        ]
+      ]
+  
+      const action: DataPointsUpdatedAction = {
+        type: DATA_POINTS_UPDATED,
+        payload
+      }
+  
+      expect(rootReducer(initState, action)).toEqual({
+        experiment:{...initState.experiment,
+          dataPoints: payload
+        }
+      })
+    })
+  })
 })
+

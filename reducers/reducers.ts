@@ -1,5 +1,5 @@
 import { State } from "../store"
-import { ValueVariableType, ExperimentType, CategoricalVariableType, OptimizerConfig, ExperimentResultType, DataPointType } from "../types/common"
+import { ExperimentType, OptimizerConfig, ExperimentResultType, DataPointType, CategoricalVariableType, ValueVariableType } from "../types/common"
 
 export const EXPERIMENT_UPDATED = 'EXPERIMENT_SAVED'
 export const EXPERIMENT_NAME_UPDATED = 'EXPERIMENT_NAME_UPDATED'
@@ -11,6 +11,7 @@ export const CATEGORICAL_VARIABLE_DELETED = 'CATEGORICAL_VARIABLE_DELETED'
 export const CONFIGURATION_UPDATED = 'CONFIGURATION_UPDATED'
 export const RESULT_REGISTERED = 'RESULT_REGISTERED'
 export const DATA_POINTS_ADDED = 'DATA_POINTS_ADDED'
+export const DATA_POINTS_UPDATED = 'DATA_POINTS_UPDATED'
 
 export type ResultRegisteredAction = {
   type: typeof RESULT_REGISTERED
@@ -62,6 +63,11 @@ export type DataPointsAddedAction = {
   payload: DataPointType[]
 }
 
+export type DataPointsUpdatedAction = {
+  type: typeof DATA_POINTS_UPDATED
+  payload: DataPointType[][]
+}
+
 export type Action = ExperimentAction
 type ExperimentAction = 
     CategoricalVariableAddedAction 
@@ -74,6 +80,7 @@ type ExperimentAction =
   | ConfigurationUpdatedAction
   | ResultRegisteredAction
   | DataPointsAddedAction
+  | DataPointsUpdatedAction
 
 export const rootReducer = (state: State, action: Action) => {
   switch (action.type) {
@@ -87,6 +94,7 @@ export const rootReducer = (state: State, action: Action) => {
     case CONFIGURATION_UPDATED:
     case RESULT_REGISTERED:
     case DATA_POINTS_ADDED:
+    case DATA_POINTS_UPDATED:
       return {
         ...state,
         experiment: experimentReducer(state.experiment, action)
@@ -119,14 +127,14 @@ const experimentReducer = (experimentState: ExperimentType, action: ExperimentAc
         }
       }
     case VALUE_VARIABLE_ADDED:
-      let varsAfterAdd = experimentState.valueVariables.slice()
+      let varsAfterAdd: ValueVariableType[] = experimentState.valueVariables.slice()
       varsAfterAdd.splice(experimentState.valueVariables.length, 0, action.payload)
       return {
         ...experimentState,
         valueVariables: varsAfterAdd
       }
     case VALUE_VARIABLE_DELETED:
-      let varsAfterDelete = experimentState.valueVariables.slice()
+      let varsAfterDelete: ValueVariableType[] = experimentState.valueVariables.slice()
       let indexOfDelete = experimentState.valueVariables.indexOf(action.payload)
       varsAfterDelete.splice(indexOfDelete, 1)
       return {
@@ -134,14 +142,14 @@ const experimentReducer = (experimentState: ExperimentType, action: ExperimentAc
         valueVariables: varsAfterDelete
       }
     case CATEGORICAL_VARIABLE_ADDED:
-      let catVarsAfterAdd = experimentState.categoricalVariables.slice()
+      let catVarsAfterAdd: CategoricalVariableType[] = experimentState.categoricalVariables.slice()
       catVarsAfterAdd.splice(experimentState.categoricalVariables.length, 0, action.payload)
       return {
         ...experimentState,
         categoricalVariables: catVarsAfterAdd
       }
     case CATEGORICAL_VARIABLE_DELETED:
-      let catVarsAfterDelete = experimentState.categoricalVariables.slice()
+      let catVarsAfterDelete: CategoricalVariableType[] = experimentState.categoricalVariables.slice()
       let indexOfCatDelete = experimentState.categoricalVariables.indexOf(action.payload)
       catVarsAfterDelete.splice(indexOfCatDelete, 1)
       return {
@@ -158,12 +166,10 @@ const experimentReducer = (experimentState: ExperimentType, action: ExperimentAc
         ...experimentState,
         results: action.payload
       }
-    case DATA_POINTS_ADDED:
-      let pointsAfterAdd = experimentState.dataPoints.slice()
-      pointsAfterAdd.splice(experimentState.dataPoints.length, 0, action.payload)
+    case DATA_POINTS_UPDATED:
       return {
         ...experimentState,
-        dataPoints: pointsAfterAdd
+        dataPoints: action.payload
       }
   }
 }

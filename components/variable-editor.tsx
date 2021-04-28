@@ -3,8 +3,8 @@ import ValueVariable from './value-variable';
 import { Card, CardContent, Grid, IconButton, Radio, Typography } from "@material-ui/core"
 import CloseIcon from "@material-ui/icons/Close";
 import { useState } from "react"
-import { CategoricalVariableType, ValueVariableType } from '../types/common';
 import useStyles from '../styles/variable-editor.style';
+import { CategoricalVariableType, ValueVariableType } from '../types/common';
 
 type VariableEditorProps = {
   addValueVariable: (valueVariable: ValueVariableType) => void
