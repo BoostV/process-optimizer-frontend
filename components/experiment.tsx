@@ -126,7 +126,7 @@ export default function Experiment() {
                                                     Plots
                                                 </Typography>
                                                 <ul>
-                                                    {experiment.results.plots && experiment.results.plots.map(plot => <li><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
+                                                    {experiment.results.plots && experiment.results.plots.map(plot => <li key={plot.id}><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
                                                 </ul>
                                             </CardContent>
                                         </Card>
