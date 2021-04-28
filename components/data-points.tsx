@@ -1,6 +1,6 @@
 import { Card, CardContent, Typography } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
-import { dataPointsReducer, DataPointsState, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED, testReducer } from "../reducers/data-points-reducer";
+import { dataPointsReducer, DataPointsState, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED } from "../reducers/data-points-reducer";
 import { ExperimentType, DataPointType, TableDataPoint, TableDataRow, CombinedVariableType } from "../types/common";
 import { EditableTable } from "./editable-table";
 
