@@ -29,8 +29,10 @@ function ExperimentProvider({ experimentId, useLocalStorage=false, children }) {
       },
       revalidateOnFocus: false,
     });
+
+    const getValue = (callback: (state: State) => any) => callback(state)
     
-    const value = { state, dispatch }
+    const value = { state, dispatch, getValue }
     return <ExperimentContext.Provider value={ value }>{children}</ExperimentContext.Provider>
 }
 

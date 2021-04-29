@@ -52,6 +52,8 @@ export default function Experiment() {
         setSnackbarOpen(false)
     }
 
+    const valueVariables = experiment.valueVariables
+    const categoricalVariables = experiment.categoricalVariables
     return (
         <Layout>
             <Card className={[classes.experimentContainer, isDirty ? classes.experimentContainerDirty : ''].join(' ')}>
@@ -107,8 +109,8 @@ export default function Experiment() {
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <OptimizerModel
-                                        valueVariables={experiment.valueVariables}
-                                        categoricalVariables={experiment.categoricalVariables}
+                                        valueVariables={valueVariables}
+                                        categoricalVariables={categoricalVariables}
                                         disabled={experiment.dataPoints.length > 0}
                                         onDeleteValueVariable={(valueVariable: ValueVariableType) => { dispatch({ type: 'deleteValueVariable', payload: valueVariable }) }}
                                         onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => { dispatch({ type: 'deleteCategorialVariable', payload: categoricalVariable }) }}
