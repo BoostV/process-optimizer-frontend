@@ -1,7 +1,18 @@
 import { ThemeProvider } from "@material-ui/core"
 import { AppProps } from "next/dist/next-server/lib/router/router"
-import { useEffect } from "react";
+import { useEffect } from "react"
 import { theme } from "../theme/theme"
+import Head from 'next/head'
+import CssBaseline from '@material-ui/core/CssBaseline'
+
+function SafeHydrate({ children }) {
+  return (
+    <div suppressHydrationWarning>
+      {typeof window === 'undefined' ? null : children}
+    </div>
+  )
+}
+
 
 function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -11,7 +22,19 @@ function App({ Component, pageProps }: AppProps) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
   }, [])
-  return <ThemeProvider theme={theme}><Component {...pageProps} /></ThemeProvider>
+  return (
+    <SafeHydrate>
+      <Head>
+        <title>My page</title>
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+      </Head>
+      <ThemeProvider theme={theme}>
+        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </SafeHydrate>
+  )
 }
 
 export default App
