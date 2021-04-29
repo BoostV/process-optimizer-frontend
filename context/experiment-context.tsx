@@ -8,32 +8,32 @@ import { ExperimentResultType, ExperimentType } from '../types/common'
 const fetcher = async (url: string) => (await fetch(url)).json()
 
 type ExperimentLoadResponse = {
-  data?: ExperimentType
-  error?: any
+    data?: ExperimentType
+    error?: any
 }
 
 const ExperimentContext = React.createContext<
     { state: State, dispatch: Dispatch } | undefined
 >(undefined)
 
-function ExperimentProvider({ experimentId, useLocalStorage=false, children }) {
+function ExperimentProvider({ experimentId, useLocalStorage = false, children }) {
     const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialState, experimentId) : React.useReducer(rootReducer, initialState)
 
-    const { data: experiment, error }: ExperimentLoadResponse = useSwr(`/api/experiment/${experimentId}`, fetcher, 
+    const { data: experiment, error }: ExperimentLoadResponse = useSwr(`/api/experiment/${experimentId}`, fetcher,
     {
-      onSuccess: (data: ExperimentType) => {
-        dispatch({
-            type: 'updateExperiment',
-            payload: data
-        })
-      },
-      revalidateOnFocus: false,
+        onSuccess: (data: ExperimentType) => {
+            dispatch({
+                type: 'updateExperiment',
+                payload: data
+            })
+        },
+        revalidateOnFocus: false,
     });
 
     const getValue = (callback: (state: State) => any) => callback(state)
-    
+
     const value = { state, dispatch, getValue }
-    return <ExperimentContext.Provider value={ value }>{children}</ExperimentContext.Provider>
+    return <ExperimentContext.Provider value={value}>{children}</ExperimentContext.Provider>
 }
 
 function useExperiment() {

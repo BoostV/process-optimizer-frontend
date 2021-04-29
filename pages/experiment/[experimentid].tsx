@@ -7,8 +7,8 @@ export default function ExperimentContainer() {
   const { experimentid } = router.query
 
   return (
-    <ExperimentProvider experimentId={experimentid} useLocalStorage={ true }>
-      <Experiment/>
+    <ExperimentProvider experimentId={experimentid} useLocalStorage={true}>
+      <Experiment />
     </ExperimentProvider>
   )
 }
