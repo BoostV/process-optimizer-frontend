@@ -1,6 +1,6 @@
 import { Card, CardContent, Typography } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
-import { dataPointsReducer, DataPointsState, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED } from "../reducers/data-points-reducer";
+import { dataPointsReducer, DataPointsState } from "../reducers/data-points-reducer";
 import { ExperimentType, DataPointType, TableDataPoint, TableDataRow, CombinedVariableType } from "../types/common";
 import { EditableTable } from "./editable-table";
 
@@ -52,20 +52,24 @@ export default function DataPoints(props: DataPointProps) {
 
   const [state, dispatch] = useReducer(dataPointsReducer, initialState)
 
+  // useEffect(() => {
+  //   dispatch({ type: 'setInitialState', payload: {rows: dataPointRows, prevRows: dataPointRows}})
+  // }, [dataPointRows])
+
   useEffect(() => {
     updateDataPoints(state.rows.filter(item => !item.isNew) as TableDataRow[])
   }, [state.rows])
 
   function toggleEditMode(rowIndex: number) {
-    dispatch({ type: DATA_POINTS_TABLE_EDIT_TOGGLED, payload: rowIndex })
+    dispatch({ type: 'DATA_POINTS_TABLE_EDIT_TOGGLED', payload: rowIndex })
   }
 
   function cancelEdit(rowIndex: number) {
-    dispatch({ type: DATA_POINTS_TABLE_EDIT_CANCELLED, payload: rowIndex })
+    dispatch({ type: 'DATA_POINTS_TABLE_EDIT_CANCELLED', payload: rowIndex })
   }
 
   function edit(editValue: string, rowIndex: number, itemIndex: number) {
-    dispatch({ type: DATA_POINTS_TABLE_EDITED, payload: { 
+    dispatch({ type: 'DATA_POINTS_TABLE_EDITED', payload: { 
       itemIndex,
       rowIndex,
       useArrayForValue: SCORE,
@@ -74,11 +78,11 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   function deleteRow(rowIndex: number) {
-    dispatch({ type: DATA_POINTS_TABLE_ROW_DELETED, payload: rowIndex })
+    dispatch({ type: 'DATA_POINTS_TABLE_ROW_DELETED', payload: rowIndex })
   }
 
   function addRow(emptyRow: TableDataRow) {
-    dispatch({ type: DATA_POINTS_TABLE_ROW_ADDED, payload: emptyRow })
+    dispatch({ type: 'DATA_POINTS_TABLE_ROW_ADDED', payload: emptyRow })
   }
 
   function updateDataPoints(dataRows: TableDataRow[]) {
@@ -105,7 +109,6 @@ export default function DataPoints(props: DataPointProps) {
   return (
     <Card>
       <CardContent>
-      
         <Typography variant="h6" gutterBottom>
           Data points
         </Typography>
