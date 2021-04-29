@@ -7,6 +7,7 @@ const init = (localStorageKey: string) => <S> (initialState: S) => {
   try {
     const locallyStoredState = localStorage.getItem(localStorageKey)
     if (locallyStoredState !== null) {
+      console.log(`Found data in ${localStorageKey}`)
       return JSON.parse(locallyStoredState)
     } else {
       localStorage.setItem(localStorageKey, JSON.stringify(initialState))

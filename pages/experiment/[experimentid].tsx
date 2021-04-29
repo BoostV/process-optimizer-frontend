@@ -7,7 +7,7 @@ export default function ExperimentContainer() {
   const { experimentid } = router.query
 
   return (
-    <ExperimentProvider experimentId={experimentid} useLocalStorage={true}>
+    <ExperimentProvider experimentId={Array.isArray(experimentid) ? experimentid[0] : experimentid} useLocalStorage={true}>
       <Experiment />
     </ExperimentProvider>
   )

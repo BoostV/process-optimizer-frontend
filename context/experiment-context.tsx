@@ -16,19 +16,28 @@ const ExperimentContext = React.createContext<
     { state: State, dispatch: Dispatch } | undefined
 >(undefined)
 
-function ExperimentProvider({ experimentId, useLocalStorage = false, children }) {
-    const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialState, experimentId) : React.useReducer(rootReducer, initialState)
+type ExperimentProviderProps = {
+    experimentId: string
+    useLocalStorage: boolean
+    children: any
+}
 
-    const { data: experiment, error }: ExperimentLoadResponse = useSwr(`/api/experiment/${experimentId}`, fetcher,
-    {
-        onSuccess: (data: ExperimentType) => {
-            dispatch({
-                type: 'updateExperiment',
-                payload: data
-            })
-        },
-        revalidateOnFocus: false,
-    });
+function ExperimentProvider({ experimentId, useLocalStorage = false, children }: ExperimentProviderProps) {
+    console.log(`Creating context ${experimentId} ${useLocalStorage}`)
+    const storageKey = experimentId === undefined ? 'unknown' : experimentId
+    const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialState, storageKey) : React.useReducer(rootReducer, initialState)
+    console.log(state.experiment.id)
+
+    // const { data: experiment, error }: ExperimentLoadResponse = useSwr(`/api/experiment/${experimentId}`, fetcher,
+    // {
+    //     onSuccess: (data: ExperimentType) => {
+    //         dispatch({
+    //             type: 'updateExperiment',
+    //             payload: data
+    //         })
+    //     },
+    //     revalidateOnFocus: false,
+    // });
 
     const getValue = (callback: (state: State) => any) => callback(state)
 
