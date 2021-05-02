@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { theme } from "../theme/theme"
 import Head from 'next/head'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import { GlobalStateProvider } from "../context/global-context"
 
 function SafeHydrate({ children }) {
   return (
@@ -31,7 +32,9 @@ function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <Component {...pageProps} />
+        <GlobalStateProvider>
+          <Component {...pageProps} />
+        </GlobalStateProvider>
       </ThemeProvider>
     </SafeHydrate>
   )
