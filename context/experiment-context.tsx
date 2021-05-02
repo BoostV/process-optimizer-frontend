@@ -25,7 +25,8 @@ type ExperimentProviderProps = {
 function ExperimentProvider({ experimentId, useLocalStorage = false, children }: ExperimentProviderProps) {
     console.log(`Creating context ${experimentId} ${useLocalStorage}`)
     const storageKey = experimentId === undefined ? 'unknown' : experimentId
-    const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialState, storageKey) : React.useReducer(rootReducer, initialState)
+    const initialExperimentState = {...initialState, experiment: {...initialState.experiment, id: experimentId}}
+    const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialExperimentState, storageKey) : React.useReducer(rootReducer, {...initialExperimentState})
     const [loading, setLoading] = React.useState(!useLocalStorage)
     
     if (!useLocalStorage) {
@@ -39,6 +40,8 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
                         type: 'updateExperiment',
                         payload: await result.json()
                     })
+                } else if (result.status === 404) {
+                    console.log(`Experiment not found on server ${experimentId}`)
                 } else {
                     console.log(`Error fetching expriment ${experimentId}`)
                 }
