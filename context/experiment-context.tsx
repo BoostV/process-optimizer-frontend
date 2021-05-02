@@ -56,6 +56,14 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
     return <ExperimentContext.Provider value={value}>{children}</ExperimentContext.Provider>
 }
 
+function TestExperimentProvider({value, children}) {
+    return (
+        <ExperimentContext.Provider value={value}>
+            {children}
+        </ExperimentContext.Provider>
+    )
+}
+
 function useExperiment() {
     const context = React.useContext(ExperimentContext)
     if (context === undefined) {
@@ -74,4 +82,4 @@ async function runExperiment(dispatch: Dispatch, experiment: ExperimentType) {
     dispatch({ type: 'registerResult', payload: result })
 }
 
-export { ExperimentProvider, useExperiment, saveExperiment, runExperiment }
+export { ExperimentProvider, TestExperimentProvider, useExperiment, saveExperiment, runExperiment }
