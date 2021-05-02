@@ -22,6 +22,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 docker build -t process-optimizer-frontend .
 docker run -p 3000:3000 process-optimizer-frontend
 ```
+
+## Run pre-built docker image 
+
+```bash
+docker run -d -p3000:3000 ghcr.io/boostv/process-optimizer-frontend/server:main
+```
 ## Local development with docker
 
 The included script "dockeryarn.sh" can be used as substitute for yarn if you have docker installed and don't want to use natively installed node installation

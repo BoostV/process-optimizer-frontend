@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - 'docker-automation'
     tags:
       - 'v*.*.*'
   pull_request:
