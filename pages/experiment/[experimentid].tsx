@@ -4,6 +4,7 @@ import {
   useExperiment,
 } from "../../context/experiment-context";
 import Experiment from "../../components/experiment";
+import DebugExperiment from "../../components/debugexperiment";
 
 export default function ExperimentContainer() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function ExperimentContainer() {
       useLocalStorage={true}
     >
       <Experiment />
+      <DebugExperiment />
     </ExperimentProvider>
   );
 }
