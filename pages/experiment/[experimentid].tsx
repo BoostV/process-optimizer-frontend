@@ -1,8 +1,5 @@
 import { useRouter } from "next/router";
-import {
-  ExperimentProvider,
-  useExperiment,
-} from "../../context/experiment-context";
+import { ExperimentProvider } from "../../context/experiment-context";
 import Experiment from "../../components/experiment";
 import DebugExperiment from "../../components/debugexperiment";
 

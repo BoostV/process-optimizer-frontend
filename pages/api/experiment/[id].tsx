@@ -2,10 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs';
 import path from 'path';
 import { ExperimentResultType, ExperimentType, SpaceType } from '../../../types/common';
-import { emptyExperiment } from '../../../store';
 import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
 import { calculateData, calculateSpace } from '../../../utility/converters';
-import { EmptyObject } from 'react-hook-form';
 
 const db = {}
 
@@ -41,7 +39,7 @@ const runExperiment = async (experiment: ExperimentType) => {
   return api.optimizerRun(request)
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType|EmptyObject>) => {
+export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType|{}>) => {
   const {
     query: { id },
     method,
