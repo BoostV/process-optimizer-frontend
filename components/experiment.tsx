@@ -121,7 +121,9 @@ export default function Experiment() {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <DataPoints
-                                        experiment={experiment}
+                                        valueVariables={experiment.valueVariables}
+                                        categoricalVariables={experiment.categoricalVariables}
+                                        dataPoints={experiment.dataPoints}
                                         onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
                                 </Grid>
                                 <Grid item xs={12}>
