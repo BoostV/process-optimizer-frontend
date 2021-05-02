@@ -55,7 +55,11 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
     switch (method) {
       case 'GET':
         const store = db[queryId] || readFromFile(path.join(dbFolder, `${queryId}.json`))
-        res.json(store || { ...emptyExperiment, id: queryId })
+        if (store) {
+          res.json(store)
+        } else {
+          res.statusCode = 404
+        }
         break
       case 'PUT':
         db[queryId] = JSON.parse(body)

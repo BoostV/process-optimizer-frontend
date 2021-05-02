@@ -13,7 +13,7 @@ type ExperimentLoadResponse = {
 }
 
 const ExperimentContext = React.createContext<
-    { state: State, dispatch: Dispatch } | undefined
+    { state: State, dispatch: Dispatch, loading: boolean } | undefined
 >(undefined)
 
 type ExperimentProviderProps = {
@@ -26,22 +26,30 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
     console.log(`Creating context ${experimentId} ${useLocalStorage}`)
     const storageKey = experimentId === undefined ? 'unknown' : experimentId
     const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialState, storageKey) : React.useReducer(rootReducer, initialState)
-    console.log(state.experiment.id)
-
-    // const { data: experiment, error }: ExperimentLoadResponse = useSwr(`/api/experiment/${experimentId}`, fetcher,
-    // {
-    //     onSuccess: (data: ExperimentType) => {
-    //         dispatch({
-    //             type: 'updateExperiment',
-    //             payload: data
-    //         })
-    //     },
-    //     revalidateOnFocus: false,
-    // });
+    const [loading, setLoading] = React.useState(!useLocalStorage)
+    
+    if (!useLocalStorage) {
+        React.useEffect(() => {
+            (async () => {
+                console.log(`Fetching data from API backend for ${experimentId}`)
+                const result = await fetch(`/api/experiment/${experimentId}`)
+                if (result.ok) {
+                    console.log(`Received data from backend for ${experimentId}`)
+                    dispatch({
+                        type: 'updateExperiment',
+                        payload: await result.json()
+                    })
+                } else {
+                    console.log(`Error fetching expriment ${experimentId}`)
+                }
+                setLoading(false)
+            })()
+        }, [experimentId])
+    }
 
     const getValue = (callback: (state: State) => any) => callback(state)
 
-    const value = { state, dispatch, getValue }
+    const value = { state, dispatch, getValue, loading }
     return <ExperimentContext.Provider value={value}>{children}</ExperimentContext.Provider>
 }
 
