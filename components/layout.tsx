@@ -8,21 +8,22 @@ export default function Layout ( {children} ) {
   const classes = useStyles()
   const { state, dispatch } = useGlobal()
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({type: 'useLocalStorage', payload: event.target.checked})
+  const handleSwitch = (flagName) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch({type: flagName, payload: event.target.checked})
   }
 
   return (
     <>
       <AppBar>
         <Toolbar variant="dense">
+        <Switch checked={state.debug} onChange={handleSwitch('debug')} name="debug" inputProps={{ 'aria-label': 'secondary checkbox' }}/>
+        <Switch checked={state.useLocalStorage} onChange={handleSwitch('useLocalStorage')} name="useLocalStorage" inputProps={{ 'aria-label': 'secondary checkbox' }}/>
           <div className={classes.logo}>
             <Image src="/logo.png" alt="logo" width="32" height="32" />
           </div>
           <Typography variant="h6">
             BrownieBee
           </Typography>
-          <Switch checked={state.useLocalStorage} onChange={handleChange} name="useLocalStorage" inputProps={{ 'aria-label': 'secondary checkbox' }}/>
           <div className={classes.links}>
             <Link href="/">
               <Button className={classes.link}>
@@ -33,6 +34,7 @@ export default function Layout ( {children} ) {
         </Toolbar>
       </AppBar>
       <div className={classes.mainContent}>
+        {state.debug && <pre>{JSON.stringify(state, null, 2)}</pre>}
         {children}
       </div>
   </>

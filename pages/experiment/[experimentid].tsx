@@ -16,7 +16,7 @@ export default function ExperimentContainer() {
     <>
       <ExperimentProvider experimentId={Array.isArray(experimentid) ? experimentid[0] : experimentid} useLocalStorage={state.useLocalStorage}>
         <Experiment />
-        <DebugExperiment />
+        {state.debug && <DebugExperiment />}
       </ExperimentProvider>
     </>
   );
