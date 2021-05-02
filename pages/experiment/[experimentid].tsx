@@ -14,12 +14,7 @@ export default function ExperimentContainer() {
     return <div>Loading experiment</div>;
   }
   return (
-    <ExperimentProvider
-      experimentId={
-        Array.isArray(experimentid) ? experimentid[0] : experimentid
-      }
-      useLocalStorage={true}
-    >
+    <ExperimentProvider experimentId={Array.isArray(experimentid) ? experimentid[0] : experimentid} useLocalStorage={true}>
       <Experiment />
       <DebugExperiment />
     </ExperimentProvider>
