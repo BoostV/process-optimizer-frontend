@@ -1,5 +1,4 @@
 import * as React from 'react'
-import useSwr from 'swr'
 import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
 import { Dispatch, rootReducer } from '../reducers/reducers'
 import { initialState, State } from '../store'
@@ -25,13 +24,13 @@ type ExperimentProviderProps = {
 function ExperimentProvider({ experimentId, useLocalStorage = false, children }: ExperimentProviderProps) {
     console.log(`Creating context ${experimentId} ${useLocalStorage}`)
     const storageKey = experimentId === undefined ? 'unknown' : experimentId
-    const initialExperimentState = {...initialState, experiment: {...initialState.experiment, id: experimentId}}
-    const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialExperimentState, storageKey) : React.useReducer(rootReducer, {...initialExperimentState})
+    const initialExperimentState = { ...initialState, experiment: { ...initialState.experiment, id: experimentId } }
+    const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialExperimentState, storageKey) : React.useReducer(rootReducer, { ...initialExperimentState })
     const [loading, setLoading] = React.useState(!useLocalStorage)
-    
-    if (!useLocalStorage) {
-        React.useEffect(() => {
-            (async () => {
+
+    React.useEffect(() => {
+        (async () => {
+            if (!useLocalStorage) {
                 console.log(`Fetching data from API backend for ${experimentId}`)
                 const result = await fetch(`/api/experiment/${experimentId}`)
                 if (result.ok) {
@@ -45,10 +44,10 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
                 } else {
                     console.log(`Error fetching expriment ${experimentId}`)
                 }
-                setLoading(false)
-            })()
-        }, [experimentId])
-    }
+            }
+            setLoading(false)
+        })()
+    }, [experimentId])
 
     const getValue = (callback: (state: State) => any) => callback(state)
 
@@ -56,7 +55,7 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
     return <ExperimentContext.Provider value={value}>{children}</ExperimentContext.Provider>
 }
 
-function TestExperimentProvider({value, children}) {
+function TestExperimentProvider({ value, children }) {
     return (
         <ExperimentContext.Provider value={value}>
             {children}

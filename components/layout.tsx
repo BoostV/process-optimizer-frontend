@@ -1,10 +1,16 @@
-import { AppBar, Button, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Button, Switch, Toolbar, Typography } from '@material-ui/core'
 import Link from 'next/link'
 import useStyles from '../styles/layout.style'
 import Image from 'next/image'
+import { useGlobal } from '../context/global-context'
 
 export default function Layout ( {children} ) {
   const classes = useStyles()
+  const { state, dispatch } = useGlobal()
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch({type: 'useLocalStorage', payload: event.target.checked})
+  }
 
   return (
     <>
@@ -16,6 +22,7 @@ export default function Layout ( {children} ) {
           <Typography variant="h6">
             BrownieBee
           </Typography>
+          <Switch checked={state.useLocalStorage} onChange={handleChange} name="useLocalStorage" inputProps={{ 'aria-label': 'secondary checkbox' }}/>
           <div className={classes.links}>
             <Link href="/">
               <Button className={classes.link}>
