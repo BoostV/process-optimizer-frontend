@@ -73,7 +73,11 @@ export default function Experiment() {
                             <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
                             <Button variant="contained" className={classes.runButton} color="primary" onClick={onRun}>Run</Button>
                         </Grid>
-
+                        <Card>
+                            <CardContent>
+                            <pre>{JSON.stringify(experiment, null, 2)}</pre>
+                            </CardContent>
+                        </Card>
                         <Grid item xs={3}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
