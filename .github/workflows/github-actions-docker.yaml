@@ -26,5 +26,5 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
-          repository: boostv/process-optimizer-frontend
+          repository: boostv/process-optimizer-frontend/server
           tag_with_ref: true
