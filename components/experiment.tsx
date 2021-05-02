@@ -14,7 +14,7 @@ export default function Experiment() {
     const classes = useStyles();
     const { state: {
         experiment
-    }, dispatch } = useExperiment()
+    }, dispatch, loading } = useExperiment()
 
     const [lastSavedExperiment, setLastSavedExperiment] = useState(experiment)
     const [isDirty, setDirty] = useState(false)
@@ -54,6 +54,9 @@ export default function Experiment() {
 
     const valueVariables = experiment.valueVariables
     const categoricalVariables = experiment.categoricalVariables
+    if (loading) {
+        return <>Loading experiment...</>
+    }
     return (
         <Layout>
             <Card className={[classes.experimentContainer, isDirty ? classes.experimentContainerDirty : ''].join(' ')}>
@@ -73,11 +76,6 @@ export default function Experiment() {
                             <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
                             <Button variant="contained" className={classes.runButton} color="primary" onClick={onRun}>Run</Button>
                         </Grid>
-                        <Card>
-                            <CardContent>
-                            <pre>{JSON.stringify(experiment, null, 2)}</pre>
-                            </CardContent>
-                        </Card>
                         <Grid item xs={3}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
