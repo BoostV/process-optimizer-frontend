@@ -1,16 +1,11 @@
 import * as React from 'react'
+import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
+import { State, Dispatch, initialState, reducer } from '../reducers/global-reducer'
 
-type GlobalState = {}
-type Dispatch = {}
-const GlobalContext = React.createContext<{state: GlobalState, dispatch: Dispatch} | undefined>(undefined)
-
-function globalReducer(state, action) {
-    return {...state}
-}
+const GlobalContext = React.createContext<{state: State, dispatch: Dispatch} | undefined>(undefined)
 
 function GlobalStateProvider({children}) {
-    const [state, dispatch] = React.useReducer(globalReducer, {})
-
+    const [state, dispatch] = useLocalStorageReducer(reducer, initialState, 'global')
     return <GlobalContext.Provider value={{state, dispatch}}>{children}</GlobalContext.Provider>
 }
 

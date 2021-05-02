@@ -14,7 +14,6 @@ function SafeHydrate({ children }) {
   )
 }
 
-
 function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     // Remove the server-side injected CSS.
