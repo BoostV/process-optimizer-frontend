@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs';
 import path from 'path';
 import { ExperimentResultType, ExperimentType, SpaceType } from '../../../types/common';
-import { emptyExperiment } from '../../../store';
 import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
 import { calculateData, calculateSpace } from '../../../utility/converters';
 
@@ -40,7 +39,7 @@ const runExperiment = async (experiment: ExperimentType) => {
   return api.optimizerRun(request)
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType>) => {
+export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType|{}>) => {
   const {
     query: { id },
     method,
@@ -55,7 +54,12 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
     switch (method) {
       case 'GET':
         const store = db[queryId] || readFromFile(path.join(dbFolder, `${queryId}.json`))
-        res.json(store || { ...emptyExperiment, id: queryId })
+        if (store) {
+          res.json(store)
+        } else {
+          res.statusCode = 404
+          res.json({})
+        }
         break
       case 'PUT':
         db[queryId] = JSON.parse(body)

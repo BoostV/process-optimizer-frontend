@@ -1,11 +1,13 @@
 import { Box, Button, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
 import { CategoricalVariableType, ExperimentType, ValueVariableType } from '../types/common'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { ReactNode, useState } from 'react'
+import { FC, useState } from 'react'
 import VariableEditor from './variable-editor'
 
 type OptimizerModelProps = {
-  experiment: ExperimentType
+  valueVariables: ValueVariableType[]
+  categoricalVariables: CategoricalVariableType[]
+  disabled:boolean
   onDeleteValueVariable: (valueVariable: ValueVariableType) => void
   onDeleteCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
   addValueVariable: (valueVariable: ValueVariableType) => void
@@ -13,7 +15,7 @@ type OptimizerModelProps = {
 }
 
 export default function OptimizerModel(props: OptimizerModelProps) {
-  const { experiment: { valueVariables, categoricalVariables, dataPoints } } = props
+  const { valueVariables, categoricalVariables, disabled, onDeleteValueVariable, onDeleteCategoricalVariable, addValueVariable, addCategoricalVariable } = props
   const [isAddOpen, setAddOpen] = useState(false)
 
   return (
@@ -43,10 +45,10 @@ export default function OptimizerModel(props: OptimizerModelProps) {
                   <TableCell align="right">{valueVar.maxVal}</TableCell>
                   <TableCell align="right">
                     <IconButton 
-                      disabled={dataPoints.length > 0}
+                      disabled={disabled}
                       size="small" 
                       onClick={() => {props.onDeleteValueVariable(valueVar)}}>
-                      <DeleteIcon color={dataPoints.length > 0 ? "inherit" : "primary"} fontSize="small"/>
+                      <DeleteIcon color={disabled ? "inherit" : "primary"} fontSize="small"/>
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -80,10 +82,10 @@ export default function OptimizerModel(props: OptimizerModelProps) {
                     </TableCell>
                     <TableCell align="right">
                       <IconButton 
-                        disabled={dataPoints.length > 0}
+                        disabled={disabled}
                         size="small" 
                         onClick={() => {props.onDeleteCategoricalVariable(catVar)}}>
-                        <DeleteIcon color={dataPoints.length > 0 ? "inherit" : "primary"} fontSize="small"/>
+                        <DeleteIcon color={disabled ? "inherit" : "primary"} fontSize="small"/>
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -94,20 +96,20 @@ export default function OptimizerModel(props: OptimizerModelProps) {
         }
         {!isAddOpen &&
           <Button  
-            disabled={dataPoints.length > 0} 
+            disabled={disabled} 
             variant="outlined" 
             size="small" 
             onClick={() => setAddOpen(true)}>Add variable</Button>
         }
         {isAddOpen &&
           <VariableEditor 
-            isAddVariableDisabled={dataPoints.length > 0}
+            isAddVariableDisabled={disabled}
             addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => props.addCategoricalVariable(categoricalVariable)}
             addValueVariable={(valueVariable: ValueVariableType) => props.addValueVariable(valueVariable)}
             close={() => setAddOpen(false)} />
         }
 
-        {dataPoints.length > 0 && 
+        {disabled && 
           <Box mt={2}>
             <Typography variant="body2" color="textSecondary">
               Note: Model cannot be updated while there are data points

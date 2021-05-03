@@ -1,6 +1,7 @@
-import { CategoricalVariableAddedAction, CategoricalVariableDeletedAction, CATEGORICAL_VARIABLE_ADDED, CATEGORICAL_VARIABLE_DELETED, ConfigurationUpdatedAction, CONFIGURATION_UPDATED, DataPointsAddedAction, DataPointsTableEditToggledAction, DataPointsUpdatedAction, DATA_POINTS_ADDED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_UPDATED, ExperimentDescriptionUpdatedAction, ExperimentNameUpdatedAction, ExperimentUpdatedAction, EXPERIMENT_DESCRIPTION_UPDATED, EXPERIMENT_NAME_UPDATED, EXPERIMENT_UPDATED, ResultRegisteredAction, RESULT_REGISTERED, rootReducer, ValueVariableAddedAction, ValueVariableDeletedAction, VALUE_VARIABLE_ADDED, VALUE_VARIABLE_DELETED } from "../../reducers/reducers";
-import { State } from "../../store";
-import { CategoricalVariableType, DataPointType, ExperimentResultType, ExperimentType, OptimizerConfig, ValueVariableType } from "../../types/common";
+import { ExperimentAction } from "./experiment-reducers";
+import { rootReducer } from "./reducers";
+import { State } from "../store";
+import { CategoricalVariableType, DataPointType, ExperimentResultType, ExperimentType, OptimizerConfig, ValueVariableType } from "../types/common";
 
 describe("experiment reducer", () => {
   const initState: State = {
@@ -72,8 +73,8 @@ describe("experiment reducer", () => {
       dataPoints: []
     }
 
-    const action: ExperimentUpdatedAction = {
-      type: EXPERIMENT_UPDATED,
+    const action: ExperimentAction = {
+      type: 'updateExperiment',
       payload
     }
 
@@ -83,8 +84,8 @@ describe("experiment reducer", () => {
   })
 
   it("should update name", async () => {
-    const action: ExperimentNameUpdatedAction = {
-      type: EXPERIMENT_NAME_UPDATED,
+    const action: ExperimentAction = {
+      type: 'updateExperimentName',
       payload: "Muffins"
     }
 
@@ -100,8 +101,8 @@ describe("experiment reducer", () => {
   })
 
   it("should update description", async () => {
-    const action: ExperimentDescriptionUpdatedAction = {
-      type: EXPERIMENT_DESCRIPTION_UPDATED,
+    const action: ExperimentAction = {
+      type: 'updateExperimentDescription',
       payload: "Tasty"
     }
 
@@ -123,8 +124,8 @@ describe("experiment reducer", () => {
       maxVal: 400,
     }
 
-    const action: ValueVariableAddedAction = {
-      type: VALUE_VARIABLE_ADDED,
+    const action: ExperimentAction = {
+      type: 'addValueVariable',
       payload
     }
 
@@ -149,8 +150,8 @@ describe("experiment reducer", () => {
       maxVal: 200,
     }
 
-    const action: ValueVariableDeletedAction = {
-      type: VALUE_VARIABLE_DELETED,
+    const action: ExperimentAction = {
+      type: 'deleteValueVariable',
       payload
     }
 
@@ -168,8 +169,8 @@ describe("experiment reducer", () => {
       options: [],
     }
 
-    const action: CategoricalVariableAddedAction = {
-      type: CATEGORICAL_VARIABLE_ADDED,
+    const action: ExperimentAction = {
+      type: 'addCategorialVariable',
       payload
     }
 
@@ -192,8 +193,8 @@ describe("experiment reducer", () => {
       options: [],
     }
 
-    const action: CategoricalVariableDeletedAction = {
-      type: CATEGORICAL_VARIABLE_DELETED,
+    const action: ExperimentAction = {
+      type: 'deleteCategorialVariable',
       payload
     }
 
@@ -213,8 +214,8 @@ describe("experiment reducer", () => {
       xi: 0.02,
     }
 
-    const action: ConfigurationUpdatedAction = {
-      type: CONFIGURATION_UPDATED,
+    const action: ExperimentAction = {
+      type: 'updateConfiguration',
       payload
     }
 
@@ -235,8 +236,8 @@ describe("experiment reducer", () => {
         plots: [{id: "sample", plot: "base64encodedData"}]
       }
   
-      const action: ResultRegisteredAction = {
-        type: RESULT_REGISTERED,
+      const action: ExperimentAction = {
+        type: 'registerResult',
         payload: payload
       }
   
@@ -263,8 +264,8 @@ describe("experiment reducer", () => {
         ]
       ]
   
-      const action: DataPointsUpdatedAction = {
-        type: DATA_POINTS_UPDATED,
+      const action: ExperimentAction = {
+        type: 'updateDataPoints',
         payload
       }
   

@@ -1,5 +1,5 @@
 import { createMocks } from 'node-mocks-http'
-import handleExperimentId from '../../../pages/api/experiment/[id]'
+import handleExperimentId from './[id]'
 import path from 'path'
 import fs from 'fs'
 import rimraf from 'rimraf'
@@ -12,7 +12,7 @@ describe('/api/experiment/[id]', () => {
     rimraf.sync(`${tmpFolderPrefix}*`)
   });
 
-  test('Returns experiment specified by id path element', async () => {
+  test('Returns 404 if id not found', async () => {
     const { req, res } = createMocks({
       method: 'GET',
       query: {
@@ -22,13 +22,7 @@ describe('/api/experiment/[id]', () => {
 
     handleExperimentId(req, res);
 
-    expect(res._getStatusCode()).toBe(200);
-    expect(JSON.parse(res._getData())).toEqual(
-      expect.objectContaining({
-        id: 'myId123',
-      }),
-    );
-
+    expect(res._getStatusCode()).toBe(404);
   });
 
   test('PUT stores experiment', () => {
