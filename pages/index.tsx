@@ -61,7 +61,7 @@ export default function Home() {
 
             <Box p={3} pb={1} mb={1} className={classes.box}>
               <Typography variant="h6">
-                Upload file with experiment
+                Upload experiment file
               </Typography>
               <Box mb={5} className={classes.uploadBox} {...getRootProps()}>
                 <SystemUpdateAltIcon className={classes.uploadIcon} />
@@ -76,7 +76,7 @@ export default function Home() {
 
             <Box p={3} className={classes.box}>
               <Typography variant="h6">
-                Experiments saved in browser
+                Saved experiments
               </Typography>
               <Box mb={1}>
                 <List component="nav">
