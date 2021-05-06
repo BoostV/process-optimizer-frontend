@@ -10,6 +10,7 @@ import { paths } from "../paths";
 import { ExperimentType } from "../types/common";
 import { useGlobal } from "../context/global-context";
 import { saveExperiment } from '../context/experiment-context';
+import { v4 as uuid } from 'uuid';
 
 export default function Home() {
   const classes = useStyles()
@@ -59,6 +60,10 @@ export default function Home() {
     }
   }
 
+  const createNewExperiment = () => {
+    router.push(`${paths.experiment}/${uuid()}`)
+  }
+
   return (
     <Layout>
       <Card className={classes.mainContainer}>
@@ -72,7 +77,7 @@ export default function Home() {
 
           <Box p={0} pl={1} mb={1} className={classes.box}>
             <List component="nav">
-              <ListItem button>
+              <ListItem button onClick={() => createNewExperiment()}>
                 <ListItemText primaryTypographyProps={{ variant: "h6" }} primary="Create new experiment" />
                 <ChevronRightIcon />
               </ListItem>
