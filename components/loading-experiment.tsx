@@ -5,7 +5,7 @@ import Layout from "./layout";
 export default function LoadingExperiment() {
   const classes = useStyles()
   return <Layout>
-            <Card className={[classes.experimentContainer, classes.loadingContainer].join(' ')}>
+            <Card className={classes.loadingContainer}>
                 <CardContent>
                     <Box mt={8}>
                         <CircularProgress disableShrink className={classes.progress}/>
