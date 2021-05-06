@@ -48,11 +48,11 @@ export default function Home() {
     if (state.useLocalStorage) {
       try {
         localStorage.setItem(id, JSON.stringify({ experiment }))
+        router.push(`${paths.experiment}/${id}`)
       } catch (e) {
         console.error('Unable to use local storage')
         setUploadMessage('Upload failed')
       }
-      router.push(`${paths.experiment}/${id}`)
     } else {
       await saveExperiment(experiment)
       router.push(`${paths.experiment}/${id}`)
