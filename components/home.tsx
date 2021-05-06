@@ -64,6 +64,22 @@ export default function Home() {
     router.push(`${paths.experiment}/${uuid()}`)
   }
 
+  const openSavedExperiment = (key: string) => {
+    router.push(`${paths.experiment}/${key}`)
+  }
+
+  //TODO: Only show experiments and not everything in localStorage
+  const getExperimentName = (key: string) => {
+    try {
+      const json: any = JSON.parse(localStorage.getItem(key))
+      const experiment: ExperimentType = json.experiment
+      return experiment.info.name
+    } catch(e) {
+      console.error('Error parsing saved experiment')
+    }
+    return key
+  }
+
   return (
     <Layout>
       <Card className={classes.mainContainer}>
@@ -99,27 +115,26 @@ export default function Home() {
             </Box>
           </Box>
 
-          <Box p={3} className={classes.box}>
-            <Typography variant="h6">
-              Saved experiments
-            </Typography>
-            <Box mb={1}>
-              <List component="nav">
-                <ListItem button>
-                  <ListItemText primary="Pandekager (id: 1239812084)" />
-                  <ChevronRightIcon />
-                </ListItem>
-                <ListItem button>
-                  <ListItemText primary="Chokoladekage (id: 2847247282)" />
-                  <ChevronRightIcon />
-                </ListItem>
-                <ListItem button>
-                  <ListItemText primary="Secret experiment X (id: 2388853929230)" />
-                  <ChevronRightIcon />
-                </ListItem>
-              </List>
+          {state.useLocalStorage &&
+            <Box p={3} className={classes.box}>
+              <Typography variant="h6">
+                Saved experiments
+              </Typography>
+              <Box mb={1}>
+                <List component="nav">
+                  {Object.keys(localStorage).map((k, i) => 
+                    <ListItem key={i} button onClick={() => openSavedExperiment(k)}>
+                      <ListItemText 
+                        primary={getExperimentName(k)} 
+                        secondary={k}
+                        secondaryTypographyProps={{ color: "inherit" }} />
+                      <ChevronRightIcon />
+                    </ListItem>
+                  )}
+                </List>
+              </Box>
             </Box>
-          </Box>
+          }
 
         </CardContent>
       </Card>
