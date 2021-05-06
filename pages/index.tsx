@@ -7,11 +7,15 @@ import { NextRouter, useRouter } from 'next/router'
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { paths } from "../paths";
+import { ExperimentType } from "../types/common";
+import { useGlobal } from "../context/global-context";
+import { saveExperiment } from '../context/experiment-context';
 
 export default function Home() {
   const classes = useStyles()
   const router: NextRouter = useRouter()
   const [uploadMessage, setUploadMessage] = useState("Drag file here")
+  const { state } = useGlobal()
 
   const onDrop = useCallback(acceptedFiles => {
     const reader = new FileReader()
@@ -21,12 +25,11 @@ export default function Home() {
     reader.onload = () => {
       const binaryResult: string | ArrayBuffer = reader.result
       try {
-        const json: any = JSON.parse(binaryResult as string)
-        const id: string = json['id']
-        if (id === undefined) {
+        const experiment: ExperimentType = JSON.parse(binaryResult as string)
+        if (experiment !== undefined && experiment.id === undefined) {
           setUploadMessage('Id not found')
         } else {
-          router.push(`${paths.experiment}/${id}`)
+          saveAndRedirect(experiment)
         }
       } catch (e) {
         console.error('File parsing failed', e)
@@ -36,69 +39,83 @@ export default function Home() {
     reader.readAsText(acceptedFiles[0])
   }, [])
 
+  const saveAndRedirect = async (experiment: ExperimentType) => {
+    const id: string = experiment.id
+    if (state.useLocalStorage) {
+      try {
+        localStorage.setItem(id, JSON.stringify({ experiment }))
+      } catch (e) {
+        console.error('Unable to use local storage')
+        setUploadMessage('Upload failed')
+      }
+      router.push(`${paths.experiment}/${id}`)
+    } else {
+      await saveExperiment(experiment)
+      router.push(`${paths.experiment}/${id}`)
+    }
+  }
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
   return (
     <Layout>
-      <Box m={2}>
-        <Card className={classes.mainContainer}>
-          <CardContent className={classes.mainContent}>
+      <Card className={classes.mainContainer}>
+        <CardContent className={classes.mainContent}>
 
-            <Box p={3}>
-              <Typography variant="h4">
-                Get started
-              </Typography>
+          <Box p={3}>
+            <Typography variant="h4">
+              Get started
+            </Typography>
+          </Box>
+
+          <Box p={0} pl={1} mb={1} className={classes.box}>
+            <List component="nav">
+              <ListItem button>
+                <ListItemText primaryTypographyProps={{ variant: "h6" }} primary="Create new experiment" />
+                <ChevronRightIcon />
+              </ListItem>
+            </List>
+          </Box>
+
+          <Box p={3} pb={1} mb={1} className={classes.box}>
+            <Typography variant="h6">
+              Upload experiment file
+            </Typography>
+            <Box mb={5} className={classes.uploadBox} {...getRootProps()}>
+              <SystemUpdateAltIcon className={classes.uploadIcon} />
+              <input {...getInputProps()} />
+              <div className={classes.uploadBoxInner}>
+                <Typography variant="body1">
+                  {uploadMessage}
+                </Typography>
+              </div>
             </Box>
+          </Box>
 
-            <Box p={0} pl={1} mb={1} className={classes.box}>
+          <Box p={3} className={classes.box}>
+            <Typography variant="h6">
+              Saved experiments
+            </Typography>
+            <Box mb={1}>
               <List component="nav">
                 <ListItem button>
-                  <ListItemText primaryTypographyProps={{ variant: "h6" }} primary="Create new experiment" />
+                  <ListItemText primary="Pandekager (id: 1239812084)" />
+                  <ChevronRightIcon />
+                </ListItem>
+                <ListItem button>
+                  <ListItemText primary="Chokoladekage (id: 2847247282)" />
+                  <ChevronRightIcon />
+                </ListItem>
+                <ListItem button>
+                  <ListItemText primary="Secret experiment X (id: 2388853929230)" />
                   <ChevronRightIcon />
                 </ListItem>
               </List>
             </Box>
+          </Box>
 
-            <Box p={3} pb={1} mb={1} className={classes.box}>
-              <Typography variant="h6">
-                Upload experiment file
-              </Typography>
-              <Box mb={5} className={classes.uploadBox} {...getRootProps()}>
-                <SystemUpdateAltIcon className={classes.uploadIcon} />
-                <input {...getInputProps()} />
-                <div className={classes.uploadBoxInner}>
-                  <Typography variant="body1">
-                    {uploadMessage}
-                  </Typography>
-                </div>
-              </Box>
-            </Box>
-
-            <Box p={3} className={classes.box}>
-              <Typography variant="h6">
-                Saved experiments
-              </Typography>
-              <Box mb={1}>
-                <List component="nav">
-                  <ListItem button>
-                    <ListItemText primary="Pandekager (id: 1239812084)" />
-                    <ChevronRightIcon />
-                  </ListItem>
-                  <ListItem button>
-                    <ListItemText primary="Chokoladekage (id: 2847247282)" />
-                    <ChevronRightIcon />
-                  </ListItem>
-                  <ListItem button>
-                    <ListItemText primary="Secret experiment X (id: 2388853929230)" />
-                    <ChevronRightIcon />
-                  </ListItem>
-                </List>
-              </Box>
-            </Box>
-
-          </CardContent>
-        </Card>
-      </Box>
+        </CardContent>
+      </Card>
     </Layout>
   );
 }

@@ -3,6 +3,7 @@ import { ExperimentProvider } from "../../context/experiment-context";
 import Experiment from "../../components/experiment";
 import DebugExperiment from "../../components/debugexperiment";
 import { useGlobal } from "../../context/global-context";
+import LoadingExperiment from "../../components/loading-experiment";
 
 export default function ExperimentContainer() {
   const router = useRouter();
@@ -10,7 +11,7 @@ export default function ExperimentContainer() {
   const { state } = useGlobal()
 
   if (!experimentid) {
-    return <div>Loading experiment</div>;
+    return <LoadingExperiment />
   }
   return (
     <>
