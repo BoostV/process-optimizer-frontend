@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, CircularProgress, Grid, Snackbar, Typography } from '@material-ui/core'
 import Layout from './layout'
 import OptimizerModel from './optimizer-model';
 import OptimizerConfigurator from './optimizer-configurator';
@@ -9,9 +9,10 @@ import { useStyles } from '../styles/experiment.style';
 import { useExperiment, saveExperiment, runExperiment } from '../context/experiment-context';
 import React, { useState, useEffect } from 'react';
 import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointType } from '../types/common';
+import LoadingExperiment from './loading-experiment';
 
 export default function Experiment() {
-    const classes = useStyles();
+    const classes = useStyles()
     const { state: {
         experiment
     }, dispatch, loading } = useExperiment()
@@ -45,7 +46,6 @@ export default function Experiment() {
         } catch (error) {
             console.error('fetch error', error)
         }
-
     }
 
     function handleCloseSnackbar() {
@@ -54,9 +54,11 @@ export default function Experiment() {
 
     const valueVariables = experiment.valueVariables
     const categoricalVariables = experiment.categoricalVariables
+
     if (loading) {
-        return <>Loading experiment...</>
+        return  <LoadingExperiment />
     }
+
     return (
         <Layout>
             <Card className={[classes.experimentContainer, isDirty ? classes.experimentContainerDirty : ''].join(' ')}>

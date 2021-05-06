@@ -3,8 +3,8 @@ import { makeStyles } from "@material-ui/core";
 export const useStyles = makeStyles(theme => ({
   experimentContainer: {
     marginTop: theme.spacing(4),
-    minWidth: 1200,
-    maxWidth: 1800,
+    minWidth: theme.sizes.mainWidthMin,
+    maxWidth: theme.sizes.mainWidthMax,
     background: theme.palette.custom.background.main,
     color: 'white',
   },
@@ -32,7 +32,7 @@ export const useStyles = makeStyles(theme => ({
     '100%': {
       backgroundColor: theme.palette.primary.main,
     }
-  }
+  },
 }));
 
 export default useStyles

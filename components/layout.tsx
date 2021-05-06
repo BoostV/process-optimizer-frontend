@@ -1,4 +1,4 @@
-import { AppBar, Button, Switch, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Box, Button, Switch, Toolbar, Typography } from '@material-ui/core'
 import Link from 'next/link'
 import useStyles from '../styles/layout.style'
 import Image from 'next/image'
@@ -33,10 +33,10 @@ export default function Layout ( {children} ) {
           </div>
         </Toolbar>
       </AppBar>
-      <div className={classes.mainContent}>
+      <Box ml={1} mr={1} mb={1} mt={7}>
         {state.debug && <pre>{JSON.stringify(state, null, 2)}</pre>}
         {children}
-      </div>
+      </Box>
   </>
   )
 }

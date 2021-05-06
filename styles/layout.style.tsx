@@ -7,9 +7,6 @@ export const useStyles = makeStyles(theme => ({
   link: {
     color: "white",
   },
-  mainContent: {
-    marginTop: 56,
-  },
   logo: {
     marginRight: theme.spacing(1),
   }
