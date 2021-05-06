@@ -32,7 +32,7 @@ export default function Home() {
     const binaryResult: string | ArrayBuffer = reader.result
     try {
       const experiment: ExperimentType = JSON.parse(binaryResult as string)
-      if (experiment !== undefined && experiment.id === undefined) {
+      if (experiment.id === undefined) {
         setUploadMessage('Id not found')
       } else {
         saveAndRedirect(experiment)
