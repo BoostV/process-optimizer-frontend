@@ -22,22 +22,26 @@ export default function Home() {
     reader.onabort = () => setUploadMessage('Upload aborted')
     reader.onerror = () => setUploadMessage('Upload failed')
     reader.onprogress = () => setUploadMessage('Loading file...')
-    reader.onload = () => {
-      const binaryResult: string | ArrayBuffer = reader.result
-      try {
-        const experiment: ExperimentType = JSON.parse(binaryResult as string)
-        if (experiment !== undefined && experiment.id === undefined) {
-          setUploadMessage('Id not found')
-        } else {
-          saveAndRedirect(experiment)
-        }
-      } catch (e) {
-        console.error('File parsing failed', e)
-        setUploadMessage('Upload failed')
-      }
-    }
+    reader.onload = () => load(reader)
     reader.readAsText(acceptedFiles[0])
   }, [])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+
+  const load = (reader: FileReader) => {
+    const binaryResult: string | ArrayBuffer = reader.result
+    try {
+      const experiment: ExperimentType = JSON.parse(binaryResult as string)
+      if (experiment !== undefined && experiment.id === undefined) {
+        setUploadMessage('Id not found')
+      } else {
+        saveAndRedirect(experiment)
+      }
+    } catch (e) {
+      console.error('File parsing failed', e)
+      setUploadMessage('Upload failed')
+    }
+  }
 
   const saveAndRedirect = async (experiment: ExperimentType) => {
     const id: string = experiment.id
@@ -54,8 +58,6 @@ export default function Home() {
       router.push(`${paths.experiment}/${id}`)
     }
   }
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
   return (
     <Layout>
