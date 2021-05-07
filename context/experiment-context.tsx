@@ -3,6 +3,7 @@ import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
 import { Dispatch, rootReducer } from '../reducers/reducers'
 import { initialState, State } from '../store'
 import { ExperimentResultType, ExperimentType } from '../types/common'
+import { useGlobal } from './global-context'
 
 const fetcher = async (url: string) => (await fetch(url)).json()
 
@@ -27,6 +28,7 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
     const initialExperimentState = { ...initialState, experiment: { ...initialState.experiment, id: experimentId } }
     const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialExperimentState, storageKey) : React.useReducer(rootReducer, { ...initialExperimentState })
     const [loading, setLoading] = React.useState(!useLocalStorage)
+    const global = useGlobal()
 
     React.useEffect(() => {
         (async () => {
@@ -44,6 +46,11 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
                 } else {
                     console.log(`Error fetching expriment ${experimentId}`)
                 }
+            } else {
+                global.dispatch({
+                    type: 'storeExperimentId',
+                    payload: experimentId
+                })
             }
             setLoading(false)
         })()

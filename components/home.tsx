@@ -10,6 +10,8 @@ import { paths } from "../paths";
 import { ExperimentType } from "../types/common";
 import { useGlobal } from "../context/global-context";
 import { saveExperiment } from '../context/experiment-context';
+import { v4 as uuid } from 'uuid';
+import { isEmpty } from "../utility/string-util";
 
 export default function Home() {
   const classes = useStyles()
@@ -59,6 +61,25 @@ export default function Home() {
     }
   }
 
+  const createNewExperiment = () => {
+    router.push(`${paths.experiment}/${uuid()}`)
+  }
+
+  const openSavedExperiment = (key: string) => {
+    router.push(`${paths.experiment}/${key}`)
+  }
+
+  const getExperimentName = (key: string) => {
+    try {
+      const json: any = JSON.parse(localStorage.getItem(key))
+      const experiment: ExperimentType = json.experiment
+      return !isEmpty(experiment.info.name) ? experiment.info.name : "-"
+    } catch(e) {
+      console.error('Error parsing saved experiment')
+    }
+    return key
+  }
+
   return (
     <Layout>
       <Card className={classes.mainContainer}>
@@ -72,7 +93,7 @@ export default function Home() {
 
           <Box p={0} pl={1} mb={1} className={classes.box}>
             <List component="nav">
-              <ListItem button>
+              <ListItem button onClick={() => createNewExperiment()}>
                 <ListItemText primaryTypographyProps={{ variant: "h6" }} primary="Create new experiment" />
                 <ChevronRightIcon />
               </ListItem>
@@ -94,27 +115,32 @@ export default function Home() {
             </Box>
           </Box>
 
-          <Box p={3} className={classes.box}>
-            <Typography variant="h6">
-              Saved experiments
-            </Typography>
-            <Box mb={1}>
-              <List component="nav">
-                <ListItem button>
-                  <ListItemText primary="Pandekager (id: 1239812084)" />
-                  <ChevronRightIcon />
-                </ListItem>
-                <ListItem button>
-                  <ListItemText primary="Chokoladekage (id: 2847247282)" />
-                  <ChevronRightIcon />
-                </ListItem>
-                <ListItem button>
-                  <ListItemText primary="Secret experiment X (id: 2388853929230)" />
-                  <ChevronRightIcon />
-                </ListItem>
-              </List>
+          {state.useLocalStorage &&
+            <Box p={3} className={classes.box}>
+              <Typography variant="h6">
+                Saved experiments
+              </Typography>
+              <Box mb={1}>
+                {state.experimentsInLocalStorage.length > 0 ?
+                  <List component="nav">
+                    {state.experimentsInLocalStorage.map((k, i) => 
+                      <ListItem key={i} button onClick={() => openSavedExperiment(k)}>
+                        <ListItemText 
+                          primary={getExperimentName(k)} 
+                          secondary={k}
+                          secondaryTypographyProps={{ color: "inherit" }} />
+                        <ChevronRightIcon />
+                      </ListItem>
+                    )}
+                  </List>
+                  :
+                  <Typography variant="body2">
+                    There are no saved experiments
+                  </Typography>
+                }
+              </Box>
             </Box>
-          </Box>
+          }
 
         </CardContent>
       </Card>
