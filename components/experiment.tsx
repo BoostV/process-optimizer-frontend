@@ -150,7 +150,6 @@ export default function Experiment() {
             </Card>
 
             <Snackbar
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 open={isSnackbarOpen}
                 autoHideDuration={3000}
                 onClose={handleCloseSnackbar}>

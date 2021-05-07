@@ -1,11 +1,12 @@
-import { Box, Card, CardContent, List, ListItem, ListItemText, Typography } from "@material-ui/core";
-import { useCallback, useState } from "react";
+import { Box, Button, Card, CardContent, IconButton, List, ListItem, ListItemIcon, ListItemText, Snackbar, Typography } from "@material-ui/core";
+import { MouseEvent, useCallback, useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import Layout from "../components/layout";
 import useStyles from "../styles/home.style";
 import { NextRouter, useRouter } from 'next/router'
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { paths } from "../paths";
 import { ExperimentType } from "../types/common";
 import { useGlobal } from "../context/global-context";
@@ -17,7 +18,9 @@ export default function Home() {
   const classes = useStyles()
   const router: NextRouter = useRouter()
   const [uploadMessage, setUploadMessage] = useState("Drag file here")
-  const { state } = useGlobal()
+  const { state, dispatch } = useGlobal()
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false)
+  const [experimentsToDelete, setExperimentsToDelete] = useState([])
 
   const onDrop = useCallback(acceptedFiles => {
     const reader = new FileReader()
@@ -80,6 +83,30 @@ export default function Home() {
     return key
   }
 
+  const deleteExperiment = (e: MouseEvent, id: string) => {
+    e.stopPropagation()
+    let experimentsAfterAdd: string[] = experimentsToDelete.slice()
+    experimentsAfterAdd.splice(experimentsToDelete.length, 0, id)
+    setExperimentsToDelete(experimentsAfterAdd)
+    setSnackbarOpen(true)
+  }
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false)
+    if (experimentsToDelete.length > 0) {
+      experimentsToDelete.forEach(id => {
+        dispatch({ type: 'deleteExperimentId', payload: id })
+        localStorage.removeItem(id)
+      })
+      setExperimentsToDelete([])
+    }
+  }
+
+  const undoDeleteExperiment = () => {
+    setExperimentsToDelete([])
+    setSnackbarOpen(false)
+  }
+
   return (
     <Layout>
       <Card className={classes.mainContainer}>
@@ -123,14 +150,25 @@ export default function Home() {
               <Box mb={1}>
                 {state.experimentsInLocalStorage.length > 0 ?
                   <List component="nav">
-                    {state.experimentsInLocalStorage.map((k, i) => 
-                      <ListItem key={i} button onClick={() => openSavedExperiment(k)}>
-                        <ListItemText 
-                          primary={getExperimentName(k)} 
-                          secondary={k}
-                          secondaryTypographyProps={{ color: "inherit" }} />
-                        <ChevronRightIcon />
-                      </ListItem>
+                    {state.experimentsInLocalStorage
+                      .filter(id => experimentsToDelete.indexOf(id) === -1)
+                      .map((id, i) => 
+                        <ListItem key={i} button onClick={() => openSavedExperiment(id)}>
+                          <ListItemIcon>
+                            <IconButton 
+                              edge="start" 
+                              onClick={(e: MouseEvent) => deleteExperiment(e, id)}>
+                              <DeleteIcon 
+                                color="secondary"
+                                fontSize="small"/>
+                            </IconButton>
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={getExperimentName(id)}
+                            secondary={id}
+                            secondaryTypographyProps={{ color: "inherit" }} />
+                          <ChevronRightIcon />
+                        </ListItem>
                     )}
                   </List>
                   :
@@ -144,6 +182,27 @@ export default function Home() {
 
         </CardContent>
       </Card>
+
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        message={
+          <>
+            <Typography variant="body2">
+              Experiment deleted
+            </Typography>
+            <Typography variant="body2">
+              {state.experimentsInLocalStorage[experimentsToDelete.length - 1]}
+            </Typography>
+          </>
+        }
+        action={
+          <Button 
+            color="secondary" 
+            size="small"
+            onClick={() => undoDeleteExperiment()}>Undo</Button>
+        }/>
     </Layout>
   );
 }
