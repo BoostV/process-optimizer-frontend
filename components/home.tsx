@@ -121,17 +121,23 @@ export default function Home() {
                 Saved experiments
               </Typography>
               <Box mb={1}>
-                <List component="nav">
-                  {Object.keys(localStorage).map((k, i) => 
-                    <ListItem key={i} button onClick={() => openSavedExperiment(k)}>
-                      <ListItemText 
-                        primary={getExperimentName(k)} 
-                        secondary={k}
-                        secondaryTypographyProps={{ color: "inherit" }} />
-                      <ChevronRightIcon />
-                    </ListItem>
-                  )}
-                </List>
+                {state.experimentsInLocalStorage.length > 0 ?
+                  <List component="nav">
+                    {state.experimentsInLocalStorage.map((k, i) => 
+                      <ListItem key={i} button onClick={() => openSavedExperiment(k)}>
+                        <ListItemText 
+                          primary={getExperimentName(k)} 
+                          secondary={k}
+                          secondaryTypographyProps={{ color: "inherit" }} />
+                        <ChevronRightIcon />
+                      </ListItem>
+                    )}
+                  </List>
+                  :
+                  <Typography variant="body2">
+                    There are no saved experiments
+                  </Typography>
+                }
               </Box>
             </Box>
           }

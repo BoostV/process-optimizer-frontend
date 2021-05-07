@@ -23,6 +23,12 @@ const overrides: Overrides = {
     select: {
       paddingBottom: 4,
     }
+  },
+  MuiListItem: {
+    root: {
+      paddingTop: 0,
+      paddingBottom: 0,
+    }
   }
 }
 declare module '@material-ui/core/styles/createMuiTheme' {
