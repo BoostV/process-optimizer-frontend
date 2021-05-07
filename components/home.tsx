@@ -11,6 +11,7 @@ import { ExperimentType } from "../types/common";
 import { useGlobal } from "../context/global-context";
 import { saveExperiment } from '../context/experiment-context';
 import { v4 as uuid } from 'uuid';
+import { isEmpty } from "../utility/string-util";
 
 export default function Home() {
   const classes = useStyles()
@@ -72,7 +73,7 @@ export default function Home() {
     try {
       const json: any = JSON.parse(localStorage.getItem(key))
       const experiment: ExperimentType = json.experiment
-      return experiment.info.name
+      return !isEmpty(experiment.info.name) ? experiment.info.name : "-"
     } catch(e) {
       console.error('Error parsing saved experiment')
     }
