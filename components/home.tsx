@@ -68,7 +68,6 @@ export default function Home() {
     router.push(`${paths.experiment}/${key}`)
   }
 
-  //TODO: Only show experiments and not everything in localStorage
   const getExperimentName = (key: string) => {
     try {
       const json: any = JSON.parse(localStorage.getItem(key))

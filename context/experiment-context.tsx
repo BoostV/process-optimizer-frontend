@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
-import { reducer } from '../reducers/global-reducer'
 import { Dispatch, rootReducer } from '../reducers/reducers'
 import { initialState, State } from '../store'
 import { ExperimentResultType, ExperimentType } from '../types/common'
