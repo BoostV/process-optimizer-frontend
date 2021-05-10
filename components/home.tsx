@@ -195,12 +195,12 @@ export default function Home() {
         onClose={handleCloseSnackbar}
         message={
           <>
-            <Typography variant="body2">
-              Experiment deleted
+            <Typography variant="body1">
+              {`Experiment${deletionState.experimentsToDelete.length > 1 ? 's' : ''} deleted:`}
             </Typography>
-            <Typography variant="body2">
-              {state.experimentsInLocalStorage[deletionState.experimentsToDelete.length - 1]}
-            </Typography>
+            {deletionState.experimentsToDelete.map(e => 
+              <Typography variant="body2">{e}</Typography>
+            )}
           </>
         }
         action={
