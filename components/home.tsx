@@ -15,19 +15,24 @@ import { v4 as uuid } from 'uuid';
 import { isEmpty } from "../utility/string-util";
 import { reducer } from "../reducers/home-reducer";
 
+type UploadMessage = {
+  message: string
+  isError: boolean
+}
+
 export default function Home() {
   const classes = useStyles()
   const router: NextRouter = useRouter()
-  const [uploadMessage, setUploadMessage] = useState("Drag file here")
   const { state, dispatch } = useGlobal()
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [deletionState, dispatchDeletion] = useReducer(reducer, { experimentsToDelete: [] })
+  const [uploadMessage, setUploadMessage] = useState<UploadMessage>( { message: "Drag file here", isError: false })
 
   const onDrop = useCallback(acceptedFiles => {
     const reader = new FileReader()
-    reader.onabort = () => setUploadMessage('Upload aborted')
-    reader.onerror = () => setUploadMessage('Upload failed')
-    reader.onprogress = () => setUploadMessage('Loading file...')
+    reader.onabort = () => setUploadMessage({ message: 'Upload aborted', isError: false })
+    reader.onerror = () => setUploadMessage({ message: 'Upload failed', isError: true })
+    reader.onprogress = () => setUploadMessage({ message: 'Loading file...', isError: false })
     reader.onload = () => load(reader)
     reader.readAsText(acceptedFiles[0])
   }, [])
@@ -39,13 +44,13 @@ export default function Home() {
     try {
       const experiment: ExperimentType = JSON.parse(binaryResult as string)
       if (experiment.id === undefined) {
-        setUploadMessage('Id not found')
+        setUploadMessage({ message: 'Id not found', isError: true })
       } else {
         saveAndRedirect(experiment)
       }
     } catch (e) {
       console.error('File parsing failed', e)
-      setUploadMessage('Upload failed')
+      setUploadMessage({ message: 'Unknown file', isError: true })
     }
   }
 
@@ -57,7 +62,7 @@ export default function Home() {
         router.push(`${paths.experiment}/${id}`)
       } catch (e) {
         console.error('Unable to use local storage')
-        setUploadMessage('Upload failed')
+        setUploadMessage({ message: 'Upload failed', isError: true })
       }
     } else {
       await saveExperiment(experiment)
@@ -141,8 +146,8 @@ export default function Home() {
               <SystemUpdateAltIcon className={classes.uploadIcon} />
               <input {...getInputProps()} />
               <div className={classes.uploadBoxInner}>
-                <Typography variant="body1">
-                  {uploadMessage}
+                <Typography variant="body1" color={uploadMessage.isError ? 'error' : 'inherit'}>
+                  <b>{uploadMessage.message}</b>
                 </Typography>
               </div>
             </Box>
