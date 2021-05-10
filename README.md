@@ -20,7 +20,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ```bash
 docker build -t process-optimizer-frontend .
-docker run -p 3000:3000 process-optimizer-frontend
+docker run --rm -it --name process-optimizer-frontend -p 3000:3000 process-optimizer-frontend
 ```
 
 ## Run pre-built docker image 
