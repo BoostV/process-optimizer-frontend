@@ -9,6 +9,9 @@ export const useStyles = makeStyles(theme => ({
   },
   logo: {
     marginRight: theme.spacing(1),
+  },
+  version: {
+    float: 'right'
   }
 }));
 
