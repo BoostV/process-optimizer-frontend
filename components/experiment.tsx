@@ -71,7 +71,7 @@ export default function Experiment(props: ExperimentProps) {
 
     return (
         <Layout>
-            <Card className={[classes.experimentContainer, isDirty && !allowSaveToServer ? classes.experimentContainerDirty : ''].join(' ')}>
+            <Card className={[classes.experimentContainer, isDirty && allowSaveToServer ? classes.experimentContainerDirty : ''].join(' ')}>
                 <CardContent>
                     <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -82,12 +82,14 @@ export default function Experiment(props: ExperimentProps) {
                                     </Typography>
                                     <Typography variant="h4" gutterBottom>
                                         {/* Experiment {experiment.id} {isDirty && '(unsaved)'} [{experiment.results.rawResult || 'No results'}]  */}
-                                        {experiment.info.name} {isDirty && '(unsaved)'}
+                                        {experiment.info.name} {isDirty && allowSaveToServer ? '(unsaved)': ''}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={5} container justify="flex-end">
                                     <Button variant="contained" className={classes.actionButton} onClick={onDownload} color="primary">Download</Button>
-                                    <Button variant="contained" className={[classes.actionButton, isDirty ? classes.saveButtonDirty : ''].join(' ')} onClick={onSave} color="primary">Save</Button>
+                                    {allowSaveToServer && 
+                                        <Button variant="contained" className={[classes.actionButton, isDirty ? classes.saveButtonDirty : ''].join(' ')} onClick={onSave} color="primary">Save</Button>
+                                    }
                                     <Button variant="contained" className={classes.actionButton} color="primary" onClick={onRun}>Run</Button>
                                 </Grid>
                             </Grid>
