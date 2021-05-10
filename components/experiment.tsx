@@ -80,7 +80,7 @@ export default function Experiment() {
                         </Grid>
 
                         <Grid item xs={2} className={classes.actionContainer}>
-                            <Button variant="contained" className={classes.runButton} onClick={onDownload} color="primary">Download</Button>
+                            <Button variant="contained" className={classes.downloadButton} onClick={onDownload} color="primary">Download</Button>
                             <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
                             <Button variant="contained" className={classes.runButton} color="primary" onClick={onRun}>Run</Button>
                         </Grid>
