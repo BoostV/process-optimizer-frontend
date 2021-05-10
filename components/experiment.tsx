@@ -69,21 +69,26 @@ export default function Experiment() {
             <Card className={[classes.experimentContainer, isDirty ? classes.experimentContainerDirty : ''].join(' ')}>
                 <CardContent>
                     <Grid container spacing={2}>
-                        <Grid item xs={10}>
-                            <Typography variant="body2">
-                                {experiment.id}
-                            </Typography>
-                            <Typography variant="h4" gutterBottom>
-                                {/* Experiment {experiment.id} {isDirty && '(unsaved)'} [{experiment.results.rawResult || 'No results'}]  */}
-                                {experiment.info.name} {isDirty && '(unsaved)'}
-                            </Typography>
+
+                        <Grid item xs={12}>
+                           <Grid container>
+                                <Grid item xs={7}>
+                                    <Typography variant="body2">
+                                        {experiment.id}
+                                    </Typography>
+                                    <Typography variant="h4" gutterBottom>
+                                        {/* Experiment {experiment.id} {isDirty && '(unsaved)'} [{experiment.results.rawResult || 'No results'}]  */}
+                                        {experiment.info.name} {isDirty && '(unsaved)'}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={5} container justify="flex-end">
+                                    <Button variant="contained" className={classes.actionButton} onClick={onDownload} color="primary">Download</Button>
+                                    <Button variant="contained" className={[classes.actionButton, isDirty ? classes.saveButtonDirty : ''].join(' ')} onClick={onSave} color="primary">Save</Button>
+                                    <Button variant="contained" className={classes.actionButton} color="primary" onClick={onRun}>Run</Button>
+                                </Grid>
+                            </Grid>
                         </Grid>
 
-                        <Grid item xs={2} className={classes.actionContainer}>
-                            <Button variant="contained" className={classes.downloadButton} onClick={onDownload} color="primary">Download</Button>
-                            <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
-                            <Button variant="contained" className={classes.runButton} color="primary" onClick={onRun}>Run</Button>
-                        </Grid>
                         <Grid item xs={3}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
@@ -114,7 +119,7 @@ export default function Experiment() {
                             </Grid>
                         </Grid>
 
-                        <Grid item xs={8} lg={7}>
+                        <Grid item xs={9}>
 
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
@@ -150,7 +155,7 @@ export default function Experiment() {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={2}></Grid>
+                        
                     </Grid>
                 </CardContent>
             </Card>
