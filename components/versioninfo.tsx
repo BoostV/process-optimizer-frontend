@@ -1,14 +1,14 @@
 
 export const VersionInfo = () => {
-    return <div>
+    return <div>v
     {
     // @ts-ignore
     VERSION} 
-    {
+    ({
     // @ts-ignore
-    COMMITHASH}
-    {
+    COMMITHASH})
+    [{
     // @ts-ignore
-    BRANCH}
+    BRANCH}]
 </div>
 }
