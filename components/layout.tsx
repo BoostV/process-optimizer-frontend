@@ -32,7 +32,7 @@ export default function Layout ( {children} ) {
               </Button>
             </Link>
           </div>
-          <div className={classes.version}><VersionInfo /></div>
+          <VersionInfo />
         </Toolbar>
       </AppBar>
       <Box ml={1} mr={1} mb={1} mt={7}>

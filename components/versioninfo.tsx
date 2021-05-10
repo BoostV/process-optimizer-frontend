@@ -11,6 +11,6 @@ export const versionInfo = {
 }
 
 export const VersionInfo = () => {
-    return <div>{versionInfo.version} [{versionInfo.branch}]
+    return <div>{versionInfo.version}{versionInfo.branch !== 'main' && ` [${versionInfo.branch}]`}
 </div>
 }
