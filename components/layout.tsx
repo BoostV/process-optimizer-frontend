@@ -3,7 +3,7 @@ import Link from 'next/link'
 import useStyles from '../styles/layout.style'
 import Image from 'next/image'
 import { useGlobal } from '../context/global-context'
-import { VersionInfo } from './versioninfo'
+import { VersionInfo } from './version-info'
 
 export default function Layout ( {children} ) {
   const classes = useStyles()

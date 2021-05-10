@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { versionInfo } from '../components/versioninfo'
+import { versionInfo } from '../components/version-info'
 import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
 import { Dispatch, rootReducer } from '../reducers/reducers'
 import { initialState, State } from '../store'

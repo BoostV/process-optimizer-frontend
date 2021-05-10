@@ -1,4 +1,4 @@
-import { versionInfo } from "../components/versioninfo"
+import { versionInfo } from "../components/version-info"
 import { CategoricalVariableType, DataPointType, ExperimentResultType, ExperimentType, OptimizerConfig, ValueVariableType } from "../types/common"
 export type ExperimentAction =
     {
