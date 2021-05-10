@@ -51,7 +51,7 @@ export const theme: Theme = createMuiTheme({
   overrides,
   sizes: {
     mainWidthMin: 1200,
-    mainWidthMax: 1800,
+    mainWidthMax: 1400,
   },
   palette: {
     primary: {
