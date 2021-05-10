@@ -1,23 +1,27 @@
-import { Box, Card, CardContent, List, ListItem, ListItemText, Typography } from "@material-ui/core";
-import { useCallback, useState } from "react";
+import { Box, Button, Card, CardContent, IconButton, List, ListItem, ListItemIcon, ListItemText, Snackbar, Typography } from "@material-ui/core";
+import { MouseEvent, useCallback, useReducer, useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import Layout from "../components/layout";
 import useStyles from "../styles/home.style";
 import { NextRouter, useRouter } from 'next/router'
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { paths } from "../paths";
 import { ExperimentType } from "../types/common";
 import { useGlobal } from "../context/global-context";
 import { saveExperiment } from '../context/experiment-context';
 import { v4 as uuid } from 'uuid';
 import { isEmpty } from "../utility/string-util";
+import { reducer } from "../reducers/home-reducer";
 
 export default function Home() {
   const classes = useStyles()
   const router: NextRouter = useRouter()
   const [uploadMessage, setUploadMessage] = useState("Drag file here")
-  const { state } = useGlobal()
+  const { state, dispatch } = useGlobal()
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false)
+  const [deletionState, dispatchDeletion] = useReducer(reducer, { experimentsToDelete: [] })
 
   const onDrop = useCallback(acceptedFiles => {
     const reader = new FileReader()
@@ -62,10 +66,12 @@ export default function Home() {
   }
 
   const createNewExperiment = () => {
+    deleteExperiments()
     router.push(`${paths.experiment}/${uuid()}`)
   }
 
   const openSavedExperiment = (key: string) => {
+    deleteExperiments()
     router.push(`${paths.experiment}/${key}`)
   }
 
@@ -78,6 +84,33 @@ export default function Home() {
       console.error('Error parsing saved experiment')
     }
     return key
+  }
+
+  const deleteExperiment = (e: MouseEvent, id: string) => {
+    e.stopPropagation()
+    dispatchDeletion( { type: "addExperimentForDeletion", payload: id } )
+    setSnackbarOpen(true)
+  }
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false)
+    deleteExperiments()
+  }
+
+  const deleteExperiments = () => {
+    const experimentsToDelete: string[] = deletionState.experimentsToDelete
+    if (experimentsToDelete.length > 0) {
+      experimentsToDelete.forEach(id => {
+        dispatch({ type: 'deleteExperimentId', payload: id })
+        localStorage.removeItem(id)
+      })
+      dispatchDeletion({ type: 'resetExperimentsForDeletion' })
+    }
+  }
+
+  const undoDeleteExperiment = () => {
+    dispatchDeletion({ type: 'resetExperimentsForDeletion' })
+    setSnackbarOpen(false)
   }
 
   return (
@@ -123,14 +156,25 @@ export default function Home() {
               <Box mb={1}>
                 {state.experimentsInLocalStorage.length > 0 ?
                   <List component="nav">
-                    {state.experimentsInLocalStorage.map((k, i) => 
-                      <ListItem key={i} button onClick={() => openSavedExperiment(k)}>
-                        <ListItemText 
-                          primary={getExperimentName(k)} 
-                          secondary={k}
-                          secondaryTypographyProps={{ color: "inherit" }} />
-                        <ChevronRightIcon />
-                      </ListItem>
+                    {state.experimentsInLocalStorage
+                      .filter(id => deletionState.experimentsToDelete.indexOf(id) === -1)
+                      .map((id, i) => 
+                        <ListItem key={i} button onClick={() => openSavedExperiment(id)}>
+                          <ListItemIcon>
+                            <IconButton 
+                              edge="start" 
+                              onClick={(e: MouseEvent) => deleteExperiment(e, id)}>
+                              <DeleteIcon 
+                                color="secondary"
+                                fontSize="small"/>
+                            </IconButton>
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={getExperimentName(id)}
+                            secondary={id}
+                            secondaryTypographyProps={{ color: "inherit" }} />
+                          <ChevronRightIcon />
+                        </ListItem>
                     )}
                   </List>
                   :
@@ -144,6 +188,27 @@ export default function Home() {
 
         </CardContent>
       </Card>
+
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        message={
+          <>
+            <Typography variant="body1">
+              {`Experiment${deletionState.experimentsToDelete.length > 1 ? 's' : ''} deleted:`}
+            </Typography>
+            {deletionState.experimentsToDelete.map(e => 
+              <Typography variant="body2">{e}</Typography>
+            )}
+          </>
+        }
+        action={
+          <Button 
+            color="secondary" 
+            size="small"
+            onClick={() => undoDeleteExperiment()}>Undo</Button>
+        }/>
     </Layout>
   );
 }

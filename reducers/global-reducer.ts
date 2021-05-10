@@ -16,6 +16,10 @@ export type Action = {
     type:'storeExperimentId'
     payload: string
 }
+| { 
+    type:'deleteExperimentId'
+    payload: string
+}
 
 export type Dispatch = (action: Action) => void
 
@@ -41,6 +45,11 @@ export const reducer = (state: State, action: Action) => {
             } else {
                 return state
             }
+        case 'deleteExperimentId':
+            let idsAfterDelete: string[] = state.experimentsInLocalStorage.slice()
+            let indexOfDelete = state.experimentsInLocalStorage.indexOf(action.payload)
+            idsAfterDelete.splice(indexOfDelete, 1)
+            return {...state, experimentsInLocalStorage: idsAfterDelete }
         default:
             return state
     }

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { versionInfo } from '../components/version-info'
 import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
 import { Dispatch, rootReducer } from '../reducers/reducers'
 import { initialState, State } from '../store'
@@ -47,6 +48,7 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
                     console.log(`Error fetching expriment ${experimentId}`)
                 }
             } else {
+                dispatch({type: 'setSwVersion', payload: versionInfo.version})
                 global.dispatch({
                     type: 'storeExperimentId',
                     payload: experimentId
