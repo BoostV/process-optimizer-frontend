@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, CircularProgress, Grid, Snackbar, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
 import Layout from './layout'
 import OptimizerModel from './optimizer-model';
 import OptimizerConfigurator from './optimizer-configurator';
@@ -12,7 +12,12 @@ import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointT
 import LoadingExperiment from './loading-experiment';
 import saveToLocalFile from '../utility/save-to-local-file';
 
-export default function Experiment() {
+type ExperimentProps = {
+    allowSaveToServer: boolean
+}
+
+export default function Experiment(props: ExperimentProps) {
+    const { allowSaveToServer } = props
     const classes = useStyles()
     const { state: {
         experiment
@@ -66,11 +71,10 @@ export default function Experiment() {
 
     return (
         <Layout>
-            <Card className={[classes.experimentContainer, isDirty ? classes.experimentContainerDirty : ''].join(' ')}>
+            <Card className={[classes.experimentContainer, isDirty && !allowSaveToServer ? classes.experimentContainerDirty : ''].join(' ')}>
                 <CardContent>
                     <Grid container spacing={2}>
-
-                        <Grid item xs={12}>
+                    <Grid item xs={12}>
                            <Grid container>
                                 <Grid item xs={7}>
                                     <Typography variant="body2">

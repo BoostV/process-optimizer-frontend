@@ -16,7 +16,7 @@ export default function ExperimentContainer() {
   return (
     <>
       <ExperimentProvider experimentId={Array.isArray(experimentid) ? experimentid[0] : experimentid} useLocalStorage={state.useLocalStorage}>
-        <Experiment />
+        <Experiment allowSaveToServer={state.useLocalStorage} />
         {state.debug && <DebugExperiment />}
       </ExperimentProvider>
     </>
