@@ -17,6 +17,9 @@ export const useStyles = makeStyles(theme => ({
   runButton: {
     marginLeft: theme.spacing(2),
   },
+  downloadButton: {
+    marginLeft: theme.spacing(2),
+  },
   saveButtonDirty: {
     animationName: '$saveButton',
     animationDuration: '3s',

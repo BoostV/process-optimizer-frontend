@@ -10,6 +10,7 @@ import { useExperiment, saveExperiment, runExperiment } from '../context/experim
 import React, { useState, useEffect } from 'react';
 import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointType } from '../types/common';
 import LoadingExperiment from './loading-experiment';
+import saveToLocalFile from '../utility/save-to-local-file';
 
 export default function Experiment() {
     const classes = useStyles()
@@ -26,6 +27,10 @@ export default function Experiment() {
             setDirty(true)
         }
     }, [experiment])
+
+    const onDownload = () => {
+        saveToLocalFile(experiment, experiment.id)
+    } 
 
     const onSave = async () => {
         try {
@@ -75,6 +80,7 @@ export default function Experiment() {
                         </Grid>
 
                         <Grid item xs={2} className={classes.actionContainer}>
+                            <Button variant="contained" className={classes.runButton} onClick={onDownload} color="primary">Download</Button>
                             <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
                             <Button variant="contained" className={classes.runButton} color="primary" onClick={onRun}>Run</Button>
                         </Grid>
