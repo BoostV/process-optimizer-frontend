@@ -1,5 +1,5 @@
-import { dataPointsReducer, DataPointsState, DataPointsTableEditCancelledAction, DataPointsTableEditedAction, DataPointsTableEditToggledAction, DataPointsTableRowAddedAction, DataPointsTableRowDeletedAction, DataPointsTableUpdatedAction, DATA_POINTS_TABLE_EDITED, DATA_POINTS_TABLE_EDIT_CANCELLED, DATA_POINTS_TABLE_EDIT_TOGGLED, DATA_POINTS_TABLE_ROW_ADDED, DATA_POINTS_TABLE_ROW_DELETED, DATA_POINTS_TABLE_UPDATED } from "../../reducers/data-points-reducer"
-import { TableDataRow } from "../../types/common"
+import { dataPointsReducer, DataPointsState, DataPointsTableAction } from "./data-points-reducer"
+import { TableDataRow } from "../types/common"
 
 describe("data points reducer", () => {
   
@@ -7,8 +7,8 @@ describe("data points reducer", () => {
     it("should toggle edit mode and save previous row", async () => {
       const payload = 0
 
-      const action: DataPointsTableEditToggledAction = {
-        type: DATA_POINTS_TABLE_EDIT_TOGGLED,
+      const action: DataPointsTableAction = {
+        type: 'DATA_POINTS_TABLE_EDIT_TOGGLED',
         payload
       }
 
@@ -69,8 +69,8 @@ describe("data points reducer", () => {
     it("should toggle edit mode and set row to prevRow", async () => {
       const payload = 0
 
-      const action: DataPointsTableEditCancelledAction = {
-        type: DATA_POINTS_TABLE_EDIT_CANCELLED,
+      const action: DataPointsTableAction = {
+        type: 'DATA_POINTS_TABLE_EDIT_CANCELLED',
         payload
       }
 
@@ -110,8 +110,8 @@ describe("data points reducer", () => {
     it("should set row to prevRow but not toggle edit mode for new row", async () => {
       const payload = 0
 
-      const action: DataPointsTableEditCancelledAction = {
-        type: DATA_POINTS_TABLE_EDIT_CANCELLED,
+      const action: DataPointsTableAction = {
+        type: 'DATA_POINTS_TABLE_EDIT_CANCELLED',
         payload
       }
 
@@ -158,8 +158,8 @@ describe("data points reducer", () => {
         useArrayForValue: "score"
       }
 
-      const action: DataPointsTableEditedAction = {
-        type: DATA_POINTS_TABLE_EDITED,
+      const action: DataPointsTableAction = {
+        type: 'DATA_POINTS_TABLE_EDITED',
         payload
       }
 
@@ -209,8 +209,8 @@ describe("data points reducer", () => {
         useArrayForValue: "score"
       }
 
-      const action: DataPointsTableEditedAction = {
-        type: DATA_POINTS_TABLE_EDITED,
+      const action: DataPointsTableAction = {
+        type: 'DATA_POINTS_TABLE_EDITED',
         payload
       }
 
@@ -268,8 +268,8 @@ describe("data points reducer", () => {
         }
       ]
 
-      const action: DataPointsTableUpdatedAction = {
-        type: DATA_POINTS_TABLE_UPDATED,
+      const action: DataPointsTableAction = {
+        type: 'DATA_POINTS_TABLE_UPDATED',
         payload
       }
 
@@ -304,8 +304,8 @@ describe("data points reducer", () => {
     it("should delete row", async () => {
       const payload = 1
 
-      const action: DataPointsTableRowDeletedAction = {
-        type: DATA_POINTS_TABLE_ROW_DELETED,
+      const action: DataPointsTableAction = {
+        type: 'DATA_POINTS_TABLE_ROW_DELETED',
         payload
       }
 
@@ -371,8 +371,8 @@ describe("data points reducer", () => {
         isNew: true,
       }
 
-      const action: DataPointsTableRowAddedAction = {
-        type: DATA_POINTS_TABLE_ROW_ADDED,
+      const action: DataPointsTableAction = {
+        type: 'DATA_POINTS_TABLE_ROW_ADDED',
         payload
       }
 

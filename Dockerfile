@@ -1,11 +1,11 @@
-FROM node:15.8.0 AS builder
+FROM node:14.16.1 AS builder
 
 WORKDIR /app
 COPY . .
 
 RUN yarn && yarn build
 
-FROM node:15.8.0
+FROM node:14.16.1
 RUN mkdir /app
 
 WORKDIR /app
@@ -15,6 +15,7 @@ COPY --from=builder /app/.next/ .next
 COPY package.json .
 
 RUN addgroup --system user && adduser --system --group user
+RUN chown -R user:user /app/.next
 
 USER user
 ENV DB_FOLDER=/tmp

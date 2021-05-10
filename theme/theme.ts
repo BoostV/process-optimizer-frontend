@@ -13,8 +13,6 @@ declare module '@material-ui/core/styles/createPalette' {
   }
 }
 
-export const defaultTheme: Theme = createMuiTheme()
-
 const overrides: Overrides = {
   MuiTableCell: {
     sizeSmall: {
@@ -23,13 +21,38 @@ const overrides: Overrides = {
   },
   MuiSelect: {
     select: {
-      paddingBottom: "4px",
+      paddingBottom: 4,
+    }
+  },
+  MuiListItem: {
+    root: {
+      paddingTop: 0,
+      paddingBottom: 0,
+    }
+  }
+}
+declare module '@material-ui/core/styles/createMuiTheme' {
+  interface Theme {
+    sizes: {
+      mainWidthMin: number
+      mainWidthMax: number
+    }
+  }
+  
+  interface ThemeOptions {
+    sizes?: {
+      mainWidthMin?: number
+      mainWidthMax?: number
     }
   }
 }
 
 export const theme: Theme = createMuiTheme({
   overrides,
+  sizes: {
+    mainWidthMin: 1200,
+    mainWidthMax: 1800,
+  },
   palette: {
     primary: {
       main: 'rgba(0,121,145,1)',
