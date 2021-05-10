@@ -1,10 +1,12 @@
 import { ExperimentType } from "./types/common";
+import { versionInfo } from './components/versioninfo'
 
 export const emptyExperiment: ExperimentType = {
   id: "",
   info: {
     name: "",
     description: "",
+    swVersion: versionInfo.version
   },
   categoricalVariables: [],
   valueVariables: [],

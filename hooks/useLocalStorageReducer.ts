@@ -10,7 +10,7 @@ const init = (localStorageKey: string) => <S> (initialState: S) => {
       localStorage.setItem(localStorageKey, JSON.stringify(initialState))
     }
   } catch (error) {
-    // Incognito mode might cause loding to fail - add error message to initial state and continue
+    // Incognito mode might cause loading to fail - add error message to initial state and continue
   }
   return initialState
 }
