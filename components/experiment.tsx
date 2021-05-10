@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, CircularProgress, Grid, Snackbar, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
 import Layout from './layout'
 import OptimizerModel from './optimizer-model';
 import OptimizerConfigurator from './optimizer-configurator';
@@ -11,7 +11,12 @@ import React, { useState, useEffect } from 'react';
 import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointType } from '../types/common';
 import LoadingExperiment from './loading-experiment';
 
-export default function Experiment() {
+type ExperimentProps = {
+    allowSaveToServer: boolean
+}
+
+export default function Experiment(props: ExperimentProps) {
+    const { allowSaveToServer } = props
     const classes = useStyles()
     const { state: {
         experiment
@@ -61,7 +66,7 @@ export default function Experiment() {
 
     return (
         <Layout>
-            <Card className={[classes.experimentContainer, isDirty ? classes.experimentContainerDirty : ''].join(' ')}>
+            <Card className={[classes.experimentContainer, isDirty && !allowSaveToServer ? classes.experimentContainerDirty : ''].join(' ')}>
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid item xs={10}>
@@ -70,12 +75,14 @@ export default function Experiment() {
                             </Typography>
                             <Typography variant="h4" gutterBottom>
                                 {/* Experiment {experiment.id} {isDirty && '(unsaved)'} [{experiment.results.rawResult || 'No results'}]  */}
-                                {experiment.info.name} {isDirty && '(unsaved)'}
+                                {experiment.info.name} {isDirty && !allowSaveToServer ? '(unsaved)' : ''}
                             </Typography>
                         </Grid>
 
                         <Grid item xs={2} className={classes.actionContainer}>
-                            <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
+                            {!allowSaveToServer && 
+                                <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
+                            }
                             <Button variant="contained" className={classes.runButton} color="primary" onClick={onRun}>Run</Button>
                         </Grid>
                         <Grid item xs={3}>
