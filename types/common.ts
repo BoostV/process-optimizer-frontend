@@ -17,7 +17,8 @@ export type ExperimentResultType = {
 
 export type Info = {
   name: string
-  description: string
+  description: string,
+  swVersion: string
 }
 
 export type CategoricalVariableType = {
