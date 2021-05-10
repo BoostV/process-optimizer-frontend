@@ -65,10 +65,12 @@ export default function Home() {
   }
 
   const createNewExperiment = () => {
+    deleteExperiments()
     router.push(`${paths.experiment}/${uuid()}`)
   }
 
   const openSavedExperiment = (key: string) => {
+    deleteExperiments()
     router.push(`${paths.experiment}/${key}`)
   }
 
@@ -93,6 +95,10 @@ export default function Home() {
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false)
+    deleteExperiments()
+  }
+
+  const deleteExperiments = () => {
     if (experimentsToDelete.length > 0) {
       experimentsToDelete.forEach(id => {
         dispatch({ type: 'deleteExperimentId', payload: id })
