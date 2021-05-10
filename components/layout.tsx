@@ -3,6 +3,7 @@ import Link from 'next/link'
 import useStyles from '../styles/layout.style'
 import Image from 'next/image'
 import { useGlobal } from '../context/global-context'
+import { VersionInfo } from './version-info'
 
 export default function Layout ( {children} ) {
   const classes = useStyles()
@@ -31,6 +32,7 @@ export default function Layout ( {children} ) {
               </Button>
             </Link>
           </div>
+          <VersionInfo />
         </Toolbar>
       </AppBar>
       <Box ml={1} mr={1} mb={1} mt={7}>

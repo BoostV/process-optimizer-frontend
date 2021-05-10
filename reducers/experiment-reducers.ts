@@ -1,5 +1,10 @@
+import { versionInfo } from "../components/version-info"
 import { CategoricalVariableType, DataPointType, ExperimentResultType, ExperimentType, OptimizerConfig, ValueVariableType } from "../types/common"
 export type ExperimentAction =
+    {
+        type: 'setSwVersion'
+        payload: string
+    }
     | {
         type: 'registerResult'
         payload: ExperimentResultType
@@ -47,9 +52,14 @@ export type ExperimentAction =
 
 export const experimentReducer = (experimentState: ExperimentType, action: ExperimentAction) => {
     switch (action.type) {
+        case 'setSwVersion':
+            return {...experimentState, info: {
+                ...experimentState.info,
+                swVersion: action.payload
+            }}
         case 'updateExperiment':
             return {
-                ...action.payload
+                ...action.payload, info: { ...action.payload.info, swVersion: versionInfo.version }
             }
         case 'updateExperimentName':
             return {
