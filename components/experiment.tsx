@@ -12,11 +12,11 @@ import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointT
 import LoadingExperiment from './loading-experiment';
 
 type ExperimentProps = {
-    useLocalStorage: boolean
+    allowSaveToServer: boolean
 }
 
 export default function Experiment(props: ExperimentProps) {
-    const { useLocalStorage } = props
+    const { allowSaveToServer } = props
     const classes = useStyles()
     const { state: {
         experiment
@@ -66,7 +66,7 @@ export default function Experiment(props: ExperimentProps) {
 
     return (
         <Layout>
-            <Card className={[classes.experimentContainer, isDirty && !useLocalStorage ? classes.experimentContainerDirty : ''].join(' ')}>
+            <Card className={[classes.experimentContainer, isDirty && !allowSaveToServer ? classes.experimentContainerDirty : ''].join(' ')}>
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid item xs={10}>
@@ -75,12 +75,12 @@ export default function Experiment(props: ExperimentProps) {
                             </Typography>
                             <Typography variant="h4" gutterBottom>
                                 {/* Experiment {experiment.id} {isDirty && '(unsaved)'} [{experiment.results.rawResult || 'No results'}]  */}
-                                {experiment.info.name} {isDirty && !useLocalStorage ? '(unsaved)' : ''}
+                                {experiment.info.name} {isDirty && !allowSaveToServer ? '(unsaved)' : ''}
                             </Typography>
                         </Grid>
 
                         <Grid item xs={2} className={classes.actionContainer}>
-                            {!useLocalStorage && 
+                            {!allowSaveToServer && 
                                 <Button variant="contained" className={isDirty ? classes.saveButtonDirty : ''} onClick={onSave} color="primary">Save</Button>
                             }
                             <Button variant="contained" className={classes.runButton} color="primary" onClick={onRun}>Run</Button>
