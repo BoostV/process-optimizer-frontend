@@ -11,11 +11,9 @@ export const useStyles = makeStyles(theme => ({
   experimentContainerDirty: {
     border: '2px solid ' + theme.palette.warning.main,
   },
-  actionContainer: {
-    textAlign: "right",
-  },
-  runButton: {
+  actionButton: {
     marginLeft: theme.spacing(2),
+    height: 42,
   },
   saveButtonDirty: {
     animationName: '$saveButton',
