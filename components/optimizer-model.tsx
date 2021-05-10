@@ -1,5 +1,5 @@
 import { Box, Button, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
-import { CategoricalVariableType, ExperimentType, ValueVariableType } from '../types/common'
+import { CategoricalVariableType, ValueVariableType } from '../types/common'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { FC, useState } from 'react'
 import VariableEditor from './variable-editor'
@@ -47,7 +47,7 @@ export default function OptimizerModel(props: OptimizerModelProps) {
                     <IconButton 
                       disabled={disabled}
                       size="small" 
-                      onClick={() => {props.onDeleteValueVariable(valueVar)}}>
+                      onClick={() => {onDeleteValueVariable(valueVar)}}>
                       <DeleteIcon color={disabled ? "inherit" : "primary"} fontSize="small"/>
                     </IconButton>
                   </TableCell>
@@ -84,7 +84,7 @@ export default function OptimizerModel(props: OptimizerModelProps) {
                       <IconButton 
                         disabled={disabled}
                         size="small" 
-                        onClick={() => {props.onDeleteCategoricalVariable(catVar)}}>
+                        onClick={() => {onDeleteCategoricalVariable(catVar)}}>
                         <DeleteIcon color={disabled ? "inherit" : "primary"} fontSize="small"/>
                       </IconButton>
                     </TableCell>
@@ -104,8 +104,8 @@ export default function OptimizerModel(props: OptimizerModelProps) {
         {isAddOpen &&
           <VariableEditor 
             isAddVariableDisabled={disabled}
-            addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => props.addCategoricalVariable(categoricalVariable)}
-            addValueVariable={(valueVariable: ValueVariableType) => props.addValueVariable(valueVariable)}
+            addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)}
+            addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}
             close={() => setAddOpen(false)} />
         }
 
