@@ -1,5 +1,5 @@
 import { Box, Button, Card, CardContent, IconButton, List, ListItem, ListItemIcon, ListItemText, Snackbar, Typography } from "@material-ui/core";
-import { MouseEvent, useCallback, useState } from "react";
+import { MouseEvent, useCallback, useReducer, useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import Layout from "../components/layout";
 import useStyles from "../styles/home.style";
@@ -13,6 +13,7 @@ import { useGlobal } from "../context/global-context";
 import { saveExperiment } from '../context/experiment-context';
 import { v4 as uuid } from 'uuid';
 import { isEmpty } from "../utility/string-util";
+import { reducer } from "../reducers/home-reducer";
 
 export default function Home() {
   const classes = useStyles()
@@ -20,7 +21,7 @@ export default function Home() {
   const [uploadMessage, setUploadMessage] = useState("Drag file here")
   const { state, dispatch } = useGlobal()
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
-  const [experimentsToDelete, setExperimentsToDelete] = useState([])
+  const [deletionState, dispatchDeletion] = useReducer(reducer, { experimentsToDelete: [] })
 
   const onDrop = useCallback(acceptedFiles => {
     const reader = new FileReader()
@@ -87,9 +88,7 @@ export default function Home() {
 
   const deleteExperiment = (e: MouseEvent, id: string) => {
     e.stopPropagation()
-    let experimentsAfterAdd: string[] = experimentsToDelete.slice()
-    experimentsAfterAdd.splice(experimentsToDelete.length, 0, id)
-    setExperimentsToDelete(experimentsAfterAdd)
+    dispatchDeletion( { type: "addExperimentForDeletion", payload: id } )
     setSnackbarOpen(true)
   }
 
@@ -99,17 +98,18 @@ export default function Home() {
   }
 
   const deleteExperiments = () => {
+    const experimentsToDelete: string[] = deletionState.experimentsToDelete
     if (experimentsToDelete.length > 0) {
       experimentsToDelete.forEach(id => {
         dispatch({ type: 'deleteExperimentId', payload: id })
         localStorage.removeItem(id)
       })
-      setExperimentsToDelete([])
+      dispatchDeletion({ type: 'resetExperimentsForDeletion' })
     }
   }
 
   const undoDeleteExperiment = () => {
-    setExperimentsToDelete([])
+    dispatchDeletion({ type: 'resetExperimentsForDeletion' })
     setSnackbarOpen(false)
   }
 
@@ -157,7 +157,7 @@ export default function Home() {
                 {state.experimentsInLocalStorage.length > 0 ?
                   <List component="nav">
                     {state.experimentsInLocalStorage
-                      .filter(id => experimentsToDelete.indexOf(id) === -1)
+                      .filter(id => deletionState.experimentsToDelete.indexOf(id) === -1)
                       .map((id, i) => 
                         <ListItem key={i} button onClick={() => openSavedExperiment(id)}>
                           <ListItemIcon>
@@ -199,7 +199,7 @@ export default function Home() {
               Experiment deleted
             </Typography>
             <Typography variant="body2">
-              {state.experimentsInLocalStorage[experimentsToDelete.length - 1]}
+              {state.experimentsInLocalStorage[deletionState.experimentsToDelete.length - 1]}
             </Typography>
           </>
         }
