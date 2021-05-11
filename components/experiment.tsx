@@ -103,7 +103,7 @@ export default function Experiment(props: ExperimentProps) {
             <Card className={[classes.experimentContainer, isDirty && allowSaveToServer ? classes.experimentContainerDirty : ''].join(' ')}>
                 <CardContent>
                     <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                        <Grid item xs={12}>
                            <Grid container>
                                 <Grid item xs={7}>
                                     <Typography variant="body2">
@@ -137,6 +137,7 @@ export default function Experiment(props: ExperimentProps) {
 
                         <Grid item xs={3}>
                             <Grid container spacing={2}>
+
                                 <Grid item xs={12}>
                                     <ModelEditor
                                         info={experiment.info}
@@ -158,17 +159,6 @@ export default function Experiment(props: ExperimentProps) {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <OptimizerConfigurator
-                                        config={experiment.optimizerConfig}
-                                        onConfigUpdated={(config: OptimizerConfig) => dispatch({ type: 'updateConfiguration', payload: config })} />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={9}>
-
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
                                     <OptimizerModel
                                         valueVariables={valueVariables}
                                         categoricalVariables={categoricalVariables}
@@ -178,6 +168,19 @@ export default function Experiment(props: ExperimentProps) {
                                         addValueVariable={(valueVariable: ValueVariableType) => dispatch({ type: 'addValueVariable', payload: valueVariable })}
                                         addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => dispatch({ type: 'addCategorialVariable', payload: categoricalVariable })} />
                                 </Grid>
+
+                                <Grid item xs={12}>
+                                    <OptimizerConfigurator
+                                        config={experiment.optimizerConfig}
+                                        onConfigUpdated={(config: OptimizerConfig) => dispatch({ type: 'updateConfiguration', payload: config })} />
+                                </Grid>
+
+                            </Grid>
+                        </Grid>
+
+                        <Grid item xs={9}>
+
+                            <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <DataPoints
                                         valueVariables={experiment.valueVariables}
@@ -186,7 +189,7 @@ export default function Experiment(props: ExperimentProps) {
                                         onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {experiment.results.plots.length > 0 &&
+                                    {experiment.results.plots.length > -1 &&
                                         <Card>
                                             <CardContent>
                                                 <Typography variant="h6" gutterBottom>

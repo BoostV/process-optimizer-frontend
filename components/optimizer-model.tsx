@@ -95,18 +95,22 @@ export default function OptimizerModel(props: OptimizerModelProps) {
           </Box>
         }
         {!isAddOpen &&
+        <Box mt={2}>
           <Button  
             disabled={disabled} 
             variant="outlined" 
             size="small" 
             onClick={() => setAddOpen(true)}>Add variable</Button>
+          </Box>
         }
         {isAddOpen &&
-          <VariableEditor 
-            isAddVariableDisabled={disabled}
-            addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)}
-            addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}
-            close={() => setAddOpen(false)} />
+          <Box mt={2}>
+            <VariableEditor 
+              isAddVariableDisabled={disabled}
+              addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)}
+              addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}
+              close={() => setAddOpen(false)} />
+          </Box>
         }
 
         {disabled && 
