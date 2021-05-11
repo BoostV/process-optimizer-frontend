@@ -3,8 +3,10 @@ import Link from 'next/link'
 import useStyles from '../styles/layout.style'
 import { useGlobal } from '../context/global-context'
 import { VersionInfo } from './version-info'
+import { useState } from 'react'
 
 export default function Layout ( {children} ) {
+  const [ showDebug, setShowDebug ] = useState(false)
   const classes = useStyles()
   const { state, dispatch } = useGlobal()
 
@@ -16,8 +18,8 @@ export default function Layout ( {children} ) {
     <>
       <AppBar>
         <Toolbar variant="dense">
-        <Switch checked={state.debug} onChange={handleSwitch('debug')} name="debug" inputProps={{ 'aria-label': 'secondary checkbox' }}/>
-        <Switch checked={state.useLocalStorage} onChange={handleSwitch('useLocalStorage')} name="useLocalStorage" inputProps={{ 'aria-label': 'secondary checkbox' }}/>
+        {showDebug && <Switch checked={state.debug} onChange={handleSwitch('debug')} name="debug" inputProps={{ 'aria-label': 'secondary checkbox' }}/>}
+        {state.debug && <Switch checked={state.useLocalStorage} onChange={handleSwitch('useLocalStorage')} name="useLocalStorage" inputProps={{ 'aria-label': 'secondary checkbox' }}/>}
           <img className={classes.logo} src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAEymlUWHRYTUw6Y29tLmFkb2JlLnht
             cAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQi
             Pz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUg
@@ -154,7 +156,7 @@ export default function Layout ( {children} ) {
               </Button>
             </Link>
           </div>
-          <VersionInfo />
+          <div onClick={() => {setShowDebug(!showDebug)}}><VersionInfo /></div>
         </Toolbar>
       </AppBar>
       <Box ml={1} mr={1} mb={7} mt={7}>
