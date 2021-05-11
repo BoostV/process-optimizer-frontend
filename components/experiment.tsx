@@ -181,15 +181,15 @@ export default function Experiment(props: ExperimentProps) {
                         <Grid item xs={9}>
 
                             <Grid container spacing={2}>
-                                <Grid item xs={12}>
+                                <Grid item xs={12} xl={6}>
                                     <DataPoints
                                         valueVariables={experiment.valueVariables}
                                         categoricalVariables={experiment.categoricalVariables}
                                         dataPoints={experiment.dataPoints}
                                         onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
                                 </Grid>
-                                <Grid item xs={12}>
-                                    {experiment.results.plots.length > -1 &&
+                                <Grid item xs={12} xl={6}>
+                                    {experiment.results.plots.length > 0 &&
                                         <Card>
                                             <CardContent>
                                                 <Typography variant="h6" gutterBottom>
