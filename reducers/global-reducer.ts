@@ -1,7 +1,10 @@
+import { ThemeName } from "../theme/theme"
+
 export type State = {
     useLocalStorage: boolean
     debug: boolean
     experimentsInLocalStorage: string[]
+    theme: ThemeName
 }
 
 export type Action = {
@@ -9,16 +12,20 @@ export type Action = {
     payload: boolean
 }
 | { 
-    type:'debug'
+    type: 'debug'
     payload: boolean
 }
 | { 
-    type:'storeExperimentId'
+    type: 'storeExperimentId'
     payload: string
 }
 | { 
-    type:'deleteExperimentId'
+    type: 'deleteExperimentId'
     payload: string
+}
+| {
+    type: 'setTheme'
+    payload: ThemeName
 }
 
 export type Dispatch = (action: Action) => void
@@ -27,6 +34,7 @@ export const initialState: State = {
     useLocalStorage: true,
     debug: false,
     experimentsInLocalStorage: [],
+    theme: "blueGreenTheme"
 }
 
 export const reducer = (state: State, action: Action) => {
@@ -50,6 +58,8 @@ export const reducer = (state: State, action: Action) => {
             let indexOfDelete = state.experimentsInLocalStorage.indexOf(action.payload)
             idsAfterDelete.splice(indexOfDelete, 1)
             return {...state, experimentsInLocalStorage: idsAfterDelete }
+        case 'setTheme':
+            return { ...state, theme: action.payload }
         default:
             return state
     }

@@ -207,6 +207,16 @@ const earth: CustomColours = {
   transparentBox: 'rgba(255,255,255,0.35)',
 }
 
+export type ThemeName =
+    'tealTheme'
+  | 'cyanTheme'
+  | 'beeTheme'
+  | 'beeLightTheme'
+  | 'woodTheme'
+  | 'blueGreenTheme'
+  | 'honeyTheme'
+  | 'earthTheme'
+
 export const tealTheme: Theme = createCustomTheme(teals)
 export const cyanTheme: Theme = createCustomTheme(cyans)
 export const beeTheme: Theme = createCustomTheme(bee)
