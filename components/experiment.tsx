@@ -1,8 +1,8 @@
-import { Box, Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
+import { Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
 import Layout from './layout'
 import OptimizerModel from './optimizer-model';
 import OptimizerConfigurator from './optimizer-configurator';
-import { Alert } from '@material-ui/lab';
+import { Alert, Color } from '@material-ui/lab';
 import ModelEditor from './model-editor';
 import DataPoints from './data-points';
 import { useStyles } from '../styles/experiment.style';
@@ -11,9 +11,16 @@ import React, { useState, useEffect } from 'react';
 import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointType } from '../types/common';
 import LoadingExperiment from './loading-experiment';
 import saveToLocalFile from '../utility/save-to-local-file';
+import LoadingButton from './loading-button';
+import { theme } from '../theme/theme';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
+}
+
+type SnackbarMessage = {
+    message: string
+    severity: Color
 }
 
 export default function Experiment(props: ExperimentProps) {
@@ -26,6 +33,9 @@ export default function Experiment(props: ExperimentProps) {
     const [lastSavedExperiment, setLastSavedExperiment] = useState(experiment)
     const [isDirty, setDirty] = useState(false)
     const [isSnackbarOpen, setSnackbarOpen] = useState(false)
+    const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
+    const [isRunning, setRunning] = useState(false)
+    const [isSaving, setSaving] = useState(false)
 
     useEffect(() => {
         if (lastSavedExperiment && JSON.stringify(lastSavedExperiment) !== JSON.stringify(experiment)) {
@@ -38,28 +48,47 @@ export default function Experiment(props: ExperimentProps) {
     } 
 
     const onSave = async () => {
+        setSaving(true)
         try {
             await saveExperiment(experiment)
             setLastSavedExperiment(experiment)
-            setDirty(false)
-            setSnackbarOpen(true)
+            saveCompleted({ message: "Experiment saved", severity: 'success' })
         } catch (error) {
             console.error('fetch error', error)
+            saveCompleted({ message: "Experiment save failed", severity: 'error' })
         }
+    }
+
+    const saveCompleted = (snackbarMessage: SnackbarMessage) => {
+        setDirty(snackbarMessage.severity !== 'success')
+        setSaving(false)
+        openSnackbar(snackbarMessage)
     }
 
     const onRun = async () => {
+        setRunning(true)
         try {
             await runExperiment(dispatch, experiment)
             setDirty(true)
-            //setSnackbarOpen(true)
+            runCompleted({ message: "Experiment run completed", severity: 'success' })
         } catch (error) {
+            runCompleted({ message: "Experiment run failed", severity: 'error' })
             console.error('fetch error', error)
         }
     }
 
-    function handleCloseSnackbar() {
+    const runCompleted = (snackbarMessage: SnackbarMessage) => {
+        setRunning(false)
+        openSnackbar(snackbarMessage)
+    }
+
+    const handleCloseSnackbar = () => {
         setSnackbarOpen(false)
+    }
+
+    const openSnackbar = (snackbarMessage: SnackbarMessage) => {
+        setSnackbarMessage(snackbarMessage)
+        setSnackbarOpen(true)
     }
 
     const valueVariables = experiment.valueVariables
@@ -88,9 +117,20 @@ export default function Experiment(props: ExperimentProps) {
                                 <Grid item xs={5} container justify="flex-end">
                                     <Button variant="contained" className={classes.actionButton} onClick={onDownload} color="primary">Download</Button>
                                     {allowSaveToServer && 
-                                        <Button variant="contained" className={[classes.actionButton, isDirty ? classes.saveButtonDirty : ''].join(' ')} onClick={onSave} color="primary">Save</Button>
+                                        <LoadingButton 
+                                            onClick={onSave} 
+                                            isLoading={isSaving} 
+                                            label="Save" 
+                                            height={42} 
+                                            marginLeft={theme.spacing(2)}
+                                            isFlashing={isDirty} />
                                     }
-                                    <Button variant="contained" className={classes.actionButton} color="primary" onClick={onRun}>Run</Button>
+                                    <LoadingButton 
+                                        onClick={onRun} 
+                                        isLoading={isRunning} 
+                                        label="Run" 
+                                        marginLeft={theme.spacing(2)}
+                                        height={42} />
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -170,7 +210,7 @@ export default function Experiment(props: ExperimentProps) {
                 open={isSnackbarOpen}
                 autoHideDuration={3000}
                 onClose={handleCloseSnackbar}>
-                <Alert onClose={handleCloseSnackbar} severity="success">Experiment saved</Alert>
+                <Alert onClose={handleCloseSnackbar} severity={snackbarMessage?.severity}>{snackbarMessage?.message}</Alert>
             </Snackbar>
 
         </Layout>

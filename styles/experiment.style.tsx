@@ -15,22 +15,6 @@ export const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2),
     height: 42,
   },
-  saveButtonDirty: {
-    animationName: '$saveButton',
-    animationDuration: '3s',
-    animationIterationCount: 'infinite',
-  },
-  '@keyframes saveButton': {
-    '0%': {
-      backgroundColor: theme.palette.primary.main,
-    },
-    '50%': {
-      backgroundColor: theme.palette.warning.main,
-    },
-    '100%': {
-      backgroundColor: theme.palette.primary.main,
-    }
-  },
 }));
 
 export default useStyles
