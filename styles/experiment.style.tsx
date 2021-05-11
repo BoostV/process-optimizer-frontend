@@ -6,7 +6,7 @@ export const useStyles = makeStyles(theme => ({
     minWidth: theme.sizes.mainWidthMin,
     maxWidth: theme.sizes.mainWidthMax,
     background: theme.palette.custom.background.main,
-    color: 'white',
+    color: theme.palette.custom.textInsideBox.main,
   },
   experimentContainerDirty: {
     border: '2px solid ' + theme.palette.warning.main,
@@ -14,22 +14,6 @@ export const useStyles = makeStyles(theme => ({
   actionButton: {
     marginLeft: theme.spacing(2),
     height: 42,
-  },
-  saveButtonDirty: {
-    animationName: '$saveButton',
-    animationDuration: '3s',
-    animationIterationCount: 'infinite',
-  },
-  '@keyframes saveButton': {
-    '0%': {
-      backgroundColor: theme.palette.primary.main,
-    },
-    '50%': {
-      backgroundColor: theme.palette.warning.main,
-    },
-    '100%': {
-      backgroundColor: theme.palette.primary.main,
-    }
   },
 }));
 

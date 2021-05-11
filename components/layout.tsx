@@ -157,7 +157,7 @@ export default function Layout ( {children} ) {
           <VersionInfo />
         </Toolbar>
       </AppBar>
-      <Box ml={1} mr={1} mb={1} mt={7}>
+      <Box ml={1} mr={1} mb={7} mt={7}>
         {state.debug && <pre>{JSON.stringify(state, null, 2)}</pre>}
         {children}
       </Box>

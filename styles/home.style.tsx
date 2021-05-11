@@ -4,7 +4,7 @@ export const useStyles = makeStyles(theme => ({
   mainContainer: {
     maxWidth: 500,
     background: theme.palette.custom.background.main,
-    color: 'white',
+    color: theme.palette.custom.textInsideBox.main,
   },
   mainContent: {
     padding: 0,
@@ -23,7 +23,7 @@ export const useStyles = makeStyles(theme => ({
   },
   uploadBoxInner: {
     marginTop: 108,
-    color: 'white',
+    color: theme.palette.custom.textInsideBox.main,
   },
   uploadIcon: {
     position: 'absolute',
