@@ -142,15 +142,18 @@ wood:
 #F2D785
 #0D3B29
 #6379F2
+and
+#d8e0d3
+#A67951
 */
 
 const wood: CustomColours = {
-  primary: '#732002',
+  primary: '#A67951',
   secondary: '#BF9D5E',
-  backPrimary: '#0D3B29',
-  backSecondary: '#0D3B29',
-  textInsideBox: '#fff',
-  transparentBox: 'rgba(255,255,255,0.15)',
+  backPrimary: '#d8e0d3',
+  backSecondary: '#d8e0d3',
+  textInsideBox: grey[800],
+  transparentBox: 'rgba(255,255,255,0.35)',
 }
 
 /*
@@ -165,14 +168,14 @@ and
 #f5da88 
 #ffd760
 #fff3cf
-#ffeaaa
+#fff4d3
 */
 
 const honey: CustomColours = {
   primary: '#A63F03',
   secondary: '#03A688',
-  backPrimary: '#fff3cf',
-  backSecondary: '#ffeaaa',
+  backPrimary: '#fff4d3',
+  backSecondary: '#fff3cf',
   textInsideBox: grey[800],
   transparentBox: 'rgba(255,255,255,0.30)',
 }
