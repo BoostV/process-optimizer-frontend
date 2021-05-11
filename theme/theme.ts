@@ -177,7 +177,7 @@ const honey: CustomColours = {
   backPrimary: '#fff4d3',
   backSecondary: '#fff3cf',
   textInsideBox: grey[800],
-  transparentBox: 'rgba(255,255,255,0.30)',
+  transparentBox: 'rgba(255,255,255,0.50)',
 }
 
 const blueGreen: CustomColours = {
@@ -216,5 +216,5 @@ export const blueGreenTheme: Theme = createCustomTheme(blueGreen)
 export const honeyTheme: Theme = createCustomTheme(honey)
 export const earthTheme: Theme = createCustomTheme(earth)
 
-export const theme: Theme = earthTheme
+export const theme: Theme = blueGreenTheme
 
