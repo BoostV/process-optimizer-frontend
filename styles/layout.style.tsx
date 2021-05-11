@@ -7,10 +7,11 @@ export const useStyles = makeStyles(theme => ({
   },
   link: {
     color: "white",
-    
   },
   logo: {
     marginRight: theme.spacing(1),
+    width: 32,
+    height: 32,
   }
 }));
 
