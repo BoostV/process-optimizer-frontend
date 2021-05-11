@@ -1,17 +1,19 @@
-import { createMuiTheme, Theme } from "@material-ui/core";
-import { brown, cyan, deepOrange, teal } from "@material-ui/core/colors";
+import { createMuiTheme, PaletteColorOptions, Theme } from "@material-ui/core";
+import { brown, cyan, deepOrange, grey, teal } from "@material-ui/core/colors";
 import { Overrides } from "@material-ui/core/styles/overrides";
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
     custom: {
       background: PaletteColor
       textInsideBox: PaletteColor
+      transparentBox: PaletteColor
     }
   }
   interface PaletteOptions {
     custom?: {
       background: PaletteColorOptions
       textInsideBox: PaletteColorOptions
+      transparentBox: PaletteColorOptions
     }
   }
 }
@@ -56,6 +58,7 @@ type CustomColours = {
   backPrimary: string
   backSecondary: string
   textInsideBox: string
+  transparentBox: string
 }
 
 const createCustomTheme = (custom: CustomColours): Theme => {
@@ -79,6 +82,9 @@ const createCustomTheme = (custom: CustomColours): Theme => {
         textInsideBox: {
           main: custom.textInsideBox,
         },
+        transparentBox: {
+          main: custom.transparentBox,
+        },
       }
     }
   });
@@ -90,6 +96,7 @@ const teals: CustomColours = {
   backPrimary: teal[700],
   backSecondary: teal[400],
   textInsideBox: '#fff',
+  transparentBox: 'rgba(255,255,255,0.15)',
 }
 
 const cyans: CustomColours = {
@@ -98,6 +105,7 @@ const cyans: CustomColours = {
   backPrimary: cyan[700],
   backSecondary: cyan[600],
   textInsideBox: '#fff',
+  transparentBox: 'rgba(255,255,255,0.15)',
 }
 
 /*
@@ -115,6 +123,7 @@ const bee: CustomColours = {
   backPrimary: '#A67951',
   backSecondary: '#A67951',
   textInsideBox: '#fff',
+  transparentBox: 'rgba(255,255,255,0.15)',
 }
 
 const beeLight: CustomColours = {
@@ -122,7 +131,8 @@ const beeLight: CustomColours = {
   secondary: '#BFA450',
   backPrimary: '#FAFAFA',
   backSecondary: '#FAFAFA',
-  textInsideBox: '#444',
+  textInsideBox: grey[800],
+  transparentBox: 'rgba(255,255,255,0.95)',
 }
 
 /*
@@ -140,6 +150,7 @@ const wood: CustomColours = {
   backPrimary: '#0D3B29',
   backSecondary: '#0D3B29',
   textInsideBox: '#fff',
+  transparentBox: 'rgba(255,255,255,0.15)',
 }
 
 /*
@@ -150,14 +161,20 @@ honey:
 #A63F03
 #A63F03
 #400101
+and
+#f5da88 
+#ffd760
+#fff3cf
+#ffeaaa
 */
 
 const honey: CustomColours = {
   primary: '#A63F03',
   secondary: '#03A688',
-  backPrimary: '#F28705',
-  backSecondary: '#F2B705',
-  textInsideBox: '#fff',
+  backPrimary: '#fff3cf',
+  backSecondary: '#ffeaaa',
+  textInsideBox: grey[800],
+  transparentBox: 'rgba(255,255,255,0.30)',
 }
 
 const blueGreen: CustomColours = {
@@ -166,8 +183,26 @@ const blueGreen: CustomColours = {
   backPrimary: 'rgba(0,121,145,1)',
   backSecondary: 'rgba(143,205,186,1)',
   textInsideBox: '#fff',
+  transparentBox: 'rgba(255,255,255,0.15)',
 }
 
+/*
+earth:
+rgba(136,91,90,1)
+rgba(171,104,94,1)
+rgba(240,139,106,1)
+rgba(250,176,99,1)
+rgba(241,233,218,1)
+*/
+
+const earth: CustomColours = {
+  primary: 'rgba(171,104,94,1)',
+  secondary: 'rgba(250,176,99,1)',
+  backPrimary: 'rgba(241,233,218,1)',
+  backSecondary: 'rgba(241,233,218,1)',
+  textInsideBox: grey[800],
+  transparentBox: 'rgba(255,255,255,0.35)',
+}
 
 export const tealTheme: Theme = createCustomTheme(teals)
 export const cyanTheme: Theme = createCustomTheme(cyans)
@@ -176,6 +211,7 @@ export const beeLightTheme: Theme = createCustomTheme(beeLight)
 export const woodTheme: Theme = createCustomTheme(wood)
 export const blueGreenTheme: Theme = createCustomTheme(blueGreen)
 export const honeyTheme: Theme = createCustomTheme(honey)
+export const earthTheme: Theme = createCustomTheme(earth)
 
-export const theme: Theme = honeyTheme
+export const theme: Theme = earthTheme
 

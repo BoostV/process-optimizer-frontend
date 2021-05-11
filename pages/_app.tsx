@@ -1,7 +1,7 @@
 import { ThemeProvider, Theme, Box, Button } from "@material-ui/core"
 import { AppProps } from "next/dist/next-server/lib/router/router"
 import { useEffect, useState } from "react"
-import { beeTheme, beeLightTheme, cyanTheme, tealTheme, theme, woodTheme, blueGreenTheme } from "../theme/theme"
+import { beeTheme, beeLightTheme, cyanTheme, tealTheme, theme, woodTheme, blueGreenTheme, honeyTheme, earthTheme } from "../theme/theme"
 import Head from 'next/head'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { GlobalStateProvider } from "../context/global-context"
@@ -33,18 +33,18 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={currentTheme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <GlobalStateProvider>
           <Component {...pageProps} />
           <Box className={classes.themeContainer}>
-            <Button size="small" onClick={() => setCurrentTheme(tealTheme)}>Teal</Button>
-            <Button size="small" onClick={() => setCurrentTheme(cyanTheme)}>Cyan</Button>
-            <Button size="small" onClick={() => setCurrentTheme(beeTheme)}>Bee</Button>
-            <Button size="small" onClick={() => setCurrentTheme(beeLightTheme)}>BeeLight</Button>
-            <Button size="small" onClick={() => setCurrentTheme(woodTheme)}>Wood</Button>
-            <Button size="small" onClick={() => setCurrentTheme(blueGreenTheme)}>BlueGreen</Button>
-            <Button size="small" onClick={() => setCurrentTheme(honeyTheme)}>Honey</Button>
+            <Button size="small" onClick={() => setCurrentTheme({...tealTheme})}>Teal</Button>
+            <Button size="small" onClick={() => setCurrentTheme({...cyanTheme})}>Cyan</Button>
+            <Button size="small" onClick={() => setCurrentTheme({...beeTheme})}>Bee</Button>
+            <Button size="small" onClick={() => setCurrentTheme({...beeLightTheme})}>BeeLight</Button>
+            <Button size="small" onClick={() => setCurrentTheme({...woodTheme})}>Wood</Button>
+            <Button size="small" onClick={() => setCurrentTheme({...blueGreenTheme})}>BlueGreen</Button>
+            <Button size="small" onClick={() => setCurrentTheme({...honeyTheme})}>Honey</Button>
+            <Button size="small" onClick={() => setCurrentTheme({...earthTheme})}>Earth</Button>
           </Box>  
         </GlobalStateProvider>
       </ThemeProvider>

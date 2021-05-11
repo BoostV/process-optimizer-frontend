@@ -10,7 +10,7 @@ export const useStyles = makeStyles(theme => ({
     padding: 0,
   },
   box: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: theme.palette.custom.transparentBox.main,
   },
   uploadBox: {
     display: 'flex',
