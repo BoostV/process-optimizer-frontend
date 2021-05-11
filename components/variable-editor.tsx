@@ -21,7 +21,7 @@ export default function VariableEditor(props: VariableEditorProps) {
 
   return (
     <Grid container spacing={0}>
-      <Grid item xs={6}>
+      <Grid item xs={12}>
         <Card className={classes.main}>
           <CardContent>
             <Grid container spacing={0}>

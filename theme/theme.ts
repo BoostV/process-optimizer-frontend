@@ -65,8 +65,8 @@ const createCustomTheme = (custom: CustomColours): Theme => {
   return createMuiTheme({
     overrides,
     sizes: {
-      mainWidthMin: 1200,
-      mainWidthMax: 1400,
+      mainWidthMin: 1280,
+      mainWidthMax: 3840,
     },
     palette: {
       primary: {
