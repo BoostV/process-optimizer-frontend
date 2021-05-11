@@ -203,8 +203,8 @@ export default function Home() {
             <Typography variant="body1">
               {`Experiment${deletionState.experimentsToDelete.length > 1 ? 's' : ''} deleted:`}
             </Typography>
-            {deletionState.experimentsToDelete.map(e => 
-              <Typography variant="body2">{e}</Typography>
+            {deletionState.experimentsToDelete.map((e, i) => 
+              <Typography key={i} variant="body2">{e}</Typography>
             )}
           </>
         }

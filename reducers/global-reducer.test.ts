@@ -1,9 +1,11 @@
+import { ThemeName } from "../theme/theme"
 import { reducer, State } from "./global-reducer"
 
 const initState: State = {
   debug: false,
   useLocalStorage: true,
-  experimentsInLocalStorage: []
+  experimentsInLocalStorage: [],
+  theme: 'blueGreenTheme'
 }
 
 describe("storeExperimentId", () => {
@@ -30,5 +32,14 @@ describe("deleteExperimentId", () => {
     expect(
       reducer(initState, { type: 'deleteExperimentId', payload: '1234' }))
       .toEqual(initState)
+  })
+})
+
+describe("setTheme", () => {
+  it("should set theme", async () => {
+    const payload: ThemeName = 'beeTheme'
+    expect(
+      reducer(initState, { type: 'setTheme', payload }))
+      .toEqual({...initState, theme: payload})
   })
 })

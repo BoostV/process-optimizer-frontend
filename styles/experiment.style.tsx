@@ -6,7 +6,7 @@ export const useStyles = makeStyles(theme => ({
     minWidth: theme.sizes.mainWidthMin,
     maxWidth: theme.sizes.mainWidthMax,
     background: theme.palette.custom.background.main,
-    color: 'white',
+    color: theme.palette.custom.textInsideBox.main,
   },
   experimentContainerDirty: {
     border: '2px solid ' + theme.palette.warning.main,
