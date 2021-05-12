@@ -34,7 +34,7 @@ export const initialState: State = {
     useLocalStorage: true,
     debug: false,
     experimentsInLocalStorage: [],
-    theme: "blueGreenTheme"
+    theme: "BlueGreen"
 }
 
 export const reducer = (state: State, action: Action) => {

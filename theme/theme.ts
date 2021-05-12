@@ -208,23 +208,28 @@ const earth: CustomColours = {
 }
 
 export type ThemeName =
-    'tealTheme'
-  | 'cyanTheme'
-  | 'beeTheme'
-  | 'beeLightTheme'
-  | 'woodTheme'
-  | 'blueGreenTheme'
-  | 'honeyTheme'
-  | 'earthTheme'
+    'Teal'
+  | 'Cyan'
+  | 'Bee'
+  | 'BeeLight'
+  | 'Wood'
+  | 'BlueGreen'
+  | 'Honey'
+  | 'Earth'
 
-export const tealTheme: Theme = createCustomTheme(teals)
-export const cyanTheme: Theme = createCustomTheme(cyans)
-export const beeTheme: Theme = createCustomTheme(bee)
-export const beeLightTheme: Theme = createCustomTheme(beeLight)
-export const woodTheme: Theme = createCustomTheme(wood)
-export const blueGreenTheme: Theme = createCustomTheme(blueGreen)
-export const honeyTheme: Theme = createCustomTheme(honey)
-export const earthTheme: Theme = createCustomTheme(earth)
+export type CustomTheme = {
+  name: ThemeName
+  theme: Theme
+}
 
-export const theme: Theme = blueGreenTheme
+export const themes: CustomTheme[] = [
+  { name: 'Teal', theme: createCustomTheme(teals) },
+  { name: 'Cyan', theme: createCustomTheme(cyans) },
+  { name: 'Bee', theme: createCustomTheme(bee) },
+  { name: 'BeeLight', theme: createCustomTheme(beeLight) },
+  { name: 'BlueGreen', theme: createCustomTheme(blueGreen) },
+  { name: 'Honey', theme: createCustomTheme(honey) },
+  { name: 'Earth', theme: createCustomTheme(earth) },
+]
 
+export const theme: Theme = createCustomTheme(blueGreen)
