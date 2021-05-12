@@ -15,48 +15,56 @@ const SCORE = "score"
 
 export default function DataPoints(props: DataPointProps) {
   const { valueVariables, categoricalVariables, dataPoints , onUpdateDataPoints } = props
-  const combinedVariables: CombinedVariableType[] = (valueVariables as CombinedVariableType[]).concat(categoricalVariables as CombinedVariableType[])
-  
-  const emptyRow: TableDataRow = {
-    dataPoints: combinedVariables.map((variable, i) => {
-      return {
-        name: variable.name,
-        value: variable.options ? variable.options[0] : "",
-        options: variable.options,
+  const [state, dispatch] = useReducer(dataPointsReducer, { rows: [], prevRows: [] })
+
+  useEffect(() => {
+    dispatch({ type: 'setInitialState', payload: buildState()})
+  }, [valueVariables, categoricalVariables])
+
+  const buildState = (): DataPointsState => {
+    const combinedVariables: CombinedVariableType[] = buildCombinedVariables()
+    const emptyRow: TableDataRow = buildEmptyRow()
+    const dataPointRows: TableDataRow[] = dataPoints.map((item, i) => {
+        return {
+          dataPoints: item.map((point: TableDataPoint, k) => {
+            return {
+              ...point,
+              options: combinedVariables[k] ? combinedVariables[k].options : undefined,
+            }
+          }),
+          isEditMode: false,
+          isNew: false,
+        }
       }
-    }).concat({
-      name: SCORE,
-      value: "0",
-      options: undefined,
-    }),
-    isEditMode: true,
-    isNew: true,
-  }
-  
-  const dataPointRows: TableDataRow[] = dataPoints.map((item, i) => {
-      return {
-        dataPoints: item.map((point: TableDataPoint, k) => {
-          return {
-            ...point,
-            options: combinedVariables[k] ? combinedVariables[k].options : undefined,
-          }
-        }),
-        isEditMode: false,
-        isNew: false,
-      }
+    ).concat(emptyRow as any)
+
+    return {
+      rows: dataPointRows,
+      prevRows: dataPointRows,
     }
-  ).concat(emptyRow as any)
-
-  const initialState: DataPointsState = {
-    rows: dataPointRows,
-    prevRows: dataPointRows
   }
 
-  const [state, dispatch] = useReducer(dataPointsReducer, initialState)
+  const buildCombinedVariables = (): CombinedVariableType[]  => {
+    return (valueVariables as CombinedVariableType[]).concat(categoricalVariables as CombinedVariableType[])
+  }
 
-  // useEffect(() => {
-  //   dispatch({ type: 'setInitialState', payload: {rows: dataPointRows, prevRows: dataPointRows}})
-  // }, [dataPointRows])
+  const buildEmptyRow = (): TableDataRow => {
+    return {
+      dataPoints: buildCombinedVariables().map((variable, i) => {
+        return {
+          name: variable.name,
+          value: variable.options ? variable.options[0] : "",
+          options: variable.options,
+        }
+      }).concat({
+        name: SCORE,
+        value: "0",
+        options: undefined,
+      }),
+      isEditMode: true,
+      isNew: true,
+    }
+  }
 
   useEffect(() => {
     updateDataPoints(state.rows.filter(item => !item.isNew) as TableDataRow[])
@@ -102,7 +110,7 @@ export default function DataPoints(props: DataPointProps) {
 
   function onEditConfirm(row: TableDataRow, rowIndex: number) {
     if (row.isNew) {
-      addRow(emptyRow)
+      addRow(buildEmptyRow())
     } else {
       toggleEditMode(rowIndex)
     }
@@ -115,7 +123,7 @@ export default function DataPoints(props: DataPointProps) {
           Data points
         </Typography>
           
-        {combinedVariables.length > 0 &&
+        {buildCombinedVariables().length > 0 &&
           <EditableTable
             rows={state.rows as TableDataRow[]}
             useArrayForValue={SCORE}

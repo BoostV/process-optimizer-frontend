@@ -419,4 +419,46 @@ describe("data points reducer", () => {
       )
     })
   })
+
+  describe("setInitialState", () => {
+    it("should set state", async () => {
+      const payload: DataPointsState = {
+        rows: [{
+          isNew: false,
+          isEditMode: false,
+          dataPoints: [
+            {
+              name: 'A',
+              value: 1,
+            }
+          ]
+        }],
+        prevRows: [{
+          isNew: false,
+          isEditMode: false,
+          dataPoints: [
+            {
+              name: 'A',
+              value: 1,
+            }
+          ]
+        }]
+      }
+
+      expect(
+        dataPointsReducer(
+          {
+            rows: [],
+            prevRows: []
+          }, 
+          { 
+            type: 'setInitialState', 
+            payload
+          }
+        )
+      ).toEqual(payload)
+    })
+  })
+
 })
+
