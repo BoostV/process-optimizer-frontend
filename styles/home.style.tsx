@@ -27,7 +27,7 @@ export const useStyles = makeStyles(theme => ({
   },
   uploadIcon: {
     position: 'absolute',
-    fontSize: '13rem',
+    fontSize: '13rem !important',
     opacity: .35
   }
 }));

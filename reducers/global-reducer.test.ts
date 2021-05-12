@@ -5,7 +5,7 @@ const initState: State = {
   debug: false,
   useLocalStorage: true,
   experimentsInLocalStorage: [],
-  theme: 'blueGreenTheme'
+  theme: 'BlueGreen'
 }
 
 describe("storeExperimentId", () => {
@@ -37,7 +37,7 @@ describe("deleteExperimentId", () => {
 
 describe("setTheme", () => {
   it("should set theme", async () => {
-    const payload: ThemeName = 'beeTheme'
+    const payload: ThemeName = 'Bee'
     expect(
       reducer(initState, { type: 'setTheme', payload }))
       .toEqual({...initState, theme: payload})
