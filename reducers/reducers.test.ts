@@ -8,6 +8,7 @@ describe("experiment reducer", () => {
     experiment:{
       id: "1234",
       info: {
+        swVersion: "",
         name: "Cake",
         description: "Yummy",
       },
@@ -43,6 +44,7 @@ describe("experiment reducer", () => {
     const payload: ExperimentType = {
       id: "5678",
       info: {
+        swVersion: "",
         name: "Not cake",
         description: "Not yummy",
       },
