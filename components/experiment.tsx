@@ -13,6 +13,7 @@ import LoadingExperiment from './loading-experiment';
 import saveToLocalFile from '../utility/save-to-local-file';
 import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
+import TitleCard from './title-card';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -101,7 +102,7 @@ export default function Experiment(props: ExperimentProps) {
     return (
         <Layout>
             <Card className={[classes.experimentContainer, isDirty && allowSaveToServer ? classes.experimentContainerDirty : ''].join(' ')}>
-                <CardContent>
+                <CardContent className={classes.content}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                            <Grid container>
@@ -144,19 +145,16 @@ export default function Experiment(props: ExperimentProps) {
                                         updateName={(name: string) => dispatch({ type: 'updateExperimentName', payload: name })}
                                         updateDescription={(description: string) => dispatch({ type: 'updateExperimentDescription', payload: description })} />
                                 </Grid>
-
-                                <Grid item xs={12}>
-                                    <Card>
-                                        <CardContent>
-                                            <Typography variant="h6">
-                                                Next experiment
-                                            </Typography>
+                                
+                                {experiment.results.next.length > 0 && 
+                                    <Grid item xs={12}>
+                                        <TitleCard title="Next experiment">
                                             <Typography variant="body2">
-                                                {experiment.results.next && experiment.results.next.join(',')}
+                                                {experiment.results.next && experiment.results.next.join(', ')}
                                             </Typography>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
+                                        </TitleCard>
+                                    </Grid>
+                                }
 
                                 <Grid item xs={12}>
                                     <OptimizerModel

@@ -1,6 +1,7 @@
-import { Box, Button, Card, CardContent, TextField, Typography } from '@material-ui/core'
+import { TextField } from '@material-ui/core'
 import { useForm } from 'react-hook-form';
 import { OptimizerConfig } from '../types/common';
+import TitleCard from './title-card';
 
 type OptimizerConfiguratorProps = {
   config: OptimizerConfig,
@@ -16,57 +17,54 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
   }
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>Configure optimizer</Typography>
-        <TextField
-          disabled
-          fullWidth
-          margin="dense"
-          defaultValue={config.baseEstimator}
-          name="baseEstimator"
-          label="Base estimator"
-          inputRef={register}
-          onChange={handleChange}
-        />
-        <TextField
-          disabled
-          fullWidth
-          margin="dense"
-          defaultValue={config.acqFunc}
-          name="acqFunc"
-          label="Acq func"
-          inputRef={register}
-          onChange={handleChange}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          defaultValue={config.initialPoints}
-          name="initialPoints"
-          label="N initial points"
-          inputRef={register}
-          onChange={handleChange}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          defaultValue={config.kappa}
-          name="kappa"
-          label="Kappa"
-          inputRef={register}
-          onChange={handleChange}
-        />
-        <TextField
-          fullWidth
-          margin="dense"
-          defaultValue={config.xi}
-          name="xi"
-          label="Xi"
-          inputRef={register}
-          onChange={handleChange}
-        />
-      </CardContent>
-    </Card>
+    <TitleCard title="Configuration">
+      <TextField
+        disabled
+        fullWidth
+        margin="dense"
+        defaultValue={config.baseEstimator}
+        name="baseEstimator"
+        label="Base estimator"
+        inputRef={register}
+        onChange={handleChange}
+      />
+      <TextField
+        disabled
+        fullWidth
+        margin="dense"
+        defaultValue={config.acqFunc}
+        name="acqFunc"
+        label="Acq func"
+        inputRef={register}
+        onChange={handleChange}
+      />
+      <TextField
+        fullWidth
+        margin="dense"
+        defaultValue={config.initialPoints}
+        name="initialPoints"
+        label="N initial points"
+        inputRef={register}
+        onChange={handleChange}
+      />
+      <TextField
+        fullWidth
+        margin="dense"
+        defaultValue={config.kappa}
+        name="kappa"
+        label="Kappa"
+        inputRef={register}
+        onChange={handleChange}
+      />
+      <TextField
+        fullWidth
+        margin="dense"
+        defaultValue={config.xi}
+        name="xi"
+        label="Xi"
+        inputRef={register}
+        onChange={handleChange}
+      />
+    </TitleCard>
   )
 }

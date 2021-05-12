@@ -15,6 +15,11 @@ export const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2),
     height: 42,
   },
+  content: {
+    '&:last-child': {
+      paddingBottom: theme.spacing(2),
+    }
+  }
 }));
 
 export default useStyles

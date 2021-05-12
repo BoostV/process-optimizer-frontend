@@ -34,6 +34,13 @@ const overrides: Overrides = {
       paddingTop: 0,
       paddingBottom: 0,
     }
+  },
+  MuiCardContent: {
+    root: {
+      '&:last-child': {
+        paddingBottom: 0,
+      }
+    }
   }
 }
 declare module '@material-ui/core/styles/createMuiTheme' {
@@ -93,7 +100,7 @@ const createCustomTheme = (custom: CustomColours): Theme => {
 const teals: CustomColours = {
   primary: teal[800],
   secondary: teal[100],
-  backPrimary: teal[700],
+  backPrimary: teal[600],
   backSecondary: teal[400],
   textInsideBox: '#fff',
   transparentBox: 'rgba(255,255,255,0.15)',
@@ -183,7 +190,7 @@ const honey: CustomColours = {
 const blueGreen: CustomColours = {
   primary: 'rgba(0,121,145,1)',
   secondary: 'rgba(27,230,212,1)',
-  backPrimary: 'rgba(0,121,145,1)',
+  backPrimary: 'rgba(0,141,145,1)',
   backSecondary: 'rgba(143,205,186,1)',
   textInsideBox: '#fff',
   transparentBox: 'rgba(255,255,255,0.15)',

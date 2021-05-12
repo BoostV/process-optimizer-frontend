@@ -1,8 +1,8 @@
-import { Card, CardContent, Typography } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
 import { dataPointsReducer, DataPointsState } from "../reducers/data-points-reducer";
 import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType } from "../types/common";
 import { EditableTable } from "./editable-table";
+import TitleCard from "./title-card";
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]
@@ -109,23 +109,17 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Data points
-        </Typography>
-          
-        {combinedVariables.length > 0 &&
-          <EditableTable
-            rows={state.rows as TableDataRow[]}
-            useArrayForValue={SCORE}
-            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => edit(editValue, rowIndex, itemIndex)}
-            onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
-            onEditCancel={(rowIndex: number) => cancelEdit(rowIndex)}
-            onToggleEditMode={(rowIndex: number) => toggleEditMode(rowIndex)}
-            onDelete={(rowIndex: number) => deleteRow(rowIndex)} />
-        }
-      </CardContent>
-    </Card>
+    <TitleCard title="Data points">
+      {combinedVariables.length > 0 &&
+        <EditableTable
+          rows={state.rows as TableDataRow[]}
+          useArrayForValue={SCORE}
+          onEdit={(editValue: string, rowIndex: number, itemIndex: number) => edit(editValue, rowIndex, itemIndex)}
+          onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
+          onEditCancel={(rowIndex: number) => cancelEdit(rowIndex)}
+          onToggleEditMode={(rowIndex: number) => toggleEditMode(rowIndex)}
+          onDelete={(rowIndex: number) => deleteRow(rowIndex)} />
+      }
+    </TitleCard>
   )
 }

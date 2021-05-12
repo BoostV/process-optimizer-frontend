@@ -65,7 +65,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
             setOptions([...options, option])
           }}/>
           
-          <Box mt={1}>
+          <Box mt={1} mb={2}>
             <Button disabled={isDisabled} variant="outlined" type="submit">Add</Button>
           </Box>
           
