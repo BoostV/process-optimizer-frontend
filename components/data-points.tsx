@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography } from "@material-ui/core";
+import { Card, CardContent, CircularProgress, Typography } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
 import { dataPointsReducer, DataPointsState } from "../reducers/data-points-reducer";
 import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType } from "../types/common";
@@ -16,6 +16,7 @@ const SCORE = "score"
 export default function DataPoints(props: DataPointProps) {
   const { valueVariables, categoricalVariables, dataPoints , onUpdateDataPoints } = props
   const [state, dispatch] = useReducer(dataPointsReducer, { rows: [], prevRows: [] })
+  const isLoadingState = state.rows.length === 0
 
   useEffect(() => {
     dispatch({ type: 'setInitialState', payload: buildState()})
@@ -122,8 +123,10 @@ export default function DataPoints(props: DataPointProps) {
         <Typography variant="h6" gutterBottom>
           Data points
         </Typography>
-          
-        {buildCombinedVariables().length > 0 &&
+        {buildCombinedVariables().length > 0 && isLoadingState &&
+          <CircularProgress size={24}/>
+        } 
+        {buildCombinedVariables().length > 0 && !isLoadingState &&
           <EditableTable
             rows={state.rows as TableDataRow[]}
             useArrayForValue={SCORE}
