@@ -9,12 +9,15 @@ type DataPointProps = {
   categoricalVariables: CategoricalVariableType[]
   dataPoints: DataPointType[][]
   onUpdateDataPoints: (dataPoints: DataPointType[][]) => void
+  isReversed?: boolean
 }
+
+type UpdateFnType = (rowIndex: number, ...args: any[]) => void
 
 const SCORE = "score"
 
 export default function DataPoints(props: DataPointProps) {
-  const { valueVariables, categoricalVariables, dataPoints , onUpdateDataPoints } = props
+  const { valueVariables, categoricalVariables, dataPoints, onUpdateDataPoints, isReversed} = props
   const [state, dispatch] = useReducer(dataPointsReducer, { rows: [], prevRows: [] })
   const isLoadingState = state.rows.length === 0
 
@@ -79,13 +82,18 @@ export default function DataPoints(props: DataPointProps) {
     dispatch({ type: 'DATA_POINTS_TABLE_EDIT_CANCELLED', payload: rowIndex })
   }
 
-  function edit(editValue: string, rowIndex: number, itemIndex: number) {
+  function edit(rowIndex: number, editValue: string, itemIndex: number) {
     dispatch({ type: 'DATA_POINTS_TABLE_EDITED', payload: { 
       itemIndex,
       rowIndex,
       useArrayForValue: SCORE,
       value: editValue
     }})
+  }
+
+  function updateRow(size: number, index: number, isReversed: boolean, updateFn: UpdateFnType, ...argz: any[]) {
+    const i = isReversed ? (size - 1) - index : index
+    updateFn(i, ...argz)
   }
 
   function deleteRow(rowIndex: number) {
@@ -113,7 +121,7 @@ export default function DataPoints(props: DataPointProps) {
     if (row.isNew) {
       addRow(buildEmptyRow())
     } else {
-      toggleEditMode(rowIndex)
+      updateRow(state.rows.length, rowIndex, isReversed, toggleEditMode)
     }
   }
 
@@ -128,13 +136,13 @@ export default function DataPoints(props: DataPointProps) {
         } 
         {buildCombinedVariables().length > 0 && !isLoadingState &&
           <EditableTable
-            rows={state.rows as TableDataRow[]}
+            rows={[...state.rows].reverse() as TableDataRow[]}
             useArrayForValue={SCORE}
-            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => edit(editValue, rowIndex, itemIndex)}
+            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => updateRow(state.rows.length, rowIndex, isReversed, edit, editValue, itemIndex)}
             onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
-            onEditCancel={(rowIndex: number) => cancelEdit(rowIndex)}
-            onToggleEditMode={(rowIndex: number) => toggleEditMode(rowIndex)}
-            onDelete={(rowIndex: number) => deleteRow(rowIndex)} />
+            onEditCancel={(rowIndex: number) => updateRow(state.rows.length, rowIndex, isReversed, cancelEdit)}
+            onToggleEditMode={(rowIndex: number) => updateRow(state.rows.length, rowIndex, isReversed, toggleEditMode)}
+            onDelete={(rowIndex: number) => updateRow(state.rows.length, rowIndex, isReversed, deleteRow)} />
         }
       </CardContent>
     </Card>
