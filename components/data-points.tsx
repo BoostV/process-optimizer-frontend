@@ -4,7 +4,7 @@ import { useGlobal } from "../context/global-context";
 import { dataPointsReducer, DataPointsState } from "../reducers/data-points-reducer";
 import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType } from "../types/common";
 import { EditableTable } from "./editable-table";
-import ImportExportIcon from '@material-ui/icons/ImportExport';
+import SwapVertIcon from '@material-ui/icons/SwapVert';
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]
@@ -133,7 +133,7 @@ export default function DataPoints(props: DataPointProps) {
           <IconButton 
             size="small"
             onClick={() => global.dispatch({ type: 'setDataPointsReversed', payload: !global.state.dataPointsReversed })}>
-            <ImportExportIcon fontSize="small" color="primary" />
+            <SwapVertIcon fontSize="small" color="primary" />
           </IconButton>
         </Typography>
         {buildCombinedVariables().length > 0 && isLoadingState &&
