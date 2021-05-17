@@ -10,7 +10,7 @@ import useStyles from "../styles/editable-table.style"
 
 type EditableTableProps = {
   rows: TableDataRow[]
-  useArrayForValue: string
+  useArrayForValue?: string
   onEdit: (editValue: string, rowIndex: number, itemIndex: number) => void
   onEditConfirm: (row: TableDataRow, rowIndex: number) => void
   onEditCancel: (rowIndex: number) => void

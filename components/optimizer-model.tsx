@@ -1,8 +1,9 @@
 import { Box, Button, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
-import { CategoricalVariableType, ValueVariableType } from '../types/common'
+import { CategoricalVariableType, TableDataRow, ValueVariableType } from '../types/common'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import VariableEditor from './variable-editor'
+import { EditableTable } from './editable-table'
 
 type OptimizerModelProps = {
   valueVariables: ValueVariableType[]
@@ -18,6 +19,34 @@ export default function OptimizerModel(props: OptimizerModelProps) {
   const { valueVariables, categoricalVariables, disabled, onDeleteValueVariable, onDeleteCategoricalVariable, addValueVariable, addCategoricalVariable } = props
   const [isAddOpen, setAddOpen] = useState(false)
 
+  const valueDataRows: TableDataRow[] = valueVariables.map((item, i) => {
+    return {
+      dataPoints: [
+        {
+          name: "Name",
+          value: item.name
+        },
+        {
+          name: "Description",
+          value: item.description
+        },
+        {
+          name: "minVal",
+          value: item.minVal
+        },
+        ,
+        {
+          name: "maxVal",
+          value: item.maxVal
+        }
+      ],
+      isEditMode: false,
+      isNew: false,
+    }
+  })
+
+  const [valueRows, setValueRows] = useState(valueDataRows)
+
   return (
     <Card>
       <CardContent>
@@ -26,6 +55,39 @@ export default function OptimizerModel(props: OptimizerModelProps) {
         </Typography>
        
         {valueVariables.length > 0 &&
+          <EditableTable
+            rows={valueRows}
+            onDelete={(rowIndex: number) => onDeleteValueVariable(valueVariables[rowIndex])}
+            onEdit={() => console.log('edit')}
+            onEditCancel={(rowIndex: number) => {
+              setValueRows([...valueRows.map((item, i) => {
+                if (i !== rowIndex) {
+                  return item
+                } else {
+                  return { 
+                    ...item, 
+                    isEditMode: false  
+                  }
+                }
+              }
+            )])
+            }}
+            onEditConfirm={() => console.log('edit confirm')}
+            onToggleEditMode={(rowIndex: number) => {
+              setValueRows([...valueRows.map((item, i) => {
+                  if (i !== rowIndex) {
+                    return item
+                  } else {
+                    return { 
+                      ...item, 
+                      isEditMode: true  
+                    }
+                  }
+                }
+              )])
+            }}/>
+          }
+
           <Table size="small">
             <TableHead>
               <TableRow>
