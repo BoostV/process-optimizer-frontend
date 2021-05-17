@@ -186,8 +186,7 @@ export default function Experiment(props: ExperimentProps) {
                                         valueVariables={experiment.valueVariables}
                                         categoricalVariables={experiment.categoricalVariables}
                                         dataPoints={experiment.dataPoints}
-                                        onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })}
-                                        isReversed={true} />
+                                        onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
                                 </Grid>
                                 <Grid item xs={12} xl={6}>
                                     {experiment.results.plots.length > 0 &&

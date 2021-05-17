@@ -5,7 +5,8 @@ const initState: State = {
   debug: false,
   useLocalStorage: true,
   experimentsInLocalStorage: [],
-  theme: 'BlueGreen'
+  theme: 'BlueGreen',
+  dataPointsReversed: false,
 }
 
 describe("storeExperimentId", () => {
@@ -41,5 +42,14 @@ describe("setTheme", () => {
     expect(
       reducer(initState, { type: 'setTheme', payload }))
       .toEqual({...initState, theme: payload})
+  })
+})
+
+describe("setDataPointsReversed", () => {
+  it("should toggle data points reversed", async () => {
+    const payload = true
+    expect(
+      reducer(initState, { type: 'setDataPointsReversed', payload }))
+      .toEqual({...initState, dataPointsReversed: payload})
   })
 })

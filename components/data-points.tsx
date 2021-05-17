@@ -1,23 +1,26 @@
-import { Card, CardContent, CircularProgress, Typography } from "@material-ui/core";
+import { Card, CardContent, CircularProgress, IconButton, Typography } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
+import { useGlobal } from "../context/global-context";
 import { dataPointsReducer, DataPointsState } from "../reducers/data-points-reducer";
 import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType } from "../types/common";
 import { EditableTable } from "./editable-table";
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   dataPoints: DataPointType[][]
   onUpdateDataPoints: (dataPoints: DataPointType[][]) => void
-  isReversed?: boolean
 }
 
 const SCORE = "score"
 
 export default function DataPoints(props: DataPointProps) {
-  const { valueVariables, categoricalVariables, dataPoints, onUpdateDataPoints, isReversed} = props
+  const { valueVariables, categoricalVariables, dataPoints, onUpdateDataPoints} = props
   const [state, dispatch] = useReducer(dataPointsReducer, { rows: [], prevRows: [] })
   const isLoadingState = state.rows.length === 0
+  const global = useGlobal()
+  const isReversed = global.state.dataPointsReversed
 
   useEffect(() => {
     dispatch({ type: 'setInitialState', payload: buildState()})
@@ -127,6 +130,11 @@ export default function DataPoints(props: DataPointProps) {
       <CardContent>
         <Typography variant="h6" gutterBottom>
           Data points
+          <IconButton 
+            size="small"
+            onClick={() => global.dispatch({ type: 'setDataPointsReversed', payload: !global.state.dataPointsReversed })}>
+            <ImportExportIcon fontSize="small" color="secondary" />
+          </IconButton>
         </Typography>
         {buildCombinedVariables().length > 0 && isLoadingState &&
           <CircularProgress size={24}/>

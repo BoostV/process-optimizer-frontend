@@ -5,6 +5,7 @@ export type State = {
     debug: boolean
     experimentsInLocalStorage: string[]
     theme: ThemeName
+    dataPointsReversed: boolean
 }
 
 export type Action = {
@@ -27,6 +28,10 @@ export type Action = {
     type: 'setTheme'
     payload: ThemeName
 }
+| {
+    type: 'setDataPointsReversed'
+    payload: boolean
+}
 
 export type Dispatch = (action: Action) => void
 
@@ -34,7 +39,8 @@ export const initialState: State = {
     useLocalStorage: true,
     debug: false,
     experimentsInLocalStorage: [],
-    theme: "BlueGreen"
+    theme: "BlueGreen",
+    dataPointsReversed: false,
 }
 
 export const reducer = (state: State, action: Action) => {
@@ -60,6 +66,8 @@ export const reducer = (state: State, action: Action) => {
             return {...state, experimentsInLocalStorage: idsAfterDelete }
         case 'setTheme':
             return { ...state, theme: action.payload }
+        case 'setDataPointsReversed':
+                return { ...state, dataPointsReversed: action.payload }
         default:
             return state
     }
