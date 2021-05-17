@@ -83,7 +83,7 @@ export default function DataPoints(props: DataPointProps) {
     dispatch({ type: 'DATA_POINTS_TABLE_EDIT_CANCELLED', payload: rowIndex })
   }
 
-  function edit(rowIndex: number, editValue: string, itemIndex: number) {
+  function edit(editValue: string, rowIndex: number, itemIndex: number) {
     dispatch({ type: 'DATA_POINTS_TABLE_EDITED', payload: { 
       itemIndex,
       rowIndex,

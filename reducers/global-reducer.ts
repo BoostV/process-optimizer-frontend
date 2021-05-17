@@ -67,7 +67,7 @@ export const reducer = (state: State, action: Action) => {
         case 'setTheme':
             return { ...state, theme: action.payload }
         case 'setDataPointsReversed':
-                return { ...state, dataPointsReversed: action.payload }
+            return { ...state, dataPointsReversed: action.payload }
         default:
             return state
     }
