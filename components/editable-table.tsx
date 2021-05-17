@@ -76,7 +76,7 @@ export function EditableTable(props: EditableTableProps) {
                         size="small"
                         aria-label="delete"
                         onClick={() => onDelete(rowIndex)}>
-                        <DeleteIcon fontSize="small" color={disableDelete ? "inherit" : "primary"} fontSize="small" />
+                        <DeleteIcon fontSize="small" color={disableDelete ? "inherit" : "primary"} />
                       </IconButton>
                   </>}
              </div>
