@@ -89,37 +89,6 @@ export default function OptimizerModel(props: OptimizerModelProps) {
             }}/>
           }
 
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell align="left">Description</TableCell>
-                <TableCell align="right">minVal</TableCell>
-                <TableCell align="right">maxVal</TableCell>
-                <TableCell align="right"></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {valueVariables.map((valueVar, valueIndex) => (
-                <TableRow key={valueIndex}>
-                  <TableCell component="th" scope="row">{valueVar.name}</TableCell>
-                  <TableCell align="left">{valueVar.description}</TableCell>
-                  <TableCell align="right">{valueVar.minVal}</TableCell>
-                  <TableCell align="right">{valueVar.maxVal}</TableCell>
-                  <TableCell align="right">
-                    <IconButton 
-                      disabled={disabled}
-                      size="small" 
-                      onClick={() => {onDeleteValueVariable(valueVar)}}>
-                      <DeleteIcon color={disabled ? "inherit" : "primary"} fontSize="small"/>
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        }
-
         {categoricalVariables.length > 0 &&
           <Box mt={2} mb={2}>
             <Table size="small">

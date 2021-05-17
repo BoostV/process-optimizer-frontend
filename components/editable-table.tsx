@@ -71,14 +71,13 @@ export function EditableTable(props: EditableTableProps) {
                       onClick={() => onToggleEditMode(rowIndex)}>
                       <EditIcon fontSize="small" color="primary" />
                     </IconButton>
-                    {!disableDelete && 
                       <IconButton
+                        disabled={disableDelete}
                         size="small"
                         aria-label="delete"
                         onClick={() => onDelete(rowIndex)}>
-                        <DeleteIcon fontSize="small" color="primary" />
+                        <DeleteIcon fontSize="small" color={disableDelete ? "inherit" : "primary"} fontSize="small" />
                       </IconButton>
-                      }
                   </>}
              </div>
             </TableCell>
