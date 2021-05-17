@@ -16,10 +16,11 @@ type EditableTableProps = {
   onEditCancel: (rowIndex: number) => void
   onToggleEditMode: (rowIndex: number) => void
   onDelete: (rowIndex: number) => void
+  disableDelete?: boolean
 }
 
 export function EditableTable(props: EditableTableProps) {
-  const { rows, useArrayForValue, onEdit, onEditConfirm, onEditCancel, onToggleEditMode, onDelete } = props
+  const { rows, useArrayForValue, onEdit, onEditConfirm, onEditCancel, onToggleEditMode, onDelete, disableDelete } = props
   const classes = useStyles()
 
   return (
@@ -70,12 +71,14 @@ export function EditableTable(props: EditableTableProps) {
                       onClick={() => onToggleEditMode(rowIndex)}>
                       <EditIcon fontSize="small" color="primary" />
                     </IconButton>
-                    <IconButton
-                      size="small"
-                      aria-label="delete"
-                      onClick={() => onDelete(rowIndex)}>
-                      <DeleteIcon fontSize="small" color="primary" />
-                    </IconButton>
+                    {!disableDelete && 
+                      <IconButton
+                        size="small"
+                        aria-label="delete"
+                        onClick={() => onDelete(rowIndex)}>
+                        <DeleteIcon fontSize="small" color="primary" />
+                      </IconButton>
+                      }
                   </>}
              </div>
             </TableCell>

@@ -57,6 +57,7 @@ export default function OptimizerModel(props: OptimizerModelProps) {
         {valueVariables.length > 0 &&
           <EditableTable
             rows={valueRows}
+            disableDelete={disabled}
             onDelete={(rowIndex: number) => onDeleteValueVariable(valueVariables[rowIndex])}
             onEdit={() => console.log('edit')}
             onEditCancel={(rowIndex: number) => {
