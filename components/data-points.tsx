@@ -133,7 +133,7 @@ export default function DataPoints(props: DataPointProps) {
           <IconButton 
             size="small"
             onClick={() => global.dispatch({ type: 'setDataPointsReversed', payload: !global.state.dataPointsReversed })}>
-            <ImportExportIcon fontSize="small" color="secondary" />
+            <ImportExportIcon fontSize="small" color="primary" />
           </IconButton>
         </Typography>
         {buildCombinedVariables().length > 0 && isLoadingState &&
