@@ -91,9 +91,9 @@ export default function DataPoints(props: DataPointProps) {
     }})
   }
 
-  function updateRow(size: number, index: number, isReversed: boolean, updateFn: UpdateFnType, ...argz: any[]) {
-    const i = isReversed ? (size - 1) - index : index
-    updateFn(i, ...argz)
+  function updateRow(index: number, updateFn: UpdateFnType, ...args: any[]) {
+    const rowIndex = isReversed ? state.rows.length - 1 - index : index
+    updateFn(rowIndex, ...args)
   }
 
   function deleteRow(rowIndex: number) {
@@ -121,7 +121,7 @@ export default function DataPoints(props: DataPointProps) {
     if (row.isNew) {
       addRow(buildEmptyRow())
     } else {
-      updateRow(state.rows.length, rowIndex, isReversed, toggleEditMode)
+      updateRow(rowIndex, toggleEditMode)
     }
   }
 
@@ -136,13 +136,13 @@ export default function DataPoints(props: DataPointProps) {
         } 
         {buildCombinedVariables().length > 0 && !isLoadingState &&
           <EditableTable
-            rows={[...state.rows].reverse() as TableDataRow[]}
+            rows={(isReversed ? [...state.rows].reverse() : state.rows) as TableDataRow[]}
             useArrayForValue={SCORE}
-            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => updateRow(state.rows.length, rowIndex, isReversed, edit, editValue, itemIndex)}
+            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => updateRow(rowIndex, edit, editValue, itemIndex)}
             onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
-            onEditCancel={(rowIndex: number) => updateRow(state.rows.length, rowIndex, isReversed, cancelEdit)}
-            onToggleEditMode={(rowIndex: number) => updateRow(state.rows.length, rowIndex, isReversed, toggleEditMode)}
-            onDelete={(rowIndex: number) => updateRow(state.rows.length, rowIndex, isReversed, deleteRow)} />
+            onEditCancel={(rowIndex: number) => updateRow(rowIndex, cancelEdit)}
+            onToggleEditMode={(rowIndex: number) => updateRow(rowIndex, toggleEditMode)}
+            onDelete={(rowIndex: number) => updateRow(rowIndex, deleteRow)} />
         }
       </CardContent>
     </Card>
