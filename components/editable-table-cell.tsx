@@ -3,13 +3,15 @@ import { ChangeEvent } from "react"
 
 type EditableTableCellProps = {
   value: string
+  name: string
   isEditMode: boolean
   options?: string[]
   onChange: (value: string) => void
+  nonEditableItems?: string[]
 }
 
 export function EditableTableCell(props: EditableTableCellProps) {
-  const { value, isEditMode, options, onChange } = props
+  const { value, isEditMode, options, onChange, name, nonEditableItems } = props
 
   return (
     <>
@@ -26,10 +28,15 @@ export function EditableTableCell(props: EditableTableCellProps) {
               </Select>
             </FormControl>
             :
-            <TextField
-              size="small"
-              value={value} 
-              onChange={(e: ChangeEvent) => onChange("" + (e.target as HTMLInputElement).value)}/>
+            <>
+              {nonEditableItems?.find(v => v === name) === undefined ?
+                <TextField
+                  size="small"
+                  value={value} 
+                  onChange={(e: ChangeEvent) => onChange("" + (e.target as HTMLInputElement).value)}/>
+                  : value
+                } 
+            </>
           }
         </TableCell>
         : 

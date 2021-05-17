@@ -17,10 +17,11 @@ type EditableTableProps = {
   onToggleEditMode: (rowIndex: number) => void
   onDelete: (rowIndex: number) => void
   disableDelete?: boolean
+  nonEditableItems?: string[]
 }
 
 export function EditableTable(props: EditableTableProps) {
-  const { rows, useArrayForValue, onEdit, onEditConfirm, onEditCancel, onToggleEditMode, onDelete, disableDelete } = props
+  const { rows, useArrayForValue, onEdit, onEditConfirm, onEditCancel, onToggleEditMode, onDelete, disableDelete, nonEditableItems } = props
   const classes = useStyles()
 
   return (
@@ -38,7 +39,9 @@ export function EditableTable(props: EditableTableProps) {
           <TableRow key={rowIndex}>
             {row.dataPoints.map((item, itemIndex) => 
               <EditableTableCell
+                nonEditableItems={nonEditableItems}
                 key={itemIndex}
+                name={item.name}
                 value={item.name === useArrayForValue ? item.value[0] : item.value}
                 isEditMode={row.isEditMode}
                 options={item.options}
