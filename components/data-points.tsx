@@ -12,8 +12,6 @@ type DataPointProps = {
   isReversed?: boolean
 }
 
-type UpdateFnType = (rowIndex: number, ...args: any[]) => void
-
 const SCORE = "score"
 
 export default function DataPoints(props: DataPointProps) {
@@ -91,9 +89,8 @@ export default function DataPoints(props: DataPointProps) {
     }})
   }
 
-  function updateRow(index: number, updateFn: UpdateFnType, ...args: any[]) {
-    const rowIndex = isReversed ? state.rows.length - 1 - index : index
-    updateFn(rowIndex, ...args)
+  function calcRowIndex(index: number) {
+    return isReversed ? state.rows.length - 1 - index : index
   }
 
   function deleteRow(rowIndex: number) {
@@ -121,7 +118,7 @@ export default function DataPoints(props: DataPointProps) {
     if (row.isNew) {
       addRow(buildEmptyRow())
     } else {
-      updateRow(rowIndex, toggleEditMode)
+      toggleEditMode(rowIndex)
     }
   }
 
@@ -138,11 +135,11 @@ export default function DataPoints(props: DataPointProps) {
           <EditableTable
             rows={(isReversed ? [...state.rows].reverse() : state.rows) as TableDataRow[]}
             useArrayForValue={SCORE}
-            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => updateRow(rowIndex, edit, editValue, itemIndex)}
-            onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
-            onEditCancel={(rowIndex: number) => updateRow(rowIndex, cancelEdit)}
-            onToggleEditMode={(rowIndex: number) => updateRow(rowIndex, toggleEditMode)}
-            onDelete={(rowIndex: number) => updateRow(rowIndex, deleteRow)} />
+            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => edit(calcRowIndex(rowIndex), editValue, itemIndex)}
+            onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, calcRowIndex(rowIndex))}
+            onEditCancel={(rowIndex: number) => cancelEdit(calcRowIndex(rowIndex))}
+            onToggleEditMode={(rowIndex: number) => toggleEditMode(calcRowIndex(rowIndex))}
+            onDelete={(rowIndex: number) => deleteRow(calcRowIndex(rowIndex))} />
         }
       </CardContent>
     </Card>
