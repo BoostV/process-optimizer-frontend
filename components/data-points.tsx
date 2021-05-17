@@ -143,7 +143,7 @@ export default function DataPoints(props: DataPointProps) {
           <EditableTable
             rows={(isReversed ? [...state.rows].reverse() : state.rows) as TableDataRow[]}
             useArrayForValue={SCORE}
-            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => edit(calcRowIndex(rowIndex), editValue, itemIndex)}
+            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => edit(editValue, calcRowIndex(rowIndex), itemIndex)}
             onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, calcRowIndex(rowIndex))}
             onEditCancel={(rowIndex: number) => cancelEdit(calcRowIndex(rowIndex))}
             onToggleEditMode={(rowIndex: number) => toggleEditMode(calcRowIndex(rowIndex))}
