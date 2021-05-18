@@ -10,7 +10,6 @@ export const useStyles = makeStyles(theme => ({
   },
   logo: {
     marginRight: theme.spacing(1),
-    width: 32,
     height: 32,
   }
 }));
