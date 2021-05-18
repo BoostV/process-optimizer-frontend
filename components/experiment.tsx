@@ -105,7 +105,7 @@ export default function Experiment(props: ExperimentProps) {
                     <CardContent>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
-                            <Grid container>
+                                <Grid container>
                                     <Grid item xs={7}>
                                         <Typography variant="body2">
                                             {experiment.id}
