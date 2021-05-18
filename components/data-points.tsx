@@ -22,7 +22,7 @@ export default function DataPoints(props: DataPointProps) {
   const [state, dispatch] = useReducer(dataPointsReducer, { rows: [], prevRows: [] })
   const isLoadingState = state.rows.length === 0
   const global = useGlobal()
-  const isReversed = global.state.dataPointsReversed
+  const newestFirst = global.state.dataPointsNewestFirst
 
   useEffect(() => {
     dispatch({ type: 'setInitialState', payload: buildState()})
@@ -124,7 +124,7 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   function updateRow(index: number, updateFn: UpdateFnType, ...args: any[]) {
-    const rowIndex = isReversed ? state.rows.length - 1 - index : index
+    const rowIndex = newestFirst ? state.rows.length - 1 - index : index
     updateFn(rowIndex, ...args)
   }
 
@@ -135,7 +135,7 @@ export default function DataPoints(props: DataPointProps) {
           Data points
           <IconButton 
             size="small"
-            onClick={() => global.dispatch({ type: 'setDataPointsReversed', payload: !global.state.dataPointsReversed })}>
+            onClick={() => global.dispatch({ type: 'setDataPointsNewestFirst', payload: !global.state.dataPointsNewestFirst })}>
             <SwapVertIcon fontSize="small" color="primary" />
           </IconButton>
         </Typography>
@@ -144,7 +144,7 @@ export default function DataPoints(props: DataPointProps) {
         } 
         {buildCombinedVariables().length > 0 && !isLoadingState &&
           <EditableTable
-            rows={(isReversed ? [...state.rows].reverse() : state.rows) as TableDataRow[]}
+            rows={(newestFirst ? [...state.rows].reverse() : state.rows) as TableDataRow[]}
             useArrayForValue={SCORE}
             onEdit={(editValue: string, rowIndex: number, itemIndex: number) => updateRow(rowIndex, edit, editValue, itemIndex)}
             onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
