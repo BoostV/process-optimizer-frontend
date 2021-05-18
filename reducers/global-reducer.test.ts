@@ -5,7 +5,8 @@ const initState: State = {
   debug: false,
   useLocalStorage: true,
   experimentsInLocalStorage: [],
-  theme: 'BlueGreen'
+  theme: 'BlueGreen',
+  dataPointsNewestFirst: false,
 }
 
 describe("storeExperimentId", () => {
@@ -41,5 +42,14 @@ describe("setTheme", () => {
     expect(
       reducer(initState, { type: 'setTheme', payload }))
       .toEqual({...initState, theme: payload})
+  })
+})
+
+describe("setDataPointsNewestFirst", () => {
+  it("should toggle data points newest first", async () => {
+    const payload = true
+    expect(
+      reducer(initState, { type: 'setDataPointsNewestFirst', payload }))
+      .toEqual({...initState, dataPointsNewestFirst: payload})
   })
 })

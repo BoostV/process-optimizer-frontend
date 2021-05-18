@@ -1,8 +1,10 @@
-import { Card, CardContent, CircularProgress, Typography } from "@material-ui/core";
+import { Card, CardContent, CircularProgress, IconButton, Typography } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
+import { useGlobal } from "../context/global-context";
 import { dataPointsReducer, DataPointsState } from "../reducers/data-points-reducer";
 import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType } from "../types/common";
 import { EditableTable } from "./editable-table";
+import SwapVertIcon from '@material-ui/icons/SwapVert';
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]
@@ -11,12 +13,16 @@ type DataPointProps = {
   onUpdateDataPoints: (dataPoints: DataPointType[][]) => void
 }
 
+type UpdateFnType = (rowIndex: number, ...args: any[]) => void
+
 const SCORE = "score"
 
 export default function DataPoints(props: DataPointProps) {
-  const { valueVariables, categoricalVariables, dataPoints , onUpdateDataPoints } = props
+  const { valueVariables, categoricalVariables, dataPoints, onUpdateDataPoints} = props
   const [state, dispatch] = useReducer(dataPointsReducer, { rows: [], prevRows: [] })
   const isLoadingState = state.rows.length === 0
+  const global = useGlobal()
+  const newestFirst = global.state.dataPointsNewestFirst
 
   useEffect(() => {
     dispatch({ type: 'setInitialState', payload: buildState()})
@@ -79,7 +85,7 @@ export default function DataPoints(props: DataPointProps) {
     dispatch({ type: 'DATA_POINTS_TABLE_EDIT_CANCELLED', payload: rowIndex })
   }
 
-  function edit(editValue: string, rowIndex: number, itemIndex: number) {
+  function edit(rowIndex: number, editValue: string, itemIndex: number) {
     dispatch({ type: 'DATA_POINTS_TABLE_EDITED', payload: { 
       itemIndex,
       rowIndex,
@@ -87,7 +93,7 @@ export default function DataPoints(props: DataPointProps) {
       value: editValue
     }})
   }
-
+  
   function deleteRow(rowIndex: number) {
     dispatch({ type: 'DATA_POINTS_TABLE_ROW_DELETED', payload: rowIndex })
   }
@@ -113,8 +119,13 @@ export default function DataPoints(props: DataPointProps) {
     if (row.isNew) {
       addRow(buildEmptyRow())
     } else {
-      toggleEditMode(rowIndex)
+      updateRow(rowIndex, toggleEditMode)
     }
+  }
+
+  function updateRow(index: number, updateFn: UpdateFnType, ...args: any[]) {
+    const rowIndex = newestFirst ? state.rows.length - 1 - index : index
+    updateFn(rowIndex, ...args)
   }
 
   return (
@@ -122,19 +133,24 @@ export default function DataPoints(props: DataPointProps) {
       <CardContent>
         <Typography variant="h6" gutterBottom>
           Data points
+          <IconButton 
+            size="small"
+            onClick={() => global.dispatch({ type: 'setDataPointsNewestFirst', payload: !global.state.dataPointsNewestFirst })}>
+            <SwapVertIcon fontSize="small" color="primary" />
+          </IconButton>
         </Typography>
         {buildCombinedVariables().length > 0 && isLoadingState &&
           <CircularProgress size={24}/>
         } 
         {buildCombinedVariables().length > 0 && !isLoadingState &&
           <EditableTable
-            rows={state.rows as TableDataRow[]}
+            rows={(newestFirst ? [...state.rows].reverse() : state.rows) as TableDataRow[]}
             useArrayForValue={SCORE}
-            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => edit(editValue, rowIndex, itemIndex)}
+            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => updateRow(rowIndex, edit, editValue, itemIndex)}
             onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
-            onEditCancel={(rowIndex: number) => cancelEdit(rowIndex)}
-            onToggleEditMode={(rowIndex: number) => toggleEditMode(rowIndex)}
-            onDelete={(rowIndex: number) => deleteRow(rowIndex)} />
+            onEditCancel={(rowIndex: number) => updateRow(rowIndex, cancelEdit)}
+            onToggleEditMode={(rowIndex: number) => updateRow(rowIndex, toggleEditMode)}
+            onDelete={(rowIndex: number) => updateRow(rowIndex, deleteRow)} />
         }
       </CardContent>
     </Card>
