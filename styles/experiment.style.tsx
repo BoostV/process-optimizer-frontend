@@ -17,6 +17,7 @@ export const useStyles = makeStyles(theme => ({
   },
   cardContentWrapper: {
     background: 'url(/logo_big.png)',
+    backgroundRepeat: 'no-repeat',
   }
 }));
 
