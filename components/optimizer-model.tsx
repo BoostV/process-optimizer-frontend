@@ -45,6 +45,8 @@ export default function OptimizerModel(props: OptimizerModelProps) {
     }
   })
 
+  //TODO: Create reducer or refactor data-points-reducer to handle both
+  //TODO: Handle 'edit' and 'edit confirm'
   const [valueRows, setValueRows] = useState(valueDataRows)
 
   return (
