@@ -1,5 +1,5 @@
 import { Box, Button, Card, CardContent, TextareaAutosize, Typography } from '@material-ui/core'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useExperiment, saveExperiment } from "../context/experiment-context"
 import useStyles from '../styles/json-editor.style'
 import { ExperimentType } from '../types/common'
@@ -11,8 +11,14 @@ type JsonEditorProps = {
 export default function JsonEditor(props: JsonEditorProps) {
     const { allowSaveToServer } = props
     const classes = useStyles()
-    const { state, dispatch } = useExperiment()
-    const [editedExperiment, setEditedExperiment] = useState<string>(JSON.stringify(state.experiment, null, 2))
+    const [editedExperiment, setEditedExperiment] = useState<string>("")
+    const { state: {
+        experiment
+    }, dispatch, loading } = useExperiment()
+
+    useEffect(() => {
+      setEditedExperiment(JSON.stringify(experiment, null, 2))
+    }, [experiment]) 
 
     const handleChange = (e: ChangeEvent) => {
         setEditedExperiment((e.target as HTMLInputElement).value)
@@ -35,21 +41,25 @@ export default function JsonEditor(props: JsonEditorProps) {
     return (
         <Card>
             <CardContent>
-                <Box>
-                    <Typography variant="body2">
-                        Warning! The JSON below does not automatically sync with the UI. Reload the page to update it.
-                    </Typography>
-                </Box>
-                <TextareaAutosize 
-                    className={classes.textArea}
-                    defaultValue={editedExperiment}
-                    onChange={(e: ChangeEvent) => handleChange(e)} />
-                <Box>
-                    <Button 
-                        size="small"
-                        variant="outlined"
-                        onClick={() => handleSave()}>Update experiment</Button>
-                </Box>   
+                {loading ? "Loading..." : 
+                  <>
+                    <Box>
+                        <Typography variant="body2">
+                            Warning! Only edit this JSON if you know what you are doing.
+                        </Typography>
+                    </Box>
+                    <TextareaAutosize 
+                        className={classes.textArea}
+                        value={editedExperiment}
+                        onChange={(e: ChangeEvent) => handleChange(e)} />
+                    <Box>
+                        <Button 
+                            size="small"
+                            variant="outlined"
+                            onClick={() => handleSave()}>Update experiment</Button>
+                    </Box>   
+                  </>
+                }
             </CardContent>
         </Card>
     )
