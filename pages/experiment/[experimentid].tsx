@@ -19,8 +19,7 @@ export default function ExperimentContainer() {
       <ExperimentProvider experimentId={Array.isArray(experimentid) ? experimentid[0] : experimentid} useLocalStorage={state.useLocalStorage}>
         <Experiment allowSaveToServer={!state.useLocalStorage} />
         {state.debug && <DebugExperiment />}
-        {/*TODO: Toggle editor somehow*/}
-        <JsonEditor allowSaveToServer={!state.useLocalStorage}/>
+        {state.showJsonEditor && <JsonEditor allowSaveToServer={!state.useLocalStorage}/>}
       </ExperimentProvider>
     </>
   );

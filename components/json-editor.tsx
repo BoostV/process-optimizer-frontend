@@ -1,8 +1,10 @@
-import { Box, Button, Card, CardContent, TextareaAutosize, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, IconButton, TextareaAutosize, Typography } from '@material-ui/core'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useExperiment, saveExperiment } from "../context/experiment-context"
 import useStyles from '../styles/json-editor.style'
 import { ExperimentType } from '../types/common'
+import CloseIcon from "@material-ui/icons/Close"
+import { useGlobal } from '../context/global-context'
 
 type JsonEditorProps = {
     allowSaveToServer: boolean
@@ -15,6 +17,7 @@ export default function JsonEditor(props: JsonEditorProps) {
     const { state: {
         experiment
     }, dispatch, loading } = useExperiment()
+    const global = useGlobal()
 
     useEffect(() => {
       setEditedExperiment(JSON.stringify(experiment, null, 2))
@@ -41,6 +44,13 @@ export default function JsonEditor(props: JsonEditorProps) {
     return (
         <Card>
             <CardContent>
+                <Box mb={2}>
+                  <IconButton 
+                    size="small"
+                    onClick={() => global.dispatch({ type: 'setShowJsonEditor', payload: false })}>
+                    <CloseIcon />
+                  </IconButton>
+                </Box>
                 {loading ? "Loading..." : 
                   <>
                     <Box>
