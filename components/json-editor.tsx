@@ -14,9 +14,7 @@ export default function JsonEditor(props: JsonEditorProps) {
     const { allowSaveToServer } = props
     const classes = useStyles()
     const [editedExperiment, setEditedExperiment] = useState<string>("")
-    const { state: {
-        experiment
-    }, dispatch, loading } = useExperiment()
+    const { state: { experiment }, dispatch, loading } = useExperiment()
     const global = useGlobal()
 
     useEffect(() => {
@@ -37,7 +35,7 @@ export default function JsonEditor(props: JsonEditorProps) {
             }
             location.reload()
         } catch (e) {
-            console.log('Error editing json', e)
+            console.error('Error editing json', e)
         }
     }
 

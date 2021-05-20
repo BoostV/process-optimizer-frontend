@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core";
 
 export const useStyles = makeStyles(theme => ({
   textArea: {
-    width: 700,
+    width: '100%',
   },
 }));
 
