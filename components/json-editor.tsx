@@ -13,7 +13,8 @@ type JsonEditorProps = {
 export default function JsonEditor(props: JsonEditorProps) {
     const { allowSaveToServer } = props
     const classes = useStyles()
-    const [editedExperiment, setEditedExperiment] = useState<string>("")
+    const [errorMsg, setErrorMsg] = useState('')
+    const [editedExperiment, setEditedExperiment] = useState('')
     const { state: { experiment }, dispatch, loading } = useExperiment()
     const global = useGlobal()
 
@@ -35,6 +36,7 @@ export default function JsonEditor(props: JsonEditorProps) {
             }
             location.reload()
         } catch (e) {
+            setErrorMsg('Error: ' + e.message)
             console.error('Error editing json', e)
         }
     }
@@ -66,6 +68,11 @@ export default function JsonEditor(props: JsonEditorProps) {
                             variant="outlined"
                             onClick={() => handleSave()}>Update experiment</Button>
                     </Box>   
+                    <Box mt={1}>
+                        <Typography variant="body2" color="error">
+                            {errorMsg}
+                        </Typography>
+                    </Box>
                   </>
                 }
             </CardContent>
