@@ -22,7 +22,7 @@ export default function OptimizerModel(props: OptimizerModelProps) {
     <Card>
       <CardContent>
         <Typography variant="h6" gutterBottom>
-          Model for optimizer
+          Input model
         </Typography>
        
         {valueVariables.length > 0 &&
