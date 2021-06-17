@@ -13,6 +13,7 @@ import LoadingExperiment from './loading-experiment';
 import saveToLocalFile from '../utility/save-to-local-file';
 import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
+import { useGlobal } from '../context/global-context';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -29,6 +30,7 @@ export default function Experiment(props: ExperimentProps) {
     const { state: {
         experiment
     }, dispatch, loading } = useExperiment()
+    const global = useGlobal()
 
     const [lastSavedExperiment, setLastSavedExperiment] = useState(experiment)
     const [isDirty, setDirty] = useState(false)
