@@ -58,12 +58,6 @@ export interface ExperimentOptimizerConfig {
     xi?: number;
     /**
      * 
-     * @type {number}
-     * @memberof ExperimentOptimizerConfig
-     */
-    yi?: number;
-    /**
-     * 
      * @type {Array<ExperimentOptimizerConfigSpace>}
      * @memberof ExperimentOptimizerConfig
      */
@@ -85,7 +79,6 @@ export function ExperimentOptimizerConfigFromJSONTyped(json: any, ignoreDiscrimi
         'initialPoints': !exists(json, 'initialPoints') ? undefined : json['initialPoints'],
         'kappa': !exists(json, 'kappa') ? undefined : json['kappa'],
         'xi': !exists(json, 'xi') ? undefined : json['xi'],
-        'yi': !exists(json, 'yi') ? undefined : json['yi'],
         'space': !exists(json, 'space') ? undefined : ((json['space'] as Array<any>).map(ExperimentOptimizerConfigSpaceFromJSON)),
     };
 }
@@ -104,7 +97,6 @@ export function ExperimentOptimizerConfigToJSON(value?: ExperimentOptimizerConfi
         'initialPoints': value.initialPoints,
         'kappa': value.kappa,
         'xi': value.xi,
-        'yi': value.yi,
         'space': value.space === undefined ? undefined : ((value.space as Array<any>).map(ExperimentOptimizerConfigSpaceToJSON)),
     };
 }
