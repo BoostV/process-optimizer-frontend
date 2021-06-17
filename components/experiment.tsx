@@ -209,7 +209,6 @@ export default function Experiment(props: ExperimentProps) {
                         
                     </Grid>
                 </CardContent>
-                <div className={classes.toggleJson} onClick={() => global.dispatch({ type: 'setShowJsonEditor', payload: true })}></div>
             </Card>
 
             <Snackbar

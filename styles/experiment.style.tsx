@@ -15,10 +15,6 @@ export const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2),
     height: 42,
   },
-  toggleJson: {
-    height: 10,
-    width: 10,
-  },
 }));
 
 export default useStyles
