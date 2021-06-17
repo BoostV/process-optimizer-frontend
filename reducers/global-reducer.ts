@@ -6,6 +6,7 @@ export type State = {
     experimentsInLocalStorage: string[]
     theme: ThemeName
     dataPointsNewestFirst: boolean
+    showJsonEditor: boolean
 }
 
 export type Action = {
@@ -32,7 +33,10 @@ export type Action = {
     type: 'setDataPointsNewestFirst'
     payload: boolean
 }
-
+| {
+    type: 'setShowJsonEditor'
+    payload: boolean
+}
 export type Dispatch = (action: Action) => void
 
 export const initialState: State = {
@@ -41,6 +45,7 @@ export const initialState: State = {
     experimentsInLocalStorage: [],
     theme: "BlueGreen",
     dataPointsNewestFirst: false,
+    showJsonEditor: false,
 }
 
 export const reducer = (state: State, action: Action) => {
@@ -68,6 +73,8 @@ export const reducer = (state: State, action: Action) => {
             return { ...state, theme: action.payload }
         case 'setDataPointsNewestFirst':
             return { ...state, dataPointsNewestFirst: action.payload }
+        case 'setShowJsonEditor':
+            return { ...state, showJsonEditor: action.payload }
         default:
             return state
     }

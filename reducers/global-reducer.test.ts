@@ -7,6 +7,7 @@ const initState: State = {
   experimentsInLocalStorage: [],
   theme: 'BlueGreen',
   dataPointsNewestFirst: false,
+  showJsonEditor: false,
 }
 
 describe("storeExperimentId", () => {
@@ -51,5 +52,14 @@ describe("setDataPointsNewestFirst", () => {
     expect(
       reducer(initState, { type: 'setDataPointsNewestFirst', payload }))
       .toEqual({...initState, dataPointsNewestFirst: payload})
+  })
+})
+
+describe("setShowJsonEditor", () => {
+  it("should toggle json editor", async () => {
+    const payload = true
+    expect(
+      reducer(initState, { type: 'setShowJsonEditor', payload }))
+      .toEqual({...initState, showJsonEditor: payload})
   })
 })
