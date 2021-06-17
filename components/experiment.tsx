@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
 import Layout from './layout'
 import OptimizerModel from './optimizer-model';
 import OptimizerConfigurator from './optimizer-configurator';
@@ -103,112 +103,114 @@ export default function Experiment(props: ExperimentProps) {
     return (
         <Layout>
             <Card className={[classes.experimentContainer, isDirty && allowSaveToServer ? classes.experimentContainerDirty : ''].join(' ')}>
-                <CardContent>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                           <Grid container>
-                                <Grid item xs={7}>
-                                    <Typography variant="body2">
-                                        {experiment.id}
-                                    </Typography>
-                                    <Typography variant="h4" gutterBottom>
-                                        {/* Experiment {experiment.id} {isDirty && '(unsaved)'} [{experiment.results.rawResult || 'No results'}]  */}
-                                        {experiment.info.name} {isDirty && allowSaveToServer ? '(unsaved)': ''}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={5} container justify="flex-end">
-                                    <Button variant="contained" className={classes.actionButton} onClick={onDownload} color="primary">Download</Button>
-                                    {allowSaveToServer && 
+                <Box className={classes.cardContentWrapper}>
+                    <CardContent>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <Grid container>
+                                    <Grid item xs={7}>
+                                        <Typography variant="body2">
+                                            {experiment.id}
+                                        </Typography>
+                                        <Typography variant="h4" gutterBottom>
+                                            {/* Experiment {experiment.id} {isDirty && '(unsaved)'} [{experiment.results.rawResult || 'No results'}]  */}
+                                            {experiment.info.name} {isDirty && allowSaveToServer ? '(unsaved)': ''}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={5} container justify="flex-end">
+                                        <Button variant="contained" className={classes.actionButton} onClick={onDownload} color="primary">Download</Button>
+                                        {allowSaveToServer && 
+                                            <LoadingButton 
+                                                onClick={onSave} 
+                                                isLoading={isSaving} 
+                                                label="Save" 
+                                                height={42} 
+                                                marginLeft={theme.spacing(2)}
+                                                isFlashing={isDirty} />
+                                        }
                                         <LoadingButton 
-                                            onClick={onSave} 
-                                            isLoading={isSaving} 
-                                            label="Save" 
-                                            height={42} 
+                                            onClick={onRun} 
+                                            isLoading={isRunning} 
+                                            label="Run" 
                                             marginLeft={theme.spacing(2)}
-                                            isFlashing={isDirty} />
-                                    }
-                                    <LoadingButton 
-                                        onClick={onRun} 
-                                        isLoading={isRunning} 
-                                        label="Run" 
-                                        marginLeft={theme.spacing(2)}
-                                        height={42} />
+                                            height={42} />
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
 
-                        <Grid item xs={3}>
-                            <Grid container spacing={2}>
+                            <Grid item xs={3}>
+                                <Grid container spacing={2}>
 
-                                <Grid item xs={12}>
-                                    <ModelEditor
-                                        info={experiment.info}
-                                        updateName={(name: string) => dispatch({ type: 'updateExperimentName', payload: name })}
-                                        updateDescription={(description: string) => dispatch({ type: 'updateExperimentDescription', payload: description })} />
-                                </Grid>
+                                    <Grid item xs={12}>
+                                        <ModelEditor
+                                            info={experiment.info}
+                                            updateName={(name: string) => dispatch({ type: 'updateExperimentName', payload: name })}
+                                            updateDescription={(description: string) => dispatch({ type: 'updateExperimentDescription', payload: description })} />
+                                    </Grid>
 
-                                <Grid item xs={12}>
-                                    <Card>
-                                        <CardContent>
-                                            <Typography variant="h6">
-                                                Next experiment
-                                            </Typography>
-                                            <Typography variant="body2">
-                                                {experiment.results.next && experiment.results.next.join(',')}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <OptimizerModel
-                                        valueVariables={valueVariables}
-                                        categoricalVariables={categoricalVariables}
-                                        disabled={experiment.dataPoints.length > 0}
-                                        onDeleteValueVariable={(valueVariable: ValueVariableType) => { dispatch({ type: 'deleteValueVariable', payload: valueVariable }) }}
-                                        onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => { dispatch({ type: 'deleteCategorialVariable', payload: categoricalVariable }) }}
-                                        addValueVariable={(valueVariable: ValueVariableType) => dispatch({ type: 'addValueVariable', payload: valueVariable })}
-                                        addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => dispatch({ type: 'addCategorialVariable', payload: categoricalVariable })} />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <OptimizerConfigurator
-                                        config={experiment.optimizerConfig}
-                                        onConfigUpdated={(config: OptimizerConfig) => dispatch({ type: 'updateConfiguration', payload: config })} />
-                                </Grid>
-
-                            </Grid>
-                        </Grid>
-
-                        <Grid item xs={9}>
-
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} xl={6}>
-                                    <DataPoints
-                                        valueVariables={experiment.valueVariables}
-                                        categoricalVariables={experiment.categoricalVariables}
-                                        dataPoints={experiment.dataPoints}
-                                        onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
-                                </Grid>
-                                <Grid item xs={12} xl={6}>
-                                    {experiment.results.plots.length > 0 &&
+                                    <Grid item xs={12}>
                                         <Card>
                                             <CardContent>
-                                                <Typography variant="h6" gutterBottom>
-                                                    Plots
+                                                <Typography variant="h6">
+                                                    Next experiment
                                                 </Typography>
-                                                <ul>
-                                                    {experiment.results.plots && experiment.results.plots.map(plot => <li key={plot.id}><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
-                                                </ul>
+                                                <Typography variant="body2">
+                                                    {experiment.results.next && experiment.results.next.join(',')}
+                                                </Typography>
                                             </CardContent>
                                         </Card>
-                                    }
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <OptimizerModel
+                                            valueVariables={valueVariables}
+                                            categoricalVariables={categoricalVariables}
+                                            disabled={experiment.dataPoints.length > 0}
+                                            onDeleteValueVariable={(valueVariable: ValueVariableType) => { dispatch({ type: 'deleteValueVariable', payload: valueVariable }) }}
+                                            onDeleteCategoricalVariable={(categoricalVariable: CategoricalVariableType) => { dispatch({ type: 'deleteCategorialVariable', payload: categoricalVariable }) }}
+                                            addValueVariable={(valueVariable: ValueVariableType) => dispatch({ type: 'addValueVariable', payload: valueVariable })}
+                                            addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => dispatch({ type: 'addCategorialVariable', payload: categoricalVariable })} />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <OptimizerConfigurator
+                                            config={experiment.optimizerConfig}
+                                            onConfigUpdated={(config: OptimizerConfig) => dispatch({ type: 'updateConfiguration', payload: config })} />
+                                    </Grid>
+
                                 </Grid>
                             </Grid>
+
+                            <Grid item xs={9}>
+
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} xl={6}>
+                                        <DataPoints
+                                            valueVariables={experiment.valueVariables}
+                                            categoricalVariables={experiment.categoricalVariables}
+                                            dataPoints={experiment.dataPoints}
+                                            onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
+                                    </Grid>
+                                    <Grid item xs={12} xl={6}>
+                                        {experiment.results.plots.length > 0 &&
+                                            <Card>
+                                                <CardContent>
+                                                    <Typography variant="h6" gutterBottom>
+                                                        Plots
+                                                    </Typography>
+                                                    <ul>
+                                                        {experiment.results.plots && experiment.results.plots.map(plot => <li key={plot.id}><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
+                                                    </ul>
+                                                </CardContent>
+                                            </Card>
+                                        }
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            
                         </Grid>
-                        
-                    </Grid>
-                </CardContent>
+                    </CardContent>
+                </Box>
             </Card>
 
             <Snackbar

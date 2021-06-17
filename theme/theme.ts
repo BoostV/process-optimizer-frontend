@@ -135,51 +135,6 @@ const beeLight: CustomColours = {
   transparentBox: 'rgba(255,255,255,0.95)',
 }
 
-/*
-wood:
-#732002
-#BF9D5E
-#F2D785
-#0D3B29
-#6379F2
-and
-#d8e0d3
-#A67951
-*/
-
-const wood: CustomColours = {
-  primary: '#A67951',
-  secondary: '#BF9D5E',
-  backPrimary: '#d8e0d3',
-  backSecondary: '#d8e0d3',
-  textInsideBox: grey[800],
-  transparentBox: 'rgba(255,255,255,0.35)',
-}
-
-/*
-honey:
-#03A688
-#F2B705
-#F28705
-#A63F03
-#A63F03
-#400101
-and
-#f5da88 
-#ffd760
-#fff3cf
-#fff4d3
-*/
-
-const honey: CustomColours = {
-  primary: '#A63F03',
-  secondary: '#03A688',
-  backPrimary: '#fff4d3',
-  backSecondary: '#fff3cf',
-  textInsideBox: grey[800],
-  transparentBox: 'rgba(255,255,255,0.50)',
-}
-
 const blueGreen: CustomColours = {
   primary: 'rgba(0,121,145,1)',
   secondary: 'rgba(27,230,212,1)',
@@ -196,12 +151,14 @@ rgba(171,104,94,1)
 rgba(240,139,106,1)
 rgba(250,176,99,1)
 rgba(241,233,218,1)
+and
+rgba(236,228,213,1)
 */
 
 const earth: CustomColours = {
   primary: 'rgba(171,104,94,1)',
   secondary: 'rgba(250,176,99,1)',
-  backPrimary: 'rgba(241,233,218,1)',
+  backPrimary: 'rgba(236,228,213,1)',
   backSecondary: 'rgba(241,233,218,1)',
   textInsideBox: grey[800],
   transparentBox: 'rgba(255,255,255,0.35)',
@@ -228,7 +185,6 @@ export const themes: CustomTheme[] = [
   { name: 'Bee', theme: createCustomTheme(bee) },
   { name: 'BeeLight', theme: createCustomTheme(beeLight) },
   { name: 'BlueGreen', theme: createCustomTheme(blueGreen) },
-  { name: 'Honey', theme: createCustomTheme(honey) },
   { name: 'Earth', theme: createCustomTheme(earth) },
 ]
 
