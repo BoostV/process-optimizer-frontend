@@ -31,6 +31,12 @@ export interface ResultResult {
      * @memberof ResultResult
      */
     next?: Array<number>;
+    /**
+     * 
+     * @type {object}
+     * @memberof ResultResult
+     */
+    extras?: object;
 }
 
 export function ResultResultFromJSON(json: any): ResultResult {
@@ -45,6 +51,7 @@ export function ResultResultFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'pickled': !exists(json, 'pickled') ? undefined : json['pickled'],
         'next': !exists(json, 'next') ? undefined : json['next'],
+        'extras': !exists(json, 'extras') ? undefined : json['extras'],
     };
 }
 
@@ -59,6 +66,7 @@ export function ResultResultToJSON(value?: ResultResult | null): any {
         
         'pickled': value.pickled,
         'next': value.next,
+        'extras': value.extras,
     };
 }
 

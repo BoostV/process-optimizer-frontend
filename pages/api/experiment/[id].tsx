@@ -74,7 +74,8 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
           id: experiment.id, 
           plots: json.plots && json.plots.map(p => { return {id: p.id, plot: p.plot}}),
           next: json.result.next,
-          pickled: json.result.pickled
+          pickled: json.result.pickled,
+          extras: json.result.extras
         }
         res.json(result)
         break

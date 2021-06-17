@@ -70,7 +70,8 @@ describe("experiment reducer", () => {
         id: "123",
         next: [],
         plots: [],
-        pickled: "123"
+        pickled: "123",
+        extras: {}
       },
       dataPoints: []
     }
@@ -235,6 +236,7 @@ describe("experiment reducer", () => {
         id: "myExperiment",
         next: [1,2,3,"Red"],
         pickled: "pickled",
+        extras: {},
         plots: [{id: "sample", plot: "base64encodedData"}]
       }
   

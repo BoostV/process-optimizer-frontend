@@ -42,10 +42,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Update OpenAPI client
 
-When the process-optimizer-api changes run the following command with the desired version tag and commit the resulting changes.
+When the process-optimizer-api changes, adjust the API version in the "openapi" script in package.json run the following command and commit the resulting changes.
 
-    docker run --rm -it -u $(id -u ${USER}):$(id -g ${USER}) --volume $(pwd):/local openapitools/openapi-generator-cli generate --skip-validate-spec -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v0.0.1/optimizerapi/openapi/specification.yml -g typescript-fetch -o /local/openapi 
-
+    yarn openapi
 ## Learn More
 
 This project is based on Next.js and follow the project structure and conventions of that project.
