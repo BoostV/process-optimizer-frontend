@@ -38,6 +38,8 @@ export type ValueVariableType = {
 export type VariableType = CategoricalVariableType | ValueVariableType
 
 export type OptimizerConfig = {
+  // TODO move to askConfig container
+  experimentSuggestionCount: number
   baseEstimator: string
   acqFunc: string
   initialPoints: number

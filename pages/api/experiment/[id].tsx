@@ -32,6 +32,7 @@ const runExperiment = async (experiment: ExperimentType) => {
     acqFunc: cfg.acqFunc,
     baseEstimator: cfg.baseEstimator,
     initialPoints: Number(cfg.initialPoints),
+    experimentSuggestionCount: Number(cfg.experimentSuggestionCount),
     kappa: Number(cfg.kappa),
     xi: Number(cfg.xi),
     space: space

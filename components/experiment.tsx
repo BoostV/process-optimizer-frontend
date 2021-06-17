@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, Grid, Snackbar, TextField, Typography } from '@material-ui/core'
 import Layout from './layout'
 import OptimizerModel from './optimizer-model';
 import OptimizerConfigurator from './optimizer-configurator';
@@ -154,6 +154,15 @@ export default function Experiment(props: ExperimentProps) {
                                                 <Typography variant="h6">
                                                     Next experiment
                                                 </Typography>
+                                                <TextField
+                                                    fullWidth
+                                                    margin="dense"
+                                                    defaultValue={experiment.optimizerConfig.experimentSuggestionCount}
+                                                    name="numberOfSuggestions"
+                                                    label="Number of suggestions"
+                                                    inputRef={() => {}}
+                                                    onChange={(e) => dispatch({ type: 'updateSuggestionCount', payload: e.target.value }) }
+                                                    />
                                                 <Typography variant="body2">
                                                     {experiment.results.next && experiment.results.next.join(',')}
                                                 </Typography>

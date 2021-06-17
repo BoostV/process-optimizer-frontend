@@ -18,6 +18,7 @@ describe("converters", () => {
             {name: "Hvedemel", description: "", minVal: 0,maxVal: 1000}
         ],
         optimizerConfig: {
+            experimentSuggestionCount: 1,
             baseEstimator: "GP",
             acqFunc:"gp_hedge",
             initialPoints: 2,
