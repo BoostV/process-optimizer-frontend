@@ -28,6 +28,7 @@ const runExperiment = async (experiment: ExperimentType) => {
   // TODO data is currently hard coded
   const request: OptimizerRunRequest = {experiment: {
     data: calculateData(experiment.categoricalVariables, experiment.valueVariables, experiment.dataPoints), 
+    extras: experiment.extras,
     optimizerConfig: {
     acqFunc: cfg.acqFunc,
     baseEstimator: cfg.baseEstimator,
