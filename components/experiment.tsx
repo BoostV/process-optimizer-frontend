@@ -15,6 +15,22 @@ import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
 import { useGlobal } from '../context/global-context';
 
+interface SuggestionsProps {
+    values: string[][]
+    headers: string[]
+}
+
+const Suggestions = ({values, headers} : SuggestionsProps) => (
+    <table>
+        <thead>{headers.map(it => <td>{it}</td> )}</thead>
+        {values.map(row => (
+            <tr>
+                {row.map(it => <td>{it}</td> )}
+            </tr>
+        ))}
+    </table>
+)
+
 type ExperimentProps = {
     allowSaveToServer: boolean
 }
@@ -96,6 +112,10 @@ export default function Experiment(props: ExperimentProps) {
     const valueVariables = experiment.valueVariables
     const categoricalVariables = experiment.categoricalVariables
 
+    const headers = valueVariables.map(it => it.name).concat(categoricalVariables.map(it => it.name))
+
+    const nextValues = Array.isArray(experiment.results.next) ? experiment.results.next : (experiment.results.next ? [experiment.results.next] : []).map(it => it.map((val: any) => String(val))) 
+
     if (loading) {
         return  <LoadingExperiment />
     }
@@ -164,7 +184,7 @@ export default function Experiment(props: ExperimentProps) {
                                                     onChange={(e) => dispatch({ type: 'updateSuggestionCount', payload: e.target.value }) }
                                                     />
                                                 <Typography variant="body2">
-                                                    {experiment.results.next && experiment.results.next.join(',')}
+                                                    <Suggestions values={nextValues} headers={headers} />
                                                 </Typography>
                                             </CardContent>
                                         </Card>
