@@ -55,6 +55,7 @@ export type ExperimentAction =
     }
 
 export const experimentReducer = (experimentState: ExperimentType, action: ExperimentAction) => {
+    
     switch (action.type) {
         case 'setSwVersion':
             return {...experimentState, info: {

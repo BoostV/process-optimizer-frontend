@@ -113,9 +113,9 @@ export default function Experiment(props: ExperimentProps) {
     const categoricalVariables = experiment.categoricalVariables
 
     const headers = valueVariables.map(it => it.name).concat(categoricalVariables.map(it => it.name))
-
-    const nextValues = Array.isArray(experiment.results.next) ? experiment.results.next : (experiment.results.next ? [experiment.results.next] : []).map(it => it.map((val: any) => String(val))) 
-
+    
+    const nextValues = (experiment.results.next && Array.isArray(experiment.results.next[0])) ? experiment.results.next : (experiment.results.next ? [experiment.results.next] : []).map(it => it.map((val: any) => String(val))) 
+    
     if (loading) {
         return  <LoadingExperiment />
     }
