@@ -14,22 +14,7 @@ import saveToLocalFile from '../utility/save-to-local-file';
 import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
 import { useGlobal } from '../context/global-context';
-
-interface SuggestionsProps {
-    values: string[][]
-    headers: string[]
-}
-
-const Suggestions = ({values, headers} : SuggestionsProps) => (
-    <table>
-        <thead>{headers.map(it => <td>{it}</td> )}</thead>
-        {values.map(row => (
-            <tr>
-                {row.map(it => <td>{it}</td> )}
-            </tr>
-        ))}
-    </table>
-)
+import { Suggestions } from './suggestions';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -114,7 +99,7 @@ export default function Experiment(props: ExperimentProps) {
 
     const headers = valueVariables.map(it => it.name).concat(categoricalVariables.map(it => it.name))
     
-    const nextValues = (experiment.results.next && Array.isArray(experiment.results.next[0])) ? experiment.results.next : (experiment.results.next ? [experiment.results.next] : []).map(it => it.map((val: any) => String(val))) 
+    const nextValues: any[][] = (experiment.results.next && Array.isArray(experiment.results.next[0])) ? experiment.results.next as unknown as any[][] : (experiment.results.next ? [experiment.results.next] : [])
     
     if (loading) {
         return  <LoadingExperiment />
