@@ -160,7 +160,7 @@ export default function Experiment(props: ExperimentProps) {
                                                     Next experiment
                                                 </Typography>
                                                 <TextField
-                                                    fullWidth
+                                                    type="number"
                                                     margin="dense"
                                                     defaultValue={experiment.optimizerConfig.experimentSuggestionCount}
                                                     name="numberOfSuggestions"
