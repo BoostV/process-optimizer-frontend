@@ -4,8 +4,8 @@ import * as d3 from "d3";
 import { useD3 } from './hooks';
 
 
-const height =  200;
-const width = 200;
+const height =  190;
+const width = 190;
 const margin = { top: 10, right: 10, bottom: 10, left: 10, edge: 40};
 
 
@@ -100,7 +100,7 @@ export default function Plot_Objective(props: PlotProps) {
         
           svg
             .select(".plot_" + idstring)
-            .select(".plot-area")
+            .select(".plot")
             .append("path")
             .attr("class", "line")
             .attr("d", slice(xy))
@@ -154,9 +154,11 @@ export default function Plot_Objective(props: PlotProps) {
 
        
 
+       
+
        svg
         .select(".plot_" + idstring)
-        .select(".plot-area")
+        .select(".plot")
         .attr("fill", "none")
         .attr("stroke", "#fff")
         .attr("stroke-opacity", 0.0)
@@ -168,24 +170,55 @@ export default function Plot_Objective(props: PlotProps) {
         .attr("d", d3.geoPath())
 
 
+  
+
+        var x = getscale(j,0,width)
+        var y = getscale(i,width, 0)
+
+      
+
+
+
+
+
+      for (var entry=0; entry<experiment.dataPoints.length; entry++) {
+        svg
+          .select(".plot_" + idstring)
+          .select(".plot-area")
+          .append("circle")
+            .attr("cx", function () {return x(experiment.dataPoints[entry][j].value)})
+            .attr("cy", function () {return y(experiment.dataPoints[entry][i].value)})
+            .attr("r", 4)
+            .attr("id", function(d) {return "Datapoint"+entry})
+            .style("fill", "#000000")
+            .on("mouseover", function(d) {
+              d3.selectAll("#" + this.id).transition().style("fill", "#FF0000");
+            })
+            .on("mouseout", function(d) {
+              d3.selectAll('circle').transition().style("fill", "#000000");
+            });
+                 
+      }
+
+
       svg
         .select(".plot_" + idstring)
         .select(".topaxis")
-        .call(d3.axisTop(getscale(j,0,width)).tickFormat(""))
+        .call(d3.axisTop(x).tickFormat(""))
 
       if (i == data_length -1) {
         svg
         .select(".plot_" + idstring)
         .select(".botaxis")
         .attr("transform", "translate(0," + height +")")
-        .call(d3.axisBottom(getscale(j,0,width)))
+        .call(d3.axisBottom(x))
 
       } else {
         svg
         .select(".plot_" + idstring)
         .select(".botaxis")
         .attr("transform", "translate(0," + height +")")
-        .call(d3.axisBottom(getscale(j,0,width)).tickFormat(""))  
+        .call(d3.axisBottom(x).tickFormat(""))  
 
 
       }
@@ -194,19 +227,19 @@ export default function Plot_Objective(props: PlotProps) {
         svg
         .select(".plot_" + idstring)
         .select(".leftaxis")
-        .call(d3.axisLeft(getscale(i, width, 0)))
+        .call(d3.axisLeft(y))
 
       } else {
       svg
         .select(".plot_" + idstring)
         .select(".leftaxis")
-        .call(d3.axisLeft(getscale(i,width, 0)).tickFormat(""))
+        .call(d3.axisLeft(y).tickFormat(""))
       }
       svg
         .select(".plot_" + idstring)
         .select(".rightaxis")
         .attr("transform", "translate(" + width + ",0)")
-        .call(d3.axisRight(getscale(i,width, 0)).tickFormat(""))
+        .call(d3.axisRight(y).tickFormat(""))
         }
       }
     }
@@ -228,11 +261,13 @@ export default function Plot_Objective(props: PlotProps) {
           (margin['edge'] + i * (margin["top"] + margin["bottom"] + height))
            + ")"
         }>
-          <g className="plot-area"/>
+          
+          <g className="plot"/>
           <g className="topaxis"/>
           <g className="botaxis" transform={"translate(0," + height +")"}/>
           <g className="leftaxis" />
           <g className="rightaxis" transform={"translate(" + width + ",0)"}/>
+          <g className="plot-area"/>
         </g>
       )
     }
