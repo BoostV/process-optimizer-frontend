@@ -49,8 +49,13 @@ export type ExperimentAction =
         type: 'updateDataPoints'
         payload: DataPointType[][]
     }
+    | {
+        type: 'updateSuggestionCount'
+        payload: string
+    }
 
 export const experimentReducer = (experimentState: ExperimentType, action: ExperimentAction) => {
+    
     switch (action.type) {
         case 'setSwVersion':
             return {...experimentState, info: {
@@ -75,6 +80,13 @@ export const experimentReducer = (experimentState: ExperimentType, action: Exper
                 info: {
                     ...experimentState.info,
                     description: action.payload
+                }
+            }
+        case 'updateSuggestionCount':
+            return {
+                ...experimentState,
+                extras: {...experimentState.extras,
+                    experimentSuggestionCount: Number(action.payload)
                 }
             }
         case 'addValueVariable':

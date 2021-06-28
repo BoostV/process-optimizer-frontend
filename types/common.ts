@@ -7,6 +7,7 @@ export type ExperimentType = {
   optimizerConfig: OptimizerConfig
   results: ExperimentResultType
   dataPoints: DataPointType[][]
+  extras: object
 }
 
 export type ExperimentResultType = {

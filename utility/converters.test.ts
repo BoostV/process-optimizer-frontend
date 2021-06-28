@@ -5,7 +5,7 @@ import { calculateSpace, calculateData } from "./converters"
 describe("converters", () => {
     const sampleExperiment: ExperimentType = {...initialState.experiment,
         id: "123",
-        info: {
+        info: {...initialState.experiment.info,
             name: "Cookies",
             description: "Bager haremus' peberkager"
         },

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "test": "jest",
-    "openapi": "openapi-generator-cli generate --skip-validate-spec -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v1.1.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi"
+    "openapi": "openapi-generator-cli generate --skip-validate-spec -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v1.2.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.3",

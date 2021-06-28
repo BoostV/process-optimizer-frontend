@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, Grid, Snackbar, TextField, Typography } from '@material-ui/core'
 import Layout from './layout'
 import OptimizerModel from './optimizer-model';
 import OptimizerConfigurator from './optimizer-configurator';
@@ -14,6 +14,7 @@ import saveToLocalFile from '../utility/save-to-local-file';
 import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
 import { useGlobal } from '../context/global-context';
+import { Suggestions } from './suggestions';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -96,6 +97,10 @@ export default function Experiment(props: ExperimentProps) {
     const valueVariables = experiment.valueVariables
     const categoricalVariables = experiment.categoricalVariables
 
+    const headers = valueVariables.map(it => it.name).concat(categoricalVariables.map(it => it.name))
+    
+    const nextValues: any[][] = (experiment.results.next && Array.isArray(experiment.results.next[0])) ? experiment.results.next as unknown as any[][] : (experiment.results.next ? [experiment.results.next] : [])
+    
     if (loading) {
         return  <LoadingExperiment />
     }
@@ -154,8 +159,17 @@ export default function Experiment(props: ExperimentProps) {
                                                 <Typography variant="h6">
                                                     Next experiment
                                                 </Typography>
+                                                <TextField
+                                                    type="number"
+                                                    margin="dense"
+                                                    defaultValue={experiment?.extras?['experimentSuggestionCount'] : 1 }
+                                                    name="numberOfSuggestions"
+                                                    label="Number of suggestions"
+                                                    inputRef={() => {}}
+                                                    onChange={(e) => dispatch({ type: 'updateSuggestionCount', payload: e.target.value }) }
+                                                    />
                                                 <Typography variant="body2">
-                                                    {experiment.results.next && experiment.results.next.join(',')}
+                                                    <Suggestions values={nextValues} headers={headers} />
                                                 </Typography>
                                             </CardContent>
                                         </Card>

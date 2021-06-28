@@ -25,7 +25,10 @@ export const emptyExperiment: ExperimentType = {
     pickled: "",
     extras: {}
   },
-  dataPoints: []
+  dataPoints: [],
+  extras: {
+    experimentSuggestionCount: 1
+  }
 }
 
 export type State = {
