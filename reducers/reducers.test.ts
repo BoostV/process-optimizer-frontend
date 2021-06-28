@@ -52,7 +52,6 @@ describe("experiment reducer", () => {
         name: "Not cake",
         description: "Not yummy",
       },
-      extras: {},
       categoricalVariables: [{
         name: "Not icing",
         description: "Not sugary",
