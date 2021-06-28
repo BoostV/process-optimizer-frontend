@@ -6,6 +6,7 @@ export type ExperimentType = {
   optimizerConfig: OptimizerConfig
   results: ExperimentResultType
   dataPoints: DataPointType[][]
+  extras: object
 }
 
 export type ExperimentResultType = {
@@ -38,8 +39,6 @@ export type ValueVariableType = {
 export type VariableType = CategoricalVariableType | ValueVariableType
 
 export type OptimizerConfig = {
-  // TODO move to askConfig container
-  experimentSuggestionCount: number
   baseEstimator: string
   acqFunc: string
   initialPoints: number

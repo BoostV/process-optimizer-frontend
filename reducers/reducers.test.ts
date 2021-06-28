@@ -24,7 +24,6 @@ describe("experiment reducer", () => {
         maxVal: 200,
       }],
       optimizerConfig: {
-        experimentSuggestionCount: 1,
         baseEstimator: "GP",
         acqFunc: "gp_hedge",
         initialPoints: 3,
@@ -35,9 +34,13 @@ describe("experiment reducer", () => {
         id: "",
         next: [],
         plots: [],
-        pickled: ""
+        pickled: "",
+        extras: {}
       },
-      dataPoints: []
+      dataPoints: [],
+      extras: {
+        experimentSuggestionCount: 1
+      }
     }
   }
 
@@ -74,7 +77,10 @@ describe("experiment reducer", () => {
         pickled: "123",
         extras: {}
       },
-      dataPoints: []
+      dataPoints: [],
+      extras: {
+        experimentSuggestionCount: 1
+      }
     }
 
     const action: ExperimentAction = {
@@ -99,6 +105,7 @@ describe("experiment reducer", () => {
         info: {
           name: "Muffins",
           description: "Yummy",
+          swVersion: ''
         }
       }
     })
@@ -115,6 +122,7 @@ describe("experiment reducer", () => {
         info: {
           name: "Cake",
           description: "Tasty",
+          swVersion: ''
         }
       }
     })

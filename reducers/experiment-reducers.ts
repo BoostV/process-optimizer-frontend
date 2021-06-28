@@ -85,9 +85,8 @@ export const experimentReducer = (experimentState: ExperimentType, action: Exper
         case 'updateSuggestionCount':
             return {
                 ...experimentState,
-                optimizerConfig: {
-                    ...experimentState.optimizerConfig, 
-                    experimentSuggestionCount: action.payload
+                extras: {...experimentState.extras,
+                    experimentSuggestionCount: Number(action.payload)
                 }
             }
         case 'addValueVariable':

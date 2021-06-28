@@ -11,7 +11,6 @@ export const emptyExperiment: ExperimentType = {
   categoricalVariables: [],
   valueVariables: [],
   optimizerConfig: {
-    experimentSuggestionCount: 1,
     baseEstimator: "GP",
     acqFunc: "gp_hedge",
     initialPoints: 3,
@@ -25,7 +24,10 @@ export const emptyExperiment: ExperimentType = {
     pickled: "",
     extras: {}
   },
-  dataPoints: []
+  dataPoints: [],
+  extras: {
+    experimentSuggestionCount: 1
+  }
 }
 
 export type State = {

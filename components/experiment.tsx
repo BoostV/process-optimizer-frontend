@@ -162,7 +162,7 @@ export default function Experiment(props: ExperimentProps) {
                                                 <TextField
                                                     type="number"
                                                     margin="dense"
-                                                    defaultValue={experiment.optimizerConfig.experimentSuggestionCount}
+                                                    defaultValue={experiment?.extras?['experimentSuggestionCount'] : 1 }
                                                     name="numberOfSuggestions"
                                                     label="Number of suggestions"
                                                     inputRef={() => {}}

@@ -24,15 +24,16 @@ const runExperiment = async (experiment: ExperimentType) => {
   const API_SERVER = process.env.API_SERVER || 'http://localhost:9090/v1.0'
   const api = new DefaultApi(new Configuration({basePath: API_SERVER, fetchApi: fetch}))
   const cfg = experiment.optimizerConfig
+  const extras = experiment.extras || {}
   const space = calculateSpace(experiment)
   // TODO data is currently hard coded
   const request: OptimizerRunRequest = {experiment: {
     data: calculateData(experiment.categoricalVariables, experiment.valueVariables, experiment.dataPoints), 
+    extras: extras,
     optimizerConfig: {
     acqFunc: cfg.acqFunc,
     baseEstimator: cfg.baseEstimator,
     initialPoints: Number(cfg.initialPoints),
-    experimentSuggestionCount: Number(cfg.experimentSuggestionCount),
     kappa: Number(cfg.kappa),
     xi: Number(cfg.xi),
     space: space
