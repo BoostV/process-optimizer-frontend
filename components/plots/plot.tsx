@@ -2,7 +2,6 @@ import { Card, CardContent} from '@material-ui/core'
 import React from 'react';
 import * as d3 from "d3";
 import { useD3 } from './hooks';
-import { createMuiTheme } from '@material-ui/core/styles';
 
 
 const height =  200;
@@ -135,7 +134,7 @@ export default function Plot_Objective(props: PlotProps) {
         var values = new Array(data_width * data_height);
         for (var o = 0, p = 0; o < data_height; ++o) {
           for (var q = 0; q < data_width; ++q, ++p) {
-            values[p] = j_value["zi"]["__ndarray__"][o][q];
+            values[p] = j_value["zi"]["__ndarray__"][data_height -1 - o][q];
           }
         }
 
@@ -195,37 +194,23 @@ export default function Plot_Objective(props: PlotProps) {
         svg
         .select(".plot_" + idstring)
         .select(".leftaxis")
-        .call(d3.axisLeft(getscale(i,0,width)))
+        .call(d3.axisLeft(getscale(i, width, 0)))
 
       } else {
       svg
         .select(".plot_" + idstring)
         .select(".leftaxis")
-        .call(d3.axisLeft(getscale(i,0,width)).tickFormat(""))
+        .call(d3.axisLeft(getscale(i,width, 0)).tickFormat(""))
       }
       svg
         .select(".plot_" + idstring)
         .select(".rightaxis")
         .attr("transform", "translate(" + width + ",0)")
-        .call(d3.axisRight(getscale(i,0,width)).tickFormat(""))
-
-
-
-
-
-
-
-
-        
-
-
+        .call(d3.axisRight(getscale(i,width, 0)).tickFormat(""))
         }
       }
     }
-
-
-
-    },
+  },
     [data_length]
   );
 
