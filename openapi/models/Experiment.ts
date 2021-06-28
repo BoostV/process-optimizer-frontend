@@ -31,6 +31,12 @@ import {
  */
 export interface Experiment {
     /**
+     * A plain JSON object that can contain arbitrary values
+     * @type {object}
+     * @memberof Experiment
+     */
+    extras?: object;
+    /**
      * 
      * @type {Array<ExperimentData>}
      * @memberof Experiment
@@ -54,6 +60,7 @@ export function ExperimentFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
+        'extras': !exists(json, 'extras') ? undefined : json['extras'],
         'data': ((json['data'] as Array<any>).map(ExperimentDataFromJSON)),
         'optimizerConfig': ExperimentOptimizerConfigFromJSON(json['optimizerConfig']),
     };
@@ -68,6 +75,7 @@ export function ExperimentToJSON(value?: Experiment | null): any {
     }
     return {
         
+        'extras': value.extras,
         'data': ((value.data as Array<any>).map(ExperimentDataToJSON)),
         'optimizerConfig': ExperimentOptimizerConfigToJSON(value.optimizerConfig),
     };

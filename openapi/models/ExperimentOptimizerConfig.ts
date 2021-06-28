@@ -49,12 +49,6 @@ export interface ExperimentOptimizerConfig {
      * @type {number}
      * @memberof ExperimentOptimizerConfig
      */
-    experimentSuggestionCount?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ExperimentOptimizerConfig
-     */
     kappa?: number;
     /**
      * 
@@ -83,7 +77,6 @@ export function ExperimentOptimizerConfigFromJSONTyped(json: any, ignoreDiscrimi
         'baseEstimator': !exists(json, 'baseEstimator') ? undefined : json['baseEstimator'],
         'acqFunc': !exists(json, 'acqFunc') ? undefined : json['acqFunc'],
         'initialPoints': !exists(json, 'initialPoints') ? undefined : json['initialPoints'],
-        'experimentSuggestionCount': !exists(json, 'experimentSuggestionCount') ? undefined : json['experimentSuggestionCount'],
         'kappa': !exists(json, 'kappa') ? undefined : json['kappa'],
         'xi': !exists(json, 'xi') ? undefined : json['xi'],
         'space': !exists(json, 'space') ? undefined : ((json['space'] as Array<any>).map(ExperimentOptimizerConfigSpaceFromJSON)),
@@ -102,7 +95,6 @@ export function ExperimentOptimizerConfigToJSON(value?: ExperimentOptimizerConfi
         'baseEstimator': value.baseEstimator,
         'acqFunc': value.acqFunc,
         'initialPoints': value.initialPoints,
-        'experimentSuggestionCount': value.experimentSuggestionCount,
         'kappa': value.kappa,
         'xi': value.xi,
         'space': value.space === undefined ? undefined : ((value.space as Array<any>).map(ExperimentOptimizerConfigSpaceToJSON)),
