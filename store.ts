@@ -8,7 +8,6 @@ export const emptyExperiment: ExperimentType = {
     description: "",
     swVersion: versionInfo.version
   },
-  extras: {},
   categoricalVariables: [],
   valueVariables: [],
   optimizerConfig: {
