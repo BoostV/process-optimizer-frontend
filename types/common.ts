@@ -1,6 +1,7 @@
 export type ExperimentType = {
   id: string
   info: Info
+  extras: object
   categoricalVariables: CategoricalVariableType[]
   valueVariables: ValueVariableType[]
   optimizerConfig: OptimizerConfig
