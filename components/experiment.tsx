@@ -14,6 +14,7 @@ import saveToLocalFile from '../utility/save-to-local-file';
 import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
 import { useGlobal } from '../context/global-context';
+import Plot_Objective from './plots/plot'
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -205,6 +206,14 @@ export default function Experiment(props: ExperimentProps) {
                                             </Card>
                                         }
                                     </Grid>
+                                    <Grid item xs={12} xl={12}>
+                                        {experiment.results.plots.length > 0 &&
+                                        <Plot_Objective
+                                        plotdata={experiment.results.extras}
+                                        experiment={experiment}
+                                        />
+                                        }
+                                    </Grid> 
                                 </Grid>
                             </Grid>
                             
