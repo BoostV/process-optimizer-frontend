@@ -2,11 +2,13 @@ import { Card, CardContent} from '@material-ui/core'
 import React from 'react';
 import * as d3 from "d3";
 import { useD3 } from './hooks';
+import {Conrec} from "ml-conrec"
+import { options } from 'yargs';
 
 
 const height =  190;
 const width = 190;
-const margin = { top: 10, right: 10, bottom: 10, left: 10, edge: 40};
+var margin = { top: 10, right: 10, bottom: 10, left: 10, edge: 40};
 
 
 
@@ -21,6 +23,21 @@ export default function Plot_Objective(props: PlotProps) {
   const {plotdata, experiment} = props
   var valvar = experiment.valueVariables
   var catvar = experiment.categoricalVariables
+
+  if (catvar.lenght != 0) {
+    console.log("triggered")
+    console.log( catvar)
+    var longest = 0
+    for (var cvar = 0; cvar < catvar.length; cvar++){
+      console.log("triggered2")
+      for (var option = 0; option < catvar[cvar]['options'].length; option++){
+        console.log(catvar[cvar]['options'][option].length)
+        if (catvar[cvar]['options'][option].length > longest) {longest = catvar[cvar]['options'][option].length}
+      }
+    }
+    margin["edge"] = longest*10
+
+  }
 
 
   // function to generate scales
@@ -127,22 +144,27 @@ export default function Plot_Objective(props: PlotProps) {
         else {
 
                   //get shape of z data
-        var data_width = j_value["zi"]["shape"][1]
-        var data_height  = j_value["zi"]["shape"][0]
+          var data_width = j_value["zi"]["shape"][1]
+          var data_height  = j_value["zi"]["shape"][0]
         
-        //generate inpur array required by d3's contour generator
-        var values = new Array(data_width * data_height);
-        for (var o = 0, p = 0; o < data_height; ++o) {
-          for (var q = 0; q < data_width; ++q, ++p) {
-            values[p] = j_value["zi"]["__ndarray__"][data_height -1 - o][q];
+          //generate inpur array required by d3's contour generator
+          var xgrid = new Array(data_width * data_height);
+          var ygrid = new Array(data_width * data_height);
+          var values = new Array(data_width * data_height);
+          for (var o = 0, p = 0; o < data_height; ++o) {
+            for (var q = 0; q < data_width; ++q, ++p) {
+              xgrid[p] = j_value["xi"]["__ndarray__"][o]
+              ygrid[p] = j_value["yi"]["__ndarray__"][q];
+              values[p] = j_value["zi"]["__ndarray__"][data_height -1 - o][q];
+            }
           }
-        }
+
 
         //determine max and min value to generate correct threshod boundries
         var minval = dep_scale[0];
         var maxval = dep_scale[1]
         var midval = ((maxval-minval)/2) + minval;
-        var parts = (maxval-minval)/20
+        var parts = (maxval-minval)/25
         var thresholds = d3.range(minval, maxval, parts)
         var myColor = d3.scaleLinear().domain([minval, midval, maxval])
                        .range(["yellow", "green", "blue"])
@@ -151,34 +173,44 @@ export default function Plot_Objective(props: PlotProps) {
        var contours = d3.contours().size([data_width, data_height]).thresholds(thresholds)(values)
        var scalex = width/data_width
        var scaley = height/data_height
+       //console.log(contours)
 
-       
+      //generate scales 
+      var x = getscale(j,0,width)
+      var y = getscale(i,width, 0)
+    
 
-       
 
+      //transoformation function to remove beveling along the edges
+      var projection = d3.geoTransform({
+        point: function(px, py) {
+          //calculate additional scaling to ensure contour is square with plotting area centered
+          const addscaley = 0.8/data_height+1
+          const addscalex = 0.8/data_width+1
+          //transformation of actual point on curve
+          py=(py-0.4)*scaley*addscaley
+          px=(px-0.4)*scalex*addscalex
+          //clamp curve points outside plotting area
+          if ( px < 0) { px = 0;} // px < 0 ? px = 0 : px;
+          if ( py < 0) { py = 0;} // py < 0 ? py = 0 : py;
+          if ( px > (width) ) { px = width; } // px > (n-1) ? px = n-1 : px;
+          if ( py > (height) ) { py = height; } // py > (m-1) ? py = m-1 : py;
+          this.stream.point(px, py);
+        }
+    });
+
+      
        svg
         .select(".plot_" + idstring)
         .select(".plot")
         .attr("fill", "none")
         .attr("stroke", "#fff")
         .attr("stroke-opacity", 0.0)
-        .attr('transform', 'scale(' + scalex + ',' + scaley + ')')
         .selectAll("path")
         .data(contours)
         .join("path")
         .attr("fill", function(d){return myColor(d.value)})
-        .attr("d", d3.geoPath())
-
-
-  
-
-        var x = getscale(j,0,width)
-        var y = getscale(i,width, 0)
-
-      
-
-
-
+        .attr("d", d3.geoPath(projection))
 
 
       for (var entry=0; entry<experiment.dataPoints.length; entry++) {
