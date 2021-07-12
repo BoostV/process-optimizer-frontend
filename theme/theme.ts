@@ -110,20 +110,17 @@ const cyans: CustomColours = {
 
 /*
 bee:
-#A67951
-#734F2F
-#BFA450
-#F2DF80
-#BE8037
+#F89200
+#e6c338
 */
 
 const bee: CustomColours = {
-  primary: '#BE8037',
-  secondary: '#F2DF80',
-  backPrimary: '#A67951',
-  backSecondary: '#A67951',
-  textInsideBox: '#fff',
-  transparentBox: 'rgba(255,255,255,0.15)',
+  primary: '#F89200',
+  secondary: '#e6c338',
+  backPrimary: grey[300],
+  backSecondary: grey[200],
+  textInsideBox: grey[800],
+  transparentBox: 'rgba(255,255,255,0.75)',
 }
 
 const beeLight: CustomColours = {

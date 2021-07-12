@@ -5,8 +5,11 @@ export const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(5),
     flexGrow: 1,
   },
+  title: {
+    color: 'white',
+  },
   link: {
-    color: "white",
+    color: 'white',
   },
   logo: {
     marginRight: theme.spacing(1),
