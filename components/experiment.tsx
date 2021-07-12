@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Grid, Snackbar, TextField, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
 import Layout from './layout'
 import OptimizerModel from './optimizer-model';
 import OptimizerConfigurator from './optimizer-configurator';
@@ -10,11 +10,11 @@ import { useExperiment, saveExperiment, runExperiment } from '../context/experim
 import React, { useState, useEffect } from 'react';
 import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointType } from '../types/common';
 import LoadingExperiment from './loading-experiment';
+import { NextExperiments } from './next-experiment';
 import saveToLocalFile from '../utility/save-to-local-file';
 import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
 import { useGlobal } from '../context/global-context';
-import { Suggestions } from './suggestions';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -154,25 +154,9 @@ export default function Experiment(props: ExperimentProps) {
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <Card>
-                                            <CardContent>
-                                                <Typography variant="h6">
-                                                    Next experiment
-                                                </Typography>
-                                                <TextField
-                                                    type="number"
-                                                    margin="dense"
-                                                    defaultValue={experiment?.extras['experimentSuggestionCount'] || 1 }
-                                                    name="numberOfSuggestions"
-                                                    label="Number of suggestions"
-                                                    inputRef={() => {}}
-                                                    onChange={(e) => dispatch({ type: 'updateSuggestionCount', payload: e.target.value }) }
-                                                    />
-                                                <Typography variant="body2">
-                                                    <Suggestions values={nextValues} headers={headers} />
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
+                                       <NextExperiments
+                                        nextValues={nextValues}
+                                        headers={headers} />
                                     </Grid>
 
                                     <Grid item xs={12}>
