@@ -18,7 +18,7 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
   return (
     <Card>
       <CardContent>
-        <Typography variant="h6" gutterBottom>Configure optimizer</Typography>
+        <Typography variant="h6" gutterBottom>Configuration</Typography>
         <TextField
           disabled
           fullWidth
