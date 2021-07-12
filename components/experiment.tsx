@@ -14,6 +14,7 @@ import { NextExperiments } from './next-experiment';
 import saveToLocalFile from '../utility/save-to-local-file';
 import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
+import { Plots } from './plots';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -115,7 +116,7 @@ export default function Experiment(props: ExperimentProps) {
                                         <Typography variant="body2">
                                             {experiment.id}
                                         </Typography>
-                                        <Typography variant="h4" gutterBottom>
+                                        <Typography variant="h5" gutterBottom>
                                             {/* Experiment {experiment.id} {isDirty && '(unsaved)'} [{experiment.results.rawResult || 'No results'}]  */}
                                             {experiment.info.name} {isDirty && allowSaveToServer ? '(unsaved)': ''}
                                         </Typography>
@@ -188,18 +189,7 @@ export default function Experiment(props: ExperimentProps) {
                                             onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
                                     </Grid>
                                     <Grid item xs={12} xl={6}>
-                                        {experiment.results.plots.length > 0 &&
-                                            <Card>
-                                                <CardContent>
-                                                    <Typography variant="h6" gutterBottom>
-                                                        Plots
-                                                    </Typography>
-                                                    <ul>
-                                                        {experiment.results.plots && experiment.results.plots.map(plot => <li key={plot.id}><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
-                                                    </ul>
-                                                </CardContent>
-                                            </Card>
-                                        }
+                                        <Plots />
                                     </Grid>
                                 </Grid>
                             </Grid>
