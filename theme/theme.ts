@@ -112,12 +112,12 @@ const cyans: CustomColours = {
 bee:
 rgba(236,228,213,1)
 rgba(241,233,218,1)
-#F89200
+rgba(235,150,5,1)
 #e6c338
 */
 
 const bee: CustomColours = {
-  primary: '#F89200',
+  primary: 'rgba(235,150,5,1)',
   secondary: '#e6c338',
   backPrimary: 'rgba(236,228,213,1)',
   backSecondary: 'rgba(241,233,218,1)',
