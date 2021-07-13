@@ -13,7 +13,7 @@ export default function ModelEditor(props: ModelEditorProps) {
   const { info } = props
 
   return (
-    <TitleCard title="Info">
+    <TitleCard title="Details">
       <form>
         <TextField 
           fullWidth
