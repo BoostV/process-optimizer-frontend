@@ -110,15 +110,17 @@ const cyans: CustomColours = {
 
 /*
 bee:
-#F89200
+rgba(236,228,213,1)
+rgba(241,233,218,1)
+rgba(235,150,5,1)
 #e6c338
 */
 
 const bee: CustomColours = {
-  primary: '#F89200',
+  primary: 'rgba(235,150,5,1)',
   secondary: '#e6c338',
-  backPrimary: grey[300],
-  backSecondary: grey[200],
+  backPrimary: 'rgba(236,228,213,1)',
+  backSecondary: 'rgba(241,233,218,1)',
   textInsideBox: grey[800],
   transparentBox: 'rgba(255,255,255,0.75)',
 }

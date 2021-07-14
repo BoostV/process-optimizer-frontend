@@ -1,10 +1,12 @@
-import { Card, CardContent, CircularProgress, IconButton, Typography } from "@material-ui/core";
+import { CircularProgress, IconButton } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
 import { useGlobal } from "../context/global-context";
 import { dataPointsReducer, DataPointsState } from "../reducers/data-points-reducer";
 import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType } from "../types/common";
 import { EditableTable } from "./editable-table";
 import SwapVertIcon from '@material-ui/icons/SwapVert';
+import { TitleCard } from './title-card';
+import useStyles from "../styles/data-points.style";
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]
@@ -19,6 +21,7 @@ const SCORE = "score"
 
 export default function DataPoints(props: DataPointProps) {
   const { valueVariables, categoricalVariables, dataPoints, onUpdateDataPoints} = props
+  const classes = useStyles()
   const [state, dispatch] = useReducer(dataPointsReducer, { rows: [], prevRows: [] })
   const isLoadingState = state.rows.length === 0
   const global = useGlobal()
@@ -129,30 +132,30 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Data points
-          <IconButton 
-            size="small"
-            onClick={() => global.dispatch({ type: 'setDataPointsNewestFirst', payload: !global.state.dataPointsNewestFirst })}>
-            <SwapVertIcon fontSize="small" color="primary" />
-          </IconButton>
-        </Typography>
-        {buildCombinedVariables().length > 0 && isLoadingState &&
-          <CircularProgress size={24}/>
-        } 
-        {buildCombinedVariables().length > 0 && !isLoadingState &&
-          <EditableTable
-            rows={(newestFirst ? [...state.rows].reverse() : state.rows) as TableDataRow[]}
-            useArrayForValue={SCORE}
-            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => updateRow(rowIndex, edit, editValue, itemIndex)}
-            onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
-            onEditCancel={(rowIndex: number) => updateRow(rowIndex, cancelEdit)}
-            onToggleEditMode={(rowIndex: number) => updateRow(rowIndex, toggleEditMode)}
-            onDelete={(rowIndex: number) => updateRow(rowIndex, deleteRow)} />
-        }
-      </CardContent>
-    </Card>
+    <TitleCard title={
+      <>
+        Data points
+        <IconButton 
+          size="small"
+          className={classes.orderButton}
+          onClick={() => global.dispatch({ type: 'setDataPointsNewestFirst', payload: !global.state.dataPointsNewestFirst })}>
+          <SwapVertIcon fontSize="small" className={classes.orderIcon} />
+        </IconButton>
+      </>
+    }>
+      {buildCombinedVariables().length > 0 && isLoadingState &&
+        <CircularProgress size={24}/>
+      } 
+      {buildCombinedVariables().length > 0 && !isLoadingState &&
+        <EditableTable
+          rows={(newestFirst ? [...state.rows].reverse() : state.rows) as TableDataRow[]}
+          useArrayForValue={SCORE}
+          onEdit={(editValue: string, rowIndex: number, itemIndex: number) => updateRow(rowIndex, edit, editValue, itemIndex)}
+          onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
+          onEditCancel={(rowIndex: number) => updateRow(rowIndex, cancelEdit)}
+          onToggleEditMode={(rowIndex: number) => updateRow(rowIndex, toggleEditMode)}
+          onDelete={(rowIndex: number) => updateRow(rowIndex, deleteRow)} />
+      }
+    </TitleCard>
   )
 }
