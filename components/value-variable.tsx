@@ -8,20 +8,34 @@ type ValueVariableProps = {
   onAdded: (data: ValueVariableType) => void
 }
 
+type ValueVariableInput = {
+  name: string
+  description: string
+  min: string
+  max: string
+}
+
 export default function ValueVariable(props: ValueVariableProps) {
   const { isDisabled, onAdded } = props
   const classes = useStyles()
 
-  const { register, handleSubmit, reset, watch, errors } = useForm<ValueVariableType>()
+  const { register, handleSubmit, reset } = useForm<ValueVariableType>()
   
-  const onSubmit = async (data: ValueVariableType) => {
-    onAdded(setDiscrete(data))
+  const onSubmit = async (data: ValueVariableInput) => {
+    const value: ValueVariableType = createValueVariable(data)
+    onAdded(value)
     reset()
   }
 
-  const setDiscrete = (data: ValueVariableType): ValueVariableType => {
-    const isDiscrete = data.minVal.indexOf('.') === -1 && data.maxVal.indexOf('.') === -1
-    return {...data, discrete: isDiscrete}
+  const createValueVariable = (input: ValueVariableInput): ValueVariableType => {
+    const discrete = input.min.indexOf('.') === -1 && input.max.indexOf('.') === -1
+    return {
+      name: input.name,
+      description: input.description,
+      minVal: Number(input.min),
+      maxVal: Number(input.max),
+      discrete 
+    }
   }
 
   return (
@@ -46,8 +60,8 @@ export default function ValueVariable(props: ValueVariableProps) {
               <TextField
                 fullWidth
                 margin="dense"
-                name="minVal"
-                label="minVal"
+                name="min"
+                label="Min"
                 inputRef={register}
               />
             </Box>
@@ -55,8 +69,8 @@ export default function ValueVariable(props: ValueVariableProps) {
               <TextField
                 fullWidth
                 margin="dense"
-                name="maxVal"
-                label="maxVal"
+                name="max"
+                label="Max"
                 inputRef={register}
               />
             </Box>

@@ -33,8 +33,8 @@ export type ValueVariableType = {
   discrete: boolean
   name: string
   description: string
-  minVal: string
-  maxVal: string
+  minVal: number
+  maxVal: number
 }
 
 export type VariableType = CategoricalVariableType | ValueVariableType

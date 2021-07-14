@@ -1,9 +1,11 @@
-import { Box, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
+import { Box, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography, Tooltip } from '@material-ui/core'
 import { CategoricalVariableType, ValueVariableType } from '../types/common'
 import DeleteIcon from '@material-ui/icons/Delete'
 import VariableEditor from './variable-editor'
 import useStyles from '../styles/optimizer-model.style'
 import { TitleCard } from './title-card'
+import LensIcon from '@material-ui/icons/Lens'
+import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye'
 
 type OptimizerModelProps = {
   valueVariables: ValueVariableType[]
@@ -27,6 +29,7 @@ export default function OptimizerModel(props: OptimizerModelProps) {
             <Table size="small">
               <TableHead>
                 <TableRow>
+                  <TableCell></TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell align="left">Description</TableCell>
                   <TableCell align="right">minVal</TableCell>
@@ -37,6 +40,14 @@ export default function OptimizerModel(props: OptimizerModelProps) {
               <TableBody>
                 {valueVariables.map((valueVar, valueIndex) => (
                   <TableRow key={valueIndex}>
+                    <TableCell>{valueVar.discrete ? 
+                      <Tooltip title="Discrete">
+                        <LensIcon className={classes.iconDiscrete}/>
+                      </Tooltip> : 
+                      <Tooltip title="Continuous">
+                        <PanoramaFishEyeIcon className={classes.iconDiscrete} />
+                      </Tooltip>}
+                    </TableCell>
                     <TableCell component="th" scope="row">{valueVar.name}</TableCell>
                     <TableCell align="left">{valueVar.description}</TableCell>
                     <TableCell align="right">{valueVar.minVal}</TableCell>
