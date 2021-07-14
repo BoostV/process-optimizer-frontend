@@ -5,18 +5,23 @@ import { ValueVariableType } from '../types/common';
 
 type ValueVariableProps = {
   isDisabled: boolean
-  type: 'discrete' | 'continuous'
   onAdded: (data: ValueVariableType) => void
 }
 
 export default function ValueVariable(props: ValueVariableProps) {
-  const { type, isDisabled, onAdded } = props
+  const { isDisabled, onAdded } = props
   const classes = useStyles()
 
-  const { register, handleSubmit, reset, watch, errors } = useForm<ValueVariableType>();
+  const { register, handleSubmit, reset, watch, errors } = useForm<ValueVariableType>()
+  
   const onSubmit = async (data: ValueVariableType) => {
-    onAdded(data)
+    onAdded(setDiscrete(data))
     reset()
+  }
+
+  const setDiscrete = (data: ValueVariableType): ValueVariableType => {
+    const isDiscrete = data.minVal.indexOf('.') === -1 && data.maxVal.indexOf('.') === -1
+    return {...data, discrete: isDiscrete}
   }
 
   return (

@@ -18,10 +18,11 @@ describe("experiment reducer", () => {
         options: [],
       }],
       valueVariables: [{
+        discrete: false,
         name: "Water",
         description: "Wet",
-        minVal: 100,
-        maxVal: 200,
+        minVal: "100",
+        maxVal: "200",
       }],
       optimizerConfig: {
         baseEstimator: "GP",
@@ -58,10 +59,11 @@ describe("experiment reducer", () => {
         options: [],
       }],
       valueVariables: [{
+        discrete: false,
         name: "Not water",
         description: "Not wet",
-        minVal: 101,
-        maxVal: 201,
+        minVal: "101",
+        maxVal: "201",
       }],
       optimizerConfig: {
         baseEstimator: "GP",
@@ -130,10 +132,11 @@ describe("experiment reducer", () => {
 
   it("should add value variable", async () => {
     const payload: ValueVariableType = {
+      discrete: false,
       name: "Flour",
       description: "Wet",
-      minVal: 300,
-      maxVal: 400,
+      minVal: "300",
+      maxVal: "400",
     }
 
     const action: ExperimentAction = {
@@ -146,8 +149,9 @@ describe("experiment reducer", () => {
         valueVariables: [{
           name: "Water",
           description: "Wet",
-          minVal: 100,
-          maxVal: 200,
+          discrete: false,
+          minVal: "100",
+          maxVal: "200",
         },
         payload]
       } 
@@ -156,10 +160,11 @@ describe("experiment reducer", () => {
 
   it("should delete value variable", async () => {
     const payload: ValueVariableType = {
+      discrete: false,
       name: "Water",
       description: "Wet",
-      minVal: 100,
-      maxVal: 200,
+      minVal: "100",
+      maxVal: "200",
     }
 
     const action: ExperimentAction = {

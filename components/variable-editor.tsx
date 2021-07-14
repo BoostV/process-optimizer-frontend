@@ -27,25 +27,17 @@ export default function VariableEditor(props: VariableEditorProps) {
         variant="fullWidth" 
         value={tabIndex} 
         onChange={handleTabChange} 
-        aria-label="simple tabs example">
-        <Tab label="Continuous" className={classes.customTab}/>
-        <Tab label="Discrete" className={classes.customTab}/>
+        aria-label="variables">
+        <Tab label="Value" className={classes.customTab}/>
         <Tab label="Categorical"  className={classes.customTab}/>
       </Tabs>
       <Box ml={2} mr={2}>
         {tabIndex === 0 &&
           <ValueVariable
-            type="continuous" 
             isDisabled={isAddVariableDisabled}
             onAdded={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)} />
         }
         {tabIndex === 1 &&
-          <ValueVariable
-            type="discrete" 
-            isDisabled={isAddVariableDisabled}
-            onAdded={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)} />
-        }
-        {tabIndex === 2 &&
         <CategoricalVariable 
           isDisabled={isAddVariableDisabled}
           onAdded={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)} />
