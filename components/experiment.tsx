@@ -153,12 +153,6 @@ export default function Experiment(props: ExperimentProps) {
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                       <NextExperiments
-                                        nextValues={nextValues}
-                                        headers={headers} />
-                                    </Grid>
-
-                                    <Grid item xs={12}>
                                         <OptimizerModel
                                             valueVariables={valueVariables}
                                             categoricalVariables={categoricalVariables}
@@ -181,6 +175,11 @@ export default function Experiment(props: ExperimentProps) {
                             <Grid item xs={9}>
 
                                 <Grid container spacing={2}>
+                                    <Grid item xs={12} xl={6}>
+                                       <NextExperiments
+                                            nextValues={nextValues}
+                                            headers={headers} />
+                                    </Grid>
                                     <Grid item xs={12} xl={6}>
                                         <DataPoints
                                             valueVariables={experiment.valueVariables}
