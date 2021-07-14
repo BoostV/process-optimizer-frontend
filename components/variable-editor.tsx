@@ -38,9 +38,9 @@ export default function VariableEditor(props: VariableEditorProps) {
             onAdded={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)} />
         }
         {tabIndex === 1 &&
-        <CategoricalVariable 
-          isDisabled={isAddVariableDisabled}
-          onAdded={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)} />
+          <CategoricalVariable 
+            isDisabled={isAddVariableDisabled}
+            onAdded={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)} />
       }
       </Box>
     </>
