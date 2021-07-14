@@ -1,8 +1,9 @@
-import { Box, Card, CardContent, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
+import { Box, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core'
 import { CategoricalVariableType, ValueVariableType } from '../types/common'
 import DeleteIcon from '@material-ui/icons/Delete'
 import VariableEditor from './variable-editor'
 import useStyles from '../styles/optimizer-model.style'
+import { TitleCard } from './title-card'
 
 type OptimizerModelProps = {
   valueVariables: ValueVariableType[]
@@ -19,13 +20,9 @@ export default function OptimizerModel(props: OptimizerModelProps) {
   const classes = useStyles()
 
   return (
-    <Card>
-      <CardContent className={classes.customCardContent}>
+    <TitleCard title="Input model" padding={0}>
+      {(valueVariables.length > 0 || categoricalVariables.length > 0) &&
         <Box p={2}>
-          <Typography variant="h6" gutterBottom>
-            Model
-          </Typography>
-        
           {valueVariables.length > 0 &&
             <Table size="small">
               <TableHead>
@@ -96,25 +93,25 @@ export default function OptimizerModel(props: OptimizerModelProps) {
             </Box>
           }
         </Box>
+      }
         
-        <Box pb={2} className={classes.editBox}>
-          {!disabled &&
-            <VariableEditor 
-              isAddVariableDisabled={disabled}
-              addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)}
-              addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}
-            />
-          }
-        
-          {disabled && 
-            <Box pt={2} pr={2} pl={2}>
-              <Typography variant="body2" color="textSecondary">
-                Model cannot be updated while there are data points.
-              </Typography>
-            </Box>
-          }
-        </Box>
-      </CardContent>
-    </Card>
+      <Box pb={2} className={classes.editBox}>
+        {!disabled &&
+          <VariableEditor 
+            isAddVariableDisabled={disabled}
+            addCategoricalVariable={(categoricalVariable: CategoricalVariableType) => addCategoricalVariable(categoricalVariable)}
+            addValueVariable={(valueVariable: ValueVariableType) => addValueVariable(valueVariable)}
+          />
+        }
+      
+        {disabled && 
+          <Box pt={2} pr={2} pl={2}>
+            <Typography variant="body2" color="textSecondary">
+              Model cannot be updated while there are data points.
+            </Typography>
+          </Box>
+        }
+      </Box>
+    </TitleCard>
   )
 }

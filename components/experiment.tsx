@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Grid, Snackbar, TextField, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
 import Layout from './layout'
 import OptimizerModel from './optimizer-model';
 import OptimizerConfigurator from './optimizer-configurator';
@@ -10,11 +10,11 @@ import { useExperiment, saveExperiment, runExperiment } from '../context/experim
 import React, { useState, useEffect } from 'react';
 import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointType } from '../types/common';
 import LoadingExperiment from './loading-experiment';
+import { NextExperiments } from './next-experiment';
 import saveToLocalFile from '../utility/save-to-local-file';
 import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
-import { useGlobal } from '../context/global-context';
-import { Suggestions } from './suggestions';
+import { Plots } from './plots';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -31,7 +31,6 @@ export default function Experiment(props: ExperimentProps) {
     const { state: {
         experiment
     }, dispatch, loading } = useExperiment()
-    const global = useGlobal()
 
     const [lastSavedExperiment, setLastSavedExperiment] = useState(experiment)
     const [isDirty, setDirty] = useState(false)
@@ -117,7 +116,7 @@ export default function Experiment(props: ExperimentProps) {
                                         <Typography variant="body2">
                                             {experiment.id}
                                         </Typography>
-                                        <Typography variant="h4" gutterBottom>
+                                        <Typography variant="h5" gutterBottom>
                                             {/* Experiment {experiment.id} {isDirty && '(unsaved)'} [{experiment.results.rawResult || 'No results'}]  */}
                                             {experiment.info.name} {isDirty && allowSaveToServer ? '(unsaved)': ''}
                                         </Typography>
@@ -154,25 +153,9 @@ export default function Experiment(props: ExperimentProps) {
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <Card>
-                                            <CardContent>
-                                                <Typography variant="h6">
-                                                    Next experiment
-                                                </Typography>
-                                                <TextField
-                                                    type="number"
-                                                    margin="dense"
-                                                    defaultValue={experiment?.extras['experimentSuggestionCount'] || 1 }
-                                                    name="numberOfSuggestions"
-                                                    label="Number of suggestions"
-                                                    inputRef={() => {}}
-                                                    onChange={(e) => dispatch({ type: 'updateSuggestionCount', payload: e.target.value }) }
-                                                    />
-                                                <Typography variant="body2">
-                                                    <Suggestions values={nextValues} headers={headers} />
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
+                                       <NextExperiments
+                                        nextValues={nextValues}
+                                        headers={headers} />
                                     </Grid>
 
                                     <Grid item xs={12}>
@@ -206,18 +189,7 @@ export default function Experiment(props: ExperimentProps) {
                                             onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
                                     </Grid>
                                     <Grid item xs={12} xl={6}>
-                                        {experiment.results.plots.length > 0 &&
-                                            <Card>
-                                                <CardContent>
-                                                    <Typography variant="h6" gutterBottom>
-                                                        Plots
-                                                    </Typography>
-                                                    <ul>
-                                                        {experiment.results.plots && experiment.results.plots.map(plot => <li key={plot.id}><img src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
-                                                    </ul>
-                                                </CardContent>
-                                            </Card>
-                                        }
+                                        <Plots />
                                     </Grid>
                                 </Grid>
                             </Grid>

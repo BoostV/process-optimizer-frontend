@@ -19,7 +19,7 @@ export const useStyles = makeStyles(theme => ({
       backgroundColor: theme.palette.primary.main,
     },
     '50%': {
-      backgroundColor: theme.palette.warning.main,
+      backgroundColor: theme.palette.secondary.main,
     },
     '100%': {
       backgroundColor: theme.palette.primary.main,

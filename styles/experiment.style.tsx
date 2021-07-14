@@ -9,7 +9,7 @@ export const useStyles = makeStyles(theme => ({
     color: theme.palette.custom.textInsideBox.main,
   },
   experimentContainerDirty: {
-    border: '2px solid ' + theme.palette.warning.main,
+    border: '2px dashed' + theme.palette.warning.main,
   },
   actionButton: {
     marginLeft: theme.spacing(2),
