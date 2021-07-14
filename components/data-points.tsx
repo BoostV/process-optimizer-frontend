@@ -143,6 +143,7 @@ export default function DataPoints(props: DataPointProps) {
         </IconButton>
       </>
     }>
+      {buildCombinedVariables().length === 0 && "Data points will appear here"}
       {buildCombinedVariables().length > 0 && isLoadingState &&
         <CircularProgress size={24}/>
       } 

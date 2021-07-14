@@ -13,9 +13,9 @@ describe("converters", () => {
             {name: "Kunde",description:"",options:["Mus","Ræv"]}
         ],
         valueVariables: [
-            {name: "Sukker", description: "", minVal: 0,maxVal: 1000},
-            {name: "Peber", description: "", minVal: 0,maxVal: 1000},
-            {name: "Hvedemel", description: "", minVal: 0,maxVal: 1000}
+            {discrete: true, name: "Sukker", description: "", minVal: 0, maxVal: 1000},
+            {discrete: true, name: "Peber", description: "", minVal: 0, maxVal: 1000},
+            {discrete: false, name: "Hvedemel", description: "", minVal: 0.0, maxVal: 1000.8}
         ],
         optimizerConfig: {
             baseEstimator: "GP",
@@ -33,7 +33,8 @@ describe("converters", () => {
     describe("calculateSpace", () => {
         it("should convert space to proper output format", () => {
             const space = calculateSpace(sampleExperiment)
-            expect(space).toContainEqual({from: 0, name: "Sukker", to: 1000, type: "numeric"})
+            expect(space).toContainEqual({type: "discrete", from: 0, name: "Sukker", to: 1000})
+            expect(space).toContainEqual({type: "continuous", from: 0, name: "Hvedemel", to: 1000.8})
         })
     })
 

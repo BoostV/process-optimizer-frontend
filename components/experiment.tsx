@@ -153,12 +153,6 @@ export default function Experiment(props: ExperimentProps) {
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                       <NextExperiments
-                                        nextValues={nextValues}
-                                        headers={headers} />
-                                    </Grid>
-
-                                    <Grid item xs={12}>
                                         <OptimizerModel
                                             valueVariables={valueVariables}
                                             categoricalVariables={categoricalVariables}
@@ -182,11 +176,20 @@ export default function Experiment(props: ExperimentProps) {
 
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} xl={6}>
-                                        <DataPoints
-                                            valueVariables={experiment.valueVariables}
-                                            categoricalVariables={experiment.categoricalVariables}
-                                            dataPoints={experiment.dataPoints}
-                                            onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <NextExperiments
+                                                        nextValues={nextValues}
+                                                        headers={headers} />
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <DataPoints
+                                                    valueVariables={experiment.valueVariables}
+                                                    categoricalVariables={experiment.categoricalVariables}
+                                                    dataPoints={experiment.dataPoints}
+                                                    onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
+                                            </Grid>
+                                        </Grid>
                                     </Grid>
                                     <Grid item xs={12} xl={6}>
                                         <Plots />

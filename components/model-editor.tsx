@@ -30,7 +30,6 @@ export default function ModelEditor(props: ModelEditorProps) {
           name="info.description"
           label="Description"
           value={info.description}
-          required
           onChange={(e: ChangeEvent) => props.updateDescription((e.target as HTMLInputElement).value)}
         />
       </form>

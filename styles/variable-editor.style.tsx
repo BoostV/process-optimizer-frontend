@@ -1,9 +1,10 @@
 import { makeStyles } from "@material-ui/core";
 
 export const useStyles = makeStyles(theme => ({
-  main: {
-    background: theme.palette.grey[50],
-  }
+  customTab: {
+    minWidth: 'auto',
+    fontSize: theme.typography.pxToRem(12),
+  },
 }));
 
 export default useStyles

@@ -4,11 +4,12 @@ import useStyles from "../styles/title-card.style"
 
 type TitleCardProps = {
   title: ReactNode
+  padding?: number
   children: any
 }
 
 export const TitleCard = (props: TitleCardProps) => {
-  const { title, children } = props
+  const { title, padding, children } = props
   const classes = useStyles()
 
   return (
@@ -17,7 +18,7 @@ export const TitleCard = (props: TitleCardProps) => {
         <Box className={classes.title}>
           {title}
         </Box>
-        <Box p={2}>
+        <Box p={padding !== undefined ? padding : 2}>
           {children}
         </Box>
       </CardContent>

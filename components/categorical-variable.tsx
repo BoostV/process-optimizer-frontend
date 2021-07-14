@@ -54,7 +54,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
                 <div className={classes.option}>
                   <Typography variant="body1">{option}</Typography>
                   <IconButton onClick={() => deleteOption(index)} size="small" aria-label="delete" color="primary">
-                    <DeleteIcon /> 
+                    <DeleteIcon fontSize="small" /> 
                   </IconButton>
                 </div>
               </div>
@@ -65,10 +65,10 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
             setOptions([...options, option])
           }}/>
           
-          <Box mt={1}>
-            <Button disabled={isDisabled} variant="outlined" type="submit">Add</Button>
+          <Box mt={2}>
+            <Button disabled={isDisabled} size="small" variant="outlined" type="submit">Add variable</Button>
           </Box>
-          
+
         </form>
     </>
   )

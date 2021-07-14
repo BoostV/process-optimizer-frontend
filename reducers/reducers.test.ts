@@ -18,6 +18,7 @@ describe("experiment reducer", () => {
         options: [],
       }],
       valueVariables: [{
+        discrete: false,
         name: "Water",
         description: "Wet",
         minVal: 100,
@@ -58,6 +59,7 @@ describe("experiment reducer", () => {
         options: [],
       }],
       valueVariables: [{
+        discrete: false,
         name: "Not water",
         description: "Not wet",
         minVal: 101,
@@ -130,6 +132,7 @@ describe("experiment reducer", () => {
 
   it("should add value variable", async () => {
     const payload: ValueVariableType = {
+      discrete: false,
       name: "Flour",
       description: "Wet",
       minVal: 300,
@@ -146,6 +149,7 @@ describe("experiment reducer", () => {
         valueVariables: [{
           name: "Water",
           description: "Wet",
+          discrete: false,
           minVal: 100,
           maxVal: 200,
         },
@@ -156,6 +160,7 @@ describe("experiment reducer", () => {
 
   it("should delete value variable", async () => {
     const payload: ValueVariableType = {
+      discrete: false,
       name: "Water",
       description: "Wet",
       minVal: 100,

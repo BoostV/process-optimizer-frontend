@@ -10,7 +10,7 @@ type OptimizerConfiguratorProps = {
 
 export default function OptimizerConfigurator(props: OptimizerConfiguratorProps) {
   const { config , onConfigUpdated} = props
-  const { register, handleSubmit, reset, watch, errors, getValues } = useForm<OptimizerConfig>()
+  const { register, getValues } = useForm<OptimizerConfig>()
 
   const handleChange = () => {
     onConfigUpdated(getValues() as OptimizerConfig)
