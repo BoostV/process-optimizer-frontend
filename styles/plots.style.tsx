@@ -5,7 +5,8 @@ export const useStyles = makeStyles(theme => ({
     listStyle: 'none',
   },
   Image: {
-    maxWidth: '100%'
+    width: '100%',
+    maxWidth: 800
   },
 }));
 
