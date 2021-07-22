@@ -16,7 +16,7 @@ export const Plots = () => {
               <Typography variant="body2" paragraph={true}>
                 The convegence plot displays the score of the best observation as a function of the number of calls.
               </Typography>
-              {experiment.results.plots.filter(plot => plot.id === "convergence").map(plot => <li className={classes.listItem} key={plot.id}><img className={classes.Image} src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
+              {experiment.results.plots.filter(plot => plot.id === "convergence").map(plot => <li className={classes.listItem} key={plot.id}><img className={classes.convergenceImage} src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
               
               <Typography variant="subtitle1"><b>Objective plot</b></Typography>
               <Typography variant="body2" paragraph={true}>
@@ -27,7 +27,7 @@ export const Plots = () => {
                 For each pair the other input variables are set by the best observation.<br/>
                 The best observation is marked with a red dot while the remaining observations are marked with orange dots.
               </Typography>
-              {experiment.results.plots.filter(plot => plot.id === "objective").map(plot => <li className={classes.listItem} key={plot.id}><img className={classes.Image} src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
+              {experiment.results.plots.filter(plot => plot.id === "objective").map(plot => <li className={classes.listItem} key={plot.id}><img className={classes.objectiveImage} src={`data:image/png;base64, ${plot.plot}`} alt={plot.id}></img></li>)}
           </ul>
           :
           "Plots will appear here"

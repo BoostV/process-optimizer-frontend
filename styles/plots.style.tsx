@@ -4,9 +4,12 @@ export const useStyles = makeStyles(theme => ({
   listItem: {
     listStyle: 'none',
   },
-  Image: {
+  convergenceImage: {
     width: '100%',
-    maxWidth: 800
+    maxWidth: 800,
+  },
+  objectiveImage: {
+    maxWidth: '100%',
   },
 }));
 
