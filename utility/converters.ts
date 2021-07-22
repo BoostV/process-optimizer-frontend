@@ -2,10 +2,12 @@ import { ExperimentData } from "../openapi"
 import { CategoricalVariableType, DataPointType, ExperimentType, ScoreDataPointType, SpaceType, ValueVariableType } from "../types/common"
 
 export const calculateSpace = (experiment: ExperimentType): SpaceType => {
-    const discrete: SpaceType = experiment.valueVariables.filter(v => v.discrete).map(v => { return {type: "discrete", name: v.name, from: Number(v.minVal), to: Number(v.maxVal)} })
-    const continuous: SpaceType = experiment.valueVariables.filter(v => !v.discrete).map(v => { return {type: "continuous", name: v.name, from: Number(v.minVal), to: Number(v.maxVal)} })
-    const categorial: SpaceType = experiment.categoricalVariables.map((v) => { return {type: "category", name: v.name, categories: v.options} })
-    return discrete.concat(continuous, categorial)
+
+    const numerical: SpaceType = experiment.valueVariables.map(v => { if(v.discrete) {
+        return {type: "discrete", name: v.name, from: Number(v.minVal), to: Number(v.maxVal)}}
+        else {return {type: "continuous", name: v.name, from: Number(v.minVal), to: Number(v.maxVal)}} })
+    const categorical: SpaceType = experiment.categoricalVariables.map((v) => { return {type: "category", name: v.name, categories: v.options} })
+    return numerical.concat(categorical)
 }
 
 const numPat = / [0-9] + /
