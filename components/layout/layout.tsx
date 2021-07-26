@@ -1,8 +1,8 @@
 import { AppBar, Box, Button, Switch, Toolbar, Typography, FormControlLabel } from '@material-ui/core'
 import Link from 'next/link'
-import useStyles from '../styles/layout.style'
-import { useGlobal } from '../context/global-context'
-import { VersionInfo } from './version-info'
+import useStyles from './layout.style'
+import { useGlobal } from '../../context/global-context'
+import { VersionInfo } from '../version-info'
 import { useState } from 'react'
 
 export default function Layout ( {children} ) {

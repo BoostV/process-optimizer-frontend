@@ -3,8 +3,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import CategoricalVariableOptions from './categorical-variable-options';
-import { useStyles } from '../styles/categorical-variable.style';
-import { CategoricalVariableType } from '../types/common';
+import { useStyles } from './categorical-variable.style';
+import { CategoricalVariableType } from '../../types/common';
 
 type CategoricalVariableProps = {
   isDisabled: boolean

@@ -1,12 +1,12 @@
 import { CircularProgress, IconButton } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
-import { useGlobal } from "../context/global-context";
-import { dataPointsReducer, DataPointsState } from "../reducers/data-points-reducer";
-import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType } from "../types/common";
-import { EditableTable } from "./editable-table";
+import { useGlobal } from "../../context/global-context";
+import { dataPointsReducer, DataPointsState } from "../../reducers/data-points-reducer";
+import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType } from "../../types/common";
+import { EditableTable } from "../editable-table/editable-table";
 import SwapVertIcon from '@material-ui/icons/SwapVert';
-import { TitleCard } from './title-card';
-import useStyles from "../styles/data-points.style";
+import { TitleCard } from '../title-card/title-card';
+import useStyles from "./data-points.style";
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]

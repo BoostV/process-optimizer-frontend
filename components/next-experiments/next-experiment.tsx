@@ -1,7 +1,7 @@
 import { TextField } from '@material-ui/core'
-import { useExperiment } from '../context/experiment-context'
+import { useExperiment } from '../../context/experiment-context'
 import { Suggestions } from './suggestions'
-import { TitleCard } from './title-card'
+import { TitleCard } from '../title-card/title-card'
 
 interface NextExperimentProps {
   nextValues: string[][]

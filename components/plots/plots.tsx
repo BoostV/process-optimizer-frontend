@@ -1,7 +1,7 @@
 import { Typography } from "@material-ui/core"
-import { useExperiment } from "../context/experiment-context"
-import useStyles from "../styles/plots.style"
-import { TitleCard } from "./title-card"
+import { useExperiment } from "../../context/experiment-context"
+import useStyles from "./plots.style"
+import { TitleCard } from "../title-card/title-card"
 
 export const Plots = () => {
   const { state: { experiment } } = useExperiment()
@@ -11,7 +11,7 @@ export const Plots = () => {
     <>
       <TitleCard title="Plots">
         {experiment.results.plots.length > 0 ?
-          <ul>
+          <ul className={classes.list}>
               <Typography variant="subtitle1"><b>Convergence plot</b></Typography>
               <Typography variant="body2" paragraph={true}>
                 The convegence plot displays the score of the best observation as a function of the number of calls.

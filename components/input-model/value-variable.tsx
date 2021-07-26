@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from '@material-ui/core'
 import { useForm } from 'react-hook-form';
-import useStyles from '../styles/value-variable.style';
-import { ValueVariableType } from '../types/common';
+import useStyles from './value-variable.style';
+import { ValueVariableType } from '../../types/common';
 
 type ValueVariableProps = {
   isDisabled: boolean

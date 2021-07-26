@@ -1,7 +1,7 @@
 import { TextField } from '@material-ui/core'
 import { useForm } from 'react-hook-form';
 import { OptimizerConfig } from '../types/common';
-import { TitleCard } from './title-card';
+import { TitleCard } from './title-card/title-card';
 
 type OptimizerConfiguratorProps = {
   config: OptimizerConfig,

@@ -1,6 +1,6 @@
 import { Box, Card, CardContent } from "@material-ui/core"
 import { ReactNode } from "react"
-import useStyles from "../styles/title-card.style"
+import useStyles from "./title-card.style"
 
 type TitleCardProps = {
   title: ReactNode

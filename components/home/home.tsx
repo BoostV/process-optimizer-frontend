@@ -1,19 +1,19 @@
 import { Box, Button, Card, CardContent, IconButton, List, ListItem, ListItemIcon, ListItemText, Snackbar, Typography } from "@material-ui/core";
 import { MouseEvent, useCallback, useReducer, useState } from "react";
 import { useDropzone } from 'react-dropzone';
-import Layout from "../components/layout";
-import useStyles from "../styles/home.style";
+import Layout from "../layout/layout";
+import useStyles from "./home.style";
 import { NextRouter, useRouter } from 'next/router'
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { paths } from "../paths";
-import { ExperimentType } from "../types/common";
-import { useGlobal } from "../context/global-context";
-import { saveExperiment } from '../context/experiment-context';
+import { paths } from "../../paths";
+import { ExperimentType } from "../../types/common";
+import { useGlobal } from "../../context/global-context";
+import { saveExperiment } from '../../context/experiment-context';
 import { v4 as uuid } from 'uuid';
-import { isEmpty } from "../utility/string-util";
-import { reducer } from "../reducers/home-reducer";
+import { isEmpty } from "../../utility/string-util";
+import { reducer } from "../../reducers/home-reducer";
 
 type UploadMessage = {
   message: string

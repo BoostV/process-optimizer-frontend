@@ -1,20 +1,20 @@
 import { Box, Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
-import Layout from './layout'
-import OptimizerModel from './optimizer-model';
-import OptimizerConfigurator from './optimizer-configurator';
+import Layout from '../layout/layout'
+import OptimizerModel from '../input-model/optimizer-model';
+import OptimizerConfigurator from '../optimizer-configurator';
 import { Alert, Color } from '@material-ui/lab';
-import ModelEditor from './model-editor';
-import DataPoints from './data-points';
-import { useStyles } from '../styles/experiment.style';
-import { useExperiment, saveExperiment, runExperiment } from '../context/experiment-context';
+import Details from '../details';
+import DataPoints from '../data-points/data-points';
+import { useStyles } from './experiment.style';
+import { useExperiment, saveExperiment, runExperiment } from '../../context/experiment-context';
 import React, { useState, useEffect } from 'react';
-import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointType } from '../types/common';
+import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointType } from '../../types/common';
 import LoadingExperiment from './loading-experiment';
-import { NextExperiments } from './next-experiment';
-import saveToLocalFile from '../utility/save-to-local-file';
-import LoadingButton from './loading-button';
-import { theme } from '../theme/theme';
-import { Plots } from './plots';
+import { NextExperiments } from '../next-experiments/next-experiment';
+import saveToLocalFile from '../../utility/save-to-local-file';
+import LoadingButton from '../loading-button/loading-button';
+import { theme } from '../../theme/theme';
+import { Plots } from '../plots/plots';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -146,7 +146,7 @@ export default function Experiment(props: ExperimentProps) {
                                 <Grid container spacing={2}>
 
                                     <Grid item xs={12}>
-                                        <ModelEditor
+                                        <Details
                                             info={experiment.info}
                                             updateName={(name: string) => dispatch({ type: 'updateExperimentName', payload: name })}
                                             updateDescription={(description: string) => dispatch({ type: 'updateExperimentDescription', payload: description })} />

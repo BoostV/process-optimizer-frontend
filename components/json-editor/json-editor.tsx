@@ -1,10 +1,10 @@
 import { Box, Button, Card, CardContent, IconButton, TextareaAutosize, Typography } from '@material-ui/core'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { useExperiment, saveExperiment } from "../context/experiment-context"
-import useStyles from '../styles/json-editor.style'
-import { ExperimentType } from '../types/common'
+import { useExperiment, saveExperiment } from "../../context/experiment-context"
+import useStyles from './json-editor.style'
+import { ExperimentType } from '../../types/common'
 import CloseIcon from "@material-ui/icons/Close"
-import { useGlobal } from '../context/global-context'
+import { useGlobal } from '../../context/global-context'
 
 type JsonEditorProps = {
     allowSaveToServer: boolean
