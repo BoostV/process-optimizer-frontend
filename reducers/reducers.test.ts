@@ -149,7 +149,7 @@ describe("experiment reducer", () => {
         valueVariables: [{
           name: "Water",
           description: "Wet",
-          discrete: false,
+          type: "continuous",
           min: 100,
           max: 200,
         },
