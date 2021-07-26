@@ -3,9 +3,8 @@ import { CategoricalVariableType, DataPointType, ExperimentType, ScoreDataPointT
 
 export const calculateSpace = (experiment: ExperimentType): SpaceType => {
 
-    const numerical: SpaceType = experiment.valueVariables.map(v => { if(v.discrete) {
-        return {type: "discrete", name: v.name, from: Number(v.minVal), to: Number(v.maxVal)}}
-        else {return {type: "continuous", name: v.name, from: Number(v.minVal), to: Number(v.maxVal)}} })
+    const numerical: SpaceType = experiment.valueVariables.map(v => { const type = v.discrete ? "discrete" : "continuous"
+    return {type, name: v.name, from: Number(v.minVal), to: Number(v.maxVal)}})
     const categorical: SpaceType = experiment.categoricalVariables.map((v) => { return {type: "category", name: v.name, categories: v.options} })
     return numerical.concat(categorical)
 }
