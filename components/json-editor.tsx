@@ -63,11 +63,6 @@ export default function JsonEditor(props: JsonEditorProps) {
         }
     }
 
-    const handleChange = (e: ChangeEvent) => {
-        const value = (e.target as HTMLInputElement).value
-        setDisplayedExperimentString(value)
-    }
-
     const handleSave = async() => {
         try {
             const experimentToSave: ExperimentType = experimentFromDisplayedExperiment(displayedExperimentString)
@@ -103,7 +98,7 @@ export default function JsonEditor(props: JsonEditorProps) {
                     <TextareaAutosize 
                         className={classes.textArea}
                         value={displayedExperimentString}
-                        onChange={(e: ChangeEvent) => handleChange(e)} />
+                        onChange={(e: ChangeEvent) => setDisplayedExperimentString((e.target as HTMLInputElement).value)} />
                     <Box>
                         <Button 
                             size="small"
