@@ -15,7 +15,8 @@ describe("converters", () => {
         valueVariables: [
             {type: "discrete", name: "Sukker", description: "", min: 0, max: 1000},
             {type: "discrete", name: "Peber", description: "", min: 0, max: 1000},
-            {type: "continuous", name: "Hvedemel", description: "", min: 0.0, max: 1000.8}
+            {type: "continuous", name: "Hvedemel", description: "", min: 0.0, max: 1000.8},
+            {type: "discrete", name: "Mælk", description: "", min: 1, max: 999},
         ],
         optimizerConfig: {
             baseEstimator: "GP",
@@ -35,6 +36,17 @@ describe("converters", () => {
             const space = calculateSpace(sampleExperiment)
             expect(space).toContainEqual({type: "discrete", from: 0, name: "Sukker", to: 1000})
             expect(space).toContainEqual({type: "continuous", from: 0, name: "Hvedemel", to: 1000.8})
+        })
+    })
+
+    describe("calculateSpace", () => {
+        it("should retain the correct order of variables", () => {
+            const space = calculateSpace(sampleExperiment)
+            expect(space[0].name).toEqual("Sukker")
+            expect(space[1].name).toEqual("Peber")
+            expect(space[2].name).toEqual("Hvedemel")
+            expect(space[3].name).toEqual("Mælk")
+            expect(space[4].name).toEqual("Kunde")
         })
     })
 
