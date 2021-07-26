@@ -2,7 +2,7 @@ import { Box, Button, Card, CardContent, IconButton, TextareaAutosize, Typograph
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useExperiment, saveExperiment } from "../context/experiment-context"
 import useStyles from '../styles/json-editor.style'
-import { CategoricalVariableType, DataPointType, ExperimentType, Info, OptimizerConfig, ValueVariableType } from '../types/common'
+import { ExperimentType } from '../types/common'
 import CloseIcon from "@material-ui/icons/Close"
 import { useGlobal } from '../context/global-context'
 
@@ -16,47 +16,34 @@ type DisplayedResults = {
     extras: object
 }
 
-type DisplayedExperiment = {
-    id: string
-    info: Info
-    extras: object
-    categoricalVariables: CategoricalVariableType[]
-    valueVariables: ValueVariableType[]
-    optimizerConfig: OptimizerConfig
-    results: DisplayedResults
-    dataPoints: DataPointType[][]
-}
-
 export default function JsonEditor(props: JsonEditorProps) {
     const { allowSaveToServer } = props
     const classes = useStyles()
     const [errorMsg, setErrorMsg] = useState('')
-    const [displayedExperimentString, setDisplayedExperimentString] = useState('')
+    const [displayedExperiment, setDisplayedExperiment] = useState('')
     const { state: { experiment }, dispatch, loading } = useExperiment()
     const global = useGlobal()
 
     useEffect(() => {
         const displayedExperiment = displayedExperimentFromExperiment(experiment)
-        setDisplayedExperimentString(JSON.stringify(displayedExperiment, null, 2))
+        setDisplayedExperiment(displayedExperiment)
     }, [experiment])
 
-    const displayedExperimentFromExperiment = (experiment: ExperimentType): DisplayedExperiment => {
-        return {
-            ...experiment,
-            results: {
-                id: experiment.results.id,
-                next: experiment.results.next,
-                extras: experiment.results.extras,
-            },
+    const displayedExperimentFromExperiment = (experiment: ExperimentType): string => {
+        const results: DisplayedResults = {
+            id: experiment.results.id,
+            next: experiment.results.next,
+            extras: experiment.results.extras,
         }
+        return JSON.stringify({ ...experiment, results }, null, 2)
     }
 
-    const experimentFromDisplayedExperiment = (displayedExperimentString: string): ExperimentType => {
-        const displayedExperiment: DisplayedExperiment = JSON.parse(displayedExperimentString)
+    const experimentFromDisplayedExperiment = (displayedExperiment: string): ExperimentType => {
+        const displayedExperimentObject = JSON.parse(displayedExperiment)
         return {
-            ...displayedExperiment,
+            ...displayedExperimentObject,
             results: {
-                ...displayedExperiment.results,
+                ...displayedExperimentObject.results,
                 pickled: experiment.results.pickled,
                 plots: experiment.results.plots
             }
@@ -65,7 +52,7 @@ export default function JsonEditor(props: JsonEditorProps) {
 
     const handleSave = async() => {
         try {
-            const experimentToSave: ExperimentType = experimentFromDisplayedExperiment(displayedExperimentString)
+            const experimentToSave: ExperimentType = experimentFromDisplayedExperiment(displayedExperiment)
             if (allowSaveToServer) {
                 await saveExperiment(experimentToSave)
             } else {
@@ -97,8 +84,8 @@ export default function JsonEditor(props: JsonEditorProps) {
                     </Box>
                     <TextareaAutosize 
                         className={classes.textArea}
-                        value={displayedExperimentString}
-                        onChange={(e: ChangeEvent) => setDisplayedExperimentString((e.target as HTMLInputElement).value)} />
+                        value={displayedExperiment}
+                        onChange={(e: ChangeEvent) => setDisplayedExperiment((e.target as HTMLInputElement).value)} />
                     <Box>
                         <Button 
                             size="small"
