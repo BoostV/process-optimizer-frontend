@@ -2,7 +2,7 @@ import { Box, Button, Card, CardContent, IconButton, TextareaAutosize, Typograph
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useExperiment, saveExperiment } from "../context/experiment-context"
 import useStyles from '../styles/json-editor.style'
-import { ExperimentType } from '../types/common'
+import { CategoricalVariableType, DataPointType, ExperimentType, Info, OptimizerConfig, ValueVariableType } from '../types/common'
 import CloseIcon from "@material-ui/icons/Close"
 import { useGlobal } from '../context/global-context'
 
@@ -10,25 +10,67 @@ type JsonEditorProps = {
     allowSaveToServer: boolean
 }
 
+type DisplayedResults = {
+    id: string
+    next: (number|string)[],
+    extras: object
+}
+
+type DisplayedExperiment = {
+    id: string
+    info: Info
+    extras: object
+    categoricalVariables: CategoricalVariableType[]
+    valueVariables: ValueVariableType[]
+    optimizerConfig: OptimizerConfig
+    results: DisplayedResults
+    dataPoints: DataPointType[][]
+}
+
 export default function JsonEditor(props: JsonEditorProps) {
     const { allowSaveToServer } = props
     const classes = useStyles()
     const [errorMsg, setErrorMsg] = useState('')
-    const [editedExperiment, setEditedExperiment] = useState('')
+    const [displayedExperimentString, setDisplayedExperimentString] = useState('')
     const { state: { experiment }, dispatch, loading } = useExperiment()
     const global = useGlobal()
 
     useEffect(() => {
-      setEditedExperiment(JSON.stringify(experiment, null, 2))
-    }, [experiment]) 
+        const displayedExperiment = displayedExperimentFromExperiment(experiment)
+        setDisplayedExperimentString(JSON.stringify(displayedExperiment, null, 2))
+    }, [experiment])
+
+    const displayedExperimentFromExperiment = (experiment: ExperimentType): DisplayedExperiment => {
+        return {
+            ...experiment,
+            results: {
+                id: experiment.results.id,
+                next: experiment.results.next,
+                extras: experiment.results.extras,
+            },
+        }
+    }
+
+    const experimentFromDisplayedExperiment = (displayedExperimentString: string): ExperimentType => {
+        const displayedExperiment: DisplayedExperiment = JSON.parse(displayedExperimentString)
+        return {
+            ...displayedExperiment,
+            results: {
+                ...displayedExperiment.results,
+                pickled: experiment.results.pickled,
+                plots: experiment.results.plots
+            }
+        }
+    }
 
     const handleChange = (e: ChangeEvent) => {
-        setEditedExperiment((e.target as HTMLInputElement).value)
+        const value = (e.target as HTMLInputElement).value
+        setDisplayedExperimentString(value)
     }
 
     const handleSave = async() => {
         try {
-            const experimentToSave: ExperimentType = JSON.parse(editedExperiment)
+            const experimentToSave: ExperimentType = experimentFromDisplayedExperiment(displayedExperimentString)
             if (allowSaveToServer) {
                 await saveExperiment(experimentToSave)
             } else {
@@ -60,7 +102,7 @@ export default function JsonEditor(props: JsonEditorProps) {
                     </Box>
                     <TextareaAutosize 
                         className={classes.textArea}
-                        value={editedExperiment}
+                        value={displayedExperimentString}
                         onChange={(e: ChangeEvent) => handleChange(e)} />
                     <Box>
                         <Button 
