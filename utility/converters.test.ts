@@ -13,9 +13,9 @@ describe("converters", () => {
             {name: "Kunde",description:"",options:["Mus","Ræv"]}
         ],
         valueVariables: [
-            {discrete: true, name: "Sukker", description: "", min: 0, max: 1000},
-            {discrete: true, name: "Peber", description: "", min: 0, max: 1000},
-            {discrete: false, name: "Hvedemel", description: "", min: 0.0, max: 1000.8}
+            {type: "discrete", name: "Sukker", description: "", min: 0, max: 1000},
+            {type: "discrete", name: "Peber", description: "", min: 0, max: 1000},
+            {type: "continuous", name: "Hvedemel", description: "", min: 0.0, max: 1000.8}
         ],
         optimizerConfig: {
             baseEstimator: "GP",
