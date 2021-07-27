@@ -23,32 +23,35 @@ type UpdateFnType = (rowIndex: number, ...args: any[]) => void
 const SCORE = "score"
 
 export default function DataPoints(props: DataPointProps) {
-  const { valueVariables, categoricalVariables, dataPoints, onUpdateDataPoints} = props
+  const { valueVariables, categoricalVariables, dataPoints, onUpdateDataPoints } = props
   const classes = useStyles()
   const [state, dispatch] = useReducer(dataPointsReducer, { rows: [], prevRows: [] })
+  const { state: {
+    experiment
+  } } = useExperiment()
   const isLoadingState = state.rows.length === 0
   const global = useGlobal()
   const newestFirst = global.state.dataPointsNewestFirst
 
   useEffect(() => {
-    dispatch({ type: 'setInitialState', payload: buildState()})
+    dispatch({ type: 'setInitialState', payload: buildState() })
   }, [valueVariables, categoricalVariables])
 
   const buildState = (): DataPointsState => {
     const combinedVariables: CombinedVariableType[] = buildCombinedVariables()
     const emptyRow: TableDataRow = buildEmptyRow()
     const dataPointRows: TableDataRow[] = dataPoints.map((item, i) => {
-        return {
-          dataPoints: item.map((point: TableDataPoint, k) => {
-            return {
-              ...point,
-              options: combinedVariables[k] ? combinedVariables[k].options : undefined,
-            }
-          }),
-          isEditMode: false,
-          isNew: false,
-        }
+      return {
+        dataPoints: item.map((point: TableDataPoint, k) => {
+          return {
+            ...point,
+            options: combinedVariables[k] ? combinedVariables[k].options : undefined,
+          }
+        }),
+        isEditMode: false,
+        isNew: false,
       }
+    }
     ).concat(emptyRow as any)
 
     return {
@@ -57,7 +60,7 @@ export default function DataPoints(props: DataPointProps) {
     }
   }
 
-  const buildCombinedVariables = (): CombinedVariableType[]  => {
+  const buildCombinedVariables = (): CombinedVariableType[] => {
     return (valueVariables as CombinedVariableType[]).concat(categoricalVariables as CombinedVariableType[])
   }
 
@@ -92,14 +95,16 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   function edit(rowIndex: number, editValue: string, itemIndex: number) {
-    dispatch({ type: 'DATA_POINTS_TABLE_EDITED', payload: { 
-      itemIndex,
-      rowIndex,
-      useArrayForValue: SCORE,
-      value: editValue
-    }})
+    dispatch({
+      type: 'DATA_POINTS_TABLE_EDITED', payload: {
+        itemIndex,
+        rowIndex,
+        useArrayForValue: SCORE,
+        value: editValue
+      }
+    })
   }
-  
+
   function deleteRow(rowIndex: number) {
     dispatch({ type: 'DATA_POINTS_TABLE_ROW_DELETED', payload: rowIndex })
   }
