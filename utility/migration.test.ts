@@ -1,7 +1,7 @@
 import { ExperimentType } from "../types/common"
-import { migrate } from "./migrator"
+import { migrate } from "./migration"
 
-describe("migrator", () => {
+describe("migration", () => {
 
   const currentJson: ExperimentType = {
     id: "1234",
@@ -59,7 +59,7 @@ describe("migrator", () => {
       expect(migrate(jsonNoMigration)).toEqual(jsonNoMigration)
     })
 
-    it("should migrate to 1.1.0", () => {
+    it("should migrate to 1.2.0 - before setting value boolean discrete", () => {
       const oldJson = {
         ...currentJson,
         info: {
@@ -92,7 +92,7 @@ describe("migrator", () => {
       })
     })
 
-    it("should migrate to 1.2.0", () => {
+    it("should migrate to 1.2.0 - before setting value type discrete", () => {
       const oldJson = {
         ...currentJson,
         info: {

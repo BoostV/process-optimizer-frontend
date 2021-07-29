@@ -22,18 +22,6 @@ const doMigrations = (migration: Migration, json: any): any => {
   }
 }
 
-const convertTo_1_1_0 = (json: any): any => {
-  return {
-    ...json,
-    valueVariables: json.valueVariables.map(v => {
-      return {
-        ...v,
-        discrete: false,
-      }
-    })
-  }
-}
-
 const convertTo_1_2_0 = (json: any): any => {
   return {
     ...json,
@@ -43,7 +31,7 @@ const convertTo_1_2_0 = (json: any): any => {
         description: v.description,
         min: parseFloat(v.minVal),
         max: parseFloat(v.maxVal),
-        type: v.discrete ? 'discrete' : 'continuous'
+        type: v.discrete !== undefined ? (v.discrete ? 'discrete' : 'continuous') : 'continuous'
       }
     })
   }
@@ -59,9 +47,7 @@ interface Migration {
 //* Add new converter function above
 //* Write unit test
 
-//TODO: Use actual versions
+//TODO: Change version?
 export const MIGRATIONS: Migration[] = [
-  { version: "1.1.0", converter: convertTo_1_1_0 },
   { version: "1.2.0", converter: convertTo_1_2_0 },
-
 ]
