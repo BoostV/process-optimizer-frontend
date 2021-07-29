@@ -13,12 +13,12 @@ export const migrate = (json: any): ExperimentType => {
 
 const doMigrations = (migration: Migration, json: any): any => {
   json = migration.converter(json)
-  const currentMigration = MIGRATIONS.findIndex(m => m === migration) 
-  const isLastMigration = currentMigration === MIGRATIONS.length - 1
+  const migrationIndex = MIGRATIONS.findIndex(m => m === migration)
+  const isLastMigration = migrationIndex === MIGRATIONS.length - 1
   if (isLastMigration) {
-    return { ...json, info: {...json.info, swVersion: MIGRATIONS[MIGRATIONS.length - 1].version } }
+    return { ...json, info: {...json.info, swVersion: migration.version } }
   } else {
-    return doMigrations(MIGRATIONS[currentMigration + 1], json)
+    return doMigrations(MIGRATIONS[migrationIndex + 1], json)
   }
 }
 
