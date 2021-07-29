@@ -6,7 +6,7 @@ describe("migrator", () => {
   const currentJson: ExperimentType = {
     id: "1234",
     info: {
-      swVersion: "1.2.8",
+      swVersion: "1.2.0",
       name: "Cake",
       description: "Yummy",
     },
@@ -52,19 +52,53 @@ describe("migrator", () => {
   }
 
   describe("migrate", () => {
-    it("should migrate from 1.x.x", () => {
+    it("should not migrate if version needs no migrations", () => {
+      const semverSplits = currentJson.info.swVersion.split(".")
+      const newerThanCurrent = [parseInt(semverSplits[0]) + 1, semverSplits[1], semverSplits[2]].join(".")
+      const jsonNoMigration = {...currentJson, info: { ...currentJson.info, swVersion: newerThanCurrent }}
+      expect(migrate(jsonNoMigration)).toEqual(jsonNoMigration)
+    })
+
+    it("should migrate to 1.1.0", () => {
       const oldJson = {
-        id: "1234",
+        ...currentJson,
         info: {
-          swVersion: "1.1.5",
-          name: "Cake",
-          description: "Yummy",
+          ...currentJson.info,
+          swVersion: "1.0.0"
         },
-        categoricalVariables: [{
-          name: "Icing",
-          description: "Sugary",
-          options: [],
-        }],
+        valueVariables: [
+          {
+            name: "name1",
+            description: "desc1",
+            minVal: "10.0",
+            maxVal: "100",
+          },
+          {
+            name: "name2",
+            description: "desc2",
+            minVal: "10.2",
+            maxVal: "100.3",
+          }
+        ],
+      }
+      expect(migrate(oldJson)).toEqual({
+        ...currentJson,
+        valueVariables: currentJson.valueVariables.map(v => {
+          return {
+            ...v,
+            type: 'continuous'
+          }
+        })
+      })
+    })
+
+    it("should migrate to 1.2.0", () => {
+      const oldJson = {
+        ...currentJson,
+        info: {
+          ...currentJson.info,
+          swVersion: "1.1.5"
+        },
         valueVariables: [
           {
             name: "name1",
@@ -81,35 +115,9 @@ describe("migrator", () => {
             discrete: false,
           }
         ],
-        optimizerConfig: {
-          baseEstimator: "GP",
-          acqFunc: "gp_hedge",
-          initialPoints: 3,
-          kappa: 1.96,
-          xi: 0.01,
-        },
-        results: {
-          id: "",
-          next: [],
-          plots: [],
-          pickled: "",
-          extras: {}
-        },
-        dataPoints: [],
-        extras: {
-          experimentSuggestionCount: 1
-        }
       }
       expect(migrate(oldJson)).toEqual(currentJson)
-      expect(migrate({...oldJson, info: { ...oldJson.info, swVersion: "1.1.9" }})).toEqual(currentJson)
       expect(migrate({...oldJson, info: { ...oldJson.info, swVersion: "1.1.10" }})).toEqual(currentJson)
-    })
-
-    it("should not migrate if version needs no migrations", () => {
-      const semverSplits = currentJson.info.swVersion.split(".")
-      const newerThanCurrent = [parseInt(semverSplits[0]) + 1, semverSplits[1], semverSplits[2]].join(".")
-      const jsonNoMigration = {...currentJson, info: { ...currentJson.info, swVersion: newerThanCurrent }}
-      expect(migrate(jsonNoMigration)).toEqual(jsonNoMigration)
     })
   })
 })

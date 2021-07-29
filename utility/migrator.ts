@@ -22,6 +22,18 @@ const doMigrations = (migration: Migration, json: any): any => {
   }
 }
 
+const convertTo_1_1_0 = (json: any): any => {
+  return {
+    ...json,
+    valueVariables: json.valueVariables.map(v => {
+      return {
+        ...v,
+        discrete: false,
+      }
+    })
+  }
+}
+
 const convertTo_1_2_0 = (json: any): any => {
   return {
     ...json,
@@ -36,11 +48,6 @@ const convertTo_1_2_0 = (json: any): any => {
     })
   }
 }
-
-const convertTo_1_2_8 = (json: any): any => {
-  return json
-}
-
 interface Migration {
   version: string,
   converter: (json: any) => any,
@@ -54,6 +61,7 @@ interface Migration {
 
 //TODO: Use actual versions
 export const MIGRATIONS: Migration[] = [
+  { version: "1.1.0", converter: convertTo_1_1_0 },
   { version: "1.2.0", converter: convertTo_1_2_0 },
-  { version: "1.2.8", converter: convertTo_1_2_8 },
+
 ]
