@@ -1,3 +1,4 @@
+import compareVersions from "compare-versions"
 import { ExperimentType } from "../types/common"
 import { migrate } from "./migration"
 
@@ -6,7 +7,7 @@ describe("migration", () => {
   const currentJson: ExperimentType = {
     id: "1234",
     info: {
-      swVersion: "1.2.0",
+      swVersion: "v1.2.0-16",
       name: "Cake",
       description: "Yummy",
     },
@@ -52,19 +53,18 @@ describe("migration", () => {
   }
 
   describe("migrate", () => {
-    it("should not migrate if version needs no migrations", () => {
-      const semverSplits = currentJson.info.swVersion.split(".")
-      const newerThanCurrent = [parseInt(semverSplits[0]) + 1, semverSplits[1], semverSplits[2]].join(".")
-      const jsonNoMigration = {...currentJson, info: { ...currentJson.info, swVersion: newerThanCurrent }}
+    it("should not migrate when not needed", () => {
+      const jsonNoMigration = {...currentJson, info: { ...currentJson.info, swVersion: "10000.0.0" }}
       expect(migrate(jsonNoMigration)).toEqual(jsonNoMigration)
+      expect(migrate({...currentJson})).toEqual({...currentJson})
     })
 
-    it("should migrate to 1.2.0 - before setting value boolean discrete", () => {
+    it("should migrate to v1.2.0-16 - from before setting value boolean discrete", () => {
       const oldJson = {
         ...currentJson,
         info: {
           ...currentJson.info,
-          swVersion: "1.0.0"
+          swVersion: "v1.0.0"
         },
         valueVariables: [
           {
@@ -92,12 +92,12 @@ describe("migration", () => {
       })
     })
 
-    it("should migrate to 1.2.0 - before setting value type discrete", () => {
+    it("should migrate to v1.2.0-16 - from before setting value type discrete", () => {
       const oldJson = {
         ...currentJson,
         info: {
           ...currentJson.info,
-          swVersion: "1.1.5"
+          swVersion: "v1.1.5"
         },
         valueVariables: [
           {
@@ -117,7 +117,7 @@ describe("migration", () => {
         ],
       }
       expect(migrate(oldJson)).toEqual(currentJson)
-      expect(migrate({...oldJson, info: { ...oldJson.info, swVersion: "1.1.10" }})).toEqual(currentJson)
+      expect(migrate({...oldJson, info: { ...oldJson.info, swVersion: "v1.1.10" }})).toEqual(currentJson)
     })
   })
 })

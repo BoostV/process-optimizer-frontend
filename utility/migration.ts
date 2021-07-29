@@ -3,12 +3,12 @@ import { ExperimentType } from '../types/common'
 
 export const migrate = (json: any): ExperimentType => {
   const version = json.info.swVersion
-  const needsNoMigration = compareVersions(version, MIGRATIONS[MIGRATIONS.length - 1].version) === 1
-  if (needsNoMigration) {
-    return json
-  }
   const firstMigration = MIGRATIONS.find(m => compareVersions(version, m.version) === -1)
-  return doMigrations(firstMigration, json)
+  if (firstMigration === undefined) {
+    return json
+  } else {
+    return doMigrations(firstMigration, json)
+  }
 }
 
 const doMigrations = (migration: Migration, json: any): any => {
@@ -16,6 +16,7 @@ const doMigrations = (migration: Migration, json: any): any => {
   const migrationIndex = MIGRATIONS.findIndex(m => m === migration)
   const isLastMigration = migrationIndex === MIGRATIONS.length - 1
   if (isLastMigration) {
+    //TODO: Set swVersion or not? updateExperiement in reducer sets it to newest value
     return { ...json, info: {...json.info, swVersion: migration.version } }
   } else {
     return doMigrations(MIGRATIONS[migrationIndex + 1], json)
@@ -47,7 +48,7 @@ interface Migration {
 //* Add new converter function above
 //* Write unit test
 
-//TODO: Change version?
+//TODO: Change version to exact value?
 export const MIGRATIONS: Migration[] = [
-  { version: "1.2.0", converter: convertTo_1_2_0 },
+  { version: "v1.2.0-16", converter: convertTo_1_2_0 },
 ]
