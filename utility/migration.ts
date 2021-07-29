@@ -2,7 +2,7 @@ import compareVersions from 'compare-versions'
 import { ExperimentType } from '../types/common'
 
 export const migrate = (json: any): ExperimentType => {
-  const version = json.info.swVersion
+  const version = json.info.swVersion !== undefined ? json.info.swVersion : "v1.0.0"
   const firstMigration = MIGRATIONS.find(m => compareVersions(version, m.version) === -1)
   if (firstMigration === undefined) {
     return json
@@ -48,7 +48,7 @@ interface Migration {
 //* Add new converter function above
 //* Write unit test
 
-//TODO: Change version to exact value?
+//TODO: What should the version be?
 export const MIGRATIONS: Migration[] = [
   { version: "v1.2.0-16", converter: convertTo_1_2_0 },
 ]
