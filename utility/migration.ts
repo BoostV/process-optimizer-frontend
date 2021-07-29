@@ -1,6 +1,7 @@
 import compareVersions from 'compare-versions'
 import { ExperimentType } from '../types/common'
 
+//TODO: Compare json to current ExperimentType and add missing fields?
 export const migrate = (json: any): ExperimentType => {
   const version = json.info.swVersion !== undefined ? json.info.swVersion : "v1.0.0"
   const firstMigration = MIGRATIONS.find(m => compareVersions(version, m.version) === -1)
