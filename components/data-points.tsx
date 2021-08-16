@@ -8,6 +8,7 @@ import SwapVertIcon from '@material-ui/icons/SwapVert';
 import { TitleCard } from './title-card';
 import useStyles from "../styles/data-points.style";
 import { useExperiment } from '../context/experiment-context';
+import { saveCSVToLocalFile } from "../utility/save-to-local-file";
 
 
 
@@ -140,7 +141,7 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   function DownloadCSV() {
-    let csvContent = "data:text/csv;charset=utf-8,";
+    let csvContent = "";
     state.rows[0].dataPoints.map((item, index) => {
       if (index < state.rows[0].dataPoints.length - 1) {
         csvContent += item.name + ",";
@@ -164,12 +165,7 @@ export default function DataPoints(props: DataPointProps) {
         }
       })
     });
-    var encodedUri = encodeURI(csvContent);
-    var link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", experiment.id + ".csv");
-    document.body.appendChild(link);
-    link.click();
+    saveCSVToLocalFile(csvContent, experiment.id + ".csv")
   }
 
   function UploadCSV(e) {
