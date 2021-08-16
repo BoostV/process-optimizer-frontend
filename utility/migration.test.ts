@@ -1,4 +1,3 @@
-import compareVersions from "compare-versions"
 import { ExperimentType } from "../types/common"
 import { migrate } from "./migration"
 

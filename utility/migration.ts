@@ -5,11 +5,7 @@ import { ExperimentType } from '../types/common'
 export const migrate = (json: any): ExperimentType => {
   const version = json.info.swVersion !== undefined ? json.info.swVersion : "v1.0.0"
   const firstMigration = MIGRATIONS.find(m => compareVersions(version, m.version) === -1)
-  if (firstMigration === undefined) {
-    return json
-  } else {
-    return doMigrations(firstMigration, json)
-  }
+  return firstMigration === undefined ? json : doMigrations(firstMigration, json)
 }
 
 const doMigrations = (migration: Migration, json: any): any => {
