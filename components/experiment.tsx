@@ -46,7 +46,7 @@ export default function Experiment(props: ExperimentProps) {
     }, [experiment])
 
     const onDownload = () => {
-        saveToLocalFile(experiment, experiment.id)
+        saveToLocalFile(experiment, experiment.id, 'application/json')
     } 
 
     const onSave = async () => {
