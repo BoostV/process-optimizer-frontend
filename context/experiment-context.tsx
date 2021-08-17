@@ -4,7 +4,7 @@ import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
 import { Dispatch, rootReducer } from '../reducers/reducers'
 import { initialState, State } from '../store'
 import { ExperimentResultType, ExperimentType } from '../types/common'
-import { migrate } from '../utility/migration'
+import { migrate } from '../utility/migration/migration'
 import { useGlobal } from './global-context'
 
 const fetcher = async (url: string) => (await fetch(url)).json()
