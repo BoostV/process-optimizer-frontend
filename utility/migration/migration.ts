@@ -1,7 +1,7 @@
 import compareVersions from 'compare-versions'
 import { ExperimentType } from '../../types/common'
 
-//TODO: Compare json to current ExperimentType and add missing fields?
+//TODO: Compare json to current ExperimentType and set missing fields to default values?
 export const migrate = (json: any): ExperimentType => {
   const version = json.info.dataFormatVersion !== undefined ? json.info.dataFormatVersion : "0"
   const firstMigration = MIGRATIONS.find(m => compareVersions(version, m.version) === -1)
@@ -13,7 +13,7 @@ const doMigrations = (migration: Migration, json: any): any => {
   const migrationIndex = MIGRATIONS.findIndex(m => m === migration)
   const isLastMigration = migrationIndex === MIGRATIONS.length - 1
   if (isLastMigration) {
-    //TODO: Set version or not? updateExperiment in reducer sets it to newest value
+    //TODO: Set version or not?
     return { ...json, info: {...json.info, dataFormatVersion: migration.version } }
   } else {
     return doMigrations(MIGRATIONS[migrationIndex + 1], json)
@@ -41,11 +41,9 @@ interface Migration {
 
 //Versions that need migration
 //To add new migration:
-//* Add new migration below
-//* Add new converter function above
+//* Add new json file to /data-formats
+//* Add new migration and converter function below
 //* Write unit test
-
-//TODO: What should the version be?
 export const MIGRATIONS: Migration[] = [
   { version: "1.0.0", converter: convertTo_1_0_0 },
 ]
