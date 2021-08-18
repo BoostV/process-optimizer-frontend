@@ -10,25 +10,49 @@ type JsonEditorProps = {
     allowSaveToServer: boolean
 }
 
+type DisplayedResults = {
+    id: string
+    next: (number|string)[],
+    extras: object
+}
+
 export default function JsonEditor(props: JsonEditorProps) {
     const { allowSaveToServer } = props
     const classes = useStyles()
     const [errorMsg, setErrorMsg] = useState('')
-    const [editedExperiment, setEditedExperiment] = useState('')
+    const [displayedExperiment, setDisplayedExperiment] = useState('')
     const { state: { experiment }, dispatch, loading } = useExperiment()
     const global = useGlobal()
 
     useEffect(() => {
-      setEditedExperiment(JSON.stringify(experiment, null, 2))
-    }, [experiment]) 
+        const displayedExperiment = displayedExperimentFromExperiment(experiment)
+        setDisplayedExperiment(displayedExperiment)
+    }, [experiment])
 
-    const handleChange = (e: ChangeEvent) => {
-        setEditedExperiment((e.target as HTMLInputElement).value)
+    const displayedExperimentFromExperiment = (experiment: ExperimentType): string => {
+        const results: DisplayedResults = {
+            id: experiment.results.id,
+            next: experiment.results.next,
+            extras: experiment.results.extras,
+        }
+        return JSON.stringify({ ...experiment, results }, null, 2)
+    }
+
+    const experimentFromDisplayedExperiment = (displayedExperiment: string): ExperimentType => {
+        const displayedExperimentObject = JSON.parse(displayedExperiment)
+        return {
+            ...displayedExperimentObject,
+            results: {
+                ...displayedExperimentObject.results,
+                pickled: experiment.results.pickled,
+                plots: experiment.results.plots
+            }
+        }
     }
 
     const handleSave = async() => {
         try {
-            const experimentToSave: ExperimentType = JSON.parse(editedExperiment)
+            const experimentToSave: ExperimentType = experimentFromDisplayedExperiment(displayedExperiment)
             if (allowSaveToServer) {
                 await saveExperiment(experimentToSave)
             } else {
@@ -60,8 +84,8 @@ export default function JsonEditor(props: JsonEditorProps) {
                     </Box>
                     <TextareaAutosize 
                         className={classes.textArea}
-                        value={editedExperiment}
-                        onChange={(e: ChangeEvent) => handleChange(e)} />
+                        value={displayedExperiment}
+                        onChange={(e: ChangeEvent) => setDisplayedExperiment((e.target as HTMLInputElement).value)} />
                     <Box>
                         <Button 
                             size="small"
