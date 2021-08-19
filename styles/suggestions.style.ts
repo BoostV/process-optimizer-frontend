@@ -4,12 +4,9 @@ export const useStyles = makeStyles(theme => ({
   tableContainer: {
     overflowX: 'scroll',
   },
-  titleButton: {
-    float: 'right',
-  },
-  titleIcon: {
-    color: 'white',
-  },
+  cell: {
+    minWidth: 48,
+  }
 }));
 
 export default useStyles

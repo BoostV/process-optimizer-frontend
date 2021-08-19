@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, Grid, GridSize, Snackbar, Typography } from '@material-ui/core'
 import Layout from './layout'
 import OptimizerModel from './optimizer-model';
 import OptimizerConfigurator from './optimizer-configurator';
@@ -15,6 +15,7 @@ import saveToLocalFile from '../utility/save-to-local-file';
 import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
 import { Plots } from './plots';
+import { useGlobal } from '../context/global-context';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -31,6 +32,7 @@ export default function Experiment(props: ExperimentProps) {
     const { state: {
         experiment
     }, dispatch, loading } = useExperiment()
+    const global = useGlobal()
 
     const [lastSavedExperiment, setLastSavedExperiment] = useState(experiment)
     const [isDirty, setDirty] = useState(false)
@@ -91,6 +93,11 @@ export default function Experiment(props: ExperimentProps) {
     const openSnackbar = (snackbarMessage: SnackbarMessage) => {
         setSnackbarMessage(snackbarMessage)
         setSnackbarOpen(true)
+    }
+
+    const getSize = (key: string): number => {
+        const size = global.state.uiSizes.find(s => s.key === key)
+        return size !== undefined ? size.value : 6
     }
 
     const valueVariables = experiment.valueVariables
@@ -173,25 +180,20 @@ export default function Experiment(props: ExperimentProps) {
                             </Grid>
 
                             <Grid item xs={9}>
-
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} xl={6}>
-                                        <Grid container spacing={2}>
-                                            <Grid item xs={12}>
-                                                <NextExperiments
-                                                        nextValues={nextValues}
-                                                        headers={headers} />
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <DataPoints
-                                                    valueVariables={experiment.valueVariables}
-                                                    categoricalVariables={experiment.categoricalVariables}
-                                                    dataPoints={experiment.dataPoints}
-                                                    onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
-                                            </Grid>
-                                        </Grid>
+                                    <Grid item xs={12} xl={getSize('data-points') as GridSize}>
+                                        <DataPoints
+                                            valueVariables={experiment.valueVariables}
+                                            categoricalVariables={experiment.categoricalVariables}
+                                            dataPoints={experiment.dataPoints}
+                                            onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
                                     </Grid>
-                                    <Grid item xs={12} xl={6}>
+                                    <Grid item xs={12} xl={getSize('next-experiments') as GridSize}>
+                                        <NextExperiments
+                                            nextValues={nextValues}
+                                            headers={headers} />
+                                    </Grid>
+                                    <Grid item xs={12} xl={getSize('plots') as GridSize}>
                                         <Plots />
                                     </Grid>
                                 </Grid>

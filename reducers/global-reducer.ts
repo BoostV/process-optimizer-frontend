@@ -7,6 +7,12 @@ export type State = {
     theme: ThemeName
     dataPointsNewestFirst: boolean
     showJsonEditor: boolean
+    uiSizes: UISize[]
+}
+
+export interface UISize {
+    key: string
+    value: number
 }
 
 export type Action = {
@@ -37,6 +43,10 @@ export type Action = {
     type: 'setShowJsonEditor'
     payload: boolean
 }
+| {
+    type: 'toggleUISize'
+    payload: string
+}
 export type Dispatch = (action: Action) => void
 
 export const initialState: State = {
@@ -46,6 +56,7 @@ export const initialState: State = {
     theme: "BlueGreen",
     dataPointsNewestFirst: false,
     showJsonEditor: false,
+    uiSizes: [],
 }
 
 export const reducer = (state: State, action: Action) => {
@@ -75,6 +86,23 @@ export const reducer = (state: State, action: Action) => {
             return { ...state, dataPointsNewestFirst: action.payload }
         case 'setShowJsonEditor':
             return { ...state, showJsonEditor: action.payload }
+        case 'toggleUISize':
+            const indexSize = state.uiSizes.findIndex(u => u.key === action.payload)
+            let newSizes = state.uiSizes.slice()
+            if (indexSize === -1) {
+                newSizes.splice(state.uiSizes.length, 0, { key: action.payload, value: 12 })
+            } else {
+                newSizes = state.uiSizes.map(size => {
+                    if (size.key !== action.payload) {
+                        return size
+                    }
+                    return {
+                        ...size,
+                        ...{ key: action.payload, value: size.value === 12 ? 6 : 12 }
+                    }
+                })
+            }
+            return { ...state, uiSizes: newSizes }
         default:
             return state
     }
