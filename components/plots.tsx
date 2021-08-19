@@ -1,4 +1,4 @@
-import { Typography, Tooltip, IconButton } from "@material-ui/core"
+import { Typography, Tooltip, IconButton, Hidden } from "@material-ui/core"
 import { useExperiment } from "../context/experiment-context"
 import useStyles from "../styles/plots.style"
 import { TitleCard } from "./title-card"
@@ -15,13 +15,17 @@ export const Plots = () => {
       <TitleCard title={
         <>
           Plots
-          <Tooltip title="Expand 'Plots'">
-            <IconButton 
-              size="small"
-              onClick={() => global.dispatch({ type: 'toggleUISize', payload: 'plots' })}>
-              <ZoomOutMapIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
+          <Hidden lgDown>
+            <Tooltip title="Expand 'Plots'">
+              <IconButton 
+                size="small"
+                className={classes.titleButton}
+                onClick={() => global.dispatch({ type: 'toggleUISize', payload: 'plots' })} >
+                <ZoomOutMapIcon fontSize="small" className={classes.titleIcon} />
+              </IconButton>
+            </Tooltip>
+
+          </Hidden>
         </>
       }>
         {experiment.results.plots.length > 0 ?

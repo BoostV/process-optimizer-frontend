@@ -40,6 +40,7 @@ export default function Experiment(props: ExperimentProps) {
     const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
     const [isRunning, setRunning] = useState(false)
     const [isSaving, setSaving] = useState(false)
+    const [highlightNextExperiments, setHighlightNextExperiments] = useState(false)
 
     useEffect(() => {
         if (lastSavedExperiment && JSON.stringify(lastSavedExperiment) !== JSON.stringify(experiment)) {
@@ -182,11 +183,13 @@ export default function Experiment(props: ExperimentProps) {
                             <Grid item xs={9}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} xl={getSize('next-experiments') as GridSize}>
-                                        <Grid container spacing={2}>
+                                        <Grid container spacing={2} className={highlightNextExperiments ? classes.highlight : ''}>
                                             <Grid item xs={12}>
                                                 <NextExperiments
                                                     nextValues={nextValues}
-                                                    headers={headers} />
+                                                    headers={headers}
+                                                    onMouseEnterExpand={() => setHighlightNextExperiments(true)}
+                                                    onMouseLeaveExpand={() => setHighlightNextExperiments(false)} />
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <DataPoints
