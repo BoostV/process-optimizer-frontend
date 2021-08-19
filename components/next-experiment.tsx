@@ -21,7 +21,7 @@ export const NextExperiments = (props: NextExperimentProps) => {
       title={
         <>
           {'Next experiment' + (suggestionCount > 1 ? 's' : '')}
-          <Tooltip title="Expand next experiments and data points">
+          <Tooltip title="Expand 'Next experiment' and 'Data points'">
             <IconButton 
               size="small"
               onClick={() => global.dispatch({ type: 'toggleUISize', payload: 'next-experiments' })}>
