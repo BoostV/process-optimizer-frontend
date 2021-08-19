@@ -136,14 +136,6 @@ export default function DataPoints(props: DataPointProps) {
     <TitleCard title={
       <>
         Data points
-        <Tooltip title="Expand/contract">
-          <IconButton 
-            size="small"
-            className={classes.titleButton}
-            onClick={() => global.dispatch({ type: 'toggleUISize', payload: 'data-points' })}>
-            <ZoomOutMapIcon fontSize="small" className={classes.titleIcon} />
-          </IconButton>
-        </Tooltip>
         <Tooltip title="Reverse order">
           <IconButton 
             size="small"

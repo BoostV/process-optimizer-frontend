@@ -15,7 +15,7 @@ export const Plots = () => {
       <TitleCard title={
         <>
           Plots
-          <Tooltip title="Expand/contract">
+          <Tooltip title="Expand plots card">
             <IconButton 
               size="small"
               onClick={() => global.dispatch({ type: 'toggleUISize', payload: 'plots' })}>

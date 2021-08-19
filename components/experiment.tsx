@@ -181,17 +181,21 @@ export default function Experiment(props: ExperimentProps) {
 
                             <Grid item xs={9}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} xl={getSize('data-points') as GridSize}>
-                                        <DataPoints
-                                            valueVariables={experiment.valueVariables}
-                                            categoricalVariables={experiment.categoricalVariables}
-                                            dataPoints={experiment.dataPoints}
-                                            onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
-                                    </Grid>
                                     <Grid item xs={12} xl={getSize('next-experiments') as GridSize}>
-                                        <NextExperiments
-                                            nextValues={nextValues}
-                                            headers={headers} />
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12}>
+                                                <NextExperiments
+                                                    nextValues={nextValues}
+                                                    headers={headers} />
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <DataPoints
+                                                    valueVariables={experiment.valueVariables}
+                                                    categoricalVariables={experiment.categoricalVariables}
+                                                    dataPoints={experiment.dataPoints}
+                                                    onUpdateDataPoints={(dataPoints: DataPointType[][]) => dispatch({ type: 'updateDataPoints', payload: dataPoints })} />
+                                            </Grid>
+                                        </Grid>
                                     </Grid>
                                     <Grid item xs={12} xl={getSize('plots') as GridSize}>
                                         <Plots />
