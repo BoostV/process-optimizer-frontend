@@ -13,11 +13,14 @@ const doMigrations = (migration: Migration, json: any): any => {
   const migrationIndex = MIGRATIONS.findIndex(m => m === migration)
   const isLastMigration = migrationIndex === MIGRATIONS.length - 1
   if (isLastMigration) {
-    //TODO: Set version or not?
-    return { ...json, info: {...json.info, dataFormatVersion: migration.version } }
+    return bumpVersion(json, migration.version)
   } else {
     return doMigrations(MIGRATIONS[migrationIndex + 1], json)
   }
+}
+
+const bumpVersion = (json: any, version: string): any => {
+  return { ...json, info: {...json.info, dataFormatVersion: version } }
 }
 
 const convertTo3 = (json: any): any => {
@@ -34,6 +37,7 @@ const convertTo3 = (json: any): any => {
     })
   }
 }
+
 interface Migration {
   version: string,
   converter: (json: any) => any,

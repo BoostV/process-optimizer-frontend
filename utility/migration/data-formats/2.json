@@ -8,7 +8,7 @@
   "categoricalVariables": [{
     "name": "Icing",
     "description": "Sugary",
-    "options": []
+    "options": ["White", "Brown"]
   }],
   "valueVariables": [
     {
@@ -40,7 +40,28 @@
     "pickled": "",
     "extras": {}
   },
-  "dataPoints": [],
+  "dataPoints": [
+    [
+      {
+        "name": "Icing",
+        "value": "Brown"
+      },
+      {
+        "name": "name1",
+        "value": "10"
+      },
+      {
+        "name": "name2",
+        "value": "10.2"
+      },
+      {
+        "name": "score",
+        "value": [
+          "0.5"
+        ]
+      }
+    ]
+  ],
   "extras": {
     "experimentSuggestionCount": 1
   }
