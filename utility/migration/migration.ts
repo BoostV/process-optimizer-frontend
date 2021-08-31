@@ -20,7 +20,7 @@ const doMigrations = (migration: Migration, json: any): any => {
   }
 }
 
-const convertTo_1_0_0 = (json: any): any => {
+const convertTo3 = (json: any): any => {
   return {
     ...json,
     valueVariables: json.valueVariables.map(v => {
@@ -45,5 +45,5 @@ interface Migration {
 //* Add new migration and converter function below
 //* Write unit test
 export const MIGRATIONS: Migration[] = [
-  { version: "1.0.0", converter: convertTo_1_0_0 },
+  { version: "3", converter: convertTo3 },
 ]

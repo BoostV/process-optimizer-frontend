@@ -1,7 +1,7 @@
 {
   "id": "1234",
   "info": {
-    "dataFormatVersion": "1.0.0",
+    "dataFormatVersion": "3",
     "swVersion": "v1.2.0-16",
     "name": "Cake",
     "description": "Yummy"
