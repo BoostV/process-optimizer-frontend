@@ -107,9 +107,8 @@ describe("experiment reducer", () => {
       experiment:{...initState.experiment,
         id: "1234",
         info: {
+          ...initState.experiment.info,
           name: "Muffins",
-          description: "Yummy",
-          swVersion: ''
         }
       }
     })
