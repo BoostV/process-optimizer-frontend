@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Grid, GridSize, Snackbar, Typography } from '@material-ui/core'
+import { Box, Button, Card, CardContent, Grid, Snackbar, Typography } from '@material-ui/core'
 import Layout from './layout'
 import OptimizerModel from './optimizer-model';
 import OptimizerConfigurator from './optimizer-configurator';
@@ -16,7 +16,7 @@ import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
 import { Plots } from './plots';
 import { useGlobal } from '../context/global-context';
-import { UISizeKey, UISizeValue } from '../reducers/global-reducer';
+import { UISizeValue } from '../reducers/global-reducer';
 import { getSize } from '../utility/ui-util';
 
 type ExperimentProps = {

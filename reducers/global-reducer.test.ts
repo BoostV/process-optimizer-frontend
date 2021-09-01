@@ -1,5 +1,5 @@
 import { ThemeName } from "../theme/theme"
-import { reducer, State, UISize, UISizeValue } from "./global-reducer"
+import { reducer, State, UISizeValue } from "./global-reducer"
 
 const initState: State = {
   debug: false,

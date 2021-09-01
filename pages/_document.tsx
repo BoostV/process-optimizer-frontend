@@ -1,5 +1,5 @@
 import React from 'react'
-import Document, { DocumentContext,Html, Head, Main, NextScript } from 'next/document'
+import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { ServerStyleSheets } from '@material-ui/core/styles'
 import { theme } from "../theme/theme"
 

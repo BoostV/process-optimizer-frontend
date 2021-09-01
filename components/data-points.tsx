@@ -7,7 +7,6 @@ import { EditableTable } from "./editable-table";
 import SwapVertIcon from '@material-ui/icons/SwapVert';
 import { TitleCard } from './title-card';
 import useStyles from "../styles/data-points.style";
-import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]
