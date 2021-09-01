@@ -4,6 +4,7 @@ import useStyles from "../styles/plots.style"
 import { TitleCard } from "./title-card"
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
 import { useGlobal } from "../context/global-context"
+import { isUIBig } from "../utility/ui-util";
 
 export const Plots = () => {
   const { state: { experiment } } = useExperiment()
@@ -16,7 +17,7 @@ export const Plots = () => {
         <>
           Plots
           <Hidden lgDown>
-            <Tooltip title="Expand 'Plots'">
+            <Tooltip title={(isUIBig(global.state, "plots") ? "Contract" : "Expand") + " 'Plots'"}>
               <IconButton 
                 size="small"
                 className={classes.titleButton}

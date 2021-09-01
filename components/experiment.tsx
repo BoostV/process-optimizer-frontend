@@ -16,6 +16,8 @@ import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
 import { Plots } from './plots';
 import { useGlobal } from '../context/global-context';
+import { UISizeKey, UISizeValue } from '../reducers/global-reducer';
+import { getSize } from '../utility/ui-util';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -94,11 +96,6 @@ export default function Experiment(props: ExperimentProps) {
     const openSnackbar = (snackbarMessage: SnackbarMessage) => {
         setSnackbarMessage(snackbarMessage)
         setSnackbarOpen(true)
-    }
-
-    const getSize = (key: string): number => {
-        const size = global.state.uiSizes.find(s => s.key === key)
-        return size !== undefined ? size.value : 6
     }
 
     const valueVariables = experiment.valueVariables
@@ -182,7 +179,7 @@ export default function Experiment(props: ExperimentProps) {
 
                             <Grid item xs={9}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} xl={getSize('next-experiments') as GridSize}>
+                                    <Grid item xs={UISizeValue.Big} xl={getSize(global.state, 'next-experiments') as GridSize}>
                                         <Grid container spacing={2} className={highlightNextExperiments ? classes.highlight : ''}>
                                             <Grid item xs={12}>
                                                 <NextExperiments
@@ -200,7 +197,7 @@ export default function Experiment(props: ExperimentProps) {
                                             </Grid>
                                         </Grid>
                                     </Grid>
-                                    <Grid item xs={12} xl={getSize('plots') as GridSize}>
+                                    <Grid item xs={UISizeValue.Big} xl={getSize(global.state, 'plots') as GridSize}>
                                         <Plots />
                                     </Grid>
                                 </Grid>

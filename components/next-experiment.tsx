@@ -5,6 +5,7 @@ import { TitleCard } from './title-card'
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
 import { useGlobal } from "../context/global-context"
 import useStyles from '../styles/next-experiments.style';
+import { isUIBig } from '../utility/ui-util';
 
 interface NextExperimentProps {
   nextValues: string[][]
@@ -26,11 +27,11 @@ export const NextExperiments = (props: NextExperimentProps) => {
         <>
           {'Next experiment' + (suggestionCount > 1 ? 's' : '')}
           <Hidden lgDown>
-            <Tooltip title="Expand 'Next experiment' and 'Data points'">
+            <Tooltip title={(isUIBig(global.state, "next-experiments") ? "Contract" : "Expand") + " 'Next experiment' and 'Data points'"}>
               <IconButton 
                 size="small"
                 className={classes.titleButton}
-                onClick={() => global.dispatch({ type: 'toggleUISize', payload: 'next-experiments' })}
+                onClick={() => global.dispatch({ type: 'toggleUISize', payload: "next-experiments" })}
                 onMouseEnter={() => onMouseEnterExpand()}
                 onMouseLeave={() => onMouseLeaveExpand()}>
                 <ZoomOutMapIcon fontSize="small" className={classes.titleIcon} />

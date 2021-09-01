@@ -10,8 +10,15 @@ export type State = {
     uiSizes: UISize[]
 }
 
-export interface UISize {
-    key: string
+export enum UISizeValue {
+    Small = 6,
+    Big = 12,
+}
+
+export type UISizeKey = "next-experiments" | "plots"
+
+export type UISize = {
+    key: UISizeKey
     value: number
 }
 
@@ -45,7 +52,7 @@ export type Action = {
 }
 | {
     type: 'toggleUISize'
-    payload: string
+    payload: UISizeKey
 }
 export type Dispatch = (action: Action) => void
 
