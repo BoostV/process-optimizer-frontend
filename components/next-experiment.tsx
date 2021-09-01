@@ -27,7 +27,7 @@ export const NextExperiments = (props: NextExperimentProps) => {
         <>
           {'Next experiment' + (suggestionCount > 1 ? 's' : '')}
           <Hidden lgDown>
-            <Tooltip title={(isUIBig(global.state, "next-experiments") ? "Contract" : "Expand") + " 'Next experiment' and 'Data points'"}>
+            <Tooltip title={(isUIBig(global.state, "next-experiments") ? "Collapse" : "Expand") + " 'Next experiment' and 'Data points'"}>
               <IconButton 
                 size="small"
                 className={classes.titleButton}

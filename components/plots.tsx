@@ -17,7 +17,7 @@ export const Plots = () => {
         <>
           Plots
           <Hidden lgDown>
-            <Tooltip title={(isUIBig(global.state, "plots") ? "Contract" : "Expand") + " 'Plots'"}>
+            <Tooltip title={(isUIBig(global.state, "plots") ? "Collapse" : "Expand") + " 'Plots'"}>
               <IconButton 
                 size="small"
                 className={classes.titleButton}
