@@ -1,5 +1,5 @@
 import { ThemeName } from "../theme/theme"
-import { reducer, State, UISize } from "./global-reducer"
+import { reducer, State, UISize, UISizeValue } from "./global-reducer"
 
 const initState: State = {
   debug: false,
@@ -71,7 +71,7 @@ describe("toggleUISize", () => {
     const expectedState: State = {
       ...initState,
       uiSizes: [
-        ...initState.uiSizes.concat({ key: payload, value: 12 })
+        ...initState.uiSizes.concat({ key: payload, value: UISizeValue.Big })
       ]
     }
     expect(reducer(initState, { type: 'toggleUISize', payload })).toEqual(expectedState)
@@ -83,7 +83,7 @@ describe("toggleUISize", () => {
     const payload = 'plots'
     const expectedState: State = {
       ...initState,
-      uiSizes: [{ key: payload, value: 6 }]
+      uiSizes: [{ key: payload, value: UISizeValue.Small }]
     }
     expect(reducer(initState, { type: 'toggleUISize', payload })).toEqual(expectedState)
   })

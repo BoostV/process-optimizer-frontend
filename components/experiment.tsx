@@ -179,7 +179,7 @@ export default function Experiment(props: ExperimentProps) {
 
                             <Grid item xs={9}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={UISizeValue.Big} xl={getSize(global.state, 'next-experiments') as GridSize}>
+                                    <Grid item xs={UISizeValue.Big} xl={getSize(global.state, 'next-experiments')}>
                                         <Grid container spacing={2} className={highlightNextExperiments ? classes.highlight : ''}>
                                             <Grid item xs={12}>
                                                 <NextExperiments
@@ -197,7 +197,7 @@ export default function Experiment(props: ExperimentProps) {
                                             </Grid>
                                         </Grid>
                                     </Grid>
-                                    <Grid item xs={UISizeValue.Big} xl={getSize(global.state, 'plots') as GridSize}>
+                                    <Grid item xs={UISizeValue.Big} xl={getSize(global.state, 'plots')}>
                                         <Plots />
                                     </Grid>
                                 </Grid>

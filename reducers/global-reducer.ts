@@ -97,16 +97,13 @@ export const reducer = (state: State, action: Action) => {
             const indexSize = state.uiSizes.findIndex(u => u.key === action.payload)
             let newSizes = state.uiSizes.slice()
             if (indexSize === -1) {
-                newSizes.splice(state.uiSizes.length, 0, { key: action.payload, value: 12 })
+                newSizes.splice(state.uiSizes.length, 0, { key: action.payload, value: UISizeValue.Big })
             } else {
                 newSizes = state.uiSizes.map(size => {
                     if (size.key !== action.payload) {
                         return size
                     }
-                    return {
-                        ...size,
-                        ...{ key: action.payload, value: size.value === 12 ? 6 : 12 }
-                    }
+                    return { key: action.payload, value: size.value === UISizeValue.Big ? UISizeValue.Small : UISizeValue.Big }
                 })
             }
             return { ...state, uiSizes: newSizes }
