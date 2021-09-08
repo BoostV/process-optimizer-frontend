@@ -7,10 +7,8 @@ import { EditableTable } from "./editable-table";
 import SwapVertIcon from '@material-ui/icons/SwapVert';
 import { TitleCard } from './title-card';
 import useStyles from "../styles/data-points.style";
-import { useExperiment } from '../context/experiment-context';
-import { saveCSVToLocalFile } from "../utility/save-to-local-file";
-
-
+import DownloadCSVButton from "./download-csv-button";
+import UploadCSVButton from "./upload-csv-button";
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]
@@ -27,9 +25,6 @@ export default function DataPoints(props: DataPointProps) {
   const { valueVariables, categoricalVariables, dataPoints, onUpdateDataPoints } = props
   const classes = useStyles()
   const [state, dispatch] = useReducer(dataPointsReducer, { rows: [], prevRows: [] })
-  const { state: {
-    experiment
-  } } = useExperiment()
   const isLoadingState = state.rows.length === 0
   const global = useGlobal()
   const newestFirst = global.state.dataPointsNewestFirst
@@ -140,67 +135,6 @@ export default function DataPoints(props: DataPointProps) {
     updateFn(rowIndex, ...args)
   }
 
-  function DownloadCSV() {
-    let csvContent = "";
-    state.rows[0].dataPoints.map((item, index) => {
-      if (index < state.rows[0].dataPoints.length - 1) {
-        csvContent += item.name + ",";
-      }
-      else {
-        csvContent += item.name + "\r\n";
-      }
-    });
-    state.rows.forEach(function (rowArray, rowIndex) {
-      rowArray.dataPoints.map((item, index) => {
-        if (state.rows[rowIndex].dataPoints[0].value !== '') {
-          if (index < rowArray.dataPoints.length - 1) {
-            csvContent += item.value + ",";
-          }
-          else if (rowIndex < state.rows.length - 1 && state.rows[rowIndex + 1].dataPoints[0].value !== '') {
-            csvContent += item.value + "\r\n";
-          }
-          else {
-            csvContent += item.value
-          }
-        }
-      })
-    });
-    saveCSVToLocalFile(csvContent, experiment.id + ".csv")
-  }
-
-  function UploadCSV(e) {
-    const init_data_points = state.rows[state.rows.length - 1].dataPoints[0].value == "" ? state.rows.length - 1 : state.rows.length
-    const file = e.target.files[0];
-    if (!file) {
-      return;
-    }
-    var reader = new FileReader();
-    reader.onload = function (e) {
-      var contents = e.target.result;
-      var data = String(contents).split(/\r\n|\n/);
-      if (data[0] !== String(state.rows[0].dataPoints.map((item, index) => item.name))) {
-        alert("Headers of the CSV are not correct" + "\r\nExpected: " + String(state.rows[0].dataPoints.map((item, index) => item.name))
-          + "\r\nBut got: " + data[0])
-        return;
-      }
-      var dims = (data[0].match(/,/g) || []).length
-      for (let i = 1; i < data.length; i++) {
-        if ((data[i].match(/,/g) || []).length == dims) {
-          if (i > 1 || state.rows[state.rows.length - 1].dataPoints[0].value != "") {
-            addRow(buildEmptyRow())
-          }
-          var data_array = String(data[i]).split(',');
-          for (let j = 0; j < data_array.length; j++) {
-            updateRow(init_data_points - 1 + i, edit, data_array[j], j)
-          }
-        } else {
-          alert("Wrong amount of variables in line " + i + "\r\nExpected: " + dims + "\r\nBut got: " + (data[i].match(/,/g) || []).length)
-        }
-      }
-    };
-    reader.readAsText(file)
-  }
-
   return (
     <TitleCard title={
       <>
@@ -209,28 +143,8 @@ export default function DataPoints(props: DataPointProps) {
             Data points
           </Grid>
           <Grid item xs={8} style={{textAlign: "center"}}>
-            <Button
-              variant="contained"
-              onClick={() => DownloadCSV()}
-              color="primary"
-            >Download csv</Button>
-            <Button
-              variant="contained"
-              color="primary"
-              component="label"
-            >
-              Upload CSV
-              <Input
-                type="file"
-                value=""
-                style={{ display: 'none' }}
-                inputProps={{
-                  accept:
-                    ".csv"
-                }}
-                onChange={(e) => UploadCSV(e)}
-              />
-            </Button>
+            <DownloadCSVButton />
+            <UploadCSVButton />
           </Grid>
           <Grid item xs={1}></Grid>
             <IconButton

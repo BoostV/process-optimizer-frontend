@@ -1,63 +1,242 @@
 import { initialState } from "../store"
-import { ExperimentType } from "../types/common"
-import { calculateSpace, calculateData } from "./converters"
+import { CategoricalVariableType, DataPointType, ExperimentType, ValueVariableType } from "../types/common"
+import { calculateSpace, calculateData, dataPointsToCSV, csvToDataPoints } from "./converters"
 
 describe("converters", () => {
-    const sampleExperiment: ExperimentType = {...initialState.experiment,
-        id: "123",
-        info: {...initialState.experiment.info,
-            name: "Cookies",
-            description: "Bager haremus' peberkager"
+  const sampleExperiment: ExperimentType = {
+    ...initialState.experiment,
+    id: "123",
+    info: {
+      ...initialState.experiment.info,
+      name: "Cookies",
+      description: "Bager haremus' peberkager"
+    },
+    categoricalVariables: [
+      { name: "Kunde", description: "", options: ["Mus", "Ræv"] }
+    ],
+    valueVariables: [
+      { discrete: true, name: "Sukker", description: "", minVal: 0, maxVal: 1000 },
+      { discrete: true, name: "Peber", description: "", minVal: 0, maxVal: 1000 },
+      { discrete: false, name: "Hvedemel", description: "", minVal: 0.0, maxVal: 1000.8 },
+      { discrete: true, name: "Mælk", description: "", minVal: 1, maxVal: 999 },
+    ],
+    optimizerConfig: {
+      baseEstimator: "GP",
+      acqFunc: "gp_hedge",
+      initialPoints: 2,
+      kappa: 1.96,
+      xi: 0.012
+    },
+    dataPoints: [
+      [{ name: "Sukker", value: 23 }, { name: "Peber", value: 982 }, { name: "Hvedemel", value: 632 }, { name: "Kunde", value: "Mus" }, { name: "score", value: [0.1] }],
+      [{ name: "Sukker", value: 15 }, { name: "Peber", value: 123 }, { name: "Hvedemel", value: 324 }, { name: "Kunde", value: "Ræv" }, { name: "score", value: [0.2] }]
+    ]
+  }
+
+  describe("calculateSpace", () => {
+    it("should convert space to proper output format", () => {
+      const space = calculateSpace(sampleExperiment)
+      expect(space).toContainEqual({ type: "discrete", from: 0, name: "Sukker", to: 1000 })
+      expect(space).toContainEqual({ type: "continuous", from: 0, name: "Hvedemel", to: 1000.8 })
+    })
+  })
+
+  describe("calculateSpace", () => {
+    it("should retain the correct order of variables", () => {
+      const space = calculateSpace(sampleExperiment)
+      expect(space[0].name).toEqual("Sukker")
+      expect(space[1].name).toEqual("Peber")
+      expect(space[2].name).toEqual("Hvedemel")
+      expect(space[3].name).toEqual("Mælk")
+      expect(space[4].name).toEqual("Kunde")
+    })
+  })
+
+  describe("calculateData", () => {
+    it("should format data in proper output format", () => {
+      const expectedData = [
+        { xi: [23, 982, 632, "Mus"], yi: 0.1 },
+        { xi: [15, 123, 324, "Ræv"], yi: 0.2 }
+      ]
+      const actualData = calculateData(sampleExperiment.categoricalVariables, sampleExperiment.valueVariables, sampleExperiment.dataPoints)
+      expect(actualData).toEqual(expectedData)
+    })
+  })
+
+  describe("dataPointsToCSV", () => {
+    it("should accept empty data set", () => {
+      const input = [[]]
+      const expected = ""
+      const actual = dataPointsToCSV(input)
+      expect(actual).toEqual(expected)
+    })
+
+    it("should convert known value", () => {
+      const input = [[
+        {
+          "name": "Sukker",
+          "value": 28
         },
-        categoricalVariables: [
-            {name: "Kunde",description:"",options:["Mus","Ræv"]}
-        ],
-        valueVariables: [
-            {discrete: true, name: "Sukker", description: "", minVal: 0, maxVal: 1000},
-            {discrete: true, name: "Peber", description: "", minVal: 0, maxVal: 1000},
-            {discrete: false, name: "Hvedemel", description: "", minVal: 0.0, maxVal: 1000.8},
-            {discrete: true, name: "Mælk", description: "", minVal: 1, maxVal: 999},
-        ],
-        optimizerConfig: {
-            baseEstimator: "GP",
-            acqFunc:"gp_hedge",
-            initialPoints: 2,
-            kappa: 1.96,
-            xi: 0.012
+        {
+          "name": "Peber",
+          "value": 982
         },
-        dataPoints: [
-            [{name: "Sukker", value: 23}, {name: "Peber", value: 982}, {name: "Hvedemel", value: 632}, {name: "Kunde", value: "Mus"}, {name: "score", value: [0.1]}],
-            [{name: "Sukker", value: 15}, {name: "Peber", value: 123}, {name: "Hvedemel", value: 324}, {name: "Kunde", value: "Ræv"}, {name: "score", value: [0.2]}]
+        {
+          "name": "Hvedemel",
+          "value": 632
+        },
+        {
+          "name": "Kunde",
+          "value": "Mus"
+        },
+        {
+          "name": "score",
+          "value": [
+            1
           ]
-    }
+        }
+      ],
+      [
+        {
+          "name": "Sukker",
+          "value": "15"
+        },
+        {
+          "name": "Peber",
+          "value": "986"
+        },
+        {
+          "name": "Hvedemel",
+          "value": "5"
+        },
+        {
+          "name": "Kunde",
+          "value": "Mus"
+        },
+        {
+          "name": "score",
+          "value": "2"
+        }
+      ]]
+      const expected = "Sukker;Peber;Hvedemel;Kunde;score\n28;982;632;Mus;1\n15;986;5;Mus;2"
+      const actual = dataPointsToCSV(input)
+      expect(actual).toEqual(expected)
+    })
+  })
 
-    describe("calculateSpace", () => {
-        it("should convert space to proper output format", () => {
-            const space = calculateSpace(sampleExperiment)
-            expect(space).toContainEqual({type: "discrete", from: 0, name: "Sukker", to: 1000})
-            expect(space).toContainEqual({type: "continuous", from: 0, name: "Hvedemel", to: 1000.8})
-        })
+  describe("csvToDataPoints", () => {
+    const categorialVariables: CategoricalVariableType[] = [
+      {
+        "name": "Kunde",
+        "description": "",
+        "options": [
+          "Mus",
+          "Ræv"
+        ]
+      }
+    ]
+    const valueVariables: ValueVariableType[] = [
+      {
+        "name": "Sukker",
+        "description": "",
+        "minVal": 0,
+        "maxVal": 1000,
+        discrete: false
+      },
+      {
+        "name": "Peber",
+        "description": "",
+        "minVal": 0,
+        "maxVal": 1000,
+        discrete: false
+      },
+      {
+        "name": "Hvedemel",
+        "description": "",
+        "minVal": 0,
+        "maxVal": 1000,
+        discrete: false
+      }
+    ]
+
+    const sampleDataPoints = [[
+      {
+        "name": "Sukker",
+        "value": 28
+      },
+      {
+        "name": "Peber",
+        "value": 982
+      },
+      {
+        "name": "Hvedemel",
+        "value": 632
+      },
+      {
+        "name": "Kunde",
+        "value": "Mus"
+      },
+      {
+        "name": "score",
+        "value": 1
+      }
+    ],
+    [
+      {
+        "name": "Sukker",
+        "value": 15
+      },
+      {
+        "name": "Peber",
+        "value": 986
+      },
+      {
+        "name": "Hvedemel",
+        "value": 5
+      },
+      {
+        "name": "Kunde",
+        "value": "Mus"
+      },
+      {
+        "name": "score",
+        "value": 2
+      }
+    ]]
+
+    it("should accept empty data string", () => {
+      const input = ""
+      const expected = [[]]
+      const actual = csvToDataPoints(input, [], [])
+      expect(actual).toEqual(expected)
     })
 
-    describe("calculateSpace", () => {
-        it("should retain the correct order of variables", () => {
-            const space = calculateSpace(sampleExperiment)
-            expect(space[0].name).toEqual("Sukker")
-            expect(space[1].name).toEqual("Peber")
-            expect(space[2].name).toEqual("Hvedemel")
-            expect(space[3].name).toEqual("Mælk")
-            expect(space[4].name).toEqual("Kunde")
-        })
+    it("should convert known value", () => {
+      const input = "Sukker;Peber;Hvedemel;Kunde;score\n28;982;632;Mus;1\n15;986;5;Mus;2"
+      const expected = sampleDataPoints
+      const actual = csvToDataPoints(input, valueVariables, categorialVariables)
+      expect(actual).toEqual(expected)
     })
 
-    describe("calculateData", () => {
-        it("should format data in proper output format", () => {
-            const expectedData = [
-                {xi: [23,982,632,"Mus"], yi: 0.1},
-                {xi: [15,123,324,"Ræv"], yi: 0.2}
-              ]
-            const actualData = calculateData(sampleExperiment.categoricalVariables, sampleExperiment.valueVariables, sampleExperiment.dataPoints)
-            expect(actualData).toEqual(expectedData)
-        })
+    it("should accept shuffled columns", () => {
+      const input = "Sukker;score;Hvedemel;Peber;Kunde\n28;1;632;982;Mus\n15;2;5;986;Mus"
+      const expected = sampleDataPoints
+      const actual = csvToDataPoints(input, valueVariables, categorialVariables)
+      expect(actual).toEqual(expected)
     })
+
+    it("should fail if header is missing", () => {
+      const input = "Sukker;Hvedemel;Kunde;score\n28;632;Mus;1\n15;5;Mus;2"
+      expect(() => csvToDataPoints(input, valueVariables, categorialVariables))
+      .toThrowErrorMatchingSnapshot()
+    })
+
+    it("should not fail if there are extra headers", () => {
+      const input = "Sukker;Peber;Hvedemel;Halm;Kunde;score\n28;982;632;007;Mus;1\n15;986;5;008;Mus;2"
+      const expected = sampleDataPoints
+      const actual = csvToDataPoints(input, valueVariables, categorialVariables)
+      expect(actual).toEqual(expected)
+    })
+
+  })
 })
