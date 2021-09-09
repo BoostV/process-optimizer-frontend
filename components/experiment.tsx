@@ -48,7 +48,7 @@ export default function Experiment(props: ExperimentProps) {
         if (lastSavedExperiment && JSON.stringify(lastSavedExperiment) !== JSON.stringify(experiment)) {
             setDirty(true)
         }
-    }, [experiment])
+    }, [experiment, lastSavedExperiment])
 
     const onDownload = () => {
         saveToLocalFile(experiment, experiment.id)

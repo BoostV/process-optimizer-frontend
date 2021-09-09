@@ -41,7 +41,7 @@ const runExperiment = async (experiment: ExperimentType) => {
   return api.optimizerRun(request)
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType|{}>) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType|{}>) => {
   const {
     query: { id },
     method,
@@ -89,5 +89,4 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
 
 }
 
-
-  
+export default handler
