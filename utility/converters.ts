@@ -28,7 +28,7 @@ const convertValue = (valueHeaders:string[], categorialHeaders:string[], name: s
     } else if (categorialHeaders.includes(name)) {
         return value as string
     } else {
-        return Array.isArray(value) ? value : Number(value)
+        return Array.isArray(value) ? value : [Number(value)]
     }
 }
 

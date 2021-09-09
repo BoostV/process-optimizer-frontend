@@ -178,7 +178,7 @@ describe("converters", () => {
       },
       {
         "name": "score",
-        "value": 1
+        "value": [1]
       }
     ],
     [
@@ -200,7 +200,7 @@ describe("converters", () => {
       },
       {
         "name": "score",
-        "value": 2
+        "value": [2]
       }
     ]]
 
