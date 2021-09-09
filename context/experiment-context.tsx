@@ -4,6 +4,7 @@ import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
 import { Dispatch, rootReducer } from '../reducers/reducers'
 import { initialState, State } from '../store'
 import { ExperimentResultType, ExperimentType } from '../types/common'
+import { migrate } from '../utility/migration/migration'
 import { useGlobal } from './global-context'
 
 const fetcher = async (url: string) => (await fetch(url)).json()
@@ -40,7 +41,7 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
                     console.log(`Received data from backend for ${experimentId}`)
                     dispatch({
                         type: 'updateExperiment',
-                        payload: await result.json()
+                        payload: migrate(result.json())
                     })
                 } else if (result.status === 404) {
                     console.log(`Experiment not found on server ${experimentId}`)
@@ -48,6 +49,10 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
                     console.log(`Error fetching expriment ${experimentId}`)
                 }
             } else {
+                dispatch({
+                    type: 'updateExperiment',
+                    payload: migrate(state.experiment)
+                })
                 dispatch({type: 'setSwVersion', payload: versionInfo.version})
                 global.dispatch({
                     type: 'storeExperimentId',

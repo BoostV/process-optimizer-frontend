@@ -11,6 +11,7 @@ describe("experiment reducer", () => {
         swVersion: "",
         name: "Cake",
         description: "Yummy",
+        dataFormatVersion: "1.0.0",
       },
       categoricalVariables: [{
         name: "Icing",
@@ -52,6 +53,7 @@ describe("experiment reducer", () => {
         swVersion: "",
         name: "Not cake",
         description: "Not yummy",
+        dataFormatVersion: "1.0.0",
       },
       categoricalVariables: [{
         name: "Not icing",
@@ -105,9 +107,8 @@ describe("experiment reducer", () => {
       experiment:{...initState.experiment,
         id: "1234",
         info: {
+          ...initState.experiment.info,
           name: "Muffins",
-          description: "Yummy",
-          swVersion: ''
         }
       }
     })
@@ -122,9 +123,8 @@ describe("experiment reducer", () => {
     expect(rootReducer(initState, action)).toEqual({
       experiment:{...initState.experiment,
         info: {
-          name: "Cake",
+          ...initState.experiment.info,
           description: "Tasty",
-          swVersion: ''
         }
       }
     })
