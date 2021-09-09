@@ -20,7 +20,8 @@ export type ExperimentResultType = {
 export type Info = {
   name: string
   description: string,
-  swVersion: string
+  swVersion: string,
+  dataFormatVersion: string,
 }
 
 export type CategoricalVariableType = {
@@ -30,11 +31,11 @@ export type CategoricalVariableType = {
 }
 
 export type ValueVariableType = {
-  discrete: boolean
+  type: "discrete" | "continuous"
   name: string
   description: string
-  minVal: number
-  maxVal: number
+  min: number
+  max: number
 }
 
 export type VariableType = CategoricalVariableType | ValueVariableType

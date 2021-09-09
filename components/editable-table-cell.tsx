@@ -1,5 +1,6 @@
 import { FormControl, MenuItem, Select, TableCell, TextField } from "@material-ui/core"
 import { ChangeEvent } from "react"
+import useStyles from "../styles/editable-table-cell.style"
 
 type EditableTableCellProps = {
   value: string
@@ -10,11 +11,12 @@ type EditableTableCellProps = {
 
 export function EditableTableCell(props: EditableTableCellProps) {
   const { value, isEditMode, options, onChange } = props
+  const classes = useStyles()
 
   return (
     <>
       {isEditMode ?
-        <TableCell>
+        <TableCell className={classes.cell}>
           {options && options.length > 0 ?
             <FormControl>
               <Select

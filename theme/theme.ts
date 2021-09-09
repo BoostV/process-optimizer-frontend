@@ -1,5 +1,5 @@
-import { createMuiTheme, PaletteColorOptions, Theme } from "@material-ui/core";
-import { brown, cyan, deepOrange, grey, teal } from "@material-ui/core/colors";
+import { createTheme, Theme } from "@material-ui/core";
+import { cyan, grey, teal } from "@material-ui/core/colors";
 import { Overrides } from "@material-ui/core/styles/overrides";
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
@@ -36,7 +36,7 @@ const overrides: Overrides = {
     }
   }
 }
-declare module '@material-ui/core/styles/createMuiTheme' {
+declare module '@material-ui/core/styles/createTheme' {
   interface Theme {
     sizes: {
       mainWidthMin: number
@@ -62,7 +62,7 @@ type CustomColours = {
 }
 
 const createCustomTheme = (custom: CustomColours): Theme => {
-  return createMuiTheme({
+  return createTheme({
     overrides,
     sizes: {
       mainWidthMin: 1280,

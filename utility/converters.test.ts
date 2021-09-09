@@ -15,10 +15,10 @@ describe("converters", () => {
       { name: "Kunde", description: "", options: ["Mus", "Ræv"] }
     ],
     valueVariables: [
-      { discrete: true, name: "Sukker", description: "", minVal: 0, maxVal: 1000 },
-      { discrete: true, name: "Peber", description: "", minVal: 0, maxVal: 1000 },
-      { discrete: false, name: "Hvedemel", description: "", minVal: 0.0, maxVal: 1000.8 },
-      { discrete: true, name: "Mælk", description: "", minVal: 1, maxVal: 999 },
+      {type: "discrete", name: "Sukker", description: "", min: 0, max: 1000},
+      {type: "discrete", name: "Peber", description: "", min: 0, max: 1000},
+      {type: "continuous", name: "Hvedemel", description: "", min: 0.0, max: 1000.8},
+      {type: "discrete", name: "Mælk", description: "", min: 1, max: 999},
     ],
     optimizerConfig: {
       baseEstimator: "GP",
@@ -139,23 +139,23 @@ describe("converters", () => {
       {
         "name": "Sukker",
         "description": "",
-        "minVal": 0,
-        "maxVal": 1000,
-        discrete: false
+        "min": 0,
+        "max": 1000,
+        type: "discrete"
       },
       {
         "name": "Peber",
         "description": "",
-        "minVal": 0,
-        "maxVal": 1000,
-        discrete: false
+        "min": 0,
+        "max": 1000,
+        type: "continuous"
       },
       {
         "name": "Hvedemel",
         "description": "",
-        "minVal": 0,
-        "maxVal": 1000,
-        discrete: false
+        "min": 0,
+        "max": 1000,
+        type: "continuous"
       }
     ]
 

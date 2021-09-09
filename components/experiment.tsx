@@ -15,6 +15,9 @@ import { saveObjectToLocalFile } from '../utility/save-to-local-file';
 import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
 import { Plots } from './plots';
+import { useGlobal } from '../context/global-context';
+import { UISizeValue } from '../reducers/global-reducer';
+import { getSize } from '../utility/ui-util';
 
 type ExperimentProps = {
     allowSaveToServer: boolean
@@ -31,6 +34,7 @@ export default function Experiment(props: ExperimentProps) {
     const { state: {
         experiment
     }, dispatch, loading } = useExperiment()
+    const global = useGlobal()
 
     const [lastSavedExperiment, setLastSavedExperiment] = useState(experiment)
     const [isDirty, setDirty] = useState(false)
@@ -38,12 +42,13 @@ export default function Experiment(props: ExperimentProps) {
     const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
     const [isRunning, setRunning] = useState(false)
     const [isSaving, setSaving] = useState(false)
+    const [highlightNextExperiments, setHighlightNextExperiments] = useState(false)
 
     useEffect(() => {
         if (lastSavedExperiment && JSON.stringify(lastSavedExperiment) !== JSON.stringify(experiment)) {
             setDirty(true)
         }
-    }, [experiment])
+    }, [experiment, lastSavedExperiment])
 
     const onDownload = () => {
         saveObjectToLocalFile(experiment, experiment.id)
@@ -121,7 +126,7 @@ export default function Experiment(props: ExperimentProps) {
                                             {experiment.info.name} {isDirty && allowSaveToServer ? '(unsaved)': ''}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={5} container justify="flex-end">
+                                    <Grid item xs={5} container justifyContent="flex-end">
                                         <Button variant="contained" className={classes.actionButton} onClick={onDownload} color="primary">Download</Button>
                                         {allowSaveToServer && 
                                             <LoadingButton 
@@ -173,14 +178,15 @@ export default function Experiment(props: ExperimentProps) {
                             </Grid>
 
                             <Grid item xs={9}>
-
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} xl={6}>
-                                        <Grid container spacing={2}>
+                                    <Grid item xs={UISizeValue.Big} xl={getSize(global.state, 'next-experiments')}>
+                                        <Grid container spacing={2} className={highlightNextExperiments ? classes.highlight : ''}>
                                             <Grid item xs={12}>
                                                 <NextExperiments
-                                                        nextValues={nextValues}
-                                                        headers={headers} />
+                                                    nextValues={nextValues}
+                                                    headers={headers}
+                                                    onMouseEnterExpand={() => setHighlightNextExperiments(true)}
+                                                    onMouseLeaveExpand={() => setHighlightNextExperiments(false)} />
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <DataPoints
@@ -191,7 +197,7 @@ export default function Experiment(props: ExperimentProps) {
                                             </Grid>
                                         </Grid>
                                     </Grid>
-                                    <Grid item xs={12} xl={6}>
+                                    <Grid item xs={UISizeValue.Big} xl={getSize(global.state, 'plots')}>
                                         <Plots />
                                     </Grid>
                                 </Grid>
