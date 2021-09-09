@@ -1,4 +1,4 @@
-import { getByTestId, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { useExperiment, TestExperimentProvider } from "./experiment-context";
 
 describe("useExperiment", () => {
