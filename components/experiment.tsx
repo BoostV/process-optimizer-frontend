@@ -11,7 +11,7 @@ import React, { useState, useEffect } from 'react';
 import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointType } from '../types/common';
 import LoadingExperiment from './loading-experiment';
 import { NextExperiments } from './next-experiment';
-import saveToLocalFile from '../utility/save-to-local-file';
+import { saveObjectToLocalFile } from '../utility/save-to-local-file';
 import LoadingButton from './loading-button';
 import { theme } from '../theme/theme';
 import { Plots } from './plots';
@@ -46,7 +46,7 @@ export default function Experiment(props: ExperimentProps) {
     }, [experiment])
 
     const onDownload = () => {
-        saveToLocalFile(experiment, experiment.id)
+        saveObjectToLocalFile(experiment, experiment.id)
     } 
 
     const onSave = async () => {
