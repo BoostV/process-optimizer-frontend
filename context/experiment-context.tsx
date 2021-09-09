@@ -41,7 +41,7 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
                     console.log(`Received data from backend for ${experimentId}`)
                     dispatch({
                         type: 'updateExperiment',
-                        payload: migrate(result.json())
+                        payload: migrate(await result.json())
                     })
                 } else if (result.status === 404) {
                     console.log(`Experiment not found on server ${experimentId}`)
