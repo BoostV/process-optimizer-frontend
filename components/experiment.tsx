@@ -126,7 +126,7 @@ export default function Experiment(props: ExperimentProps) {
                                             {experiment.info.name} {isDirty && allowSaveToServer ? '(unsaved)': ''}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={5} container justify="flex-end">
+                                    <Grid item xs={5} container justifyContent="flex-end">
                                         <Button variant="contained" className={classes.actionButton} onClick={onDownload} color="primary">Download</Button>
                                         {allowSaveToServer && 
                                             <LoadingButton 
