@@ -1,15 +1,34 @@
-import { Typography } from "@material-ui/core"
+import { Typography, Tooltip, IconButton, Hidden } from "@material-ui/core"
 import { useExperiment } from "../context/experiment-context"
 import useStyles from "../styles/plots.style"
 import { TitleCard } from "./title-card"
+import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
+import { useGlobal } from "../context/global-context"
+import { isUIBig } from "../utility/ui-util";
 
 export const Plots = () => {
   const { state: { experiment } } = useExperiment()
+  const global = useGlobal()
   const classes = useStyles()
 
   return (
     <>
-      <TitleCard title="Plots">
+      <TitleCard title={
+        <>
+          Plots
+          <Hidden lgDown>
+            <Tooltip title={(isUIBig(global.state, "plots") ? "Collapse" : "Expand") + " 'Plots'"}>
+              <IconButton 
+                size="small"
+                className={classes.titleButton}
+                onClick={() => global.dispatch({ type: 'toggleUISize', payload: 'plots' })} >
+                <ZoomOutMapIcon fontSize="small" className={classes.titleIcon} />
+              </IconButton>
+            </Tooltip>
+
+          </Hidden>
+        </>
+      }>
         {experiment.results.plots.length > 0 ?
           <ul>
               <Typography variant="subtitle1"><b>Convergence plot</b></Typography>
