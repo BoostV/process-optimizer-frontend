@@ -1,5 +1,5 @@
 import { ThemeName } from "../theme/theme"
-import { reducer, State } from "./global-reducer"
+import { reducer, State, UISizeValue } from "./global-reducer"
 
 const initState: State = {
   debug: false,
@@ -8,6 +8,7 @@ const initState: State = {
   theme: 'BlueGreen',
   dataPointsNewestFirst: false,
   showJsonEditor: false,
+  uiSizes: [{ key: 'plots', value: 12 }],
 }
 
 describe("storeExperimentId", () => {
@@ -61,5 +62,29 @@ describe("setShowJsonEditor", () => {
     expect(
       reducer(initState, { type: 'setShowJsonEditor', payload }))
       .toEqual({...initState, showJsonEditor: payload})
+  })
+})
+
+describe("toggleUISize", () => {
+  it("should add ui size if not present", async () => {
+    const payload = 'next-experiments'
+    const expectedState: State = {
+      ...initState,
+      uiSizes: [
+        ...initState.uiSizes.concat({ key: payload, value: UISizeValue.Big })
+      ]
+    }
+    expect(reducer(initState, { type: 'toggleUISize', payload })).toEqual(expectedState)
+  })
+})
+
+describe("toggleUISize", () => {
+  it("should toggle ui size if already present", async () => {
+    const payload = 'plots'
+    const expectedState: State = {
+      ...initState,
+      uiSizes: [{ key: payload, value: UISizeValue.Small }]
+    }
+    expect(reducer(initState, { type: 'toggleUISize', payload })).toEqual(expectedState)
   })
 })

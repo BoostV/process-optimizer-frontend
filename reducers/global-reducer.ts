@@ -7,6 +7,19 @@ export type State = {
     theme: ThemeName
     dataPointsNewestFirst: boolean
     showJsonEditor: boolean
+    uiSizes: UISize[]
+}
+
+export enum UISizeValue {
+    Small = 6,
+    Big = 12,
+}
+
+export type UISizeKey = "next-experiments" | "plots"
+
+export type UISize = {
+    key: UISizeKey
+    value: number
 }
 
 export type Action = {
@@ -37,6 +50,10 @@ export type Action = {
     type: 'setShowJsonEditor'
     payload: boolean
 }
+| {
+    type: 'toggleUISize'
+    payload: UISizeKey
+}
 export type Dispatch = (action: Action) => void
 
 export const initialState: State = {
@@ -46,6 +63,7 @@ export const initialState: State = {
     theme: "BlueGreen",
     dataPointsNewestFirst: false,
     showJsonEditor: false,
+    uiSizes: [],
 }
 
 export const reducer = (state: State, action: Action) => {
@@ -75,6 +93,20 @@ export const reducer = (state: State, action: Action) => {
             return { ...state, dataPointsNewestFirst: action.payload }
         case 'setShowJsonEditor':
             return { ...state, showJsonEditor: action.payload }
+        case 'toggleUISize':
+            const indexSize = state.uiSizes.findIndex(u => u.key === action.payload)
+            let newSizes = state.uiSizes.slice()
+            if (indexSize === -1) {
+                newSizes.splice(state.uiSizes.length, 0, { key: action.payload, value: UISizeValue.Big })
+            } else {
+                newSizes = state.uiSizes.map(size => {
+                    if (size.key !== action.payload) {
+                        return size
+                    }
+                    return { key: action.payload, value: size.value === UISizeValue.Big ? UISizeValue.Small : UISizeValue.Big }
+                })
+            }
+            return { ...state, uiSizes: newSizes }
         default:
             return state
     }

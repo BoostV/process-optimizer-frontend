@@ -1,14 +1,17 @@
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core"
+import useStyles from "../styles/suggestions.style"
 interface SuggestionsProps {
     values: string[][]
     headers: string[]
 }
 
 export const Suggestions = ({values, headers} : SuggestionsProps) => {
+    const classes = useStyles()
+
     return (
         <>
             {values[0] !== undefined && values[0].length > 0 &&
-                <Box mt={1}>
+                <Box mt={1} className={classes.tableContainer}>
                     <Table size="small">
                         <TableHead>
                             <TableRow>
@@ -18,7 +21,7 @@ export const Suggestions = ({values, headers} : SuggestionsProps) => {
                         <TableBody>
                             {values.map((row, ir) => (
                                 <TableRow key={ir}>
-                                    {row.map((v, iv) => <TableCell key={iv}>{v}</TableCell>)}        
+                                    {row.map((v, iv) => <TableCell className={classes.cell} key={iv}>{v}</TableCell>)}        
                                 </TableRow>
                             ))}
                         </TableBody>

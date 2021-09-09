@@ -1,4 +1,4 @@
-import { CircularProgress, IconButton } from "@material-ui/core";
+import { CircularProgress, IconButton, Box, Tooltip } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
 import { useGlobal } from "../context/global-context";
 import { dataPointsReducer, DataPointsState } from "../reducers/data-points-reducer";
@@ -135,12 +135,14 @@ export default function DataPoints(props: DataPointProps) {
     <TitleCard title={
       <>
         Data points
-        <IconButton 
-          size="small"
-          className={classes.orderButton}
-          onClick={() => global.dispatch({ type: 'setDataPointsNewestFirst', payload: !global.state.dataPointsNewestFirst })}>
-          <SwapVertIcon fontSize="small" className={classes.orderIcon} />
-        </IconButton>
+        <Tooltip title="Reverse order">
+          <IconButton 
+            size="small"
+            className={classes.titleButton}
+            onClick={() => global.dispatch({ type: 'setDataPointsNewestFirst', payload: !global.state.dataPointsNewestFirst })}>
+            <SwapVertIcon fontSize="small" className={classes.titleIcon} />
+          </IconButton>
+        </Tooltip>
       </>
     }>
       {buildCombinedVariables().length === 0 && "Data points will appear here"}
@@ -148,14 +150,16 @@ export default function DataPoints(props: DataPointProps) {
         <CircularProgress size={24}/>
       } 
       {buildCombinedVariables().length > 0 && !isLoadingState &&
-        <EditableTable
-          rows={(newestFirst ? [...state.rows].reverse() : state.rows) as TableDataRow[]}
-          useArrayForValue={SCORE}
-          onEdit={(editValue: string, rowIndex: number, itemIndex: number) => updateRow(rowIndex, edit, editValue, itemIndex)}
-          onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
-          onEditCancel={(rowIndex: number) => updateRow(rowIndex, cancelEdit)}
-          onToggleEditMode={(rowIndex: number) => updateRow(rowIndex, toggleEditMode)}
-          onDelete={(rowIndex: number) => updateRow(rowIndex, deleteRow)} />
+        <Box className={classes.tableContainer}>
+          <EditableTable
+            rows={(newestFirst ? [...state.rows].reverse() : state.rows) as TableDataRow[]}
+            useArrayForValue={SCORE}
+            onEdit={(editValue: string, rowIndex: number, itemIndex: number) => updateRow(rowIndex, edit, editValue, itemIndex)}
+            onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
+            onEditCancel={(rowIndex: number) => updateRow(rowIndex, cancelEdit)}
+            onToggleEditMode={(rowIndex: number) => updateRow(rowIndex, toggleEditMode)}
+            onDelete={(rowIndex: number) => updateRow(rowIndex, deleteRow)} />
+        </Box>
       }
     </TitleCard>
   )
