@@ -1,4 +1,4 @@
-import { CircularProgress, IconButton, Button, Grid, Input } from "@material-ui/core";
+import { CircularProgress, IconButton, Grid } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
 import { useGlobal } from "../context/global-context";
 import { dataPointsReducer, DataPointsState } from "../reducers/data-points-reducer";
@@ -30,10 +30,14 @@ export default function DataPoints(props: DataPointProps) {
   const newestFirst = global.state.dataPointsNewestFirst
 
   useEffect(() => {
-    dispatch({ type: 'setInitialState', payload: buildState() })
+    dispatch({ type: 'setInitialState', payload: buildState(dataPoints) })
   }, [valueVariables, categoricalVariables])
 
-  const buildState = (): DataPointsState => {
+  useEffect(() => {
+    updateDataPoints(state.rows.filter(item => !item.isNew) as TableDataRow[])
+  }, [state.rows])
+
+  const buildState = (dataPoints: DataPointType[][]): DataPointsState => {
     const combinedVariables: CombinedVariableType[] = buildCombinedVariables()
     const emptyRow: TableDataRow = buildEmptyRow()
     const dataPointRows: TableDataRow[] = dataPoints.map((item, i) => {
@@ -78,19 +82,15 @@ export default function DataPoints(props: DataPointProps) {
     }
   }
 
-  useEffect(() => {
-    updateDataPoints(state.rows.filter(item => !item.isNew) as TableDataRow[])
-  }, [state.rows])
-
-  function toggleEditMode(rowIndex: number) {
+  const toggleEditMode = (rowIndex: number) => {
     dispatch({ type: 'DATA_POINTS_TABLE_EDIT_TOGGLED', payload: rowIndex })
   }
 
-  function cancelEdit(rowIndex: number) {
+  const cancelEdit = (rowIndex: number) => {
     dispatch({ type: 'DATA_POINTS_TABLE_EDIT_CANCELLED', payload: rowIndex })
   }
 
-  function edit(rowIndex: number, editValue: string, itemIndex: number) {
+  const edit = (rowIndex: number, editValue: string, itemIndex: number) => {
     dispatch({
       type: 'DATA_POINTS_TABLE_EDITED', payload: {
         itemIndex,
@@ -101,17 +101,17 @@ export default function DataPoints(props: DataPointProps) {
     })
   }
 
-  function deleteRow(rowIndex: number) {
+  const deleteRow = (rowIndex: number) => {
     dispatch({ type: 'DATA_POINTS_TABLE_ROW_DELETED', payload: rowIndex })
   }
 
-  function addRow(emptyRow: TableDataRow) {
+  const addRow = (emptyRow: TableDataRow) => {
     dispatch({ type: 'DATA_POINTS_TABLE_ROW_ADDED', payload: emptyRow })
   }
 
-  function updateDataPoints(dataRows: TableDataRow[]) {
+  const updateDataPoints = (dataRows: TableDataRow[]) => {
     onUpdateDataPoints(dataRows
-      .map((item, i) => {
+      .map(item => {
         return item.dataPoints.map(item => {
           return {
             name: item.name,
@@ -122,7 +122,7 @@ export default function DataPoints(props: DataPointProps) {
     )
   }
 
-  function onEditConfirm(row: TableDataRow, rowIndex: number) {
+  const onEditConfirm = (row: TableDataRow, rowIndex: number) => {
     if (row.isNew) {
       addRow(buildEmptyRow())
     } else {
@@ -130,9 +130,13 @@ export default function DataPoints(props: DataPointProps) {
     }
   }
 
-  function updateRow(index: number, updateFn: UpdateFnType, ...args: any[]) {
+  const updateRow = (index: number, updateFn: UpdateFnType, ...args: any[]) => {
     const rowIndex = newestFirst ? state.rows.length - 1 - index : index
     updateFn(rowIndex, ...args)
+  }
+
+  const updateTable = (dataPoints: DataPointType[][]) => {
+    dispatch({ type: 'setInitialState', payload: buildState(dataPoints) })
   }
 
   return (
@@ -144,7 +148,7 @@ export default function DataPoints(props: DataPointProps) {
           </Grid>
           <Grid item xs={8} style={{textAlign: "center"}}>
             <DownloadCSVButton />
-            <UploadCSVButton />
+            <UploadCSVButton onUpload={(dataPoints: DataPointType[][]) => updateTable(dataPoints)} />
           </Grid>
           <Grid item xs={1}></Grid>
             <IconButton

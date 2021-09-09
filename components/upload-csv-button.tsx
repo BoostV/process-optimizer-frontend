@@ -1,6 +1,7 @@
 import { Button, Input } from '@material-ui/core'
 import { useExperiment } from '../context/experiment-context';
-import { csvToDataPoints, dataPointsToCSV } from '../utility/converters';
+import { DataPointType } from '../types/common';
+import { csvToDataPoints } from '../utility/converters';
 
 const readFile = (file, dataHandler) => {
     var result = ""
@@ -11,11 +12,14 @@ const readFile = (file, dataHandler) => {
     }
     return result
 }
+interface UploadCSVButtonProps {
+    onUpload: (dataPoints: DataPointType[][]) => void
+}
 
-const UploadCSVButton = () => {
-    const { dispatch, state: { experiment: { valueVariables, categoricalVariables, dataPoints } } } = useExperiment()
-    const handleFileUpload = e => readFile(e.target.files[0], data => dispatch({ type: "updateDataPoints", payload: csvToDataPoints(data, valueVariables, categoricalVariables) }))
-
+const UploadCSVButton = ({ onUpload } : UploadCSVButtonProps) => {
+    const { state: { experiment: { valueVariables, categoricalVariables } } } = useExperiment()
+    const handleFileUpload = e => readFile(e.target.files[0], data => onUpload(csvToDataPoints(data, valueVariables, categoricalVariables)))
+    
     return <Button
         variant="contained"
         color="primary"
