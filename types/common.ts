@@ -38,7 +38,7 @@ export type ValueVariableType = {
   max: number
 }
 
-export type VariableType = CategoricalVariableType | ValueVariableType
+export type VariableType = CategoricalVariableType | ValueVariableType
 
 export type OptimizerConfig = {
   baseEstimator: string
@@ -66,7 +66,7 @@ export type ScoreDataPointType = {
 
 export type SpaceType = {type: string, name:string, from?: number, to?: number, categories?: string[]}[]
 
-export type TableDataPointValue = string | number | number[]
+export type TableDataPointValue = string | number | number[]
 
 export type TableDataPoint = {
   name: string
