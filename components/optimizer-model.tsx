@@ -40,7 +40,7 @@ export default function OptimizerModel(props: OptimizerModelProps) {
               <TableBody>
                 {valueVariables.map((valueVar, valueIndex) => (
                   <TableRow key={valueIndex}>
-                    <TableCell>{valueVar.discrete ? 
+                    <TableCell>{valueVar.type === "discrete" ? 
                       <Tooltip title="Discrete">
                         <LensIcon className={classes.iconDiscrete}/>
                       </Tooltip> : 
@@ -50,8 +50,8 @@ export default function OptimizerModel(props: OptimizerModelProps) {
                     </TableCell>
                     <TableCell component="th" scope="row">{valueVar.name}</TableCell>
                     <TableCell align="left">{valueVar.description}</TableCell>
-                    <TableCell align="right">{valueVar.minVal}</TableCell>
-                    <TableCell align="right">{valueVar.maxVal}</TableCell>
+                    <TableCell align="right">{valueVar.min}</TableCell>
+                    <TableCell align="right">{valueVar.max}</TableCell>
                     <TableCell align="right">
                       <IconButton 
                         disabled={disabled}

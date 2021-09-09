@@ -2,9 +2,12 @@ import { ExperimentData } from "../openapi"
 import { CategoricalVariableType, DataPointType, ExperimentType, ScoreDataPointType, SpaceType, ValueVariableType } from "../types/common"
 
 export const calculateSpace = (experiment: ExperimentType): SpaceType => {
-    const numerical: SpaceType = experiment.valueVariables.map(v => { const type = v.discrete ? "discrete" : "continuous"
-    return {type, name: v.name, from: Number(v.minVal), to: Number(v.maxVal)}})
-    const categorical: SpaceType = experiment.categoricalVariables.map((v) => { return {type: "category", name: v.name, categories: v.options} })
+    const numerical: SpaceType = experiment.valueVariables.map(v => { 
+      return {type: v.type, name: v.name, from: Number(v.min), to: Number(v.max)}
+    })
+    const categorical: SpaceType = experiment.categoricalVariables.map((v) => { 
+      return {type: "category", name: v.name, categories: v.options} 
+    })
     return numerical.concat(categorical)
 }
 
