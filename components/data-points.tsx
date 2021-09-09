@@ -1,4 +1,4 @@
-import { CircularProgress, IconButton, Grid } from "@material-ui/core";
+import { CircularProgress, IconButton, Box } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
 import { useGlobal } from "../context/global-context";
 import { dataPointsReducer, DataPointsState } from "../reducers/data-points-reducer";
@@ -142,22 +142,21 @@ export default function DataPoints(props: DataPointProps) {
   return (
     <TitleCard title={
       <>
-        <Grid container  spacing={2} justify='space-between'>
-          <Grid item xs={2}>
-            Data points
-          </Grid>
-          <Grid item xs={8} style={{textAlign: "center"}}>
-            <DownloadCSVButton />
-            <UploadCSVButton onUpload={(dataPoints: DataPointType[][]) => updateTable(dataPoints)} />
-          </Grid>
-          <Grid item xs={1}></Grid>
-            <IconButton
-              size="small"
-              className={classes.orderButton}
-              onClick={() => global.dispatch({ type: 'setDataPointsNewestFirst', payload: !global.state.dataPointsNewestFirst })}>
-              <SwapVertIcon fontSize="small" className={classes.orderIcon} />
-            </IconButton>
-          </Grid>
+      <Box display="flex" justifyContent="space-between">
+        <Box>
+          Data points
+        </Box>
+        <Box>
+          <DownloadCSVButton light/>
+          <UploadCSVButton light onUpload={(dataPoints: DataPointType[][]) => updateTable(dataPoints)} />
+          <IconButton
+            size="small"
+            className={classes.titleButton}
+            onClick={() => global.dispatch({ type: 'setDataPointsNewestFirst', payload: !global.state.dataPointsNewestFirst })}>
+            <SwapVertIcon fontSize="small" className={classes.titleIcon} />
+          </IconButton>
+        </Box>
+      </Box>
       </>
     }>
       {buildCombinedVariables().length === 0 && "Data points will appear here"}
