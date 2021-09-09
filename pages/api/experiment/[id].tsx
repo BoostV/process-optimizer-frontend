@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs';
 import path from 'path';
-import { ExperimentResultType, ExperimentType, SpaceType } from '../../../types/common';
+import { ExperimentResultType, ExperimentType } from '../../../types/common';
 import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
 import { calculateData, calculateSpace } from '../../../utility/converters';
 
