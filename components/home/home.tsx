@@ -29,46 +29,47 @@ export default function Home() {
   const [uploadMessage, setUploadMessage] = useState<UploadMessage>( { message: "Drag file here", isError: false })
 
   const onDrop = useCallback(acceptedFiles => {
+
+    const saveAndRedirect = async (experiment: ExperimentType) => {
+      const id: string = experiment.id
+      if (state.useLocalStorage) {
+        try {
+          localStorage.setItem(id, JSON.stringify({ experiment }))
+          router.push(`${paths.experiment}/${id}`)
+        } catch (e) {
+          console.error('Unable to use local storage')
+          setUploadMessage({ message: 'Upload failed', isError: true })
+        }
+      } else {
+        await saveExperiment(experiment)
+        router.push(`${paths.experiment}/${id}`)
+      }
+    }
+
+    const load = (reader: FileReader) => {
+      const binaryResult: string | ArrayBuffer = reader.result
+      try {
+        const experiment: ExperimentType = JSON.parse(binaryResult as string)
+        if (experiment.id === undefined) {
+          setUploadMessage({ message: 'Id not found', isError: true })
+        } else {
+          saveAndRedirect(experiment)
+        }
+      } catch (e) {
+        console.error('File parsing failed', e)
+        setUploadMessage({ message: 'Unknown file', isError: true })
+      }
+    }
+    
     const reader = new FileReader()
     reader.onabort = () => setUploadMessage({ message: 'Upload aborted', isError: false })
     reader.onerror = () => setUploadMessage({ message: 'Upload failed', isError: true })
     reader.onprogress = () => setUploadMessage({ message: 'Loading file...', isError: false })
     reader.onload = () => load(reader)
     reader.readAsText(acceptedFiles[0])
-  }, [])
+  }, [router, state.useLocalStorage])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
-
-  const load = (reader: FileReader) => {
-    const binaryResult: string | ArrayBuffer = reader.result
-    try {
-      const experiment: ExperimentType = JSON.parse(binaryResult as string)
-      if (experiment.id === undefined) {
-        setUploadMessage({ message: 'Id not found', isError: true })
-      } else {
-        saveAndRedirect(experiment)
-      }
-    } catch (e) {
-      console.error('File parsing failed', e)
-      setUploadMessage({ message: 'Unknown file', isError: true })
-    }
-  }
-
-  const saveAndRedirect = async (experiment: ExperimentType) => {
-    const id: string = experiment.id
-    if (state.useLocalStorage) {
-      try {
-        localStorage.setItem(id, JSON.stringify({ experiment }))
-        router.push(`${paths.experiment}/${id}`)
-      } catch (e) {
-        console.error('Unable to use local storage')
-        setUploadMessage({ message: 'Upload failed', isError: true })
-      }
-    } else {
-      await saveExperiment(experiment)
-      router.push(`${paths.experiment}/${id}`)
-    }
-  }
 
   const createNewExperiment = () => {
     deleteExperiments()

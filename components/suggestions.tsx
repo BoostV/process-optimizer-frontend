@@ -1,5 +1,5 @@
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core"
-import useStyles from "./suggestions.style"
+import useStyles from "./next-experiments/suggestions.style"
 interface SuggestionsProps {
     values: string[][]
     headers: string[]

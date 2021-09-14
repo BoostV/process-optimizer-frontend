@@ -1,6 +1,6 @@
 import { FormControl, MenuItem, Select, TableCell, TextField } from "@material-ui/core"
 import { ChangeEvent } from "react"
-import useStyles from "../styles/editable-table-cell.style"
+import useStyles from "./editable-table/editable-table-cell.style"
 
 type EditableTableCellProps = {
   value: string

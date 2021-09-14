@@ -14,6 +14,12 @@ export const useStyles = makeStyles(theme => ({
   objectiveImage: {
     maxWidth: '100%',
   },
+  titleButton: {
+    float: 'right',
+  },
+  titleIcon: {
+    color: 'white',
+  },
 }));
 
 export default useStyles

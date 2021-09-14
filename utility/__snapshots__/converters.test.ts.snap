@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`converters csvToDataPoints should fail if header is missing 1`] = `"Headers does not match Sukker,Peber,Hvedemel,Kunde,score !== Sukker,Hvedemel,Kunde,score"`;
