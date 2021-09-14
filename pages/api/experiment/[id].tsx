@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs';
 import path from 'path';
-import { ExperimentResultType, ExperimentType, SpaceType } from '../../../types/common';
+import { ExperimentResultType, ExperimentType } from '../../../types/common';
 import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
 import { calculateData, calculateSpace } from '../../../utility/converters';
 
@@ -24,10 +24,12 @@ const runExperiment = async (experiment: ExperimentType) => {
   const API_SERVER = process.env.API_SERVER || 'http://localhost:9090/v1.0'
   const api = new DefaultApi(new Configuration({basePath: API_SERVER, fetchApi: fetch}))
   const cfg = experiment.optimizerConfig
+  const extras = experiment.extras || {}
   const space = calculateSpace(experiment)
   // TODO data is currently hard coded
   const request: OptimizerRunRequest = {experiment: {
     data: calculateData(experiment.categoricalVariables, experiment.valueVariables, experiment.dataPoints), 
+    extras: extras,
     optimizerConfig: {
     acqFunc: cfg.acqFunc,
     baseEstimator: cfg.baseEstimator,
@@ -39,7 +41,7 @@ const runExperiment = async (experiment: ExperimentType) => {
   return api.optimizerRun(request)
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType|{}>) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType|{}>) => {
   const {
     query: { id },
     method,
@@ -74,7 +76,8 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
           id: experiment.id, 
           plots: json.plots && json.plots.map(p => { return {id: p.id, plot: p.plot}}),
           next: json.result.next,
-          pickled: json.result.pickled
+          pickled: json.result.pickled,
+          extras: json.result.extras
         }
         res.json(result)
         break
@@ -86,5 +89,4 @@ export default async (req: NextApiRequest, res: NextApiResponse<ExperimentType|E
 
 }
 
-
-  
+export default handler

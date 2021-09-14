@@ -1,6 +1,6 @@
 import { Theme, ThemeProvider } from "@material-ui/core"
 import * as React from 'react'
-import ThemeSelector from "../components/theme-selector"
+import ThemeSelector from "../components/theme-selector/theme-selector"
 import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
 import { State, Dispatch, initialState, reducer } from '../reducers/global-reducer'
 import { theme, themes, CustomTheme } from "../theme/theme";

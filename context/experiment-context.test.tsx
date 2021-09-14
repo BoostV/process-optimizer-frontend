@@ -1,13 +1,15 @@
-import { getByTestId, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { useExperiment, TestExperimentProvider } from "./experiment-context";
 
 describe("useExperiment", () => {
     it("fails if called outside provider", async () => {
+        console.error = jest.fn()
         function ExperimentTester() {
             const context = useExperiment()
             return <>{JSON.stringify(context)}</>
         }
         expect(() => render(<ExperimentTester />)).toThrow("useExperiment must be used within an ExperimentProvider")
+        expect(console.error).toHaveBeenCalled()
     })
 
     it("provides context when called inside provider", async () => {

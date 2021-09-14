@@ -1,6 +1,7 @@
 export type ExperimentType = {
   id: string
   info: Info
+  extras: object
   categoricalVariables: CategoricalVariableType[]
   valueVariables: ValueVariableType[]
   optimizerConfig: OptimizerConfig
@@ -12,13 +13,15 @@ export type ExperimentResultType = {
   id: string
   plots: {id: string, plot: string}[]
   next: (number|string)[],
-  pickled: string
+  pickled: string,
+  extras: object
 }
 
 export type Info = {
   name: string
   description: string,
-  swVersion: string
+  swVersion: string,
+  dataFormatVersion: string,
 }
 
 export type CategoricalVariableType = {
@@ -28,13 +31,14 @@ export type CategoricalVariableType = {
 }
 
 export type ValueVariableType = {
+  type: "discrete" | "continuous"
   name: string
   description: string
-  minVal: number
-  maxVal: number
+  min: number
+  max: number
 }
 
-export type VariableType = CategoricalVariableType | ValueVariableType
+export type VariableType = CategoricalVariableType | ValueVariableType
 
 export type OptimizerConfig = {
   baseEstimator: string
@@ -62,7 +66,7 @@ export type ScoreDataPointType = {
 
 export type SpaceType = {type: string, name:string, from?: number, to?: number, categories?: string[]}[]
 
-export type TableDataPointValue = string | number | number[]
+export type TableDataPointValue = string | number | number[]
 
 export type TableDataPoint = {
   name: string

@@ -6,13 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "openapi": "openapi-generator-cli generate --skip-validate-spec -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v1.2.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
-    "next": "^10.2.0",
+    "compare-versions": "^3.6.0",
+    "next": "^11.1.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-dropzone": "^11.3.2",
@@ -21,6 +23,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "2.3.4",
     "@testing-library/dom": "^7.29.4",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
@@ -29,6 +32,8 @@
     "@types/react": "^17.0.0",
     "@types/rimraf": "^3.0.0",
     "babel-jest": "^26.6.3",
+    "eslint": "7.32.0",
+    "eslint-config-next": "11.1.2",
     "git-revision-webpack-plugin": "^5.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^26.6.3",

@@ -7,6 +7,7 @@ export type Dispatch = (action: Action) => void
 
 export const rootReducer = (state: State, action: Action) => {
   switch (action.type) {
+    case 'updateSuggestionCount':
     case 'updateExperiment':
     case 'updateExperimentName':
     case 'updateExperimentDescription':

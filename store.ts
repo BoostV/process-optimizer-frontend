@@ -6,7 +6,8 @@ export const emptyExperiment: ExperimentType = {
   info: {
     name: "",
     description: "",
-    swVersion: versionInfo.version
+    swVersion: versionInfo.version,
+    dataFormatVersion: undefined,
   },
   categoricalVariables: [],
   valueVariables: [],
@@ -21,9 +22,13 @@ export const emptyExperiment: ExperimentType = {
     id: "",
     next: [],
     plots: [],
-    pickled: ""
+    pickled: "",
+    extras: {}
   },
-  dataPoints: []
+  dataPoints: [],
+  extras: {
+    experimentSuggestionCount: 1
+  }
 }
 
 export type State = {

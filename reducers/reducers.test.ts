@@ -11,6 +11,7 @@ describe("experiment reducer", () => {
         swVersion: "",
         name: "Cake",
         description: "Yummy",
+        dataFormatVersion: "1.0.0",
       },
       categoricalVariables: [{
         name: "Icing",
@@ -18,10 +19,11 @@ describe("experiment reducer", () => {
         options: [],
       }],
       valueVariables: [{
+        type: "continuous",
         name: "Water",
         description: "Wet",
-        minVal: 100,
-        maxVal: 200,
+        min: 100,
+        max: 200,
       }],
       optimizerConfig: {
         baseEstimator: "GP",
@@ -34,9 +36,13 @@ describe("experiment reducer", () => {
         id: "",
         next: [],
         plots: [],
-        pickled: ""
+        pickled: "",
+        extras: {}
       },
-      dataPoints: []
+      dataPoints: [],
+      extras: {
+        experimentSuggestionCount: 1
+      }
     }
   }
 
@@ -47,6 +53,7 @@ describe("experiment reducer", () => {
         swVersion: "",
         name: "Not cake",
         description: "Not yummy",
+        dataFormatVersion: "1.0.0",
       },
       categoricalVariables: [{
         name: "Not icing",
@@ -54,10 +61,11 @@ describe("experiment reducer", () => {
         options: [],
       }],
       valueVariables: [{
+        type: "continuous",
         name: "Not water",
         description: "Not wet",
-        minVal: 101,
-        maxVal: 201,
+        min: 101,
+        max: 201,
       }],
       optimizerConfig: {
         baseEstimator: "GP",
@@ -70,9 +78,13 @@ describe("experiment reducer", () => {
         id: "123",
         next: [],
         plots: [],
-        pickled: "123"
+        pickled: "123",
+        extras: {}
       },
-      dataPoints: []
+      dataPoints: [],
+      extras: {
+        experimentSuggestionCount: 1
+      }
     }
 
     const action: ExperimentAction = {
@@ -95,8 +107,8 @@ describe("experiment reducer", () => {
       experiment:{...initState.experiment,
         id: "1234",
         info: {
+          ...initState.experiment.info,
           name: "Muffins",
-          description: "Yummy",
         }
       }
     })
@@ -111,7 +123,7 @@ describe("experiment reducer", () => {
     expect(rootReducer(initState, action)).toEqual({
       experiment:{...initState.experiment,
         info: {
-          name: "Cake",
+          ...initState.experiment.info,
           description: "Tasty",
         }
       }
@@ -120,10 +132,11 @@ describe("experiment reducer", () => {
 
   it("should add value variable", async () => {
     const payload: ValueVariableType = {
+      type: "continuous",
       name: "Flour",
       description: "Wet",
-      minVal: 300,
-      maxVal: 400,
+      min: 300,
+      max: 400,
     }
 
     const action: ExperimentAction = {
@@ -136,8 +149,9 @@ describe("experiment reducer", () => {
         valueVariables: [{
           name: "Water",
           description: "Wet",
-          minVal: 100,
-          maxVal: 200,
+          type: "continuous",
+          min: 100,
+          max: 200,
         },
         payload]
       } 
@@ -146,10 +160,11 @@ describe("experiment reducer", () => {
 
   it("should delete value variable", async () => {
     const payload: ValueVariableType = {
+      type: "continuous",
       name: "Water",
       description: "Wet",
-      minVal: 100,
-      maxVal: 200,
+      min: 100,
+      max: 200,
     }
 
     const action: ExperimentAction = {
@@ -235,6 +250,7 @@ describe("experiment reducer", () => {
         id: "myExperiment",
         next: [1,2,3,"Red"],
         pickled: "pickled",
+        extras: {},
         plots: [{id: "sample", plot: "base64encodedData"}]
       }
   

@@ -1,4 +1,4 @@
-import { AppProps } from "next/dist/next-server/lib/router/router"
+import { AppProps } from "next/app"
 import { useEffect } from "react"
 import Head from 'next/head'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -23,7 +23,7 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <SafeHydrate>
       <Head>
-        <title>BrownieBee</title>
+        <title>Brownie Bee</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <GlobalStateProvider>

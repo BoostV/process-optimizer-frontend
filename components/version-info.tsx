@@ -1,13 +1,13 @@
 export const versionInfo = {
     version: 
     // @ts-ignore
-    VERSION,
+    typeof(VERSION) !== 'undefined' ? VERSION : '' ,
     commithasg: 
     // @ts-ignore
-    COMMITHASH,
+    typeof(COMMITHASH) !== 'undefined' ? COMMITHASH : '' ,
     branch: 
     // @ts-ignore
-    BRANCH
+    typeof(BRANCH) !== 'undefined' ? BRANCH : '' 
 }
 
 export const VersionInfo = () => {
