@@ -1,8 +1,8 @@
 import { Box, Button, TextField, Radio, FormControl, FormControlLabel, RadioGroup, Tooltip } from '@material-ui/core'
 import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import useStyles from '../styles/value-variable.style';
-import { ValueVariableType } from '../types/common';
+import useStyles from './value-variable.style';
+import { ValueVariableType } from '../../types/common';
 
 type ValueVariableProps = {
   isDisabled: boolean

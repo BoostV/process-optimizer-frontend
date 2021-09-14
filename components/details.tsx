@@ -1,15 +1,15 @@
 import { TextField } from '@material-ui/core'
 import { ChangeEvent } from 'react'
 import { Info } from '../types/common'
-import { TitleCard } from './title-card'
+import { TitleCard } from './title-card/title-card'
 
-type ModelEditorProps = {
+type DetailsProps = {
   info: Info
   updateName: (name: string) => void
   updateDescription: (description: string) => void
 }
 
-export default function ModelEditor(props: ModelEditorProps) {
+export default function Details(props: DetailsProps) {
   const { info } = props
 
   return (

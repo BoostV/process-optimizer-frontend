@@ -1,11 +1,11 @@
-import { TextField, Tooltip, IconButton, Hidden } from '@material-ui/core'
-import { useExperiment } from '../context/experiment-context'
+import { useExperiment } from '../../context/experiment-context'
 import { Suggestions } from './suggestions'
-import { TitleCard } from './title-card'
+import { TitleCard } from '../title-card/title-card'
+import { TextField, Tooltip, IconButton, Hidden } from '@material-ui/core'
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
-import { useGlobal } from "../context/global-context"
-import useStyles from '../styles/next-experiments.style';
-import { isUIBig } from '../utility/ui-util';
+import { useGlobal } from "../../context/global-context"
+import useStyles from './next-experiments.style';
+import { isUIBig } from '../../utility/ui-util';
 
 interface NextExperimentProps {
   nextValues: string[][]

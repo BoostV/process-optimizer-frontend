@@ -1,9 +1,9 @@
 import { Box, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography, Tooltip } from '@material-ui/core'
-import { CategoricalVariableType, ValueVariableType } from '../types/common'
+import { CategoricalVariableType, ValueVariableType } from '../../types/common'
 import DeleteIcon from '@material-ui/icons/Delete'
 import VariableEditor from './variable-editor'
-import useStyles from '../styles/optimizer-model.style'
-import { TitleCard } from './title-card'
+import useStyles from './optimizer-model.style'
+import { TitleCard } from '../title-card/title-card'
 import LensIcon from '@material-ui/icons/Lens'
 import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye'
 

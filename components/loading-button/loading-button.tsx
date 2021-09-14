@@ -1,5 +1,5 @@
 import { Button, CircularProgress } from "@material-ui/core"
-import useStyles from "../styles/loading-button.style"
+import useStyles from "./loading-button.style"
 
 type LoadingButtonProps = {
   onClick: () => void

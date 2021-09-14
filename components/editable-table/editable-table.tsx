@@ -5,8 +5,8 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle"
 import CancelIcon from "@material-ui/icons/Cancel"
 import AddIcon from "@material-ui/icons/Add"
 import DeleteIcon from "@material-ui/icons/Delete";
-import { TableDataRow } from "../types/common";
-import useStyles from "../styles/editable-table.style"
+import { TableDataRow } from "../../types/common";
+import useStyles from "./editable-table.style"
 
 type EditableTableProps = {
   rows: TableDataRow[]
