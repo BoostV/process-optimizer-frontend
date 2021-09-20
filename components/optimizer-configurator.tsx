@@ -23,9 +23,8 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
         fullWidth
         margin="dense"
         defaultValue={config.baseEstimator}
-        name="baseEstimator"
         label="Base estimator"
-        inputRef={register}
+        {...register('baseEstimator')}
         onChange={handleChange}
       />
       <TextField
@@ -33,36 +32,32 @@ export default function OptimizerConfigurator(props: OptimizerConfiguratorProps)
         fullWidth
         margin="dense"
         defaultValue={config.acqFunc}
-        name="acqFunc"
         label="Acq func"
-        inputRef={register}
+        {...register('acqFunc')}
         onChange={handleChange}
       />
       <TextField
         fullWidth
         margin="dense"
         defaultValue={config.initialPoints}
-        name="initialPoints"
         label="N initial points"
-        inputRef={register}
+        {...register('initialPoints')}
         onChange={handleChange}
       />
       <TextField
         fullWidth
         margin="dense"
         defaultValue={config.kappa}
-        name="kappa"
         label="Kappa"
-        inputRef={register}
+        {...register('kappa')}
         onChange={handleChange}
       />
       <TextField
         fullWidth
         margin="dense"
         defaultValue={config.xi}
-        name="xi"
         label="Xi"
-        inputRef={register}
+        {...register('xi')}
         onChange={handleChange}
       />
     </TitleCard>

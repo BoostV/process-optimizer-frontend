@@ -31,34 +31,30 @@ export default function ValueVariable(props: ValueVariableProps) {
           <TextField
             fullWidth
             margin="dense"
-            name="name" 
             label="Name" 
-            inputRef={register}
+            {...register("name")}
             />
           <TextField
             fullWidth
             margin="dense"
-            name="description"
             label="Description"
-            inputRef={register}
+            {...register("description")}
           />
           <Box mb={0} className={classes.narrowInputContainer}>
             <Box className={classes.narrowInput} pr={1}>
               <TextField
                 fullWidth
                 margin="dense"
-                name="min"
                 label="Min"
-                inputRef={register({valueAsNumber: true})}
+                {...register("min", {valueAsNumber: true})}
               />
             </Box>
             <Box className={classes.narrowInput}>
               <TextField
                 fullWidth
                 margin="dense"
-                name="max"
                 label="Max"
-                inputRef={register({valueAsNumber: true})}
+                {...register("max", {valueAsNumber: true})}
               />
             </Box>
           </Box>
@@ -66,10 +62,10 @@ export default function ValueVariable(props: ValueVariableProps) {
             <FormControl component="fieldset">
               <RadioGroup row aria-label="value-type" name="type" value={type} onChange={toggleDiscrete}>
                 <Tooltip title="Values include non-integers">
-                  <FormControlLabel inputRef={register} value="continuous" control={<Radio />} label="Continuous" />
+                  <FormControlLabel {...register("type")} value="continuous" control={<Radio />} label="Continuous" />
                 </Tooltip>
                 <Tooltip title="Values are only integers">
-                  <FormControlLabel inputRef={register} value="discrete" control={<Radio />} label="Discrete" />
+                  <FormControlLabel {...register("type")} value="discrete" control={<Radio />} label="Discrete" />
                 </Tooltip>
               </RadioGroup>
             </FormControl>

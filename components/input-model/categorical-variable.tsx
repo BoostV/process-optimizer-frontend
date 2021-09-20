@@ -16,7 +16,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
   const [options, setOptions] = useState([])
   const { isDisabled, onAdded } = props
 
-  const { register, handleSubmit, reset, watch, errors } = useForm<CategoricalVariableType>();
+  const { register, handleSubmit, reset } = useForm<CategoricalVariableType>();
   const onSubmit = async (data: CategoricalVariableType) => {
     onAdded({...data, options})
     setOptions([])
@@ -35,16 +35,14 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           <TextField 
             fullWidth
             margin="dense"
-            name="name" 
             label="Name"
-            inputRef={register}
+            {...register("name")}
             />
           <TextField
             fullWidth
             margin="dense"
-            name="description"
             label="Description"
-            inputRef={register}
+            {...register("description")}
           />
           
           <Box mt={2}>
