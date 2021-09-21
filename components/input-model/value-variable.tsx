@@ -3,6 +3,7 @@ import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useStyles from './value-variable.style';
 import { ValueVariableType } from '../../types/common';
+import { FormInputText } from '../../utility/forms';
 
 type ValueVariableProps = {
   isDisabled: boolean
@@ -14,8 +15,8 @@ export default function ValueVariable(props: ValueVariableProps) {
   const classes = useStyles()
   const [type, setType] = useState<string>('continuous')
 
-  const { register, handleSubmit, reset } = useForm<ValueVariableType>()
-  
+  const { register, handleSubmit, reset, control } = useForm<ValueVariableType>()
+
   const onSubmit = async (data: ValueVariableType) => {
     onAdded(data)
     reset()
@@ -26,52 +27,58 @@ export default function ValueVariable(props: ValueVariableProps) {
   }
 
   return (
-      <>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            fullWidth
-            margin="dense"
-            label="Name" 
-            {...register("name")}
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormInputText
+          name="name"
+          control={control}
+          fullWidth
+          margin="dense"
+          label="Name"
+        />
+        <FormInputText
+          name="description"
+          control={control}
+          fullWidth
+          margin="dense"
+          label="Description"
+        />
+        <Box mb={0} className={classes.narrowInputContainer}>
+          <Box className={classes.narrowInput} pr={1}>
+            <FormInputText
+              name="min"
+              control={control}
+              fullWidth
+              margin="dense"
+              label="Min"
+              rules={{valueAsNumber: true}}
             />
-          <TextField
-            fullWidth
-            margin="dense"
-            label="Description"
-            {...register("description")}
-          />
-          <Box mb={0} className={classes.narrowInputContainer}>
-            <Box className={classes.narrowInput} pr={1}>
-              <TextField
-                fullWidth
-                margin="dense"
-                label="Min"
-                {...register("min", {valueAsNumber: true})}
-              />
-            </Box>
-            <Box className={classes.narrowInput}>
-              <TextField
-                fullWidth
-                margin="dense"
-                label="Max"
-                {...register("max", {valueAsNumber: true})}
-              />
-            </Box>
           </Box>
-          <Box mt={1} mb={1}>
-            <FormControl component="fieldset">
-              <RadioGroup row aria-label="value-type" name="type" value={type} onChange={toggleDiscrete}>
-                <Tooltip title="Values include non-integers">
-                  <FormControlLabel {...register("type")} value="continuous" control={<Radio />} label="Continuous" />
-                </Tooltip>
-                <Tooltip title="Values are only integers">
-                  <FormControlLabel {...register("type")} value="discrete" control={<Radio />} label="Discrete" />
-                </Tooltip>
-              </RadioGroup>
-            </FormControl>
+          <Box className={classes.narrowInput}>
+            <FormInputText
+              name="max"
+              control={control}
+              fullWidth
+              margin="dense"
+              label="Max"
+              rules={{valueAsNumber: true}}
+            />
           </Box>
-          <Button size="small" disabled={isDisabled} variant="outlined" type="submit">Add variable</Button>
-        </form>
-      </>
+        </Box>
+        <Box mt={1} mb={1}>
+          <FormControl component="fieldset">
+            <RadioGroup row aria-label="value-type" name="type" value={type} onChange={toggleDiscrete}>
+              <Tooltip title="Values include non-integers">
+                <FormControlLabel {...register("type")} value="continuous" control={<Radio />} label="Continuous" />
+              </Tooltip>
+              <Tooltip title="Values are only integers">
+                <FormControlLabel {...register("type")} value="discrete" control={<Radio />} label="Discrete" />
+              </Tooltip>
+            </RadioGroup>
+          </FormControl>
+        </Box>
+        <Button size="small" disabled={isDisabled} variant="outlined" type="submit">Add variable</Button>
+      </form>
+    </>
   )
 }
