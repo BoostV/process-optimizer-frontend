@@ -2,7 +2,7 @@ import { TextField } from "@material-ui/core"
 import React from "react"
 import { Controller } from "react-hook-form"
 
-const FormInputText = ({ name, control, defaultValue = undefined, rules = {}, ...rest }) => (
+const FormInputText = ({ name, control, defaultValue = undefined, rules = {}, transform = (x:any) => x, ...rest }) => (
     <Controller
         name={name}
         control={control}
@@ -12,7 +12,7 @@ const FormInputText = ({ name, control, defaultValue = undefined, rules = {}, ..
             {...rest}
             defaultValue={defaultValue}
             inputRef={ref}
-            onChange={onChange}
+            onChange={e => onChange(transform(e.target.value))}
         />}
     />
 )

@@ -51,7 +51,7 @@ export default function ValueVariable(props: ValueVariableProps) {
               fullWidth
               margin="dense"
               label="Min"
-              rules={{valueAsNumber: true}}
+              transform={e => parseInt(e)}
             />
           </Box>
           <Box className={classes.narrowInput}>
@@ -61,7 +61,7 @@ export default function ValueVariable(props: ValueVariableProps) {
               fullWidth
               margin="dense"
               label="Max"
-              rules={{valueAsNumber: true}}
+              transform={e => parseInt(e)}
             />
           </Box>
         </Box>
