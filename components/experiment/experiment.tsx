@@ -104,6 +104,8 @@ export default function Experiment(props: ExperimentProps) {
     const headers = valueVariables.map(it => it.name).concat(categoricalVariables.map(it => it.name))
     
     const nextValues: any[][] = (experiment.results.next && Array.isArray(experiment.results.next[0])) ? experiment.results.next as unknown as any[][] : (experiment.results.next ? [experiment.results.next] : [])
+
+    const expectedMinimum: any[][] = experiment.results.expectedMinimum
     
     if (loading) {
         return  <LoadingExperiment />
@@ -185,6 +187,7 @@ export default function Experiment(props: ExperimentProps) {
                                                 <NextExperiments
                                                     nextValues={nextValues}
                                                     headers={headers}
+                                                    expectedMinimum={expectedMinimum}
                                                     onMouseEnterExpand={() => setHighlightNextExperiments(true)}
                                                     onMouseLeaveExpand={() => setHighlightNextExperiments(false)} />
                                             </Grid>
