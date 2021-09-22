@@ -1,5 +1,4 @@
 import { TextField } from '@material-ui/core'
-import { ChangeEvent } from 'react'
 import { Info } from '../types/common'
 import { TitleCard } from './title-card/title-card'
 
@@ -22,7 +21,7 @@ export default function Details(props: DetailsProps) {
           label="Name" 
           value={info.name}
           required
-          onChange={(e: ChangeEvent) => props.updateName((e.target as HTMLInputElement).value)}
+          onChange={e => props.updateName(e.target.value)}
         />
         <TextField
           fullWidth
@@ -30,7 +29,7 @@ export default function Details(props: DetailsProps) {
           name="info.description"
           label="Description"
           value={info.description}
-          onChange={(e: ChangeEvent) => props.updateDescription((e.target as HTMLInputElement).value)}
+          onChange={e => props.updateDescription(e.target.value)}
         />
       </form>
     </TitleCard>
