@@ -9,7 +9,7 @@ type DetailsProps = {
 }
 
 export default function Details(props: DetailsProps) {
-  const { info } = props
+  const { info, updateName, updateDescription } = props
 
   return (
     <TitleCard title="Details">
@@ -21,7 +21,7 @@ export default function Details(props: DetailsProps) {
           label="Name" 
           value={info.name}
           required
-          onChange={e => props.updateName(e.target.value)}
+          onChange={e => updateName(e.target.value)}
         />
         <TextField
           fullWidth
@@ -29,7 +29,7 @@ export default function Details(props: DetailsProps) {
           name="info.description"
           label="Description"
           value={info.description}
-          onChange={e => props.updateDescription(e.target.value)}
+          onChange={e => updateDescription(e.target.value)}
         />
       </form>
     </TitleCard>
