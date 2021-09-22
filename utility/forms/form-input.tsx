@@ -1,8 +1,16 @@
-import { TextField } from "@material-ui/core"
+import { TextField, TextFieldProps } from "@material-ui/core"
 import React from "react"
 import { Controller } from "react-hook-form"
 
-const FormInputText = ({ name, control, defaultValue = undefined, rules = {}, transform = (x:any) => x, ...rest }) => (
+type FormInputTextPropType = {
+    name: string
+    control: any
+    defaultValue?: any
+    rules?: any
+    transform?: (x:any) => any
+}
+
+const FormInputText = ({ name, control, defaultValue = undefined, rules, transform = (x:any) => x, ...rest }: FormInputTextPropType & TextFieldProps) => (
     <Controller
         name={name}
         control={control}
