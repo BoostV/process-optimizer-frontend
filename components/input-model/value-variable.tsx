@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Radio, FormControl, FormControlLabel, RadioGroup, Tooltip } from '@material-ui/core'
+import { Box, Button, Radio, FormControl, FormControlLabel, RadioGroup, Tooltip } from '@material-ui/core'
 import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useStyles from './value-variable.style';

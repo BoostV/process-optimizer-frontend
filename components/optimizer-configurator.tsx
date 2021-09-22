@@ -43,7 +43,7 @@ export default function OptimizerConfigurator(
         defaultValue={config.initialPoints}
         label="N initial points"
         onChange={(e) =>
-          onConfigUpdated({ ...config, initialPoints: Number.parseInt(e.target.value) })
+          onConfigUpdated({ ...config, initialPoints: parseInt(e.target.value) })
         }
       />
       <TextField
@@ -53,7 +53,7 @@ export default function OptimizerConfigurator(
         defaultValue={config.kappa}
         label="Kappa"
         onChange={(e) =>
-          onConfigUpdated({ ...config, kappa: Number.parseFloat(e.target.value) })
+          onConfigUpdated({ ...config, kappa: parseFloat(e.target.value) })
         }
       />
       <TextField
@@ -63,7 +63,7 @@ export default function OptimizerConfigurator(
         defaultValue={config.xi}
         label="Xi"
         onChange={(e) =>
-          onConfigUpdated({ ...config, xi: Number.parseFloat(e.target.value) })
+          onConfigUpdated({ ...config, xi: parseFloat(e.target.value) })
         }
       />
     </TitleCard>
