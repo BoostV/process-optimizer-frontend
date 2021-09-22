@@ -1,66 +1,71 @@
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { OptimizerConfig } from '../types/common';
-import { TitleCard } from './title-card/title-card';
-import { FormInputText } from '../utility/forms';
+import { OptimizerConfig } from "../types/common";
+import { TitleCard } from "./title-card/title-card";
+import { TextField } from "@material-ui/core";
 
 type OptimizerConfiguratorProps = {
-  config: OptimizerConfig,
-  onConfigUpdated: (config: OptimizerConfig) => void,
-}
+  config: OptimizerConfig;
+  onConfigUpdated: (config: OptimizerConfig) => void;
+};
 
-export default function OptimizerConfigurator(props: OptimizerConfiguratorProps) {
-  const { config , onConfigUpdated} = props
-  const { getValues, control, watch } = useForm<OptimizerConfig>()
-
-  useEffect(() => {
-    const subscription = watch(() => onConfigUpdated({...config, ...getValues()}))
-    return () => subscription.unsubscribe()
-  }, [config, getValues, onConfigUpdated, watch])
+export default function OptimizerConfigurator(
+  props: OptimizerConfiguratorProps
+) {
+  const { config, onConfigUpdated } = props;
 
   return (
     <TitleCard title="Configuration">
-      <FormInputText
+      <TextField
         name="baseEstimator"
-        control={control} 
         disabled
         fullWidth
         margin="dense"
         defaultValue={config.baseEstimator}
         label="Base estimator"
+        onChange={(e) =>
+          onConfigUpdated({ ...config, baseEstimator: e.target.value })
+        }
       />
-      <FormInputText
+      <TextField
         name="acqFunc"
-        control={control} 
         disabled
         fullWidth
         margin="dense"
         defaultValue={config.acqFunc}
         label="Acq func"
+        onChange={(e) =>
+          onConfigUpdated({ ...config, acqFunc: e.target.value })
+        }
       />
-      <FormInputText 
-        name="initialPoints" 
-        control={control} 
+      <TextField
+        name="initialPoints"
         fullWidth
         margin="dense"
         defaultValue={config.initialPoints}
-        label="N initial points" />
-      <FormInputText
+        label="N initial points"
+        onChange={(e) =>
+          onConfigUpdated({ ...config, initialPoints: Number.parseInt(e.target.value) })
+        }
+      />
+      <TextField
         name="kappa"
-        control={control} 
         fullWidth
         margin="dense"
         defaultValue={config.kappa}
         label="Kappa"
+        onChange={(e) =>
+          onConfigUpdated({ ...config, kappa: Number.parseFloat(e.target.value) })
+        }
       />
-      <FormInputText
+      <TextField
         name="xi"
-        control={control} 
         fullWidth
         margin="dense"
         defaultValue={config.xi}
         label="Xi"
+        onChange={(e) =>
+          onConfigUpdated({ ...config, xi: Number.parseFloat(e.target.value) })
+        }
       />
     </TitleCard>
-  )
+  );
 }
