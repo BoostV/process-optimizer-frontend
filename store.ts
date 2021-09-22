@@ -23,6 +23,7 @@ export const emptyExperiment: ExperimentType = {
     next: [],
     plots: [],
     pickled: "",
+    expectedMinimum: [],
     extras: {}
   },
   dataPoints: [],

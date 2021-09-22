@@ -21,6 +21,12 @@ import { exists, mapValues } from '../runtime';
 export interface ResultResult {
     /**
      * 
+     * @type {Array<Array<number>>}
+     * @memberof ResultResult
+     */
+    expectedMinimum?: Array<Array<number>>;
+    /**
+     * 
      * @type {string}
      * @memberof ResultResult
      */
@@ -49,6 +55,7 @@ export function ResultResultFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
+        'expectedMinimum': !exists(json, 'expected_minimum') ? undefined : json['expected_minimum'],
         'pickled': !exists(json, 'pickled') ? undefined : json['pickled'],
         'next': !exists(json, 'next') ? undefined : json['next'],
         'extras': !exists(json, 'extras') ? undefined : json['extras'],
@@ -64,6 +71,7 @@ export function ResultResultToJSON(value?: ResultResult | null): any {
     }
     return {
         
+        'expected_minimum': value.expectedMinimum,
         'pickled': value.pickled,
         'next': value.next,
         'extras': value.extras,
