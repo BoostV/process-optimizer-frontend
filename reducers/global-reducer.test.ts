@@ -67,7 +67,7 @@ describe("setShowJsonEditor", () => {
 
 describe("toggleUISize", () => {
   it("should add ui size if not present", async () => {
-    const payload = 'next-experiments'
+    const payload = 'result-data'
     const expectedState: State = {
       ...initState,
       uiSizes: [
