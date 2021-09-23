@@ -67,7 +67,7 @@ export const NextExperiments = (props: NextExperimentProps) => {
       }>
       {expectedMinimum &&
         <>
-          <h2>{'Expected minimum' + (suggestionCount > 1 ? 's' : '')}</h2>
+          <h2>Expected minimum</h2>
           <SingleDataPoint headers={headers} dataPoint={expectedMinimum} />
         </>
       }
