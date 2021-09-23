@@ -12,8 +12,10 @@ interface SingleDataPointProps {
   dataPoint: any[][]
 }
 
-const SingleDataPoint = ({headers, dataPoint}: SingleDataPointProps) => (
-  <Table>
+const SingleDataPoint = ({ headers, dataPoint }: SingleDataPointProps) => {
+  const classes = useStyles()
+
+  return <Table size="small">
     <TableHead>
       <TableRow>
         {headers.concat(["Score"]).map((h, idx) => <TableCell key={idx}>{h}</TableCell>)}
@@ -21,11 +23,12 @@ const SingleDataPoint = ({headers, dataPoint}: SingleDataPointProps) => (
     </TableHead>
     <TableBody>
       <TableRow>
-        {dataPoint.flat().map((dp, idx) => <TableCell key={idx}>{dp}</TableCell> )}
+        {dataPoint.flat().map((dp, idx) => <TableCell key={idx}>{dp}</TableCell>)}
       </TableRow>
     </TableBody>
   </Table>
-)
+}
+
 
 interface NextExperimentProps {
   nextValues: string[][]
@@ -46,7 +49,7 @@ export const NextExperiments = (props: NextExperimentProps) => {
     <TitleCard
       title={
         <>
-          {'Next experiment' + (suggestionCount > 1 ? 's' : '')}
+          Result data
           <Hidden lgDown>
             <Tooltip title={(isUIBig(global.state, "next-experiments") ? "Collapse" : "Expand") + " 'Next experiment' and 'Data points'"}>
               <IconButton
@@ -62,7 +65,13 @@ export const NextExperiments = (props: NextExperimentProps) => {
           </Hidden>
         </>
       }>
-      {expectedMinimum && <SingleDataPoint headers={headers} dataPoint={expectedMinimum} />}
+      {expectedMinimum &&
+        <>
+          <h2>{'Expected minimum' + (suggestionCount > 1 ? 's' : '')}</h2>
+          <SingleDataPoint headers={headers} dataPoint={expectedMinimum} />
+        </>
+      }
+      <h2>{'Next experiment' + (suggestionCount > 1 ? 's' : '')}</h2>
       <TextField
         fullWidth
         type="number"
