@@ -1,0 +1,70 @@
+{
+  "id": "1234",
+  "info": {
+    "dataFormatVersion": "4",
+    "swVersion": "v1.2.0-16",
+    "name": "Cake",
+    "description": "Yummy"
+  },
+  "categoricalVariables": [{
+    "name": "Icing",
+    "description": "Sugary",
+    "options": ["White", "Brown"]
+  }],
+  "valueVariables": [
+    {
+      "name": "name1",
+      "description": "desc1",
+      "min": 10,
+      "max": 100,
+      "type": "discrete"
+    },
+    {
+      "name": "name2",
+      "description": "desc2",
+      "min": 10.2,
+      "max": 100.3,
+      "type": "continuous"
+    }
+  ],
+  "optimizerConfig": {
+    "baseEstimator": "GP",
+    "acqFunc": "gp_hedge",
+    "initialPoints": 3,
+    "kappa": 1.96,
+    "xi": 0.01
+  },
+  "results": {
+    "id": "",
+    "next": [],
+    "plots": [],
+    "pickled": "",
+    "expectedMinimum": [],
+    "extras": {}
+  },
+  "dataPoints": [
+    [
+      {
+        "name": "Icing",
+        "value": "Brown"
+      },
+      {
+        "name": "name1",
+        "value": "10"
+      },
+      {
+        "name": "name2",
+        "value": "10.2"
+      },
+      {
+        "name": "score",
+        "value": [
+          "0.5"
+        ]
+      }
+    ]
+  ],
+  "extras": {
+    "experimentSuggestionCount": 1
+  }
+}
