@@ -16,7 +16,7 @@ export const NextExperiments = ({ suggestionCount }: NextExperimentsProps) => {
         margin="dense"
         defaultValue={suggestionCount}
         name="numberOfSuggestions"
-        label="Number of suggestions"
+        label="Number of suggested experiments"
         onChange={(e) => dispatch({ type: 'updateSuggestionCount', payload: e.target.value })}
       />
     </>

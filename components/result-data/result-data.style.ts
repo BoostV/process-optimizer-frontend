@@ -9,7 +9,7 @@ export const useStyles = makeStyles(theme => ({
     color: 'white',
   },
   extrasContainer: {
-    background: grey[100],
+    background: grey[200],
   },
 }));
 
