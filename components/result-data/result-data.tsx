@@ -49,7 +49,7 @@ export const ResultData = (props: ResultDataProps) => {
         <NextExperiments suggestionCount={suggestionCount} />
         <Suggestions values={nextValues} headers={headers} />
       </Box>
-      {expectedMinimum.length > 0 &&
+      {expectedMinimum && expectedMinimum.length > 0 &&
         <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
             <SingleDataPoint title="Expected minimum" headers={headers} dataPoint={expectedMinimum} />
         </Box>
