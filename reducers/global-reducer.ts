@@ -15,7 +15,7 @@ export enum UISizeValue {
     Big = 12,
 }
 
-export type UISizeKey = "next-experiments" | "plots"
+export type UISizeKey = "result-data" | "plots"
 
 export type UISize = {
     key: UISizeKey

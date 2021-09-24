@@ -77,6 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ExperimentType|
           plots: json.plots && json.plots.map(p => { return {id: p.id, plot: p.plot}}),
           next: json.result.next,
           pickled: json.result.pickled,
+          expectedMinimum: json.result.expectedMinimum,
           extras: json.result.extras
         }
         res.json(result)
