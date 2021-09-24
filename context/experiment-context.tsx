@@ -29,7 +29,7 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
     const storageKey = experimentId === undefined ? 'unknown' : experimentId
     const initialExperimentState = { ...initialState, experiment: { ...initialState.experiment, id: experimentId } }
     const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialExperimentState, storageKey) : React.useReducer(rootReducer, { ...initialExperimentState })
-    const [loading, setLoading] = React.useState(!useLocalStorage)
+    const [loading, setLoading] = React.useState(true)
     const global = useGlobal()
 
     React.useEffect(() => {
