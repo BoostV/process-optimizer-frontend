@@ -43,7 +43,7 @@ describe("migration", () => {
     })
 
     it("should migrate to 4 from 3 (expectedMinimum added to result)", () => {
-      expect(migrate(version2, "4")).toEqual(version4)
+      expect(migrate(version3, "4")).toEqual(version4)
     })
 
     it(`should migrate to newest version (${MIGRATIONS.slice(-1)[0].version})`, async () => {
