@@ -51,7 +51,7 @@ export default function ValueVariable(props: ValueVariableProps) {
               fullWidth
               margin="dense"
               label="Min"
-              transform={e => parseInt(e)}
+              transform={e => parseFloat(e)}
             />
           </Box>
           <Box className={classes.narrowInput}>
@@ -61,7 +61,7 @@ export default function ValueVariable(props: ValueVariableProps) {
               fullWidth
               margin="dense"
               label="Max"
-              transform={e => parseInt(e)}
+              transform={e => parseFloat(e)}
             />
           </Box>
         </Box>
