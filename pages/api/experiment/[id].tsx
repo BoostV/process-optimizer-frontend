@@ -5,6 +5,14 @@ import { ExperimentResultType, ExperimentType } from '../../../types/common';
 import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
 import { calculateData, calculateSpace } from '../../../utility/converters';
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '100mb',
+    },
+  },
+}
+
 const db = {}
 
 const readFromFile = (file: string) => {
