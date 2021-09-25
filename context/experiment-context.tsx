@@ -5,6 +5,7 @@ import { Dispatch, rootReducer } from '../reducers/reducers'
 import { initialState, State } from '../store'
 import { ExperimentResultType, ExperimentType } from '../types/common'
 import { migrate } from '../utility/migration/migration'
+import { useGlobal } from './global-context'
 
 const ExperimentContext = React.createContext<
     { state: State, dispatch: Dispatch, loading: boolean } | undefined
@@ -22,6 +23,7 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
     const initialExperimentState = { ...initialState, experiment: { ...initialState.experiment, id: experimentId } }
     const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialExperimentState, storageKey, (a:State) => ({...a, experiment: migrate(a.experiment)})) : React.useReducer(rootReducer, { ...initialExperimentState })
     const [loading, setLoading] = React.useState(true)
+    const global = useGlobal()
 
     React.useEffect(() => {
         (async () => {
@@ -43,6 +45,10 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
                 if (state?.experiment?.info?.swVersion !== versionInfo.version) {
                     dispatch({type: 'setSwVersion', payload: versionInfo.version})
                 }
+                global.dispatch({
+                    type: 'storeExperimentId',
+                    payload: experimentId
+                })
             }
             setLoading(false)
         })()
