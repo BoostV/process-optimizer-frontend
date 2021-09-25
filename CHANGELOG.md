@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.3.1](https://github.com/BoostV/process-optimizer-frontend/tree/HEAD)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.3.0...HEAD)
+
+**Fixed bugs:**
+
+- New experiments are not stored in local storage [\#119](https://github.com/BoostV/process-optimizer-frontend/issues/119)
+
+**Merged pull requests:**
+
+- Store experiment id in global state [\#120](https://github.com/BoostV/process-optimizer-frontend/pull/120) ([langdal](https://github.com/langdal))
+
 ## [v1.3.0](https://github.com/BoostV/process-optimizer-frontend/tree/v1.3.0) (2021-09-24)
 
 [Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.2.0...v1.3.0)
