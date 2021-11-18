@@ -22,7 +22,7 @@ export const PlotItem = ({ id, title, body, width, maxWidth }: PlotItemProps) =>
       {experiment.results.plots.filter(plot => plot.id === id).map(plot =>
         <li className={classes.listItem} key={plot.id}>{
             // eslint-disable-next-line @next/next/no-img-element
-            <img className={classes.image} style={{ width: width || 'auto', maxWidth: maxWidth || 'none' }} src={`data:image/png;base64, ${plot.plot}`} alt={plot.id} />
+            <img style={{ width: width || 'auto', maxWidth: maxWidth || 'none' }} src={`data:image/png;base64, ${plot.plot}`} alt={plot.id} />
         }</li>
       )}
     </>
