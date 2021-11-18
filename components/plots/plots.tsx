@@ -5,6 +5,8 @@ import { Typography, Tooltip, IconButton, Hidden } from "@material-ui/core"
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
 import { useGlobal } from "../../context/global-context"
 import { isUIBig } from "../../utility/ui-util";
+import { PlotList } from "./plot-list";
+import { PlotItem } from "./plot-item";
 
 export const Plots = () => {
   const { state: { experiment } } = useExperiment()
@@ -30,30 +32,28 @@ export const Plots = () => {
         </>
       }>
         {experiment.results.plots.length > 0 ?
-          <ul className={classes.list}>
-              <Typography variant="subtitle1"><b>Convergence plot</b></Typography>
-              <Typography variant="body2" paragraph={true}>
-                The convegence plot displays the score of the best observation as a function of the number of calls.
-              </Typography>
-              {experiment.results.plots.filter(plot => plot.id === "convergence").map(plot => <li className={classes.listItem} key={plot.id}>{
-                // eslint-disable-next-line @next/next/no-img-element
-                <img className={classes.convergenceImage} src={`data:image/png;base64, ${plot.plot}`} alt={plot.id} />
-                }</li>)}
-              
-              <Typography variant="subtitle1"><b>Objective plot</b></Typography>
-              <Typography variant="body2" paragraph={true}>
-                The objective plot displays the model approximating the objective function.<br/>
-                In the diagonal the dependence of the model on each input variable is shown.
-                For each input variable the other input variables are set by the best observation.<br/>
-                In the lower triangle the pairwise dependencies of the model on each pair of input variables.
-                For each pair the other input variables are set by the best observation.<br/>
-                The best observation is marked with a red dot while the remaining observations are marked with orange dots.
-              </Typography>
-              {experiment.results.plots.filter(plot => plot.id === "objective").map(plot => <li className={classes.listItem} key={plot.id}>{
-                // eslint-disable-next-line @next/next/no-img-element
-                <img className={classes.objectiveImage} src={`data:image/png;base64, ${plot.plot}`} alt={plot.id} />
-                }</li>)}
-          </ul>
+          <PlotList>
+            <PlotItem 
+              id="objective" 
+              title="Objective plot" 
+              body={[
+                "The objective plot displays the model approximating the objective function.",
+                "In the diagonal the dependence of the model on each input variable is shown.",
+                "For each input variable the other input variables are set by the best observation.",
+                "In the lower triangle the pairwise dependencies of the model on each pair of input variables.",
+                "For each pair the other input variables are set by the best observation.",
+                "The best observation is marked with a red dot while the remaining observations are marked with orange dots."
+              ]}
+              maxWidth="100%"
+            />
+            <PlotItem 
+              id="convergence" 
+              title="Convergence plot" 
+              body={["The convegence plot displays the score of the best observation as a function of the number of calls."]}
+              width="100%"
+              maxWidth={800}
+            />
+          </PlotList>
           :
           "Plots will appear here"
         }
