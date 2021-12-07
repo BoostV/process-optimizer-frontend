@@ -29,7 +29,7 @@ export default function VariableEditor(props: VariableEditorProps) {
         onChange={handleTabChange} 
         aria-label="variables">
         <Tab label="Value" className={classes.customTab}/>
-        <Tab label="Categorical"  className={classes.customTab}/>
+        <Tab label="Categorical" className={classes.customTab}/>
       </Tabs>
       <Box ml={2} mr={2}>
         {tabIndex === 0 &&
