@@ -27,7 +27,8 @@ export default function ValueVariable(props: ValueVariableProps) {
 
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
-      reset(defaultValues)
+      reset({ ...defaultValues })
+      setType(defaultValues.type)
     }
   }, [defaultValues, formState, reset])
 
