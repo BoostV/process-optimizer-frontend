@@ -1,5 +1,5 @@
 import { Box, Button, Radio, FormControl, FormControlLabel, RadioGroup, Tooltip } from '@material-ui/core'
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import useStyles from './value-variable.style';
 import { ValueVariableType } from '../../types/common';
@@ -13,18 +13,23 @@ type ValueVariableProps = {
 export default function ValueVariable(props: ValueVariableProps) {
   const { isDisabled, onAdded } = props
   const classes = useStyles()
-  const [type, setType] = useState<string>('continuous')
+  const defaultValues: ValueVariableType = useMemo(() => { return { name: undefined, min: undefined, max: undefined, description: undefined, type: 'continuous' } }, [])
+  const [type, setType] = useState<string>(defaultValues.type)
+  const { register, handleSubmit, reset, control, formState } = useForm<ValueVariableType>({ defaultValues })
 
-  const { register, handleSubmit, reset, control } = useForm<ValueVariableType>()
-
-  const onSubmit = async (data: ValueVariableType) => {
+  const onSubmit = (data: ValueVariableType) => {
     onAdded(data)
-    reset()
   }
 
   const toggleDiscrete = (event: ChangeEvent<HTMLInputElement>) => {
     setType(event.target.value)
   }
+
+  useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      reset(defaultValues)
+    }
+  }, [defaultValues, formState, reset])
 
   return (
     <>
