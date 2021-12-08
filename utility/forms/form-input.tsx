@@ -14,8 +14,9 @@ const FormInputText = ({ name, control, rules, transform = (x:any) => x, ...rest
         name={name}
         control={control}
         rules={rules}
-        render={({ field: { ref, onChange } }) => <TextField
+        render={({ field: { ref, onChange, value } }) => <TextField
             {...rest}
+            value={value}
             inputRef={ref}
             onChange={e => onChange(transform(e.target.value))}
         />}

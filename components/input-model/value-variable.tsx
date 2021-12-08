@@ -1,4 +1,4 @@
-import { Box, Button, Radio, FormControl, FormControlLabel, RadioGroup, Tooltip } from '@material-ui/core'
+import { Box, Button, Radio, FormControl, FormControlLabel, RadioGroup, Tooltip, TextField } from '@material-ui/core'
 import { ChangeEvent, useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import useStyles from './value-variable.style';
@@ -13,9 +13,9 @@ type ValueVariableProps = {
 export default function ValueVariable(props: ValueVariableProps) {
   const { isDisabled, onAdded } = props
   const classes = useStyles()
-  const defaultValues: ValueVariableType = useMemo(() => { return { name: undefined, min: undefined, max: undefined, description: undefined, type: 'continuous' } }, [])
+  const defaultValues = useMemo(() => { return { name: '', min: '', max: '', description: '', type: 'continuous' } }, [])
   const [type, setType] = useState<string>(defaultValues.type)
-  const { register, handleSubmit, reset, control, formState } = useForm<ValueVariableType>({ defaultValues })
+  const { register, handleSubmit, reset, control, formState } = useForm({ defaultValues })
 
   const onSubmit = (data: ValueVariableType) => {
     onAdded(data)
