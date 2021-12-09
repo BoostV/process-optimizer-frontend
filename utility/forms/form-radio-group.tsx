@@ -5,21 +5,23 @@ import { Controller } from "react-hook-form"
 type FormRadioGroupProps = {
     name: string
     control: any
+    values: string[]
+    labels: string[]
+    ariaLabel: string
     tooltips: string[]
 }
 
-export const FormRadioGroup = ({ name, control, tooltips,...rest }: FormRadioGroupProps & RadioGroupProps) => (
+export const FormRadioGroup = ({ name, control, values, labels, ariaLabel, tooltips,...rest }: FormRadioGroupProps & RadioGroupProps) => (
     <Controller
         name={name}
         control={control}
         render={({ field: { onChange, value } }) => 
-          <RadioGroup row aria-label="value-type" value={value} onChange={e => onChange(e.target.value)} {...rest}>
-            <Tooltip title={tooltips[0]}>
-              <FormControlLabel value="continuous" control={<Radio />} label="Continuous" />
-            </Tooltip>
-            <Tooltip title={tooltips[1]}>
-              <FormControlLabel value="discrete" control={<Radio />} label="Discrete" />
-            </Tooltip>
+          <RadioGroup row aria-label={ariaLabel} value={value} onChange={e => onChange(e.target.value)} {...rest}>
+            {values.map((v, i) =>
+              <Tooltip key={i} title={tooltips[i]}>
+                <FormControlLabel value={values[i]} control={<Radio />} label={labels[i]} />
+              </Tooltip>
+            )}
           </RadioGroup>
         }
     />

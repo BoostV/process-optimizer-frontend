@@ -72,7 +72,10 @@ export default function ValueVariable(props: ValueVariableProps) {
           <FormRadioGroup 
             name="type"
             control={control}
+            values={["continuous", "discrete"]}
+            labels={["Continuous", "Discrete"]}
             tooltips={["Values include non-integers", "Values are only integers"]}
+            ariaLabel={"value-type"}
           />
         </Box>
         <Button size="small" disabled={isDisabled} variant="outlined" type="submit">Add variable</Button>
