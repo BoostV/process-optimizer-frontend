@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import CategoricalVariableOptions from './categorical-variable-options';
 import { useStyles } from './categorical-variable.style';
 import { CategoricalVariableType } from '../../types/common';
+import { validation } from '../../utility/forms/validation';
 
 type CategoricalVariableProps = {
   isDisabled: boolean
@@ -40,10 +41,12 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           name="name"
-          { ...register("name") }
+          { ...register("name", { ...validation.required }) }
           label="Name"
           fullWidth
           margin="dense"
+          error={!!formState.errors.name}
+          helperText={formState.errors.name?.message}
         />
         <TextField
           name="description"
