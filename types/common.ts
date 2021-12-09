@@ -35,8 +35,8 @@ export type ValueVariableType = {
   type: "discrete" | "continuous"
   name: string
   description: string
-  min: number
-  max: number
+  min: number | string
+  max: number | string
 }
 
 export type VariableType = CategoricalVariableType | ValueVariableType

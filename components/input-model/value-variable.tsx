@@ -15,11 +15,11 @@ type ValueVariableProps = {
 export default function ValueVariable(props: ValueVariableProps) {
   const { isDisabled, onAdded } = props
   const classes = useStyles()
-  const defaultValues = useMemo(() => { return { name: '', min: '', max: '', description: '', type: 'continuous' } }, [])
+  const defaultValues: ValueVariableType = useMemo(() => { return { name: '', min: '', max: '', description: '', type: 'continuous' } }, [])
   const { handleSubmit, reset, control, formState, getValues } = useForm({ defaultValues })
 
-  const onSubmit = (data: any) => {
-    onAdded({ ...data, min: parseFloat(data.min), max: parseFloat(data.max) })
+  const onSubmit = (data: ValueVariableType) => {
+    onAdded({ ...data,  min: parseFloat(data.min as string), max: parseFloat(data.max as string) })
   }
  
   useEffect(() => {
