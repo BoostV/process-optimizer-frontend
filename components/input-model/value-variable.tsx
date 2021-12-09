@@ -1,5 +1,5 @@
 import { Box, Button, Radio, FormControl, FormControlLabel, RadioGroup, Tooltip } from '@material-ui/core'
-import { ChangeEvent, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import useStyles from './value-variable.style';
 import { ValueVariableType } from '../../types/common';
@@ -13,18 +13,18 @@ type ValueVariableProps = {
 export default function ValueVariable(props: ValueVariableProps) {
   const { isDisabled, onAdded } = props
   const classes = useStyles()
-  const [type, setType] = useState<string>('continuous')
+  const defaultValues = useMemo(() => { return { name: '', min: '', max: '', description: '', type: 'continuous' } }, [])
+  const { register, handleSubmit, reset, control, formState, getValues } = useForm({ defaultValues })
 
-  const { register, handleSubmit, reset, control } = useForm<ValueVariableType>()
-
-  const onSubmit = async (data: ValueVariableType) => {
+  const onSubmit = (data: ValueVariableType) => {
     onAdded(data)
-    reset()
   }
-
-  const toggleDiscrete = (event: ChangeEvent<HTMLInputElement>) => {
-    setType(event.target.value)
-  }
+  
+  useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      reset({ ...defaultValues, type: getValues().type })
+    }
+  }, [defaultValues, formState, reset, getValues])
 
   return (
     <>
@@ -67,7 +67,7 @@ export default function ValueVariable(props: ValueVariableProps) {
         </Box>
         <Box mt={1} mb={1}>
           <FormControl component="fieldset">
-            <RadioGroup row aria-label="value-type" name="type" value={type} onChange={toggleDiscrete}>
+            <RadioGroup row aria-label="value-type" name="type">
               <Tooltip title="Values include non-integers">
                 <FormControlLabel {...register("type")} value="continuous" control={<Radio />} label="Continuous" />
               </Tooltip>

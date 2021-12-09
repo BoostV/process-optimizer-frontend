@@ -5,20 +5,18 @@ import { Controller } from "react-hook-form"
 type FormInputTextPropType = {
     name: string
     control: any
-    defaultValue?: any
     rules?: any
     transform?: (x:any) => any
 }
 
-const FormInputText = ({ name, control, defaultValue = undefined, rules, transform = (x:any) => x, ...rest }: FormInputTextPropType & TextFieldProps) => (
+const FormInputText = ({ name, control, rules, transform = (x:any) => x, ...rest }: FormInputTextPropType & TextFieldProps) => (
     <Controller
         name={name}
         control={control}
-        defaultValue={defaultValue}
         rules={rules}
-        render={({ field: { ref, onChange } }) => <TextField
+        render={({ field: { ref, onChange, value } }) => <TextField
             {...rest}
-            defaultValue={defaultValue}
+            value={value}
             inputRef={ref}
             onChange={e => onChange(transform(e.target.value))}
         />}

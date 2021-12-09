@@ -1,7 +1,7 @@
 import CategoricalVariable from './categorical-variable';
 import ValueVariable from './value-variable';
 import { Box, Tab, Tabs } from "@material-ui/core"
-import { useState } from "react"
+import { useState, ChangeEvent } from "react"
 import useStyles from './variable-editor.style';
 import { CategoricalVariableType, ValueVariableType } from '../../types/common';
 
@@ -17,7 +17,7 @@ export default function VariableEditor(props: VariableEditorProps) {
   const [tabIndex, setTabIndex] = useState(0)
   const classes = useStyles()
 
-  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleTabChange = (event: ChangeEvent<{}>, newValue: number) => {
     setTabIndex(newValue)
   }
 
@@ -29,7 +29,7 @@ export default function VariableEditor(props: VariableEditorProps) {
         onChange={handleTabChange} 
         aria-label="variables">
         <Tab label="Value" className={classes.customTab}/>
-        <Tab label="Categorical"  className={classes.customTab}/>
+        <Tab label="Categorical" className={classes.customTab}/>
       </Tabs>
       <Box ml={2} mr={2}>
         {tabIndex === 0 &&
