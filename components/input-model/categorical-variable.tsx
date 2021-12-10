@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, TextField, Typography } from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import CategoricalVariableOptions from './categorical-variable-options';
 import { useStyles } from './categorical-variable.style';
@@ -15,15 +15,23 @@ type CategoricalVariableProps = {
 export default function CategoricalVariable(props: CategoricalVariableProps) {
   const classes = useStyles()
   const { isDisabled, onAdded } = props
-  const defaultValues: CategoricalVariableType = useMemo(() => { return { name: undefined, description: undefined, options: [] } }, [])
-  const [options, setOptions] = useState(defaultValues.options)
-  const { register, handleSubmit, reset, formState } = useForm<CategoricalVariableType>({ defaultValues })
+  const [options, setOptions] = useState([])
+  const { register, handleSubmit, reset, formState, setError, clearErrors } = useForm<CategoricalVariableType>()
+  const isOptionsValid = useCallback(() => { return options.length > 0}, [options])
 
   const onSubmit = (data: CategoricalVariableType) => {
-    onAdded({ ...data, options })
+    if (isOptionsValid()) {
+      onAdded({ ...data, options })
+      clearErrors("options")
+    } else {
+      setError("options.0", {
+        type: "manual",
+        message: "Required",
+      })
+    }
   }
 
-  function deleteOption(index: number) {
+  const deleteOption = (index: number) => {
     let newOptions = options.slice()
     newOptions.splice(index, 1)
     setOptions(newOptions)
@@ -31,10 +39,10 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
 
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
-      reset({ ...defaultValues })
-      setOptions(defaultValues.options)
+      reset()
+      setOptions([])
     }
-  }, [defaultValues, formState, reset])
+  }, [formState, reset, isOptionsValid])
 
   return (
     <>
@@ -45,6 +53,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           label="Name"
           fullWidth
           margin="dense"
+          defaultValue=""
           error={!!formState.errors.name}
           helperText={formState.errors.name?.message}
         />
@@ -54,6 +63,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           label="Description"
           fullWidth
           margin="dense"
+          defaultValue=""
         />
         <Box mt={2}>
           <Typography>Options</Typography>
@@ -68,9 +78,13 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
             </div>
           ))}
         </Box>
-        <CategoricalVariableOptions onOptionAdded={(option: string) => {
-          setOptions([...options, option])
-        }} />
+        <CategoricalVariableOptions 
+          onOptionAdded={(option: string) => {
+            setOptions([...options, option])
+            clearErrors("options")
+          }}
+          error={formState.errors.options !== undefined ? formState.errors.options[0].message : undefined}
+        />
         <Box mt={2}>
           <Button disabled={isDisabled} size="small" variant="outlined" type="submit">Add variable</Button>
       </Box>
