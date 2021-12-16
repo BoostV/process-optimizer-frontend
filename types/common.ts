@@ -30,14 +30,20 @@ export type CategoricalVariableType = {
   description: string
   options: string[]
 }
-
 export type ValueVariableType = {
   type: "discrete" | "continuous"
   name: string
   description: string
-  min: number | string
-  max: number | string
+  min: number
+  max: number
 }
+
+type Override<T, K> = Omit<T, keyof K> & K
+
+export type ValueVariableInputType = Override<ValueVariableType, { 
+  min: string, 
+  max: string 
+}>
 
 export type VariableType = CategoricalVariableType | ValueVariableType
 

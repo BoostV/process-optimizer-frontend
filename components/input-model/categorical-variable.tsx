@@ -17,7 +17,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
   const { isDisabled, onAdded } = props
   const [options, setOptions] = useState([])
   const { register, handleSubmit, reset, formState, setError, clearErrors } = useForm<CategoricalVariableType>()
-  const isOptionsValid = useCallback(() => { return options.length > 0}, [options])
+  const isOptionsValid = useCallback(() => { return options.length > 0 }, [options])
 
   const onSubmit = (data: CategoricalVariableType) => {
     if (isOptionsValid()) {

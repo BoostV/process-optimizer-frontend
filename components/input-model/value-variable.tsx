@@ -2,7 +2,7 @@ import { Box, Button } from '@material-ui/core'
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import useStyles from './value-variable.style';
-import { ValueVariableType } from '../../types/common';
+import { ValueVariableInputType, ValueVariableType } from '../../types/common';
 import { FormInputText } from '../../utility/forms';
 import { FormRadioGroup } from '../../utility/forms/form-radio-group';
 import { validation } from '../../utility/forms/validation';
@@ -15,11 +15,11 @@ type ValueVariableProps = {
 export default function ValueVariable(props: ValueVariableProps) {
   const { isDisabled, onAdded } = props
   const classes = useStyles()
-  const defaultValues: ValueVariableType = useMemo(() => { return { name: '', min: '', max: '', description: '', type: 'continuous' } }, [])
+  const defaultValues: ValueVariableInputType = useMemo(() => { return { name: '', min: '', max: '', description: '', type: 'continuous' } }, [])
   const { handleSubmit, reset, control, formState, getValues } = useForm({ defaultValues })
 
-  const onSubmit = (data: ValueVariableType) => {
-    onAdded({ ...data,  min: parseFloat(data.min as string), max: parseFloat(data.max as string) })
+  const onSubmit = (data: ValueVariableInputType) => {
+    onAdded({ ...data,  min: parseFloat(data.min), max: parseFloat(data.max) })
   }
  
   useEffect(() => {
