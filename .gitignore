@@ -38,3 +38,4 @@ db
 
 # local files used in development
 /specification.yml
+.vscode

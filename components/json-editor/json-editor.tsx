@@ -13,6 +13,7 @@ type JsonEditorProps = {
 type DisplayedResults = {
     id: string
     next: (number|string)[],
+    expectedMinimum: Array<Array<number>>,
     extras: object
 }
 
@@ -33,6 +34,7 @@ export default function JsonEditor(props: JsonEditorProps) {
         const results: DisplayedResults = {
             id: experiment.results.id,
             next: experiment.results.next,
+            expectedMinimum: experiment.results.expectedMinimum,
             extras: experiment.results.extras,
         }
         return JSON.stringify({ ...experiment, results }, null, 2)

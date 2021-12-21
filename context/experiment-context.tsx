@@ -7,13 +7,6 @@ import { ExperimentResultType, ExperimentType } from '../types/common'
 import { migrate } from '../utility/migration/migration'
 import { useGlobal } from './global-context'
 
-const fetcher = async (url: string) => (await fetch(url)).json()
-
-type ExperimentLoadResponse = {
-    data?: ExperimentType
-    error?: any
-}
-
 const ExperimentContext = React.createContext<
     { state: State, dispatch: Dispatch, loading: boolean } | undefined
 >(undefined)
@@ -28,8 +21,8 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
     console.log(`Creating context ${experimentId} ${useLocalStorage}`)
     const storageKey = experimentId === undefined ? 'unknown' : experimentId
     const initialExperimentState = { ...initialState, experiment: { ...initialState.experiment, id: experimentId } }
-    const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialExperimentState, storageKey) : React.useReducer(rootReducer, { ...initialExperimentState })
-    const [loading, setLoading] = React.useState(!useLocalStorage)
+    const [state, dispatch] = useLocalStorage ? useLocalStorageReducer(rootReducer, initialExperimentState, storageKey, (a:State) => ({...a, experiment: migrate(a.experiment)})) : React.useReducer(rootReducer, { ...initialExperimentState })
+    const [loading, setLoading] = React.useState(true)
     const global = useGlobal()
 
     React.useEffect(() => {
@@ -49,11 +42,9 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
                     console.log(`Error fetching expriment ${experimentId}`)
                 }
             } else {
-                dispatch({
-                    type: 'updateExperiment',
-                    payload: migrate(state.experiment)
-                })
-                dispatch({type: 'setSwVersion', payload: versionInfo.version})
+                if (state?.experiment?.info?.swVersion !== versionInfo.version) {
+                    dispatch({type: 'setSwVersion', payload: versionInfo.version})
+                }
                 global.dispatch({
                     type: 'storeExperimentId',
                     payload: experimentId
@@ -61,7 +52,7 @@ function ExperimentProvider({ experimentId, useLocalStorage = false, children }:
             }
             setLoading(false)
         })()
-    }, [experimentId])
+    }, [dispatch, experimentId, useLocalStorage, state])
 
     const getValue = (callback: (state: State) => any) => callback(state)
 

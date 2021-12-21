@@ -10,7 +10,7 @@ import { useExperiment, saveExperiment, runExperiment } from '../../context/expe
 import React, { useState, useEffect } from 'react';
 import { ValueVariableType, CategoricalVariableType, OptimizerConfig, DataPointType } from '../../types/common';
 import LoadingExperiment from './loading-experiment';
-import { NextExperiments } from '../next-experiments/next-experiments';
+import { ResultData } from '../result-data/result-data';
 import LoadingButton from '../loading-button/loading-button';
 import { theme } from '../../theme/theme';
 import { Plots } from '../plots/plots';
@@ -104,6 +104,8 @@ export default function Experiment(props: ExperimentProps) {
     const headers = valueVariables.map(it => it.name).concat(categoricalVariables.map(it => it.name))
     
     const nextValues: any[][] = (experiment.results.next && Array.isArray(experiment.results.next[0])) ? experiment.results.next as unknown as any[][] : (experiment.results.next ? [experiment.results.next] : [])
+
+    const expectedMinimum: any[][] = experiment.results.expectedMinimum
     
     if (loading) {
         return  <LoadingExperiment />
@@ -179,12 +181,13 @@ export default function Experiment(props: ExperimentProps) {
 
                             <Grid item xs={9}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={UISizeValue.Big} xl={getSize(global.state, 'next-experiments')}>
+                                    <Grid item xs={UISizeValue.Big} xl={getSize(global.state, 'result-data')}>
                                         <Grid container spacing={2} className={highlightNextExperiments ? classes.highlight : ''}>
                                             <Grid item xs={12}>
-                                                <NextExperiments
+                                                <ResultData
                                                     nextValues={nextValues}
                                                     headers={headers}
+                                                    expectedMinimum={expectedMinimum}
                                                     onMouseEnterExpand={() => setHighlightNextExperiments(true)}
                                                     onMouseLeaveExpand={() => setHighlightNextExperiments(false)} />
                                             </Grid>

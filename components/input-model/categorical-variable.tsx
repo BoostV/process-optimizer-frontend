@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, TextField, Typography } from '@material-ui/core';
 import DeleteIcon from "@material-ui/icons/Delete";
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import CategoricalVariableOptions from './categorical-variable-options';
 import { useStyles } from './categorical-variable.style';
@@ -13,14 +13,13 @@ type CategoricalVariableProps = {
 
 export default function CategoricalVariable(props: CategoricalVariableProps) {
   const classes = useStyles()
-  const [options, setOptions] = useState([])
   const { isDisabled, onAdded } = props
+  const defaultValues: CategoricalVariableType = useMemo(() => { return { name: undefined, description: undefined, options: [] } }, [])
+  const [options, setOptions] = useState(defaultValues.options)
+  const { register, handleSubmit, reset, formState } = useForm<CategoricalVariableType>({ defaultValues })
 
-  const { register, handleSubmit, reset, watch, errors } = useForm<CategoricalVariableType>();
-  const onSubmit = async (data: CategoricalVariableType) => {
-    onAdded({...data, options})
-    setOptions([])
-    reset()
+  const onSubmit = (data: CategoricalVariableType) => {
+    onAdded({ ...data, options })
   }
 
   function deleteOption(index: number) {
@@ -29,47 +28,50 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
     setOptions(newOptions)
   }
 
+  useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      reset({ ...defaultValues })
+      setOptions(defaultValues.options)
+    }
+  }, [defaultValues, formState, reset])
+
   return (
-      <>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField 
-            fullWidth
-            margin="dense"
-            name="name" 
-            label="Name"
-            inputRef={register}
-            />
-          <TextField
-            fullWidth
-            margin="dense"
-            name="description"
-            label="Description"
-            inputRef={register}
-          />
-          
-          <Box mt={2}>
-            <Typography>Options</Typography>
-            {options.map((option, index) => (
-              <div key={index}>
-                <div className={classes.option}>
-                  <Typography variant="body1">{option}</Typography>
-                  <IconButton onClick={() => deleteOption(index)} size="small" aria-label="delete" color="primary">
-                    <DeleteIcon fontSize="small" /> 
-                  </IconButton>
-                </div>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <TextField
+          name="name"
+          { ...register("name") }
+          label="Name"
+          fullWidth
+          margin="dense"
+        />
+        <TextField
+          name="description"
+          { ...register("description") }
+          label="Description"
+          fullWidth
+          margin="dense"
+        />
+        <Box mt={2}>
+          <Typography>Options</Typography>
+          {options.map((option, index) => (
+            <div key={index}>
+              <div className={classes.option}>
+                <Typography variant="body1">{option}</Typography>
+                <IconButton onClick={() => deleteOption(index)} size="small" aria-label="delete" color="primary">
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
               </div>
-            ))}
-          </Box>
-
-          <CategoricalVariableOptions onOptionAdded={(option: String) => {
-            setOptions([...options, option])
-          }}/>
-          
-          <Box mt={2}>
-            <Button disabled={isDisabled} size="small" variant="outlined" type="submit">Add variable</Button>
-          </Box>
-
-        </form>
+            </div>
+          ))}
+        </Box>
+        <CategoricalVariableOptions onOptionAdded={(option: string) => {
+          setOptions([...options, option])
+        }} />
+        <Box mt={2}>
+          <Button disabled={isDisabled} size="small" variant="outlined" type="submit">Add variable</Button>
+      </Box>
+      </form>
     </>
   )
 }

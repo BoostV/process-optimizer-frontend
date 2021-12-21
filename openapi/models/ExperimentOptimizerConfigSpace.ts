@@ -20,7 +20,7 @@ import { exists, mapValues } from '../runtime';
  */
 export interface ExperimentOptimizerConfigSpace {
     /**
-     * Type of the dimension. Can be category or numeric
+     * Type of the dimension. Can be category, discrete or continuous
      * @type {string}
      * @memberof ExperimentOptimizerConfigSpace
      */

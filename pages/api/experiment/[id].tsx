@@ -5,6 +5,14 @@ import { ExperimentResultType, ExperimentType } from '../../../types/common';
 import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
 import { calculateData, calculateSpace } from '../../../utility/converters';
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '100mb',
+    },
+  },
+}
+
 const db = {}
 
 const readFromFile = (file: string) => {
@@ -77,6 +85,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ExperimentType|
           plots: json.plots && json.plots.map(p => { return {id: p.id, plot: p.plot}}),
           next: json.result.next,
           pickled: json.result.pickled,
+          expectedMinimum: json.result.expectedMinimum,
           extras: json.result.extras
         }
         res.json(result)

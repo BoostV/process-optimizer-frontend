@@ -1,71 +1,62 @@
-import { useForm } from 'react-hook-form';
-import InputWithHelp from './input-with-help';
-import { OptimizerConfig } from '../types/common';
-import { TitleCard } from './title-card/title-card';
+import { OptimizerConfig } from "../types/common";
+import { TitleCard } from "./title-card/title-card";
+import { InputWithHelp } from "./input-with-help";
 
 type OptimizerConfiguratorProps = {
-  config: OptimizerConfig,
-  onConfigUpdated: (config: OptimizerConfig) => void,
-}
+  config: OptimizerConfig;
+  onConfigUpdated: (config: OptimizerConfig) => void;
+};
 
-export default function OptimizerConfigurator(props: OptimizerConfiguratorProps) {
-  const { config , onConfigUpdated} = props
-  const { register, getValues } = useForm<OptimizerConfig>()
-
-  const handleChange = () => {
-    onConfigUpdated(getValues() as OptimizerConfig)
-  }
+export default function OptimizerConfigurator(
+  props: OptimizerConfiguratorProps
+) {
+  const { config, onConfigUpdated } = props;
 
   return (
     <TitleCard title="Configuration">
 
-        <InputWithHelp
-          id="baseEstimator"
-          label="Base estimator"
-          defaultValue={config.baseEstimator}
-          helpText="The base estimator."
-          onChange={handleChange}
-          register={register}
-          disabled={true}
-        />
+      <InputWithHelp
+        defaultValue={config.baseEstimator}
+        helpText="The base estimator."
+        label="Base estimator"
+        name="baseEstimator"
+        disabled={true}
+        onChange={(value) => onConfigUpdated({ ...config, baseEstimator: value })}
+      />
 
-        <InputWithHelp
-          id="acqFunc"
-          label="Acq func"
-          defaultValue={config.acqFunc}
-          helpText="The acq func."
-          onChange={handleChange}
-          register={register}
-          disabled={true}
-        />
+      <InputWithHelp
+        defaultValue={config.acqFunc}
+        helpText="The acq func."
+        label="Acq func"
+        name="acqFunc"
+        disabled={true}
+        onChange={(value) => onConfigUpdated({ ...config, acqFunc: value })}
+      />
 
-        <InputWithHelp
-          id="initialPoints"
-          label="Initial points"
-          defaultValue={config.initialPoints}
-          helpText="The number of initial points."
-          onChange={handleChange}
-          register={register}
-        />
+      <InputWithHelp
+        defaultValue={config.initialPoints}
+        helpText="Number of initial points."
+        label="N initial points"
+        name="initialPoints"
+        onChange={(value) => onConfigUpdated({ ...config, initialPoints: parseInt(value) })}
+      />
 
-        <InputWithHelp
-          id="kappa"
-          label="Kappa"
-          defaultValue={config.kappa}
-          helpText="The kappa value."
-          onChange={handleChange}
-          register={register}
-        />
+      <InputWithHelp
+        defaultValue={config.kappa}
+        helpText="The kappa value."
+        label="Kappa"
+        name="kappa"
+        onChange={(value) => onConfigUpdated({ ...config, kappa: parseFloat(value) })}
+      />
 
-        <InputWithHelp
-          id="xi"
-          label="Xi"
-          defaultValue={config.xi}
-          helpText="The xi value."
-          onChange={handleChange}
-          register={register}
-        />
+      <InputWithHelp
+        defaultValue={config.xi}
+        helpText="The xi value."
+        label="Xi"
+        name="xi"
+        onChange={(value) => onConfigUpdated({ ...config, xi: parseFloat(value) })}
+      />
 
     </TitleCard>
-  )
+  );
 }

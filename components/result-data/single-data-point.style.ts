@@ -1,11 +1,14 @@
 import { makeStyles } from "@material-ui/core";
 
 export const useStyles = makeStyles(theme => ({
-  titleButton: {
-    float: 'right',
+  tableContainer: {
+    overflowX: 'auto',
   },
-  titleIcon: {
-    color: 'white',
+  cell: {
+    minWidth: 48,
+  },
+  title: {
+    fontWeight: 'bold',
   },
 }));
 

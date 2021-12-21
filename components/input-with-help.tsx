@@ -1,34 +1,34 @@
-import { FormControl, Input, InputLabel, Tooltip } from '@material-ui/core'
-import { Ref } from 'react';
+import { Grid, TextField, Tooltip } from "@material-ui/core";
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 type InputWithHelpProps = {
-  id: string
-  label: string
-  defaultValue: number | string
   helpText: string
-  onChange: () => void
-  register: Ref<any>
+  name: string
   disabled?: boolean
+  defaultValue: string | number
+  label: string
+  onChange: (value: string) => void
 }
 
-export default function InputWithHelp(props: InputWithHelpProps) {
-  const { id, label, helpText, onChange, register, defaultValue, disabled } = props
-
+export const InputWithHelp = ({ helpText, name, disabled = false, defaultValue, label, onChange }: InputWithHelpProps) => {
   return (
-    <FormControl 
-      disabled={disabled}
-      fullWidth
-      margin="dense">
-      <InputLabel htmlFor={id}>{label}</InputLabel>
-      <Tooltip title={helpText}>
-        <Input
-          name={id}
-          id={id}
+    <Grid container spacing={1} alignItems="flex-end">
+      <Grid item>
+        <Tooltip title={helpText}>
+          <InfoOutlinedIcon fontSize="small" />
+        </Tooltip>
+      </Grid>
+      <Grid item>
+        <TextField
+          name={name}
+          disabled={disabled}
+          fullWidth
+          margin="dense"
           defaultValue={defaultValue}
-          inputRef={register}
-          onChange={onChange}
+          label={label}
+          onChange={(e) => onChange(e.target.value)}
         />
-      </Tooltip>
-    </FormControl>
+      </Grid>
+    </Grid>
   )
 }

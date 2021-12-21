@@ -16,7 +16,7 @@ const init = (localStorageKey: string) => <S> (initialState: S) => {
   return initialState
 }
 
-export const useLocalStorageReducer = <S, A> (reducer: (state: S, action: A) => S, initialState: S, localStorageKey: string = "rootState") => {
+export const useLocalStorageReducer = <S, A> (reducer: (state: S, action: A) => S, initialState: S, localStorageKey: string = "rootState", transform = x => x) => {
   const localStorageReducer = (state: S, action: A) => {
     const newState = reducer(state, action)
     try {
@@ -26,5 +26,5 @@ export const useLocalStorageReducer = <S, A> (reducer: (state: S, action: A) => 
     }
     return newState
   }
-  return useReducer(localStorageReducer, initialState, init(localStorageKey))
+  return useReducer(localStorageReducer, initialState, s => transform(init(localStorageKey)(s)))
 }
