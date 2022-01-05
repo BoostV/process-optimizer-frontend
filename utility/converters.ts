@@ -13,7 +13,7 @@ export const calculateSpace = (experiment: ExperimentType): SpaceType => {
 
 const numPat = / [0-9] + /
 export const calculateData = (categoricalValues: CategoricalVariableType[], numericValues: ValueVariableType[], dataPoints: DataPointType[][]): ExperimentData[] => {
-    return dataPoints.map((run):ExperimentData => ({xi: run.filter(it => it.name !== "score").map(it => numericValues.find(p => p.name === it.name) ? Number(it.value) : it.value), yi: Number((run.filter(it => it.name === "score")[0] as ScoreDataPointType).value[0])}))
+    return dataPoints.map((run):ExperimentData => ({xi: run.filter(it => it.name !== "score").map(it => numericValues.find(p => p.name === it.name) ? Number(it.value) : it.value), yi: ((run.filter(it => it.name === "score")[0] as ScoreDataPointType).value as Array<any>).map(Number)}))
 }
 
 export const dataPointsToCSV = (dataPoints: DataPointType[][], separator=";", newline="\n"): string => dataPoints

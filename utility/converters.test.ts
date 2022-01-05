@@ -55,8 +55,8 @@ describe("converters", () => {
   describe("calculateData", () => {
     it("should format data in proper output format", () => {
       const expectedData = [
-        { xi: [23, 982, 632, "Mus"], yi: 0.1 },
-        { xi: [15, 123, 324, "Ræv"], yi: 0.2 }
+        { xi: [23, 982, 632, "Mus"], yi: [0.1] },
+        { xi: [15, 123, 324, "Ræv"], yi: [0.2] }
       ]
       const actualData = calculateData(sampleExperiment.categoricalVariables, sampleExperiment.valueVariables, sampleExperiment.dataPoints)
       expect(actualData).toEqual(expectedData)
