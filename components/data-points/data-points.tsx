@@ -2,7 +2,7 @@ import { CircularProgress, IconButton, Box, Tooltip } from "@material-ui/core";
 import { useEffect, useReducer } from "react";
 import { useGlobal } from "../../context/global-context";
 import { dataPointsReducer, DataPointsState } from "../../reducers/data-points-reducer";
-import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType } from "../../types/common";
+import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType, DataPointTypeValue } from "../../types/common";
 import { EditableTable } from "../editable-table/editable-table";
 import SwapVertIcon from '@material-ui/icons/SwapVert';
 import { TitleCard } from '../title-card/title-card';
@@ -20,6 +20,7 @@ type DataPointProps = {
 type UpdateFnType = (rowIndex: number, ...args: any[]) => void
 
 const SCORE = "score"
+const SCORES = ["score1", "score2"]
 
 export default function DataPoints(props: DataPointProps) {
   const { valueVariables, categoricalVariables, dataPoints, onUpdateDataPoints } = props
@@ -41,13 +42,22 @@ export default function DataPoints(props: DataPointProps) {
     const combinedVariables: CombinedVariableType[] = buildCombinedVariables()
     const emptyRow: TableDataRow = buildEmptyRow()
     const dataPointRows: TableDataRow[] = dataPoints.map((item, i) => {
+      const vars: TableDataPoint[] = item.filter(dp => dp.name !== SCORE).map((point: TableDataPoint, k) => {
+        return {
+          ...point,
+          options: combinedVariables[k] ? combinedVariables[k].options : undefined,
+        }
+      })
+      const scores: TableDataPoint[] = []
+      const scorePoint = item.filter(dp => dp.name === SCORE)[0]
+      for (let i = 0; i < SCORES.length; i++) {
+        scores.push({
+          name: SCORES[i],
+          value: scorePoint.value[i] !== undefined ? scorePoint.value[i] : 0
+        })
+      }
       return {
-        dataPoints: item.map((point: TableDataPoint, k) => {
-          return {
-            ...point,
-            options: combinedVariables[k] ? combinedVariables[k].options : undefined,
-          }
-        }),
+        dataPoints: vars.concat(scores),
         isEditMode: false,
         isNew: false,
       }
@@ -72,11 +82,13 @@ export default function DataPoints(props: DataPointProps) {
           value: variable.options ? variable.options[0] : "",
           options: variable.options,
         }
-      }).concat({
-        name: SCORE,
-        value: "0",
-        options: undefined,
-      }),
+      }).concat(
+        SCORES.map(s => ({
+          name: s,
+          value: "0",
+          options: undefined,
+        })
+      )),
       isEditMode: true,
       isNew: true,
     }
@@ -95,8 +107,7 @@ export default function DataPoints(props: DataPointProps) {
       type: 'DATA_POINTS_TABLE_EDITED', payload: {
         itemIndex,
         rowIndex,
-        useArrayForValue: SCORE,
-        value: editValue
+        value: editValue,
       }
     })
   }
@@ -110,16 +121,18 @@ export default function DataPoints(props: DataPointProps) {
   }
 
   const updateDataPoints = (dataRows: TableDataRow[]) => {
-    onUpdateDataPoints(dataRows
-      .map(item => {
-        return item.dataPoints.map(item => {
-          return {
-            name: item.name,
-            value: item.value,
-          } as DataPointType
-        })
-      })
-    )
+    onUpdateDataPoints(dataRows.map(row => {
+      const vars = row.dataPoints.filter(dp => !SCORES.includes(dp.name))
+      const scores = row.dataPoints.filter(dp => SCORES.includes(dp.name)).map(s => s.value)
+      return vars.map(dp => ({
+          name: dp.name,
+          value: dp.value,
+        })).concat(
+        [{
+          name: SCORE,
+          value: scores,
+        }])
+    }))
   }
 
   const onEditConfirm = (row: TableDataRow, rowIndex: number) => {
@@ -169,7 +182,6 @@ export default function DataPoints(props: DataPointProps) {
         <Box className={classes.tableContainer}>
           <EditableTable
             rows={(newestFirst ? [...state.rows].reverse() : state.rows) as TableDataRow[]}
-            useArrayForValue={SCORE}
             onEdit={(editValue: string, rowIndex: number, itemIndex: number) => updateRow(rowIndex, edit, editValue, itemIndex)}
             onEditConfirm={(row: TableDataRow, rowIndex: number) => onEditConfirm(row, rowIndex)}
             onEditCancel={(rowIndex: number) => updateRow(rowIndex, cancelEdit)}

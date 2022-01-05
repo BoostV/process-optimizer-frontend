@@ -21,7 +21,7 @@ describe("data points reducer", () => {
             },
             {
               name: "score",
-              value: [1]
+              value: "1"
             }
           ],
           isEditMode: false,
@@ -38,7 +38,7 @@ describe("data points reducer", () => {
             },
             {
               name: "score",
-              value: [1]
+              value: "1"
             }
           ],
           isEditMode: false,
@@ -150,7 +150,7 @@ describe("data points reducer", () => {
   })
 
   describe("DataPointsTableEditedAction", () => {
-    it("should edit table cell - non-array value", async () => {
+    it("should edit table cell", async () => {
       const payload = {
         value: "300",
         rowIndex: 0,
@@ -178,7 +178,7 @@ describe("data points reducer", () => {
               },
               {
                 name: "score",
-                value: [0.5]
+                value: "0.5"
               }
             ],
             isEditMode: true,
@@ -200,53 +200,6 @@ describe("data points reducer", () => {
                 ]}
             ]})
     })
-
-    it("should edit table cell - array value", async () => {
-      const payload = {
-        value: "0.2",
-        rowIndex: 0,
-        itemIndex: 1,
-        useArrayForValue: "score"
-      }
-
-      const action: DataPointsTableAction = {
-        type: 'DATA_POINTS_TABLE_EDITED',
-        payload
-      }
-
-      const initState: DataPointsState = {
-        prevRows: [],
-        rows:[
-          {
-            dataPoints: [
-              {
-                name: "Water",
-                value: "100"
-              },
-              {
-                name: "score",
-                value: [0.1]
-              }
-            ],
-            isEditMode: true,
-            isNew: false,
-          }
-        ]
-      }
-
-      expect(dataPointsReducer(initState, action)).toEqual({
-        ...initState,
-        rows: [{
-            ...initState.rows[0],
-            dataPoints: [
-              {...initState.rows[0].dataPoints[0]},
-              {...initState.rows[0].dataPoints[1],
-                value: [payload.value]
-              }
-            ]}
-        ]}
-      )
-    })
   })
 
   describe("DataPointsTableUpdatedAction", () => {
@@ -260,7 +213,7 @@ describe("data points reducer", () => {
             },
             {
               name: "score",
-              value: [0.3]
+              value: "0.3"
             }
           ],
           isEditMode: false,
@@ -284,7 +237,7 @@ describe("data points reducer", () => {
               },
               {
                 name: "score",
-                value: [0.1]
+                value: "0.1"
               }
             ],
             isEditMode: false,
@@ -318,7 +271,7 @@ describe("data points reducer", () => {
             },
             {
               name: "score",
-              value: [0.1]
+              value: "0.1"
             }
           ],
           isEditMode: false,
@@ -332,7 +285,7 @@ describe("data points reducer", () => {
             },
             {
               name: "score",
-              value: [0.2]
+              value: "0.2"
             }
           ],
           isEditMode: false,
@@ -385,7 +338,7 @@ describe("data points reducer", () => {
             },
             {
               name: "score",
-              value: [0.1]
+              value: "0.1"
             }
           ],
           isEditMode: true,
@@ -429,7 +382,7 @@ describe("data points reducer", () => {
           dataPoints: [
             {
               name: 'A',
-              value: 1,
+              value: "1",
             }
           ]
         }],
@@ -439,7 +392,7 @@ describe("data points reducer", () => {
           dataPoints: [
             {
               name: 'A',
-              value: 1,
+              value: "1",
             }
           ]
         }]

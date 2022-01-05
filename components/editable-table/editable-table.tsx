@@ -10,7 +10,6 @@ import useStyles from "./editable-table.style"
 
 type EditableTableProps = {
   rows: TableDataRow[]
-  useArrayForValue: string
   onEdit: (editValue: string, rowIndex: number, itemIndex: number) => void
   onEditConfirm: (row: TableDataRow, rowIndex: number) => void
   onEditCancel: (rowIndex: number) => void
@@ -19,7 +18,7 @@ type EditableTableProps = {
 }
 
 export function EditableTable(props: EditableTableProps) {
-  const { rows, useArrayForValue, onEdit, onEditConfirm, onEditCancel, onToggleEditMode, onDelete } = props
+  const { rows, onEdit, onEditConfirm, onEditCancel, onToggleEditMode, onDelete } = props
   const classes = useStyles()
 
   return (
@@ -38,7 +37,7 @@ export function EditableTable(props: EditableTableProps) {
             {row.dataPoints.map((item, itemIndex) => 
               <EditableTableCell
                 key={itemIndex}
-                value={item.name === useArrayForValue ? item.value[0] : item.value}
+                value={item.value}
                 isEditMode={row.isEditMode}
                 options={item.options}
                 onChange={(value: string) => onEdit(value, rowIndex, itemIndex) }/>

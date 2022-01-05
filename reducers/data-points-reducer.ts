@@ -19,7 +19,6 @@ export type DataPointsTableAction = {
     value: string
     rowIndex: number
     itemIndex: number
-    useArrayForValue: string
   }
 }
 | {
@@ -95,7 +94,7 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
                 } else {
                   return {
                     ...point,
-                    value: (point.name === action.payload.useArrayForValue ? [action.payload.value] : action.payload.value)
+                    value: action.payload.value
                   }
                 }
               })
