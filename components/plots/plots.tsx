@@ -33,26 +33,38 @@ export const Plots = () => {
       }>
         {experiment.results.plots.length > 0 ?
           <PlotList>
-            <PlotItem 
-              id="objective" 
-              title="Objective plot" 
-              body={[
-                "The objective plot displays the model approximating the objective function.",
-                "In the diagonal the dependence of the model on each input variable is shown.",
-                "For each input variable the other input variables are set by the best observation.",
-                "In the lower triangle the pairwise dependencies of the model on each pair of input variables.",
-                "For each pair the other input variables are set by the best observation.",
-                "The best observation is marked with a red dot while the remaining observations are marked with orange dots."
-              ]}
-              maxWidth="100%"
-            />
-            <PlotItem 
-              id="convergence" 
-              title="Convergence plot" 
-              body={["The convegence plot displays the score of the best observation as a function of the number of calls."]}
-              width="100%"
-              maxWidth={800}
-            />
+            {experiment.results.plots.map(plot => plot.id).includes("objective") &&
+              <PlotItem 
+                id="objective" 
+                title="Objective plot" 
+                body={[
+                  "The objective plot displays the model approximating the objective function.",
+                  "In the diagonal the dependence of the model on each input variable is shown.",
+                  "For each input variable the other input variables are set by the best observation.",
+                  "In the lower triangle the pairwise dependencies of the model on each pair of input variables.",
+                  "For each pair the other input variables are set by the best observation.",
+                  "The best observation is marked with a red dot while the remaining observations are marked with orange dots."
+                ]}
+                maxWidth="100%"
+              />
+            }
+            {experiment.results.plots.map(plot => plot.id).includes("convergence") &&
+              <PlotItem 
+                id="convergence" 
+                title="Convergence plot" 
+                body={["The convegence plot displays the score of the best observation as a function of the number of calls."]}
+                width="100%"
+                maxWidth={800}
+              />
+            }
+            {experiment.results.plots.map(plot => plot.id).includes("pareto") &&
+              <PlotItem 
+                id="pareto" 
+                title="Pareto" 
+                body={[]}
+                maxWidth={800}
+              />
+            }
           </PlotList>
           :
           "Plots will appear here"
