@@ -1,5 +1,5 @@
-import { CircularProgress, IconButton, Box, Tooltip } from "@material-ui/core";
-import { useEffect, useReducer } from "react";
+import { CircularProgress, IconButton, Box, Tooltip, FormControlLabel, Switch } from "@material-ui/core";
+import { useEffect, useReducer, useState } from "react";
 import { useGlobal } from "../../context/global-context";
 import { dataPointsReducer, DataPointsState } from "../../reducers/data-points-reducer";
 import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType, DataPointTypeValue } from "../../types/common";
@@ -20,7 +20,6 @@ type DataPointProps = {
 type UpdateFnType = (rowIndex: number, ...args: any[]) => void
 
 const SCORE = "score"
-const SCORES = ["score1", "score2"]
 
 export default function DataPoints(props: DataPointProps) {
   const { valueVariables, categoricalVariables, dataPoints, onUpdateDataPoints } = props
@@ -30,9 +29,11 @@ export default function DataPoints(props: DataPointProps) {
   const global = useGlobal()
   const newestFirst = global.state.dataPointsNewestFirst
 
+  const [scoreNames, setScoreNames] = useState(["score1", "score2"])
+
   useEffect(() => {
     dispatch({ type: 'setInitialState', payload: buildState(dataPoints) })
-  }, [valueVariables, categoricalVariables])
+  }, [valueVariables, categoricalVariables, scoreNames])
 
   useEffect(() => {
     updateDataPoints(state.rows.filter(item => !item.isNew) as TableDataRow[])
@@ -50,9 +51,9 @@ export default function DataPoints(props: DataPointProps) {
       })
       const scores: TableDataPoint[] = []
       const scorePoint = item.filter(dp => dp.name === SCORE)[0]
-      for (let i = 0; i < SCORES.length; i++) {
+      for (let i = 0; i < scoreNames.length; i++) {
         scores.push({
-          name: SCORES[i],
+          name: scoreNames[i],
           value: scorePoint.value[i] !== undefined ? scorePoint.value[i] : 0
         })
       }
@@ -83,7 +84,7 @@ export default function DataPoints(props: DataPointProps) {
           options: variable.options,
         }
       }).concat(
-        SCORES.map(s => ({
+        scoreNames.map(s => ({
           name: s,
           value: "0",
           options: undefined,
@@ -122,8 +123,8 @@ export default function DataPoints(props: DataPointProps) {
 
   const updateDataPoints = (dataRows: TableDataRow[]) => {
     onUpdateDataPoints(dataRows.map(row => {
-      const vars = row.dataPoints.filter(dp => !SCORES.includes(dp.name))
-      const scores = row.dataPoints.filter(dp => SCORES.includes(dp.name)).map(s => s.value)
+      const vars = row.dataPoints.filter(dp => !scoreNames.includes(dp.name))
+      const scores = row.dataPoints.filter(dp => scoreNames.includes(dp.name)).map(s => s.value)
       return vars.map(dp => ({
           name: dp.name,
           value: dp.value,
@@ -158,6 +159,18 @@ export default function DataPoints(props: DataPointProps) {
       <Box display="flex" justifyContent="space-between">
         <Box>
           Data points
+          <br/>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={scoreNames.length > 1}
+                onChange={() => setScoreNames(scoreNames.length > 1 ? ["score"] : ["score1", "score2"])}
+                name="multiobj"
+                color="secondary"
+              />
+            }
+            label="Multi objective"
+          />
         </Box>
         <Box>
           <DownloadCSVButton light/>
