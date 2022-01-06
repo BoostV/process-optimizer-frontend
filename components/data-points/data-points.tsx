@@ -124,14 +124,14 @@ export default function DataPoints(props: DataPointProps) {
   const updateDataPoints = (dataRows: TableDataRow[]) => {
     onUpdateDataPoints(dataRows.map(row => {
       const vars = row.dataPoints.filter(dp => !scoreNames.includes(dp.name))
-      const scores = row.dataPoints.filter(dp => scoreNames.includes(dp.name)).map(s => s.value)
+      const scores = row.dataPoints.filter(dp => scoreNames.includes(dp.name)).map(s => parseFloat(s.value))
       return vars.map(dp => ({
           name: dp.name,
-          value: dp.value,
+          value: dp.value as DataPointTypeValue,
         })).concat(
         [{
           name: SCORE,
-          value: scores,
+          value: scores as DataPointTypeValue,
         }])
     }))
   }
