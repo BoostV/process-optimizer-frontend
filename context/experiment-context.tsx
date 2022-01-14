@@ -76,12 +76,22 @@ function useExperiment() {
     return context
 }
 
+function constructExperimentEndpoint(experiment: ExperimentType) {
+    return `${process.env.NEXT_PUBLIC_EXPERIMENT_ENDPOINT}${experiment.id}`
+}
+
 async function saveExperiment(experiment: ExperimentType) {
-    return fetch(`/api/experiment/${experiment.id}`, { method: 'PUT', body: JSON.stringify(experiment) })
+    return fetch(
+        constructExperimentEndpoint(experiment),
+        { method: 'PUT', body: JSON.stringify(experiment) }
+    )
 }
 
 async function runExperiment(dispatch: Dispatch, experiment: ExperimentType) {
-    const response: Response = await fetch(`/api/experiment/${experiment.id}`, { method: 'POST', body: JSON.stringify(experiment) })
+    const response: Response = await fetch(
+        constructExperimentEndpoint(experiment),
+        { method: 'POST', body: JSON.stringify(experiment) }
+    )
     const result: ExperimentResultType = await response.json()
     dispatch({ type: 'registerResult', payload: result })
 }

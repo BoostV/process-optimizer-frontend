@@ -40,6 +40,43 @@ The included script "dockeryarn.sh" can be used as substitute for yarn if you ha
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Static export
+
+This allows for the project to be used as a client side application.
+
+```bash
+yarn export
+```
+
+The above will produce `/out` which can be served on any static host.
+
+### Caveats
+
+Be aware that the `/api/` routes will not and the functionality
+will have to be subsituted in some other fashion be it a serverless function or
+a seperate server instance.
+
+In order to substitute the stock `/api/` endpoint you need to define a `.env.local`
+file, before you run the `yarn export` command that overrides the `.env` file.
+
+```
+# .env.local
+NEXT_PUBLIC_EXPERIMENT_ENDPOINT=/some-other-api/experiment-alternative/
+```
+
+the final request might look something along the lines of:
+
+```
+https://some-other-api.com/random-region?id=1234
+```
+
+which would mean that for the last example the `.env.local` would look like this:
+
+```
+# .env.local
+NEXT_PUBLIC_EXPERIMENT_ENDPOINT=https://some-other-api.com/random-region
+```
+
 ## Update OpenAPI client
 
 When the process-optimizer-api changes, adjust the API version in the "openapi" script in package.json run the following command and commit the resulting changes.
