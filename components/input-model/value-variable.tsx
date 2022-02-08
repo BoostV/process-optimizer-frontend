@@ -17,7 +17,7 @@ export default function ValueVariable(props: ValueVariableProps) {
   const { register, handleSubmit, reset, control, formState, getValues } = useForm({ defaultValues })
 
   const onSubmit = (data: ValueVariableType) => {
-    onAdded(data)
+    onAdded({...data, max: parseFloat(data.max as any as string), min: parseFloat(data.min as any as string)})
   }
   
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function ValueVariable(props: ValueVariableProps) {
               fullWidth
               margin="dense"
               label="Min"
-              transform={e => parseFloat(e)}
+              transform={e => e.replace(',','.')}
             />
           </Box>
           <Box className={classes.narrowInput}>
@@ -61,7 +61,7 @@ export default function ValueVariable(props: ValueVariableProps) {
               fullWidth
               margin="dense"
               label="Max"
-              transform={e => parseFloat(e)}
+              transform={e => e.replace(',','.')}
             />
           </Box>
         </Box>
