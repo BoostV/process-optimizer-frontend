@@ -52,7 +52,7 @@ The above will produce `/out` which can be served on any static host.
 
 ### Caveats
 
-Be aware that the `/api/` routes will not and the functionality
+Be aware that the `/api/` routes will not work and the functionality
 will have to be subsituted in some other fashion be it a serverless function or
 a seperate server instance.
 
