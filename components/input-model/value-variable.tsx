@@ -19,7 +19,7 @@ export default function ValueVariable(props: ValueVariableProps) {
   const { handleSubmit, reset, control, formState, getValues } = useForm({ defaultValues })
 
   const onSubmit = (data: ValueVariableInputType) => {
-    onAdded({ ...data,  min: parseFloat(data.min), max: parseFloat(data.max) })
+    onAdded({ ...data,  min: data.type === "discrete" ? Math.floor(parseFloat(data.min)) : parseFloat(data.min), max: data.type === "discrete" ? Math.floor(parseFloat(data.max)) : parseFloat(data.max) })
   }
  
   useEffect(() => {
