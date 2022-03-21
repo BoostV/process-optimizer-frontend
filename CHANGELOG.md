@@ -1,8 +1,26 @@
 # Changelog
 
-## [v1.3.1](https://github.com/BoostV/process-optimizer-frontend/tree/HEAD)
+## [v1.3.2](https://github.com/BoostV/process-optimizer-frontend/tree/HEAD)
 
-[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.3.0...HEAD)
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.3.1...v1.3.2)
+
+**Fixed bugs:**
+
+- Variable inputs have numbers but are empty when submitted [\#129](https://github.com/BoostV/process-optimizer-frontend/issues/129)
+- Variable limits not reset during input space definition [\#128](https://github.com/BoostV/process-optimizer-frontend/issues/128)
+
+**Closed issues:**
+
+- Place objective plot above convergence plot [\#125](https://github.com/BoostV/process-optimizer-frontend/issues/125)
+
+**Merged pull requests:**
+
+- Bug/reset inputs on submit [\#127](https://github.com/BoostV/process-optimizer-frontend/pull/127) ([j-or](https://github.com/j-or))
+- Feature/place objective plot top [\#126](https://github.com/BoostV/process-optimizer-frontend/pull/126) ([j-or](https://github.com/j-or))
+
+## [v1.3.1](https://github.com/BoostV/process-optimizer-frontend/tree/v1.3.1) (2021-09-25)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.3.0...v1.3.1)
 
 **Fixed bugs:**
 
