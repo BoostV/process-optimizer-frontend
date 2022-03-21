@@ -24,6 +24,6 @@ services:
     # user: node
 
   api:
-    image:  ghcr.io/boostv/process-optimizer-api:main
+    image:  ghcr.io/boostv/process-optimizer-api:pr-31
     restart: unless-stopped
 
