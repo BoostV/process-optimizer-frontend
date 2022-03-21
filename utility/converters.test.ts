@@ -15,10 +15,10 @@ describe("converters", () => {
       { name: "Kunde", description: "", options: ["Mus", "Ræv"] }
     ],
     valueVariables: [
-      {type: "discrete", name: "Sukker", description: "", min: 0, max: 1000},
-      {type: "discrete", name: "Peber", description: "", min: 0, max: 1000},
-      {type: "continuous", name: "Hvedemel", description: "", min: 0.0, max: 1000.8},
-      {type: "discrete", name: "Mælk", description: "", min: 1, max: 999},
+      { type: "discrete", name: "Sukker", description: "", min: 0, max: 1000 },
+      { type: "discrete", name: "Peber", description: "", min: 0, max: 1000 },
+      { type: "continuous", name: "Hvedemel", description: "", min: 0.0, max: 1000.8 },
+      { type: "discrete", name: "Mælk", description: "", min: 1, max: 999 },
     ],
     optimizerConfig: {
       baseEstimator: "GP",
@@ -39,9 +39,15 @@ describe("converters", () => {
       expect(space).toContainEqual({ type: "discrete", from: 0, name: "Sukker", to: 1000 })
       expect(space).toContainEqual({ type: "continuous", from: 0, name: "Hvedemel", to: 1000.8 })
     })
-  })
 
-  describe("calculateSpace", () => {
+    it("should ignore decimal part of discrete variables", () => {
+      const experimentWithDiscreteVariablesWithDecimalParts: ExperimentType = {
+        ...sampleExperiment, valueVariables: [{ type: "discrete", name: "DiscreteWithDecimal", description: "", min: 1.2, max: 5.4 }]
+      }
+      const space = calculateSpace(experimentWithDiscreteVariablesWithDecimalParts)
+      expect(space).toContainEqual({ type: "discrete", from: 1, name: "DiscreteWithDecimal", to: 5 })
+    })
+
     it("should retain the correct order of variables", () => {
       const space = calculateSpace(sampleExperiment)
       expect(space[0].name).toEqual("Sukker")
@@ -228,7 +234,7 @@ describe("converters", () => {
     it("should fail if header is missing", () => {
       const input = "Sukker;Hvedemel;Kunde;score\n28;632;Mus;1\n15;5;Mus;2"
       expect(() => csvToDataPoints(input, valueVariables, categorialVariables))
-      .toThrowErrorMatchingSnapshot()
+        .toThrowErrorMatchingSnapshot()
     })
 
     it("should not fail if there are extra headers", () => {
