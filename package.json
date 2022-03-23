@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "formatAll": "yarn prettier --write .",
+    "lint": "eslint .",
+    "formatAll": "prettier --write .",
     "test": "jest",
     "openapi": "openapi-generator-cli generate --skip-validate-spec -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v1.4.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi",
     "prepare": "husky install"
