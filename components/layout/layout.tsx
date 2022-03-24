@@ -45,7 +45,7 @@ export default function Layout ( {children} ) {
           <div className={classes.links}>
             <Link href="/" passHref>
               <Button className={classes.link}>
-                <a>Home</a>
+                Home
               </Button>
             </Link>
           </div>
