@@ -1,5 +1,5 @@
 import { CircularProgress, IconButton, Box, Tooltip, FormControlLabel, Switch } from "@material-ui/core";
-import { useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { useGlobal } from "../../context/global-context";
 import { dataPointsReducer, DataPointsState } from "../../reducers/data-points-reducer";
 import { DataPointType, TableDataPoint, TableDataRow, CombinedVariableType, ValueVariableType, CategoricalVariableType, DataPointTypeValue } from "../../types/common";
@@ -31,15 +31,57 @@ export default function DataPoints(props: DataPointProps) {
 
   const [scoreNames, setScoreNames] = useState(["score1", "score2"])
 
-  useEffect(() => {
-    dispatch({ type: 'setInitialState', payload: buildState(dataPoints) })
-  }, [valueVariables, categoricalVariables, scoreNames])
+  const buildCombinedVariables = useCallback((): CombinedVariableType[] => {
+    return (valueVariables as CombinedVariableType[]).concat(categoricalVariables as CombinedVariableType[])
+  },[categoricalVariables, valueVariables])
 
-  useEffect(() => {
-    updateDataPoints(state.rows.filter(item => !item.isNew) as TableDataRow[])
-  }, [state.rows])
+  const buildEmptyRow = useCallback((): TableDataRow => {
+    return {
+      dataPoints: buildCombinedVariables().map((variable, i) => {
+        return {
+          name: variable.name,
+          value: variable.options ? variable.options[0] : "",
+          options: variable.options,
+        }
+      }).concat(
+        scoreNames.map(s => ({
+          name: s,
+          value: "0",
+          options: undefined,
+        })
+      )),
+      isEditMode: true,
+      isNew: true,
+    }
+  }, [buildCombinedVariables, scoreNames])
 
-  const buildState = (dataPoints: DataPointType[][]): DataPointsState => {
+  const toggleEditMode = (rowIndex: number) => {
+    dispatch({ type: 'DATA_POINTS_TABLE_EDIT_TOGGLED', payload: rowIndex })
+  }
+
+  const cancelEdit = (rowIndex: number) => {
+    dispatch({ type: 'DATA_POINTS_TABLE_EDIT_CANCELLED', payload: rowIndex })
+  }
+
+  const edit = (rowIndex: number, editValue: string, itemIndex: number) => {
+    dispatch({
+      type: 'DATA_POINTS_TABLE_EDITED', payload: {
+        itemIndex,
+        rowIndex,
+        value: editValue,
+      }
+    })
+  }
+
+  const deleteRow = (rowIndex: number) => {
+    dispatch({ type: 'DATA_POINTS_TABLE_ROW_DELETED', payload: rowIndex })
+  }
+
+  const addRow = (emptyRow: TableDataRow) => {
+    dispatch({ type: 'DATA_POINTS_TABLE_ROW_ADDED', payload: emptyRow })
+  }
+
+  const buildState = useCallback((dataPoints: DataPointType[][]): DataPointsState => {
     const combinedVariables: CombinedVariableType[] = buildCombinedVariables()
     const emptyRow: TableDataRow = buildEmptyRow()
     const dataPointRows: TableDataRow[] = dataPoints.map((item, i) => {
@@ -69,72 +111,7 @@ export default function DataPoints(props: DataPointProps) {
       rows: dataPointRows,
       prevRows: dataPointRows,
     }
-  }
-
-  const buildCombinedVariables = (): CombinedVariableType[] => {
-    return (valueVariables as CombinedVariableType[]).concat(categoricalVariables as CombinedVariableType[])
-  }
-
-  const buildEmptyRow = (): TableDataRow => {
-    return {
-      dataPoints: buildCombinedVariables().map((variable, i) => {
-        return {
-          name: variable.name,
-          value: variable.options ? variable.options[0] : "",
-          options: variable.options,
-        }
-      }).concat(
-        scoreNames.map(s => ({
-          name: s,
-          value: "0",
-          options: undefined,
-        })
-      )),
-      isEditMode: true,
-      isNew: true,
-    }
-  }
-
-  const toggleEditMode = (rowIndex: number) => {
-    dispatch({ type: 'DATA_POINTS_TABLE_EDIT_TOGGLED', payload: rowIndex })
-  }
-
-  const cancelEdit = (rowIndex: number) => {
-    dispatch({ type: 'DATA_POINTS_TABLE_EDIT_CANCELLED', payload: rowIndex })
-  }
-
-  const edit = (rowIndex: number, editValue: string, itemIndex: number) => {
-    dispatch({
-      type: 'DATA_POINTS_TABLE_EDITED', payload: {
-        itemIndex,
-        rowIndex,
-        value: editValue,
-      }
-    })
-  }
-
-  const deleteRow = (rowIndex: number) => {
-    dispatch({ type: 'DATA_POINTS_TABLE_ROW_DELETED', payload: rowIndex })
-  }
-
-  const addRow = (emptyRow: TableDataRow) => {
-    dispatch({ type: 'DATA_POINTS_TABLE_ROW_ADDED', payload: emptyRow })
-  }
-
-  const updateDataPoints = (dataRows: TableDataRow[]) => {
-    onUpdateDataPoints(dataRows.map(row => {
-      const vars = row.dataPoints.filter(dp => !scoreNames.includes(dp.name))
-      const scores = row.dataPoints.filter(dp => scoreNames.includes(dp.name)).map(s => parseFloat(s.value))
-      return vars.map(dp => ({
-          name: dp.name,
-          value: dp.value as DataPointTypeValue,
-        })).concat(
-        [{
-          name: SCORE,
-          value: scores as DataPointTypeValue,
-        }])
-    }))
-  }
+  }, [buildCombinedVariables, buildEmptyRow, scoreNames])
 
   const onEditConfirm = (row: TableDataRow, rowIndex: number) => {
     if (row.isNew) {
@@ -152,6 +129,30 @@ export default function DataPoints(props: DataPointProps) {
   const updateTable = (dataPoints: DataPointType[][]) => {
     dispatch({ type: 'setInitialState', payload: buildState(dataPoints) })
   }
+
+  useEffect(() => {
+    dispatch({ type: 'setInitialState', payload: buildState(dataPoints) })
+  }, [valueVariables, categoricalVariables, scoreNames, buildState, dataPoints])
+
+  useEffect(() => {
+    const updateDataPoints = (dataRows: TableDataRow[]) => {
+    onUpdateDataPoints(dataRows.map(row => {
+      const vars = row.dataPoints.filter(dp => !scoreNames.includes(dp.name))
+      const scores = row.dataPoints.filter(dp => scoreNames.includes(dp.name)).map(s => parseFloat(s.value))
+      return vars.map(dp => ({
+          name: dp.name,
+          value: dp.value as DataPointTypeValue,
+        })).concat(
+        [{
+          name: SCORE,
+          value: scores as DataPointTypeValue,
+        }])
+    }))
+  }
+    if (state.changed) {
+      updateDataPoints(state.rows.filter(item => !item.isNew) as TableDataRow[])
+    }
+  }, [onUpdateDataPoints, scoreNames, state.changed, state.rows])
 
   return (
     <TitleCard title={
