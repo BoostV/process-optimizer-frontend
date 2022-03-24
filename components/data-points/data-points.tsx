@@ -110,6 +110,8 @@ export default function DataPoints(props: DataPointProps) {
     return {
       rows: dataPointRows,
       prevRows: dataPointRows,
+      changed: false,
+      hasTempChange: false
     }
   }, [buildCombinedVariables, buildEmptyRow, scoreNames])
 
