@@ -24,7 +24,7 @@ const SCORE = "score"
 export default function DataPoints(props: DataPointProps) {
   const { valueVariables, categoricalVariables, dataPoints, onUpdateDataPoints } = props
   const classes = useStyles()
-  const [state, dispatch] = useReducer(dataPointsReducer, { rows: [], prevRows: [] })
+  const [state, dispatch] = useReducer(dataPointsReducer, { rows: [], prevRows: [], changed: false, hasTempChange: false })
   const isLoadingState = state.rows.length === 0
   const global = useGlobal()
   const newestFirst = global.state.dataPointsNewestFirst

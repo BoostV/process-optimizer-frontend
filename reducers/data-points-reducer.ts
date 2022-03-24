@@ -3,8 +3,8 @@ import { TableDataRow } from "../types/common"
 export type DataPointsState = {
   rows: TableDataRow[]
   prevRows: TableDataRow[]
-  changed?: boolean
-  hasTempChange?: boolean
+  changed: boolean
+  hasTempChange: boolean
 }
 
 export type DataPointsTableAction = {
