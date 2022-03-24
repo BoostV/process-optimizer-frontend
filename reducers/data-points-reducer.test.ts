@@ -53,6 +53,7 @@ describe("data points reducer", () => {
 
       expect(dataPointsReducer(initState, action)).toEqual(
         {
+          hasTempChange: false,
           prevRows: initRows,
           rows:[
             {
@@ -103,7 +104,9 @@ describe("data points reducer", () => {
 
       expect(dataPointsReducer(initState, action)).toEqual({
         prevRows: initState.prevRows,
-        rows: initState.prevRows
+        rows: initState.prevRows,
+        changed: false,
+        hasTempChange: false
       })
     })
 
@@ -142,6 +145,8 @@ describe("data points reducer", () => {
         ]
       }
       expect(dataPointsReducer(initState, action)).toEqual({
+        changed: false,
+        hasTempChange: false,
         prevRows: initState.prevRows,
         rows: initState.prevRows
       })
@@ -164,6 +169,8 @@ describe("data points reducer", () => {
       }
 
       const initState: DataPointsState = {
+        changed: false,
+        hasTempChange: true,
         prevRows: [],
         rows:[
           {
@@ -300,7 +307,8 @@ describe("data points reducer", () => {
 
       expect(dataPointsReducer(initState, action)).toEqual({
           prevRows: initState.prevRows.slice(0, 1),
-          rows: initState.rows.slice(0, 1)
+        rows: initState.rows.slice(0, 1),
+          changed: true
         }
       )
       
@@ -352,6 +360,7 @@ describe("data points reducer", () => {
       }
 
       expect(dataPointsReducer(initState, action)).toEqual({
+        changed: true,
         prevRows: [
           {
             ...initState.rows[0],
@@ -409,7 +418,7 @@ describe("data points reducer", () => {
             payload
           }
         )
-      ).toEqual(payload)
+      ).toEqual({...payload, changed: false})
     })
   })
 
