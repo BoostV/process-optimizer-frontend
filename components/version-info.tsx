@@ -1,16 +1,20 @@
 export const versionInfo = {
-    version: 
+  version:
     // @ts-ignore
-    typeof(VERSION) !== 'undefined' ? VERSION : '' ,
-    commithasg: 
+    typeof VERSION !== 'undefined' ? VERSION : '',
+  commithasg:
     // @ts-ignore
-    typeof(COMMITHASH) !== 'undefined' ? COMMITHASH : '' ,
-    branch: 
+    typeof COMMITHASH !== 'undefined' ? COMMITHASH : '',
+  branch:
     // @ts-ignore
-    typeof(BRANCH) !== 'undefined' ? BRANCH : '' 
+    typeof BRANCH !== 'undefined' ? BRANCH : '',
 }
 
 export const VersionInfo = () => {
-    return <div>{versionInfo.version}{versionInfo.branch !== 'main' && ` [${versionInfo.branch}]`}
-</div>
+  return (
+    <div>
+      {versionInfo.version}
+      {/HEAD|main/.test(versionInfo.branch) || ` [${versionInfo.branch}]`}
+    </div>
+  )
 }

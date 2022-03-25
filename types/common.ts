@@ -11,18 +11,18 @@ export type ExperimentType = {
 
 export type ExperimentResultType = {
   id: string
-  plots: {id: string, plot: string}[]
-  next: (number|string)[],
-  pickled: string,
-  expectedMinimum: Array<Array<number>>,
+  plots: { id: string; plot: string }[]
+  next: (number | string)[]
+  pickled: string
+  expectedMinimum: Array<Array<number>>
   extras: object
 }
 
 export type Info = {
   name: string
-  description: string,
-  swVersion: string,
-  dataFormatVersion: string,
+  description: string
+  swVersion: string
+  dataFormatVersion: string
 }
 
 export type CategoricalVariableType = {
@@ -30,14 +30,23 @@ export type CategoricalVariableType = {
   description: string
   options: string[]
 }
-
 export type ValueVariableType = {
-  type: "discrete" | "continuous"
+  type: 'discrete' | 'continuous'
   name: string
   description: string
   min: number
   max: number
 }
+
+type Override<T, K> = Omit<T, keyof K> & K
+
+export type ValueVariableInputType = Override<
+  ValueVariableType,
+  {
+    min: string
+    max: string
+  }
+>
 
 export type VariableType = CategoricalVariableType | ValueVariableType
 
@@ -49,7 +58,10 @@ export type OptimizerConfig = {
   xi: number
 }
 
-export type DataPointType = CategorialDataPointType | ValueDataPointType | ScoreDataPointType
+export type DataPointType =
+  | CategorialDataPointType
+  | ValueDataPointType
+  | ScoreDataPointType
 export type DataPointTypeValue = string | number | number[]
 
 export type CategorialDataPointType = {
@@ -65,7 +77,13 @@ export type ScoreDataPointType = {
   value: DataPointTypeValue
 }
 
-export type SpaceType = {type: string, name:string, from?: number, to?: number, categories?: string[]}[]
+export type SpaceType = {
+  type: string
+  name: string
+  from?: number
+  to?: number
+  categories?: string[]
+}[]
 
 export type TableDataPoint = {
   name: string

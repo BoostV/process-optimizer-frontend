@@ -1,0 +1,6 @@
+.next
+.devcontainer
+.github
+node_modules
+public
+tmp
