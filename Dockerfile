@@ -1,11 +1,11 @@
-FROM node:14.16.1 AS builder
+FROM node:16-bullseye AS builder
 
 WORKDIR /app
 COPY . .
 
-RUN yarn && yarn build
+RUN yarn --network-timeout 100000 && yarn build
 
-FROM node:14.16.1
+FROM node:16-bullseye
 RUN mkdir /app
 
 WORKDIR /app
