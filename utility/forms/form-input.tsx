@@ -14,11 +14,13 @@ const FormInputText = ({ name, control, rules, transform = (x:any) => x, ...rest
         name={name}
         control={control}
         rules={rules}
-        render={({ field: { ref, onChange, value } }) => <TextField
+        render={({ field: { ref, onChange, value }, fieldState: { error } }) => <TextField
             {...rest}
             value={value}
             inputRef={ref}
             onChange={e => onChange(transform(e.target.value))}
+            error={!!error}
+            helperText={error ? error.message : null}
         />}
     />
 )

@@ -4,17 +4,18 @@ import { ChangeEvent, useState } from 'react';
 
 type CategoricalVariableOptionProps = {
   onOptionAdded: (data: string) => void
+  error: string
 }
 
-export default function CategoricalVariableOptions(props: CategoricalVariableOptionProps) {
+export default function CategoricalVariableOptions({ onOptionAdded, error }: CategoricalVariableOptionProps) {
   const [option, setOption] = useState("")
 
   function updateOption(option: string) {
     setOption(option)
   }
 
-  function onOptionAdded() {
-    props.onOptionAdded(option)
+  function optionAdded() {
+    onOptionAdded(option)
     setOption("")
   }
 
@@ -27,10 +28,12 @@ export default function CategoricalVariableOptions(props: CategoricalVariableOpt
           label=""
           value={option}
           onChange={(e: ChangeEvent) => updateOption((e.target as HTMLInputElement).value)}
+          error={!!error}
+          helperText={error}
         />
       </Grid>
       <Grid item xs={4}>
-        <IconButton size="small" onClick={() => onOptionAdded()}>
+        <IconButton size="small" onClick={() => optionAdded()}>
           <AddIcon color="primary"/>
         </IconButton>
       </Grid>
