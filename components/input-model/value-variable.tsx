@@ -1,9 +1,11 @@
-import { Box, Button, Radio, FormControl, FormControlLabel, RadioGroup, Tooltip } from '@material-ui/core'
+import { Box, Button } from '@material-ui/core'
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import useStyles from './value-variable.style';
-import { ValueVariableType } from '../../types/common';
+import { ValueVariableInputType, ValueVariableType } from '../../types/common';
 import { FormInputText } from '../../utility/forms';
+import { FormRadioGroup } from '../../utility/forms/form-radio-group';
+import { validation } from '../../utility/forms/validation';
 
 type ValueVariableProps = {
   isDisabled: boolean
@@ -13,13 +15,13 @@ type ValueVariableProps = {
 export default function ValueVariable(props: ValueVariableProps) {
   const { isDisabled, onAdded } = props
   const classes = useStyles()
-  const defaultValues = useMemo(() => { return { name: '', min: '', max: '', description: '', type: 'continuous' } }, [])
-  const { register, handleSubmit, reset, control, formState, getValues } = useForm({ defaultValues })
+  const defaultValues: ValueVariableInputType = useMemo(() => { return { name: '', min: '', max: '', description: '', type: 'continuous' } }, [])
+  const { handleSubmit, reset, control, formState, getValues } = useForm({ defaultValues })
 
-  const onSubmit = (data: ValueVariableType) => {
-    onAdded({...data, max: parseFloat(data.max as any as string), min: parseFloat(data.min as any as string)})
+  const onSubmit = (data: ValueVariableInputType) => {
+    onAdded({ ...data,  min: data.type === "discrete" ? Math.floor(parseFloat(data.min)) : parseFloat(data.min), max: data.type === "discrete" ? Math.floor(parseFloat(data.max)) : parseFloat(data.max) })
   }
-  
+ 
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
       reset({ ...defaultValues, type: getValues().type })
@@ -35,6 +37,7 @@ export default function ValueVariable(props: ValueVariableProps) {
           fullWidth
           margin="dense"
           label="Name"
+          rules={validation.required}
         />
         <FormInputText
           name="description"
@@ -51,7 +54,7 @@ export default function ValueVariable(props: ValueVariableProps) {
               fullWidth
               margin="dense"
               label="Min"
-              transform={e => e.replace(',','.')}
+              rules={{ ...validation.required, ...validation.mustBeNumber }}
             />
           </Box>
           <Box className={classes.narrowInput}>
@@ -61,21 +64,19 @@ export default function ValueVariable(props: ValueVariableProps) {
               fullWidth
               margin="dense"
               label="Max"
-              transform={e => e.replace(',','.')}
+              rules={{ ...validation.required, ...validation.mustBeNumber }}
             />
           </Box>
         </Box>
         <Box mt={1} mb={1}>
-          <FormControl component="fieldset">
-            <RadioGroup row aria-label="value-type" name="type">
-              <Tooltip title="Values include non-integers">
-                <FormControlLabel {...register("type")} value="continuous" control={<Radio />} label="Continuous" />
-              </Tooltip>
-              <Tooltip title="Values are only integers">
-                <FormControlLabel {...register("type")} value="discrete" control={<Radio />} label="Discrete" />
-              </Tooltip>
-            </RadioGroup>
-          </FormControl>
+          <FormRadioGroup 
+            name="type"
+            control={control}
+            values={["continuous", "discrete"]}
+            labels={["Continuous", "Discrete"]}
+            tooltips={["Values include non-integers", "Values are only integers"]}
+            ariaLabel={"value-type"}
+          />
         </Box>
         <Button size="small" disabled={isDisabled} variant="outlined" type="submit">Add variable</Button>
       </form>
