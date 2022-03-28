@@ -42,11 +42,10 @@ export const calculateData = (
             ? Number(it.value)
             : it.value
         ),
-      yi: (
-        run
-          .filter(it => scoreNames.includes(it.name))
-          .map(it => it.value) as Array<any>
-      ).map(Number),
+      yi: run
+        .filter(it => scoreNames.includes(it.name))
+        .map(it => it.value)
+        .map(Number),
     })
   )
 }
