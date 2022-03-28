@@ -79,7 +79,7 @@ const convertValue = (
   } else if (categorialHeaders.includes(name)) {
     return value as string
   } else {
-    return Array.isArray(value) ? value : [Number(value)]
+    return Number(value)
   }
 }
 
@@ -87,14 +87,16 @@ export const csvToDataPoints = (
   csv: string,
   valueVariables: ValueVariableType[],
   categorialVariables: CategoricalVariableType[],
+  scoreVariables: ScoreVariableType[],
   separator = ';',
   newlinePattern = /\r\n|\n/
 ): DataPointType[][] => {
   const valueHeaders = valueVariables.map(x => x.name)
   const categorialHeaders = categorialVariables.map(x => x.name)
+  const scoreHeaders = scoreVariables.map(x => x.name)
   const expectedHeader = valueHeaders
     .concat(categorialHeaders)
-    .concat(['score'])
+    .concat(scoreHeaders)
   const lines = csv.split(newlinePattern)
   if ('' === csv || lines.length < 2) return [[]]
   else {

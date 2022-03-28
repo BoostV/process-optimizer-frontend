@@ -3,6 +3,7 @@ import {
   CategoricalVariableType,
   DataPointType,
   ExperimentType,
+  ScoreVariableType,
   ValueVariableType,
 } from '../types/common'
 import {
@@ -221,6 +222,9 @@ describe('converters', () => {
         type: 'continuous',
       },
     ]
+    const scoreVariables: ScoreVariableType[] = [
+      { name: 'score', description: '', enabled: true },
+    ]
 
     const sampleDataPoints = [
       [
@@ -242,7 +246,7 @@ describe('converters', () => {
         },
         {
           name: 'score',
-          value: [1],
+          value: 1,
         },
       ],
       [
@@ -264,7 +268,7 @@ describe('converters', () => {
         },
         {
           name: 'score',
-          value: [2],
+          value: 2,
         },
       ],
     ]
@@ -272,7 +276,7 @@ describe('converters', () => {
     it('should accept empty data string', () => {
       const input = ''
       const expected = [[]]
-      const actual = csvToDataPoints(input, [], [])
+      const actual = csvToDataPoints(input, [], [], [])
       expect(actual).toEqual(expected)
     })
 
@@ -280,7 +284,12 @@ describe('converters', () => {
       const input =
         'Sukker;Peber;Hvedemel;Kunde;score\n28;982;632;Mus;1\n15;986;5;Mus;2'
       const expected = sampleDataPoints
-      const actual = csvToDataPoints(input, valueVariables, categorialVariables)
+      const actual = csvToDataPoints(
+        input,
+        valueVariables,
+        categorialVariables,
+        scoreVariables
+      )
       expect(actual).toEqual(expected)
     })
 
@@ -288,14 +297,24 @@ describe('converters', () => {
       const input =
         'Sukker;score;Hvedemel;Peber;Kunde\n28;1;632;982;Mus\n15;2;5;986;Mus'
       const expected = sampleDataPoints
-      const actual = csvToDataPoints(input, valueVariables, categorialVariables)
+      const actual = csvToDataPoints(
+        input,
+        valueVariables,
+        categorialVariables,
+        scoreVariables
+      )
       expect(actual).toEqual(expected)
     })
 
     it('should fail if header is missing', () => {
       const input = 'Sukker;Hvedemel;Kunde;score\n28;632;Mus;1\n15;5;Mus;2'
       expect(() =>
-        csvToDataPoints(input, valueVariables, categorialVariables)
+        csvToDataPoints(
+          input,
+          valueVariables,
+          categorialVariables,
+          scoreVariables
+        )
       ).toThrowErrorMatchingSnapshot()
     })
 
@@ -303,7 +322,12 @@ describe('converters', () => {
       const input =
         'Sukker;Peber;Hvedemel;Halm;Kunde;score\n28;982;632;007;Mus;1\n15;986;5;008;Mus;2'
       const expected = sampleDataPoints
-      const actual = csvToDataPoints(input, valueVariables, categorialVariables)
+      const actual = csvToDataPoints(
+        input,
+        valueVariables,
+        categorialVariables,
+        scoreVariables
+      )
       expect(actual).toEqual(expected)
     })
   })
