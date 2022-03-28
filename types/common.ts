@@ -4,6 +4,7 @@ export type ExperimentType = {
   extras: object
   categoricalVariables: CategoricalVariableType[]
   valueVariables: ValueVariableType[]
+  scoreVariables: ScoreVariableType[]
   optimizerConfig: OptimizerConfig
   results: ExperimentResultType
   dataPoints: DataPointType[][]
@@ -36,6 +37,11 @@ export type ValueVariableType = {
   description: string
   min: number
   max: number
+}
+export type ScoreVariableType = {
+  name: string
+  description: string
+  enabled: boolean
 }
 
 type Override<T, K> = Omit<T, keyof K> & K

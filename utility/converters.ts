@@ -5,6 +5,7 @@ import {
   DataPointTypeValue,
   ExperimentType,
   ScoreDataPointType,
+  ScoreVariableType,
   SpaceType,
   ValueVariableType,
 } from '../types/common'
@@ -28,20 +29,23 @@ const numPat = / [0-9] + /
 export const calculateData = (
   categoricalValues: CategoricalVariableType[],
   numericValues: ValueVariableType[],
+  scoreValues: ScoreVariableType[],
   dataPoints: DataPointType[][]
 ): ExperimentData[] => {
+  const scoreNames = scoreValues.map(it => it.name)
   return dataPoints.map(
     (run): ExperimentData => ({
       xi: run
-        .filter(it => it.name !== 'score')
+        .filter(it => !scoreNames.includes(it.name))
         .map(it =>
           numericValues.find(p => p.name === it.name)
             ? Number(it.value)
             : it.value
         ),
       yi: (
-        (run.filter(it => it.name === 'score')[0] as ScoreDataPointType)
-          .value as Array<any>
+        run
+          .filter(it => scoreNames.includes(it.name))
+          .map(it => it.value) as Array<any>
       ).map(Number),
     })
   )
@@ -102,20 +106,18 @@ export const csvToDataPoints = (
       const data = lines.slice(1)
       return data
         .map(line =>
-          line
-            .split(separator)
-            .map(
-              (value, idx) =>
-                ({
-                  name: header[idx],
-                  value: convertValue(
-                    valueHeaders,
-                    categorialHeaders,
-                    header[idx],
-                    value
-                  ),
-                } as DataPointType)
-            )
+          line.split(separator).map(
+            (value, idx) =>
+              ({
+                name: header[idx],
+                value: convertValue(
+                  valueHeaders,
+                  categorialHeaders,
+                  header[idx],
+                  value
+                ),
+              } as DataPointType)
+          )
         )
         .map(data =>
           data.sort(

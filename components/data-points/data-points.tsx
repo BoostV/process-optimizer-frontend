@@ -1,12 +1,5 @@
-import {
-  CircularProgress,
-  IconButton,
-  Box,
-  Tooltip,
-  FormControlLabel,
-  Switch,
-} from '@material-ui/core'
-import { useCallback, useEffect, useReducer, useState } from 'react'
+import { CircularProgress, IconButton, Box, Tooltip } from '@material-ui/core'
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { useGlobal } from '../../context/global-context'
 import {
   dataPointsReducer,
@@ -20,6 +13,7 @@ import {
   ValueVariableType,
   CategoricalVariableType,
   DataPointTypeValue,
+  ScoreVariableType,
 } from '../../types/common'
 import { EditableTable } from '../editable-table/editable-table'
 import SwapVertIcon from '@material-ui/icons/SwapVert'
@@ -31,18 +25,18 @@ import UploadCSVButton from '../upload-csv-button'
 type DataPointProps = {
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
+  scoreVariables: ScoreVariableType[]
   dataPoints: DataPointType[][]
   onUpdateDataPoints: (dataPoints: DataPointType[][]) => void
 }
 
 type UpdateFnType = (rowIndex: number, ...args: any[]) => void
 
-const SCORE = 'score'
-
 export default function DataPoints(props: DataPointProps) {
   const {
     valueVariables,
     categoricalVariables,
+    scoreVariables,
     dataPoints,
     onUpdateDataPoints,
   } = props
@@ -57,7 +51,10 @@ export default function DataPoints(props: DataPointProps) {
   const global = useGlobal()
   const newestFirst = global.state.dataPointsNewestFirst
 
-  const [scoreNames, setScoreNames] = useState(['score1', 'score2'])
+  const scoreNames = useMemo(
+    () => scoreVariables.filter(it => it.enabled).map(it => it.name),
+    [scoreVariables]
+  )
 
   const buildCombinedVariables = useCallback((): CombinedVariableType[] => {
     return (valueVariables as CombinedVariableType[]).concat(
@@ -120,7 +117,9 @@ export default function DataPoints(props: DataPointProps) {
       const emptyRow: TableDataRow = buildEmptyRow()
       const dataPointRows: TableDataRow[] = dataPoints
         .map(item => {
-          const rowData: DataPointType[] = item.filter(dp => dp.name !== SCORE)
+          const rowData: DataPointType[] = item.filter(
+            dp => !scoreNames.includes(dp.name)
+          )
           const vars: TableDataPoint[] = new Array(rowData.length)
           rowData.forEach(v => {
             const idx = combinedVariables.findIndex(it => it.name === v.name)
@@ -130,15 +129,9 @@ export default function DataPoints(props: DataPointProps) {
               options: combinedVariables[idx]?.options,
             }
           })
-          const scores: TableDataPoint[] = []
-          const scorePoint = item.filter(dp => dp.name === SCORE)[0]
-          for (let i = 0; i < scoreNames.length; i++) {
-            scores.push({
-              name: scoreNames[i],
-              value:
-                scorePoint.value[i] !== undefined ? scorePoint.value[i] : 0,
-            })
-          }
+          const scores: TableDataPoint[] = item
+            .filter(dp => scoreNames.includes(dp.name))
+            .map(score => ({ name: score.name, value: score.value as string }))
           return {
             dataPoints: vars.concat(scores),
             isEditMode: false,
@@ -187,18 +180,16 @@ export default function DataPoints(props: DataPointProps) {
           )
           const scores = row.dataPoints
             .filter(dp => scoreNames.includes(dp.name))
-            .map(s => parseFloat(s.value))
+            .map(s => ({
+              name: s.name,
+              value: parseFloat(s.value),
+            }))
           return vars
             .map(dp => ({
               name: dp.name,
               value: dp.value as DataPointTypeValue,
             }))
-            .concat([
-              {
-                name: SCORE,
-                value: scores as DataPointTypeValue,
-              },
-            ])
+            .concat(scores)
         })
       )
     }
@@ -215,21 +206,6 @@ export default function DataPoints(props: DataPointProps) {
             <Box>
               Data points
               <br />
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={scoreNames.length > 1}
-                    onChange={() =>
-                      setScoreNames(
-                        scoreNames.length > 1 ? ['score'] : ['score1', 'score2']
-                      )
-                    }
-                    name="multiobj"
-                    color="secondary"
-                  />
-                }
-                label="Multi objective"
-              />
             </Box>
             <Box>
               <DownloadCSVButton light />

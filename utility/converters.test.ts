@@ -49,14 +49,14 @@ describe('converters', () => {
         { name: 'Peber', value: 982 },
         { name: 'Hvedemel', value: 632 },
         { name: 'Kunde', value: 'Mus' },
-        { name: 'score', value: [0.1] },
+        { name: 'score', value: 0.1 },
       ],
       [
         { name: 'Sukker', value: 15 },
         { name: 'Peber', value: 123 },
         { name: 'Hvedemel', value: 324 },
         { name: 'Kunde', value: 'Ræv' },
-        { name: 'score', value: [0.2] },
+        { name: 'score', value: 0.2 },
       ],
     ],
   }
@@ -121,6 +121,7 @@ describe('converters', () => {
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
+        sampleExperiment.scoreVariables,
         sampleExperiment.dataPoints
       )
       expect(actualData).toEqual(expectedData)

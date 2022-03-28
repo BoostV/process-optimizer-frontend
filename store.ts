@@ -1,35 +1,42 @@
-import { ExperimentType } from "./types/common";
+import { ExperimentType } from './types/common'
 import { versionInfo } from './components/version-info'
 
 export const emptyExperiment: ExperimentType = {
-  id: "",
+  id: '',
   info: {
-    name: "",
-    description: "",
+    name: '',
+    description: '',
     swVersion: versionInfo.version,
     dataFormatVersion: undefined,
   },
   categoricalVariables: [],
   valueVariables: [],
+  scoreVariables: [
+    {
+      name: 'score',
+      description: 'score',
+      enabled: true,
+    },
+  ],
   optimizerConfig: {
-    baseEstimator: "GP",
-    acqFunc: "gp_hedge",
+    baseEstimator: 'GP',
+    acqFunc: 'gp_hedge',
     initialPoints: 3,
     kappa: 1.96,
     xi: 0.01,
   },
   results: {
-    id: "",
+    id: '',
     next: [],
     plots: [],
-    pickled: "",
+    pickled: '',
     expectedMinimum: [],
-    extras: {}
+    extras: {},
   },
   dataPoints: [],
   extras: {
-    experimentSuggestionCount: 1
-  }
+    experimentSuggestionCount: 1,
+  },
 }
 
 export type State = {
@@ -37,5 +44,5 @@ export type State = {
 }
 
 export const initialState: State = {
-  experiment: emptyExperiment
+  experiment: emptyExperiment,
 }

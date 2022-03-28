@@ -1,4 +1,5 @@
 import { migrate, MIGRATIONS } from './migration'
+import version5 from './data-formats/5.json'
 import version4 from './data-formats/4.json'
 import version3 from './data-formats/3.json'
 import version2 from './data-formats/2.json'
@@ -69,10 +70,10 @@ describe('migration', () => {
     //TODO: More/better tests
     it('newest data format json should match default empty experiment', () => {
       expect(Object.keys(emptyExperiment).length).toBe(
-        Object.keys(version4).length
+        Object.keys(version5).length
       )
       Object.keys(emptyExperiment).forEach(p =>
-        expect(version4).toHaveProperty(p)
+        expect(version5).toHaveProperty(p)
       )
     })
   })

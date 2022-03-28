@@ -1,7 +1,7 @@
-import { State } from "../store"
-import { ExperimentAction, experimentReducer } from "./experiment-reducers"
+import { State } from '../store'
+import { ExperimentAction, experimentReducer } from './experiment-reducers'
 
-export type Action = ExperimentAction 
+export type Action = ExperimentAction
 
 export type Dispatch = (action: Action) => void
 
@@ -19,9 +19,10 @@ export const rootReducer = (state: State, action: Action) => {
     case 'registerResult':
     case 'addDataPoints':
     case 'updateDataPoints':
+    case 'experiment/toggleMultiObjective':
       return {
         ...state,
-        experiment: experimentReducer(state.experiment, action)
+        experiment: experimentReducer(state.experiment, action),
       }
     default:
       return state

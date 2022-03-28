@@ -1,9 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import fs from 'fs';
-import path from 'path';
-import { ExperimentResultType, ExperimentType } from '../../../types/common';
-import { Configuration, DefaultApi, OptimizerRunRequest } from '../../../openapi';
-import { calculateData, calculateSpace } from '../../../utility/converters';
+import fs from 'fs'
+import path from 'path'
+import { ExperimentResultType, ExperimentType } from '../../../types/common'
+import {
+  Configuration,
+  DefaultApi,
+  OptimizerRunRequest,
+} from '../../../openapi'
+import { calculateData, calculateSpace } from '../../../utility/converters'
 
 export const config = {
   api: {
@@ -30,40 +34,54 @@ const writeToFile = (file: string, data: object) => {
 
 const runExperiment = async (experiment: ExperimentType) => {
   const API_SERVER = process.env.API_SERVER || 'http://localhost:9090/v1.0'
-  const api = new DefaultApi(new Configuration({basePath: API_SERVER, fetchApi: fetch}))
+  const api = new DefaultApi(
+    new Configuration({ basePath: API_SERVER, fetchApi: fetch })
+  )
   const cfg = experiment.optimizerConfig
   const extras = experiment.extras || {}
   const space = calculateSpace(experiment)
   // TODO data is currently hard coded
-  const request: OptimizerRunRequest = {experiment: {
-    data: calculateData(experiment.categoricalVariables, experiment.valueVariables, experiment.dataPoints), 
-    extras: extras,
-    optimizerConfig: {
-    acqFunc: cfg.acqFunc,
-    baseEstimator: cfg.baseEstimator,
-    initialPoints: Number(cfg.initialPoints),
-    kappa: Number(cfg.kappa),
-    xi: Number(cfg.xi),
-    space: space
-  }}}
+  const request: OptimizerRunRequest = {
+    experiment: {
+      data: calculateData(
+        experiment.categoricalVariables,
+        experiment.valueVariables,
+        experiment.scoreVariables,
+        experiment.dataPoints
+      ),
+      extras: extras,
+      optimizerConfig: {
+        acqFunc: cfg.acqFunc,
+        baseEstimator: cfg.baseEstimator,
+        initialPoints: Number(cfg.initialPoints),
+        kappa: Number(cfg.kappa),
+        xi: Number(cfg.xi),
+        space: space,
+      },
+    },
+  }
   return api.optimizerRun(request)
 }
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<ExperimentType|ExperimentResultType|{}>) => {
+const handler = async (
+  req: NextApiRequest,
+  res: NextApiResponse<ExperimentType | ExperimentResultType | {}>
+) => {
   const {
     query: { id },
     method,
-    body
+    body,
   } = req
   const queryId = Array.isArray(id) ? id[0] : id
-  if (queryId !== undefined && queryId !== "undefined") {
+  if (queryId !== undefined && queryId !== 'undefined') {
     const dbFolder = process.env.DB_FOLDER || 'tmp'
     if (!fs.existsSync(dbFolder)) {
       fs.mkdirSync(dbFolder)
     }
     switch (method) {
       case 'GET':
-        const store = db[queryId] || readFromFile(path.join(dbFolder, `${queryId}.json`))
+        const store =
+          db[queryId] || readFromFile(path.join(dbFolder, `${queryId}.json`))
         if (store) {
           res.json(store)
         } else {
@@ -80,13 +98,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ExperimentType|
         const experiment = JSON.parse(body)
         const json = await runExperiment(experiment)
         console.log(json)
-        const result: ExperimentResultType = { 
-          id: experiment.id, 
-          plots: json.plots && json.plots.map(p => { return {id: p.id, plot: p.plot}}),
+        const result: ExperimentResultType = {
+          id: experiment.id,
+          plots:
+            json.plots &&
+            json.plots.map(p => {
+              return { id: p.id, plot: p.plot }
+            }),
           next: json.result.next,
           pickled: json.result.pickled,
           expectedMinimum: json.result.expectedMinimum,
-          extras: json.result.extras
+          extras: json.result.extras,
         }
         res.json(result)
         break
@@ -95,7 +117,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<ExperimentType|
         res.status(405).end(`Method ${method} Not Allowed`)
     }
   }
-
 }
 
 export default handler
