@@ -1,11 +1,11 @@
 import { Box, Button } from '@material-ui/core'
-import { useEffect, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
-import useStyles from './value-variable.style';
-import { ValueVariableInputType, ValueVariableType } from '../../types/common';
-import { FormInputText } from '../../utility/forms';
-import { FormRadioGroup } from '../../utility/forms/form-radio-group';
-import { validation } from '../../utility/forms/validation';
+import { useEffect, useMemo } from 'react'
+import { useForm } from 'react-hook-form'
+import useStyles from './value-variable.style'
+import { ValueVariableInputType, ValueVariableType } from '../../types/common'
+import { FormInputText } from '../../utility/forms'
+import { FormRadioGroup } from '../../utility/forms/form-radio-group'
+import { validation } from '../../utility/forms/validation'
 
 type ValueVariableProps = {
   isDisabled: boolean
@@ -15,13 +15,27 @@ type ValueVariableProps = {
 export default function ValueVariable(props: ValueVariableProps) {
   const { isDisabled, onAdded } = props
   const classes = useStyles()
-  const defaultValues: ValueVariableInputType = useMemo(() => { return { name: '', min: '', max: '', description: '', type: 'continuous' } }, [])
-  const { handleSubmit, reset, control, formState, getValues } = useForm({ defaultValues })
+  const defaultValues: ValueVariableInputType = useMemo(() => {
+    return { name: '', min: '', max: '', description: '', type: 'continuous' }
+  }, [])
+  const { handleSubmit, reset, control, formState, getValues } = useForm({
+    defaultValues,
+  })
 
   const onSubmit = (data: ValueVariableInputType) => {
-    onAdded({ ...data,  min: data.type === "discrete" ? Math.floor(parseFloat(data.min)) : parseFloat(data.min), max: data.type === "discrete" ? Math.floor(parseFloat(data.max)) : parseFloat(data.max) })
+    onAdded({
+      ...data,
+      min:
+        data.type === 'discrete'
+          ? Math.floor(parseFloat(data.min))
+          : parseFloat(data.min),
+      max:
+        data.type === 'discrete'
+          ? Math.floor(parseFloat(data.max))
+          : parseFloat(data.max),
+    })
   }
- 
+
   useEffect(() => {
     if (formState.isSubmitSuccessful) {
       reset({ ...defaultValues, type: getValues().type })
@@ -69,16 +83,26 @@ export default function ValueVariable(props: ValueVariableProps) {
           </Box>
         </Box>
         <Box mt={1} mb={1}>
-          <FormRadioGroup 
+          <FormRadioGroup
             name="type"
             control={control}
-            values={["continuous", "discrete"]}
-            labels={["Continuous", "Discrete"]}
-            tooltips={["Values include non-integers", "Values are only integers"]}
-            ariaLabel={"value-type"}
+            values={['continuous', 'discrete']}
+            labels={['Continuous', 'Discrete']}
+            tooltips={[
+              'Values include non-integers',
+              'Values are only integers',
+            ]}
+            ariaLabel={'value-type'}
           />
         </Box>
-        <Button size="small" disabled={isDisabled} variant="outlined" type="submit">Add variable</Button>
+        <Button
+          size="small"
+          disabled={isDisabled}
+          variant="outlined"
+          type="submit"
+        >
+          Add variable
+        </Button>
       </form>
     </>
   )

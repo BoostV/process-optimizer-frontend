@@ -4,6 +4,7 @@ export type ExperimentType = {
   extras: object
   categoricalVariables: CategoricalVariableType[]
   valueVariables: ValueVariableType[]
+  scoreVariables: ScoreVariableType[]
   optimizerConfig: OptimizerConfig
   results: ExperimentResultType
   dataPoints: DataPointType[][]
@@ -11,18 +12,18 @@ export type ExperimentType = {
 
 export type ExperimentResultType = {
   id: string
-  plots: {id: string, plot: string}[]
-  next: (number|string)[],
-  pickled: string,
-  expectedMinimum: Array<Array<number>>,
+  plots: { id: string; plot: string }[]
+  next: (number | string)[]
+  pickled: string
+  expectedMinimum: Array<Array<number>>
   extras: object
 }
 
 export type Info = {
   name: string
-  description: string,
-  swVersion: string,
-  dataFormatVersion: string,
+  description: string
+  swVersion: string
+  dataFormatVersion: string
 }
 
 export type CategoricalVariableType = {
@@ -31,19 +32,27 @@ export type CategoricalVariableType = {
   options: string[]
 }
 export type ValueVariableType = {
-  type: "discrete" | "continuous"
+  type: 'discrete' | 'continuous'
   name: string
   description: string
   min: number
   max: number
 }
+export type ScoreVariableType = {
+  name: string
+  description: string
+  enabled: boolean
+}
 
 type Override<T, K> = Omit<T, keyof K> & K
 
-export type ValueVariableInputType = Override<ValueVariableType, { 
-  min: string, 
-  max: string 
-}>
+export type ValueVariableInputType = Override<
+  ValueVariableType,
+  {
+    min: string
+    max: string
+  }
+>
 
 export type VariableType = CategoricalVariableType | ValueVariableType
 
@@ -55,7 +64,10 @@ export type OptimizerConfig = {
   xi: number
 }
 
-export type DataPointType = CategorialDataPointType | ValueDataPointType | ScoreDataPointType
+export type DataPointType =
+  | CategorialDataPointType
+  | ValueDataPointType
+  | ScoreDataPointType
 export type DataPointTypeValue = string | number | number[]
 
 export type CategorialDataPointType = {
@@ -71,13 +83,17 @@ export type ScoreDataPointType = {
   value: DataPointTypeValue
 }
 
-export type SpaceType = {type: string, name:string, from?: number, to?: number, categories?: string[]}[]
-
-export type TableDataPointValue = string | number | number[]
+export type SpaceType = {
+  type: string
+  name: string
+  from?: number
+  to?: number
+  categories?: string[]
+}[]
 
 export type TableDataPoint = {
   name: string
-  value: TableDataPointValue
+  value: string
   options?: string[] | undefined
 }
 

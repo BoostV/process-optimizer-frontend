@@ -1,14 +1,17 @@
-import { Grid, IconButton, TextField } from '@material-ui/core';
-import AddIcon from "@material-ui/icons/Add";
-import { ChangeEvent, useState } from 'react';
+import { Grid, IconButton, TextField } from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add'
+import { ChangeEvent, useState } from 'react'
 
 type CategoricalVariableOptionProps = {
   onOptionAdded: (data: string) => void
   error: string
 }
 
-export default function CategoricalVariableOptions({ onOptionAdded, error }: CategoricalVariableOptionProps) {
-  const [option, setOption] = useState("")
+export default function CategoricalVariableOptions({
+  onOptionAdded,
+  error,
+}: CategoricalVariableOptionProps) {
+  const [option, setOption] = useState('')
 
   function updateOption(option: string) {
     setOption(option)
@@ -16,7 +19,7 @@ export default function CategoricalVariableOptions({ onOptionAdded, error }: Cat
 
   function optionAdded() {
     onOptionAdded(option)
-    setOption("")
+    setOption('')
   }
 
   return (
@@ -27,19 +30,18 @@ export default function CategoricalVariableOptions({ onOptionAdded, error }: Cat
           name="option"
           label=""
           value={option}
-          onChange={(e: ChangeEvent) => updateOption((e.target as HTMLInputElement).value)}
+          onChange={(e: ChangeEvent) =>
+            updateOption((e.target as HTMLInputElement).value)
+          }
           error={!!error}
           helperText={error}
         />
       </Grid>
       <Grid item xs={4}>
         <IconButton size="small" onClick={() => optionAdded()}>
-          <AddIcon color="primary"/>
+          <AddIcon color="primary" />
         </IconButton>
       </Grid>
     </Grid>
   )
 }
-
-
-

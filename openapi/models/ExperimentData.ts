@@ -28,10 +28,10 @@ export interface ExperimentData {
     xi?: Array;
     /**
      * 
-     * @type {number}
+     * @type {Array<number>}
      * @memberof ExperimentData
      */
-    yi?: number;
+    yi?: Array<number>;
 }
 
 export function ExperimentDataFromJSON(json: any): ExperimentData {
@@ -57,7 +57,6 @@ export function ExperimentDataToJSON(value?: ExperimentData | null): any {
         return null;
     }
     return {
-        
         'xi': value.xi,
         'yi': value.yi,
     };

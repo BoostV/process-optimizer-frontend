@@ -3,6 +3,8 @@ import { TableDataRow } from "../types/common"
 export type DataPointsState = {
   rows: TableDataRow[]
   prevRows: TableDataRow[]
+  changed: boolean
+  hasTempChange: boolean
 }
 
 export type DataPointsTableAction = {
@@ -19,7 +21,6 @@ export type DataPointsTableAction = {
     value: string
     rowIndex: number
     itemIndex: number
-    useArrayForValue: string
   }
 }
 | {
@@ -39,14 +40,16 @@ export type DataPointsTableAction = {
   payload: DataPointsState
 }
 
-export const dataPointsReducer = (state: DataPointsState, action: DataPointsTableAction) => {
+export const dataPointsReducer = (state: DataPointsState, action: DataPointsTableAction): DataPointsState => {
   switch (action.type) {
     case 'setInitialState':
-      return {...action.payload}
+      return {...action.payload, changed: false}
     case 'DATA_POINTS_TABLE_EDIT_TOGGLED':
       const rowIndexEditToggled = action.payload
       return {
         ...state,
+        changed: state.hasTempChange,
+        hasTempChange: false,
         prevRows: state.prevRows.map((row, i) => {
           if (i !== rowIndexEditToggled) {
             return row
@@ -69,6 +72,8 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
       const rowIndexEditCancelled = action.payload
       return {
         ...state,
+        hasTempChange: false,
+        changed: false,
         rows: state.rows.map((row, i) => {
           if (i !== rowIndexEditCancelled) {
             return row
@@ -83,6 +88,7 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
     case 'DATA_POINTS_TABLE_EDITED':
       return {
         ...state,
+        hasTempChange: true,
         rows: state.rows.map((row, i) => {
           if (i !== action.payload.rowIndex) {
             return row
@@ -95,7 +101,7 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
                 } else {
                   return {
                     ...point,
-                    value: (point.name === action.payload.useArrayForValue ? [action.payload.value] : action.payload.value)
+                    value: action.payload.value
                   }
                 }
               })
@@ -116,6 +122,7 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
         preRowsAfterDelete.splice(action.payload, 1)
         return { 
           ...state,
+          changed: true,
           prevRows: preRowsAfterDelete,
           rows: rowsAfterDelete
         }
@@ -147,6 +154,7 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
         preRowsAfterAdded.splice(state.rows.length, 0, action.payload)
         return {
           ...state,
+          changed: true,
           prevRows: preRowsAfterAdded,
           rows: rowsAfterAdded
         }

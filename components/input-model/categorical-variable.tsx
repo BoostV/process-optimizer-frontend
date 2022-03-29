@@ -1,11 +1,17 @@
-import { Box, Button, IconButton, TextField, Typography } from '@material-ui/core';
-import DeleteIcon from "@material-ui/icons/Delete";
-import { useState, useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import CategoricalVariableOptions from './categorical-variable-options';
-import { useStyles } from './categorical-variable.style';
-import { CategoricalVariableType } from '../../types/common';
-import { validation } from '../../utility/forms/validation';
+import {
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  Typography,
+} from '@material-ui/core'
+import DeleteIcon from '@material-ui/icons/Delete'
+import { useState, useCallback, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import CategoricalVariableOptions from './categorical-variable-options'
+import { useStyles } from './categorical-variable.style'
+import { CategoricalVariableType } from '../../types/common'
+import { validation } from '../../utility/forms/validation'
 
 type CategoricalVariableProps = {
   isDisabled: boolean
@@ -16,17 +22,20 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
   const classes = useStyles()
   const { isDisabled, onAdded } = props
   const [options, setOptions] = useState([])
-  const { register, handleSubmit, reset, formState, setError, clearErrors } = useForm<CategoricalVariableType>()
-  const isOptionsValid = useCallback(() => { return options.length > 0 }, [options])
+  const { register, handleSubmit, reset, formState, setError, clearErrors } =
+    useForm<CategoricalVariableType>()
+  const isOptionsValid = useCallback(() => {
+    return options.length > 0
+  }, [options])
 
   const onSubmit = (data: CategoricalVariableType) => {
     if (isOptionsValid()) {
       onAdded({ ...data, options })
-      clearErrors("options")
+      clearErrors('options')
     } else {
-      setError("options.0", {
-        type: "manual",
-        message: "Required",
+      setError('options.0', {
+        type: 'manual',
+        message: 'Required',
       })
     }
   }
@@ -49,7 +58,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           name="name"
-          { ...register("name", { ...validation.required }) }
+          {...register('name', { ...validation.required })}
           label="Name"
           fullWidth
           margin="dense"
@@ -59,7 +68,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
         />
         <TextField
           name="description"
-          { ...register("description") }
+          {...register('description')}
           label="Description"
           fullWidth
           margin="dense"
@@ -71,23 +80,39 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
             <div key={index}>
               <div className={classes.option}>
                 <Typography variant="body1">{option}</Typography>
-                <IconButton onClick={() => deleteOption(index)} size="small" aria-label="delete" color="primary">
+                <IconButton
+                  onClick={() => deleteOption(index)}
+                  size="small"
+                  aria-label="delete"
+                  color="primary"
+                >
                   <DeleteIcon fontSize="small" />
                 </IconButton>
               </div>
             </div>
           ))}
         </Box>
-        <CategoricalVariableOptions 
+        <CategoricalVariableOptions
           onOptionAdded={(option: string) => {
             setOptions([...options, option])
-            clearErrors("options")
+            clearErrors('options')
           }}
-          error={formState.errors.options !== undefined ? formState.errors.options[0].message : undefined}
+          error={
+            formState.errors.options !== undefined
+              ? formState.errors.options[0].message
+              : undefined
+          }
         />
         <Box mt={2}>
-          <Button disabled={isDisabled} size="small" variant="outlined" type="submit">Add variable</Button>
-      </Box>
+          <Button
+            disabled={isDisabled}
+            size="small"
+            variant="outlined"
+            type="submit"
+          >
+            Add variable
+          </Button>
+        </Box>
       </form>
     </>
   )

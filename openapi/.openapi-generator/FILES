@@ -8,5 +8,6 @@ models/ExperimentOptimizerConfigSpace.ts
 models/Result.ts
 models/ResultPlots.ts
 models/ResultResult.ts
+models/ResultResultModels.ts
 models/index.ts
 runtime.ts

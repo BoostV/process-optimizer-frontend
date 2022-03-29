@@ -3,7 +3,7 @@ export const validation = {
   mustBeNumber: {
     pattern: {
       value: /^-?[0-9][0-9.]*$/,
-      message: 'Must be number'
-    }
+      message: 'Must be number',
+    },
   },
 }

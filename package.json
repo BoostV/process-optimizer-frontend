@@ -9,8 +9,8 @@
     "lint": "eslint .",
     "formatAll": "prettier --write .",
     "test": "jest",
-    "openapi": "openapi-generator-cli generate --skip-validate-spec -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v1.4.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "openapi": "openapi-generator-cli generate --skip-validate-spec -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v2.0.1/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
@@ -19,6 +19,7 @@
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
+    "@types/recharts": "^1.8.23",
     "compare-versions": "^3.6.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
@@ -28,6 +29,7 @@
     "react-dom": "17.0.2",
     "react-dropzone": "^11.4.0",
     "react-hook-form": "^7.21.0",
+    "recharts": "^2.1.8",
     "swr": "^1.0.1",
     "uuid": "^8.3.2"
   },
