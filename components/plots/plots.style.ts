@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core'
 
 export const useStyles = makeStyles(theme => ({
   titleButton: {
@@ -7,6 +7,6 @@ export const useStyles = makeStyles(theme => ({
   titleIcon: {
     color: 'white',
   },
-}));
+}))
 
 export default useStyles

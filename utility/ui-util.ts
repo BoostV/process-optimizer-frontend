@@ -1,12 +1,14 @@
-import { GridSize } from "@material-ui/core"
-import { State, UISizeKey, UISizeValue } from "../reducers/global-reducer"
+import { GridSize } from '@material-ui/core'
+import { State, UISizeKey, UISizeValue } from '../reducers/global-reducer'
 
 export const isUIBig = (globalState: State, key: UISizeKey): boolean => {
   return globalState.uiSizes.find(u => u.key === key)?.value === UISizeValue.Big
 }
 
 export const isUISmall = (globalState: State, key: UISizeKey): boolean => {
-  return globalState.uiSizes.find(u => u.key === key)?.value === UISizeValue.Small
+  return (
+    globalState.uiSizes.find(u => u.key === key)?.value === UISizeValue.Small
+  )
 }
 
 export const getSize = (globalState: State, key: UISizeKey): GridSize => {

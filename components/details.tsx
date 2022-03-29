@@ -14,11 +14,11 @@ export default function Details(props: DetailsProps) {
   return (
     <TitleCard title="Details">
       <form>
-        <TextField 
+        <TextField
           fullWidth
           margin="dense"
-          name="name" 
-          label="Name" 
+          name="name"
+          label="Name"
           value={info.name}
           required
           onChange={e => updateName(e.target.value)}

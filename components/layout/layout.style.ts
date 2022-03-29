@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core'
 
 export const useStyles = makeStyles(theme => ({
   links: {
@@ -14,7 +14,7 @@ export const useStyles = makeStyles(theme => ({
   logo: {
     marginRight: theme.spacing(1),
     height: 32,
-  }
-}));
+  },
+}))
 
 export default useStyles

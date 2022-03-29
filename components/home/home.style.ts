@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core'
 
 export const useStyles = makeStyles(theme => ({
   mainContainer: {
@@ -28,8 +28,8 @@ export const useStyles = makeStyles(theme => ({
   uploadIcon: {
     position: 'absolute',
     fontSize: '13rem !important',
-    opacity: .35
-  }
-}));
+    opacity: 0.35,
+  },
+}))
 
 export default useStyles

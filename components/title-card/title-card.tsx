@@ -1,6 +1,6 @@
-import { Box, Card, CardContent } from "@material-ui/core"
-import { ReactNode } from "react"
-import useStyles from "./title-card.style"
+import { Box, Card, CardContent } from '@material-ui/core'
+import { ReactNode } from 'react'
+import useStyles from './title-card.style'
 
 type TitleCardProps = {
   title: ReactNode
@@ -15,12 +15,8 @@ export const TitleCard = (props: TitleCardProps) => {
   return (
     <Card>
       <CardContent className={classes.content}>
-        <Box className={classes.title}>
-          {title}
-        </Box>
-        <Box p={padding !== undefined ? padding : 2}>
-          {children}
-        </Box>
+        <Box className={classes.title}>{title}</Box>
+        <Box p={padding !== undefined ? padding : 2}>{children}</Box>
       </CardContent>
     </Card>
   )

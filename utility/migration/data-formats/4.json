@@ -6,11 +6,13 @@
     "name": "Cake",
     "description": "Yummy"
   },
-  "categoricalVariables": [{
-    "name": "Icing",
-    "description": "Sugary",
-    "options": ["White", "Brown"]
-  }],
+  "categoricalVariables": [
+    {
+      "name": "Icing",
+      "description": "Sugary",
+      "options": ["White", "Brown"]
+    }
+  ],
   "valueVariables": [
     {
       "name": "name1",
@@ -58,9 +60,7 @@
       },
       {
         "name": "score",
-        "value": [
-          "0.5"
-        ]
+        "value": ["0.5"]
       }
     ]
   ],

@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core'
 
 export const useStyles = makeStyles(theme => ({
   spinner: {
@@ -23,8 +23,8 @@ export const useStyles = makeStyles(theme => ({
     },
     '100%': {
       backgroundColor: theme.palette.primary.main,
-    }
+    },
   },
-}));
+}))
 
 export default useStyles

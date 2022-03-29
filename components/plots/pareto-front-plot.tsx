@@ -1,18 +1,32 @@
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Label } from 'recharts';
+import {
+  ScatterChart,
+  Scatter,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  Label,
+} from 'recharts'
 
 const CustomTooltip = ({ active, payload, label, cheese }: any) => {
   console.log('payload', payload, label)
   if (active && payload && payload.length) {
     return (
-      <div style={{ background: 'white', padding: '2px' }} >
-        <b>{payload[0].value}, {payload[1].value}</b>
+      <div style={{ background: 'white', padding: '2px' }}>
+        <b>
+          {payload[0].value}, {payload[1].value}
+        </b>
         <br />
-        {payload[0].payload.inputs !== undefined ? payload[0].payload.inputs.map(p => 
-          <>
-            {p.name}: {p.value}
-            <br/>
-          </>
-        ) : ''}
+        {payload[0].payload.inputs !== undefined
+          ? payload[0].payload.inputs.map(p => (
+              <>
+                {p.name}: {p.value}
+                <br />
+              </>
+            ))
+          : ''}
       </div>
     )
   }
@@ -21,25 +35,67 @@ const CustomTooltip = ({ active, payload, label, cheese }: any) => {
 
 export default function ParetoFrontPlot() {
   const dataScore = [
-    { x: 0.100, y: 0.200, inputs: [{ name: 'inputA', value: 1 }, { name: 'inputB', value: 2 }] },
-    { x: 0.120, y: 0.100, inputs: [{ name: 'inputA', value: 1 }, { name: 'inputB', value: 2 }] },
-    { x: 0.170, y: 0.300, inputs: [{ name: 'inputA', value: 1 }, { name: 'inputB', value: 2 }] },
-    { x: 0.140, y: 0.250, inputs: [{ name: 'inputA', value: 1 }, { name: 'inputB', value: 2 }] },
-    { x: 0.150, y: 0.400, inputs: [{ name: 'inputA', value: 1 }, { name: 'inputB', value: 2 }] },
-    { x: 0.110, y: 0.280, inputs: [{ name: 'inputA', value: 1 }, { name: 'inputB', value: 2 }] },
+    {
+      x: 0.1,
+      y: 0.2,
+      inputs: [
+        { name: 'inputA', value: 1 },
+        { name: 'inputB', value: 2 },
+      ],
+    },
+    {
+      x: 0.12,
+      y: 0.1,
+      inputs: [
+        { name: 'inputA', value: 1 },
+        { name: 'inputB', value: 2 },
+      ],
+    },
+    {
+      x: 0.17,
+      y: 0.3,
+      inputs: [
+        { name: 'inputA', value: 1 },
+        { name: 'inputB', value: 2 },
+      ],
+    },
+    {
+      x: 0.14,
+      y: 0.25,
+      inputs: [
+        { name: 'inputA', value: 1 },
+        { name: 'inputB', value: 2 },
+      ],
+    },
+    {
+      x: 0.15,
+      y: 0.4,
+      inputs: [
+        { name: 'inputA', value: 1 },
+        { name: 'inputB', value: 2 },
+      ],
+    },
+    {
+      x: 0.11,
+      y: 0.28,
+      inputs: [
+        { name: 'inputA', value: 1 },
+        { name: 'inputB', value: 2 },
+      ],
+    },
   ]
 
   const dataPareto = [
-    { x: 0.110, y: 0.250 },
-    { x: 0.120, y: 0.260 },
-    { x: 0.130, y: 0.270 },
-    { x: 0.140, y: 0.280 },
-    { x: 0.150, y: 0.290 },
-    { x: 0.160, y: 0.300 },
+    { x: 0.11, y: 0.25 },
+    { x: 0.12, y: 0.26 },
+    { x: 0.13, y: 0.27 },
+    { x: 0.14, y: 0.28 },
+    { x: 0.15, y: 0.29 },
+    { x: 0.16, y: 0.3 },
   ]
 
   return (
-    <div style={{ height:"600px", width:"600px" }}>
+    <div style={{ height: '600px', width: '600px' }}>
       <ResponsiveContainer width="100%" height="100%">
         <ScatterChart
           margin={{
@@ -57,9 +113,25 @@ export default function ParetoFrontPlot() {
           <YAxis tickCount={10} type="number" dataKey="y" name="score2">
             <Label value="score2" position="insideLeft" angle={-90} />
           </YAxis>
-          <Tooltip isAnimationActive={false} content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} />
-          <Scatter name="Observations" data={dataScore} fill="blue" shape="circle" legendType="circle" />
-          <Scatter name="Estimated pareto front" data={dataPareto} fill="red" shape="diamond" legendType="diamond" />
+          <Tooltip
+            isAnimationActive={false}
+            content={<CustomTooltip />}
+            cursor={{ strokeDasharray: '3 3' }}
+          />
+          <Scatter
+            name="Observations"
+            data={dataScore}
+            fill="blue"
+            shape="circle"
+            legendType="circle"
+          />
+          <Scatter
+            name="Estimated pareto front"
+            data={dataPareto}
+            fill="red"
+            shape="diamond"
+            legendType="diamond"
+          />
         </ScatterChart>
       </ResponsiveContainer>
     </div>

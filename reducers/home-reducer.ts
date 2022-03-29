@@ -1,10 +1,11 @@
-export type Action = {
-  type: 'addExperimentForDeletion'
-  payload: string
-}
-| {
-  type: 'resetExperimentsForDeletion'
-}
+export type Action =
+  | {
+      type: 'addExperimentForDeletion'
+      payload: string
+    }
+  | {
+      type: 'resetExperimentsForDeletion'
+    }
 
 export type State = {
   experimentsToDelete: string[]
@@ -19,7 +20,7 @@ export const reducer = (state: State, action: Action) => {
       return { ...state, experimentsToDelete: experimentsAfterAdd }
     case 'resetExperimentsForDeletion':
       return { ...state, experimentsToDelete: [] }
-    default: 
-    return state
+    default:
+      return state
   }
 }

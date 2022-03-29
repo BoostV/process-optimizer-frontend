@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core'
 
 export const useStyles = makeStyles(theme => ({
   themeContainer: {
@@ -10,7 +10,7 @@ export const useStyles = makeStyles(theme => ({
     background: 'white',
     opacity: 0.7,
     padding: 8,
-  }
-}));
+  },
+}))
 
 export default useStyles

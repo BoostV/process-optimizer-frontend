@@ -1,3 +1,3 @@
 export const paths = {
-  experiment: 'experiment'
+  experiment: 'experiment',
 }

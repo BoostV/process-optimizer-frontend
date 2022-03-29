@@ -1,6 +1,6 @@
-import { createTheme, Theme } from "@material-ui/core";
-import { cyan, grey, teal } from "@material-ui/core/colors";
-import { Overrides } from "@material-ui/core/styles/overrides";
+import { createTheme, Theme } from '@material-ui/core'
+import { cyan, grey, teal } from '@material-ui/core/colors'
+import { Overrides } from '@material-ui/core/styles/overrides'
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
     custom: {
@@ -21,20 +21,20 @@ declare module '@material-ui/core/styles/createPalette' {
 const overrides: Overrides = {
   MuiTableCell: {
     sizeSmall: {
-      padding: "0 2px 0 2px",
-    }
+      padding: '0 2px 0 2px',
+    },
   },
   MuiSelect: {
     select: {
       paddingBottom: 4,
-    }
+    },
   },
   MuiListItem: {
     root: {
       paddingTop: 0,
       paddingBottom: 0,
-    }
-  }
+    },
+  },
 }
 declare module '@material-ui/core/styles/createTheme' {
   interface Theme {
@@ -43,7 +43,7 @@ declare module '@material-ui/core/styles/createTheme' {
       mainWidthMax: number
     }
   }
-  
+
   interface ThemeOptions {
     sizes?: {
       mainWidthMin?: number
@@ -77,7 +77,12 @@ const createCustomTheme = (custom: CustomColours): Theme => {
       },
       custom: {
         background: {
-          main: 'linear-gradient(90deg, ' + custom.backPrimary + ' 30%,' + custom.backSecondary + ' 100%)',
+          main:
+            'linear-gradient(90deg, ' +
+            custom.backPrimary +
+            ' 30%,' +
+            custom.backSecondary +
+            ' 100%)',
         },
         textInsideBox: {
           main: custom.textInsideBox,
@@ -85,9 +90,9 @@ const createCustomTheme = (custom: CustomColours): Theme => {
         transparentBox: {
           main: custom.transparentBox,
         },
-      }
-    }
-  });
+      },
+    },
+  })
 }
 
 const teals: CustomColours = {
@@ -162,7 +167,7 @@ const earth: CustomColours = {
 }
 
 export type ThemeName =
-    'Teal'
+  | 'Teal'
   | 'Cyan'
   | 'Bee'
   | 'BeeLight'

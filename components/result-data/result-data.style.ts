@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/core";
-import { grey } from "@material-ui/core/colors";
+import { makeStyles } from '@material-ui/core'
+import { grey } from '@material-ui/core/colors'
 
 export const useStyles = makeStyles(theme => ({
   titleButton: {
@@ -11,6 +11,6 @@ export const useStyles = makeStyles(theme => ({
   extrasContainer: {
     background: grey[200],
   },
-}));
+}))
 
 export default useStyles

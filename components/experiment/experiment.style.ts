@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core'
 
 export const useStyles = makeStyles(theme => ({
   highlight: {
@@ -21,7 +21,7 @@ export const useStyles = makeStyles(theme => ({
   cardContentWrapper: {
     background: 'url(/logo_big.png)',
     backgroundRepeat: 'no-repeat',
-  }
-}));
+  },
+}))
 
 export default useStyles

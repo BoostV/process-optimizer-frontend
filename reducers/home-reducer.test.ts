@@ -1,21 +1,24 @@
-import { reducer, State } from "./home-reducer"
+import { reducer, State } from './home-reducer'
 
 const initState: State = {
-  experimentsToDelete: []
+  experimentsToDelete: [],
 }
 
-describe("addExperimentForDeletion", () => {
-  it("should add experiment", async () => {
+describe('addExperimentForDeletion', () => {
+  it('should add experiment', async () => {
     expect(
-      reducer(initState, { type: 'addExperimentForDeletion', payload: '1234' } ))
-      .toEqual({ ...initState, experimentsToDelete: ['1234'] })
+      reducer(initState, { type: 'addExperimentForDeletion', payload: '1234' })
+    ).toEqual({ ...initState, experimentsToDelete: ['1234'] })
   })
 })
 
-describe("resetExperimentsForDeletion", () => {
-  it("should reset experiments", async () => {
+describe('resetExperimentsForDeletion', () => {
+  it('should reset experiments', async () => {
     expect(
-      reducer({ ...initState, experimentsToDelete: ['1234', '5678'] }, { type: 'resetExperimentsForDeletion' } ))
-      .toEqual({ ...initState })
+      reducer(
+        { ...initState, experimentsToDelete: ['1234', '5678'] },
+        { type: 'resetExperimentsForDeletion' }
+      )
+    ).toEqual({ ...initState })
   })
 })

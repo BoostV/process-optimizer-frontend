@@ -1,16 +1,16 @@
-import { OptimizerConfig } from "../types/common";
-import { TitleCard } from "./title-card/title-card";
-import { TextField } from "@material-ui/core";
+import { OptimizerConfig } from '../types/common'
+import { TitleCard } from './title-card/title-card'
+import { TextField } from '@material-ui/core'
 
 type OptimizerConfiguratorProps = {
-  config: OptimizerConfig;
-  onConfigUpdated: (config: OptimizerConfig) => void;
-};
+  config: OptimizerConfig
+  onConfigUpdated: (config: OptimizerConfig) => void
+}
 
 export default function OptimizerConfigurator(
   props: OptimizerConfiguratorProps
 ) {
-  const { config, onConfigUpdated } = props;
+  const { config, onConfigUpdated } = props
 
   return (
     <TitleCard title="Configuration">
@@ -21,7 +21,7 @@ export default function OptimizerConfigurator(
         margin="dense"
         defaultValue={config.baseEstimator}
         label="Base estimator"
-        onChange={(e) =>
+        onChange={e =>
           onConfigUpdated({ ...config, baseEstimator: e.target.value })
         }
       />
@@ -32,9 +32,7 @@ export default function OptimizerConfigurator(
         margin="dense"
         defaultValue={config.acqFunc}
         label="Acq func"
-        onChange={(e) =>
-          onConfigUpdated({ ...config, acqFunc: e.target.value })
-        }
+        onChange={e => onConfigUpdated({ ...config, acqFunc: e.target.value })}
       />
       <TextField
         name="initialPoints"
@@ -42,8 +40,11 @@ export default function OptimizerConfigurator(
         margin="dense"
         defaultValue={config.initialPoints}
         label="N initial points"
-        onChange={(e) =>
-          onConfigUpdated({ ...config, initialPoints: parseInt(e.target.value) })
+        onChange={e =>
+          onConfigUpdated({
+            ...config,
+            initialPoints: parseInt(e.target.value),
+          })
         }
       />
       <TextField
@@ -52,7 +53,7 @@ export default function OptimizerConfigurator(
         margin="dense"
         defaultValue={config.kappa}
         label="Kappa"
-        onChange={(e) =>
+        onChange={e =>
           onConfigUpdated({ ...config, kappa: parseFloat(e.target.value) })
         }
       />
@@ -62,10 +63,10 @@ export default function OptimizerConfigurator(
         margin="dense"
         defaultValue={config.xi}
         label="Xi"
-        onChange={(e) =>
+        onChange={e =>
           onConfigUpdated({ ...config, xi: parseFloat(e.target.value) })
         }
       />
     </TitleCard>
-  );
+  )
 }

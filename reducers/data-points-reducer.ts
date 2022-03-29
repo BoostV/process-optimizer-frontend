@@ -1,4 +1,4 @@
-import { TableDataRow } from "../types/common"
+import { TableDataRow } from '../types/common'
 
 export type DataPointsState = {
   rows: TableDataRow[]
@@ -7,43 +7,47 @@ export type DataPointsState = {
   hasTempChange: boolean
 }
 
-export type DataPointsTableAction = {
-  type: 'DATA_POINTS_TABLE_EDIT_TOGGLED'
-  payload: number
-}
-| {
-  type: 'DATA_POINTS_TABLE_EDIT_CANCELLED'
-  payload: number
-}
-| {
-  type: 'DATA_POINTS_TABLE_EDITED'
-  payload: {
-    value: string
-    rowIndex: number
-    itemIndex: number
-  }
-}
-| {
-  type: 'DATA_POINTS_TABLE_UPDATED'
-  payload: TableDataRow[]
-}
-| {
-  type: 'DATA_POINTS_TABLE_ROW_DELETED'
-  payload: number
-}
-| {
-  type: 'DATA_POINTS_TABLE_ROW_ADDED'
-  payload: TableDataRow
-}
-| {
-  type: 'setInitialState'
-  payload: DataPointsState
-}
+export type DataPointsTableAction =
+  | {
+      type: 'DATA_POINTS_TABLE_EDIT_TOGGLED'
+      payload: number
+    }
+  | {
+      type: 'DATA_POINTS_TABLE_EDIT_CANCELLED'
+      payload: number
+    }
+  | {
+      type: 'DATA_POINTS_TABLE_EDITED'
+      payload: {
+        value: string
+        rowIndex: number
+        itemIndex: number
+      }
+    }
+  | {
+      type: 'DATA_POINTS_TABLE_UPDATED'
+      payload: TableDataRow[]
+    }
+  | {
+      type: 'DATA_POINTS_TABLE_ROW_DELETED'
+      payload: number
+    }
+  | {
+      type: 'DATA_POINTS_TABLE_ROW_ADDED'
+      payload: TableDataRow
+    }
+  | {
+      type: 'setInitialState'
+      payload: DataPointsState
+    }
 
-export const dataPointsReducer = (state: DataPointsState, action: DataPointsTableAction): DataPointsState => {
+export const dataPointsReducer = (
+  state: DataPointsState,
+  action: DataPointsTableAction
+): DataPointsState => {
   switch (action.type) {
     case 'setInitialState':
-      return {...action.payload, changed: false}
+      return { ...action.payload, changed: false }
     case 'DATA_POINTS_TABLE_EDIT_TOGGLED':
       const rowIndexEditToggled = action.payload
       return {
@@ -63,10 +67,10 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
           } else {
             return {
               ...row,
-              isEditMode: !row.isEditMode
+              isEditMode: !row.isEditMode,
             }
           }
-        })
+        }),
       }
     case 'DATA_POINTS_TABLE_EDIT_CANCELLED':
       const rowIndexEditCancelled = action.payload
@@ -80,10 +84,10 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
           } else {
             return {
               ...state.prevRows[rowIndexEditCancelled],
-              isEditMode: row.isNew
+              isEditMode: row.isNew,
             }
           }
-        })
+        }),
       }
     case 'DATA_POINTS_TABLE_EDITED':
       return {
@@ -101,33 +105,35 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
                 } else {
                   return {
                     ...point,
-                    value: action.payload.value
+                    value: action.payload.value,
                   }
                 }
-              })
+              }),
             }
           }
-        })
+        }),
       }
-      case 'DATA_POINTS_TABLE_UPDATED':
-        return {
-          ...state,
-          rows: action.payload
-        }
-      case 'DATA_POINTS_TABLE_ROW_DELETED':
-        let rowsAfterDelete: TableDataRow[] = state.rows.slice()
-        rowsAfterDelete.splice(action.payload, 1)
+    case 'DATA_POINTS_TABLE_UPDATED':
+      return {
+        ...state,
+        rows: action.payload,
+      }
+    case 'DATA_POINTS_TABLE_ROW_DELETED':
+      let rowsAfterDelete: TableDataRow[] = state.rows.slice()
+      rowsAfterDelete.splice(action.payload, 1)
 
-        let preRowsAfterDelete: TableDataRow[] = state.prevRows.slice()
-        preRowsAfterDelete.splice(action.payload, 1)
-        return { 
-          ...state,
-          changed: true,
-          prevRows: preRowsAfterDelete,
-          rows: rowsAfterDelete
-        }
-      case 'DATA_POINTS_TABLE_ROW_ADDED':
-        const rowsAfterAdded: TableDataRow[] = state.rows.slice().map((item, i) => {
+      let preRowsAfterDelete: TableDataRow[] = state.prevRows.slice()
+      preRowsAfterDelete.splice(action.payload, 1)
+      return {
+        ...state,
+        changed: true,
+        prevRows: preRowsAfterDelete,
+        rows: rowsAfterDelete,
+      }
+    case 'DATA_POINTS_TABLE_ROW_ADDED':
+      const rowsAfterAdded: TableDataRow[] = state.rows
+        .slice()
+        .map((item, i) => {
           if (state.rows.length - 1 !== i) {
             return item
           } else {
@@ -137,10 +143,12 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
               isNew: false,
             }
           }
-        })       
-        rowsAfterAdded.splice(state.rows.length, 0, action.payload)
+        })
+      rowsAfterAdded.splice(state.rows.length, 0, action.payload)
 
-        const preRowsAfterAdded: TableDataRow[] = state.prevRows.slice().map((item, i) => {
+      const preRowsAfterAdded: TableDataRow[] = state.prevRows
+        .slice()
+        .map((item, i) => {
           if (state.prevRows.length - 1 !== i) {
             return item
           } else {
@@ -150,13 +158,13 @@ export const dataPointsReducer = (state: DataPointsState, action: DataPointsTabl
               isNew: false,
             }
           }
-        })       
-        preRowsAfterAdded.splice(state.rows.length, 0, action.payload)
-        return {
-          ...state,
-          changed: true,
-          prevRows: preRowsAfterAdded,
-          rows: rowsAfterAdded
-        }
+        })
+      preRowsAfterAdded.splice(state.rows.length, 0, action.payload)
+      return {
+        ...state,
+        changed: true,
+        prevRows: preRowsAfterAdded,
+        rows: rowsAfterAdded,
+      }
   }
 }

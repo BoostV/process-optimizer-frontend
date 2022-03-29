@@ -1,8 +1,7 @@
-
-import { Box, Button } from "@material-ui/core";
-import { useGlobal } from "../../context/global-context";
-import useStyles from "./theme-selector.style";
-import { themes } from "../../theme/theme";
+import { Box, Button } from '@material-ui/core'
+import { useGlobal } from '../../context/global-context'
+import useStyles from './theme-selector.style'
+import { themes } from '../../theme/theme'
 
 export default function ThemeSelector() {
   const classes = useStyles()
@@ -10,9 +9,15 @@ export default function ThemeSelector() {
 
   return (
     <Box className={classes.themeContainer}>
-      {themes.map((t, i) => 
-        <Button key={i} size="small" onClick={() => dispatch({ type: 'setTheme', payload: t.name })}>{t.name}</Button>
-      )}
+      {themes.map((t, i) => (
+        <Button
+          key={i}
+          size="small"
+          onClick={() => dispatch({ type: 'setTheme', payload: t.name })}
+        >
+          {t.name}
+        </Button>
+      ))}
     </Box>
   )
-} 
+}

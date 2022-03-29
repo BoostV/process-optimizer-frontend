@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core'
 
 export const useStyles = makeStyles(theme => ({
   loadingContainer: {
@@ -12,7 +12,7 @@ export const useStyles = makeStyles(theme => ({
   },
   progress: {
     color: theme.palette.custom.textInsideBox.main,
-  }
-}));
+  },
+}))
 
 export default useStyles
