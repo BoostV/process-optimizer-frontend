@@ -33,6 +33,9 @@ export const calculateData = (
   dataPoints: DataPointType[][]
 ): ExperimentData[] => {
   const scoreNames = scoreValues.map(it => it.name)
+  const enabledScoreNames = scoreValues
+    .filter(it => it.enabled)
+    .map(it => it.name)
   return dataPoints.map(
     (run): ExperimentData => ({
       xi: run
@@ -43,7 +46,7 @@ export const calculateData = (
             : it.value
         ),
       yi: run
-        .filter(it => scoreNames.includes(it.name))
+        .filter(it => enabledScoreNames.includes(it.name))
         .map(it => it.value)
         .map(Number),
     })

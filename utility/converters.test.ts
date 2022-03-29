@@ -14,6 +14,40 @@ import {
 } from './converters'
 
 describe('converters', () => {
+  const sampleDataPoints = [
+    [
+      { name: 'Sukker', value: 23 },
+      { name: 'Peber', value: 982 },
+      { name: 'Hvedemel', value: 632 },
+      { name: 'Kunde', value: 'Mus' },
+      { name: 'score', value: 0.1 },
+    ],
+    [
+      { name: 'Sukker', value: 15 },
+      { name: 'Peber', value: 123 },
+      { name: 'Hvedemel', value: 324 },
+      { name: 'Kunde', value: 'Ræv' },
+      { name: 'score', value: 0.2 },
+    ],
+  ]
+  const sampleMultiObjectiveDataPoints = [
+    [
+      { name: 'Sukker', value: 23 },
+      { name: 'Peber', value: 982 },
+      { name: 'Hvedemel', value: 632 },
+      { name: 'Kunde', value: 'Mus' },
+      { name: 'score', value: 0.1 },
+      { name: 'score2', value: 0.3 },
+    ],
+    [
+      { name: 'Sukker', value: 15 },
+      { name: 'Peber', value: 123 },
+      { name: 'Hvedemel', value: 324 },
+      { name: 'Kunde', value: 'Ræv' },
+      { name: 'score', value: 0.2 },
+      { name: 'score2', value: 0.4 },
+    ],
+  ]
   const sampleExperiment: ExperimentType = {
     ...initialState.experiment,
     id: '123',
@@ -44,22 +78,6 @@ describe('converters', () => {
       kappa: 1.96,
       xi: 0.012,
     },
-    dataPoints: [
-      [
-        { name: 'Sukker', value: 23 },
-        { name: 'Peber', value: 982 },
-        { name: 'Hvedemel', value: 632 },
-        { name: 'Kunde', value: 'Mus' },
-        { name: 'score', value: 0.1 },
-      ],
-      [
-        { name: 'Sukker', value: 15 },
-        { name: 'Peber', value: 123 },
-        { name: 'Hvedemel', value: 324 },
-        { name: 'Kunde', value: 'Ræv' },
-        { name: 'score', value: 0.2 },
-      ],
-    ],
   }
 
   describe('calculateSpace', () => {
@@ -123,7 +141,41 @@ describe('converters', () => {
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
         sampleExperiment.scoreVariables,
-        sampleExperiment.dataPoints
+        sampleDataPoints
+      )
+      expect(actualData).toEqual(expectedData)
+    })
+
+    it('should format include enabled score values', () => {
+      const expectedData = [
+        { xi: [23, 982, 632, 'Mus'], yi: [0.1, 0.3] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [0.2, 0.4] },
+      ]
+      const actualData = calculateData(
+        sampleExperiment.categoricalVariables,
+        sampleExperiment.valueVariables,
+        [
+          { name: 'score', description: '', enabled: true },
+          { name: 'score2', description: '', enabled: true },
+        ],
+        sampleMultiObjectiveDataPoints
+      )
+      expect(actualData).toEqual(expectedData)
+    })
+
+    it('should format skip disabled score values', () => {
+      const expectedData = [
+        { xi: [23, 982, 632, 'Mus'], yi: [0.1] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [0.2] },
+      ]
+      const actualData = calculateData(
+        sampleExperiment.categoricalVariables,
+        sampleExperiment.valueVariables,
+        [
+          { name: 'score', description: '', enabled: true },
+          { name: 'score2', description: '', enabled: false },
+        ],
+        sampleMultiObjectiveDataPoints
       )
       expect(actualData).toEqual(expectedData)
     })
