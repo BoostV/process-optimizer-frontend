@@ -212,7 +212,7 @@ export default function DataPoints(props: DataPointProps) {
               <UploadCSVButton
                 light
                 onUpload={(dataPoints: DataPointType[][]) =>
-                  updateTable(dataPoints)
+                  onUpdateDataPoints(dataPoints)
                 }
               />
               <Tooltip title="Reverse order">
