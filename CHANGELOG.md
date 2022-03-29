@@ -1,6 +1,36 @@
 # Changelog
 
-## [v1.3.2](https://github.com/BoostV/process-optimizer-frontend/tree/HEAD)
+## [1.4.0](https://github.com/BoostV/process-optimizer-frontend/tree/HEAD)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.3.3...v1.4.0)
+
+**Fixed bugs:**
+
+- Upload of .csv file results in "experiment run fail" with Decimal symbol is set to "," [\#137](https://github.com/BoostV/process-optimizer-frontend/issues/137)
+
+**Closed issues:**
+
+- Input validation mechanism [\#121](https://github.com/BoostV/process-optimizer-frontend/issues/121)
+
+**Merged pull requests:**
+
+- Refactor/code format [\#141](https://github.com/BoostV/process-optimizer-frontend/pull/141) ([langdal](https://github.com/langdal))
+- Feature/multi objective [\#140](https://github.com/BoostV/process-optimizer-frontend/pull/140) ([langdal](https://github.com/langdal))
+- Feature/validation [\#131](https://github.com/BoostV/process-optimizer-frontend/pull/131) ([j-or](https://github.com/j-or))
+
+## [v1.3.3](https://github.com/BoostV/process-optimizer-frontend/tree/v1.3.3) (2022-02-08)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.3.2...v1.3.3)
+
+**Fixed bugs:**
+
+- Input panel is critially broken [\#135](https://github.com/BoostV/process-optimizer-frontend/issues/135)
+
+**Merged pull requests:**
+
+- Parse min and max on submit [\#136](https://github.com/BoostV/process-optimizer-frontend/pull/136) ([langdal](https://github.com/langdal))
+
+## [v1.3.2](https://github.com/BoostV/process-optimizer-frontend/tree/v1.3.2) (2022-01-18)
 
 [Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.3.1...v1.3.2)
 
@@ -91,15 +121,15 @@
 
 ## [v1.2.0](https://github.com/BoostV/process-optimizer-frontend/tree/v1.2.0) (2021-06-18)
 
-[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.1.0...v1.2.0)
-
-## [v1.1.0](https://github.com/BoostV/process-optimizer-frontend/tree/v1.1.0) (2021-06-18)
-
-[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.1.1...v1.1.0)
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.1.1...v1.2.0)
 
 ## [v1.1.1](https://github.com/BoostV/process-optimizer-frontend/tree/v1.1.1) (2021-06-18)
 
-[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.0.1...v1.1.1)
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.1.0...v1.1.1)
+
+## [v1.1.0](https://github.com/BoostV/process-optimizer-frontend/tree/v1.1.0) (2021-06-18)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.0.1...v1.1.0)
 
 **Implemented enhancements:**
 
