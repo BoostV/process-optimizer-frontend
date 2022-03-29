@@ -1,6 +1,14 @@
 # Changelog
 
-## [1.4.0](https://github.com/BoostV/process-optimizer-frontend/tree/HEAD)
+## [v1.4.1](https://github.com/BoostV/process-optimizer-frontend/tree/HEAD)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.4.0...v1.4.1)
+
+**Fixed bugs:**
+
+- Conversion error in multi-objective preview feature  [\#143](https://github.com/BoostV/process-optimizer-frontend/issues/143)
+
+## [v1.4.0](https://github.com/BoostV/process-optimizer-frontend/tree/v1.4.0) (2022-03-29)
 
 [Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.3.3...v1.4.0)
 
