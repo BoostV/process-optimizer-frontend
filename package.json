@@ -10,7 +10,7 @@
     "formatAll": "prettier --write .",
     "test": "jest",
     "prepare": "husky install",
-    "openapi": "openapi-generator-cli generate --skip-validate-spec -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/feature/multi_objective/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi"
+    "openapi": "openapi-generator-cli generate --skip-validate-spec -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v2.0.1/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

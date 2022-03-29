@@ -5,7 +5,7 @@ import { ExperimentResultType, ExperimentType } from '../../../types/common'
 import {
   Configuration,
   DefaultApi,
-  OptimizerRunRequest,
+  OptimizerapiOptimizerRunRequest,
 } from '../../../openapi'
 import { calculateData, calculateSpace } from '../../../utility/converters'
 
@@ -41,7 +41,7 @@ const runExperiment = async (experiment: ExperimentType) => {
   const extras = experiment.extras || {}
   const space = calculateSpace(experiment)
   // TODO data is currently hard coded
-  const request: OptimizerRunRequest = {
+  const request: OptimizerapiOptimizerRunRequest = {
     experiment: {
       data: calculateData(
         experiment.categoricalVariables,
@@ -60,7 +60,7 @@ const runExperiment = async (experiment: ExperimentType) => {
       },
     },
   }
-  return api.optimizerRun(request)
+  return api.optimizerapiOptimizerRun(request)
 }
 
 const handler = async (
@@ -97,7 +97,6 @@ const handler = async (
       case 'POST':
         const experiment = JSON.parse(body)
         const json = await runExperiment(experiment)
-        console.log(json)
         const result: ExperimentResultType = {
           id: experiment.id,
           plots:
@@ -107,7 +106,7 @@ const handler = async (
             }),
           next: json.result.next,
           pickled: json.result.pickled,
-          expectedMinimum: json.result.expectedMinimum,
+          expectedMinimum: json.result.models.find(() => true)?.expectedMinimum,
           extras: json.result.extras,
         }
         res.json(result)
