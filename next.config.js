@@ -1,6 +1,7 @@
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
 
 module.exports = {
+  swcMinify: true,
   reactStrictMode: true,
   future: {},
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
