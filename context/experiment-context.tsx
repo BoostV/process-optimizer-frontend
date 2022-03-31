@@ -13,13 +13,11 @@ const ExperimentContext = React.createContext<
 
 type ExperimentProviderProps = {
   experimentId: string
-  useLocalStorage: boolean
   children: any
 }
 
 function ExperimentProvider({
   experimentId,
-  useLocalStorage = false,
   children,
 }: ExperimentProviderProps) {
   const storageKey = experimentId === undefined ? 'unknown' : experimentId
@@ -27,45 +25,27 @@ function ExperimentProvider({
     ...initialState,
     experiment: { ...initialState.experiment, id: experimentId },
   }
-  const [state, dispatch] = useLocalStorage
-    ? useLocalStorageReducer(
-        rootReducer,
-        initialExperimentState,
-        storageKey,
-        (a: State) => ({ ...a, experiment: migrate(a.experiment) })
-      )
-    : React.useReducer(rootReducer, { ...initialExperimentState })
+  const [state, dispatch] = useLocalStorageReducer(
+    rootReducer,
+    initialExperimentState,
+    storageKey,
+    (a: State) => ({ ...a, experiment: migrate(a.experiment) })
+  )
   const [loading, setLoading] = React.useState(true)
-  const global = useGlobal()
+  const { dispatch: globalDispatch } = useGlobal()
 
   React.useEffect(() => {
     ;(async () => {
-      if (!useLocalStorage) {
-        console.log(`Fetching data from API backend for ${experimentId}`)
-        const result = await fetch(`/api/experiment/${experimentId}`)
-        if (result.ok) {
-          console.log(`Received data from backend for ${experimentId}`)
-          dispatch({
-            type: 'updateExperiment',
-            payload: migrate(await result.json()),
-          })
-        } else if (result.status === 404) {
-          console.log(`Experiment not found on server ${experimentId}`)
-        } else {
-          console.log(`Error fetching expriment ${experimentId}`)
-        }
-      } else {
-        if (state?.experiment?.info?.swVersion !== versionInfo.version) {
-          dispatch({ type: 'setSwVersion', payload: versionInfo.version })
-        }
-        global.dispatch({
-          type: 'storeExperimentId',
-          payload: experimentId,
-        })
+      if (state?.experiment?.info?.swVersion !== versionInfo.version) {
+        dispatch({ type: 'setSwVersion', payload: versionInfo.version })
       }
+      globalDispatch({
+        type: 'storeExperimentId',
+        payload: experimentId,
+      })
       setLoading(false)
     })()
-  }, [dispatch, experimentId, useLocalStorage, state])
+  }, [dispatch, experimentId, state, globalDispatch])
 
   const getValue = (callback: (state: State) => any) => callback(state)
 
@@ -93,13 +73,6 @@ function useExperiment() {
   return context
 }
 
-async function saveExperiment(experiment: ExperimentType) {
-  return fetch(`/api/experiment/${experiment.id}`, {
-    method: 'PUT',
-    body: JSON.stringify(experiment),
-  })
-}
-
 async function runExperiment(dispatch: Dispatch, experiment: ExperimentType) {
   const response: Response = await fetch(`/api/experiment/${experiment.id}`, {
     method: 'POST',
@@ -113,6 +86,5 @@ export {
   ExperimentProvider,
   TestExperimentProvider,
   useExperiment,
-  saveExperiment,
   runExperiment,
 }

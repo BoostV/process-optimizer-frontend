@@ -11,9 +11,6 @@ export const useStyles = makeStyles(theme => ({
     background: theme.palette.custom.background.main,
     color: theme.palette.custom.textInsideBox.main,
   },
-  experimentContainerDirty: {
-    border: '2px dashed' + theme.palette.warning.main,
-  },
   actionButton: {
     marginLeft: theme.spacing(2),
     height: 42,

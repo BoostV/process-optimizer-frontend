@@ -43,18 +43,6 @@ export default function Layout({ children }) {
             <FormControlLabel
               control={
                 <Switch
-                  checked={state.useLocalStorage}
-                  onChange={handleSwitch('useLocalStorage')}
-                  name="useLocalStorage"
-                />
-              }
-              label="localStorage"
-            />
-          )}
-          {showDebug && (
-            <FormControlLabel
-              control={
-                <Switch
                   checked={state.showJsonEditor}
                   onChange={handleSwitch('setShowJsonEditor')}
                   name="showJsonEditor"

@@ -3,7 +3,6 @@ import { reducer, State, UISizeValue } from './global-reducer'
 
 const initState: State = {
   debug: false,
-  useLocalStorage: true,
   experimentsInLocalStorage: [],
   theme: 'BlueGreen',
   dataPointsNewestFirst: false,
