@@ -26,6 +26,7 @@ import { saveExperiment } from '../../context/experiment-context'
 import { v4 as uuid } from 'uuid'
 import { isEmpty } from '../../utility/string-util'
 import { reducer } from '../../reducers/home-reducer'
+import { CreateOrOverwriteDialog } from '../create-or-overwrite-dialog/create-or-overwrite-dialog'
 
 type UploadMessage = {
   message: string
@@ -44,6 +45,15 @@ export default function Home() {
     message: 'Drag file here',
     isError: false,
   })
+  const [tempExperiment, setTempExperiment] = useState<ExperimentType>()
+
+  const saveExperimentLocally = useCallback(
+    (experiment: ExperimentType) => {
+      localStorage.setItem(experiment.id, JSON.stringify({ experiment }))
+      router.push(`${paths.experiment}/${experiment.id}`)
+    },
+    [router]
+  )
 
   const onDrop = useCallback(
     acceptedFiles => {
@@ -51,8 +61,13 @@ export default function Home() {
         const id: string = experiment.id
         if (state.useLocalStorage) {
           try {
-            localStorage.setItem(id, JSON.stringify({ experiment }))
-            router.push(`${paths.experiment}/${id}`)
+            const existingExperiment =
+              state.experimentsInLocalStorage.includes(id)
+            if (!existingExperiment) {
+              saveExperimentLocally(experiment)
+            } else {
+              setTempExperiment(experiment)
+            }
           } catch (e) {
             console.error('Unable to use local storage')
             setUploadMessage({ message: 'Upload failed', isError: true })
@@ -88,7 +103,12 @@ export default function Home() {
       reader.onload = () => load(reader)
       reader.readAsText(acceptedFiles[0])
     },
-    [router, state.useLocalStorage]
+    [
+      router,
+      state.useLocalStorage,
+      saveExperimentLocally,
+      state.experimentsInLocalStorage,
+    ]
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
@@ -123,6 +143,21 @@ export default function Home() {
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false)
     deleteExperiments()
+  }
+
+  const handleCancelDialog = () => {
+    setTempExperiment(undefined)
+    setUploadMessage({ message: 'Upload cancelled', isError: false })
+  }
+
+  const handleOverwriteDialog = () => {
+    saveExperimentLocally(tempExperiment)
+    setTempExperiment(undefined)
+  }
+
+  const handleCreateDialog = () => {
+    saveExperimentLocally({ ...tempExperiment, id: uuid() })
+    setTempExperiment(undefined)
   }
 
   const deleteExperiments = () => {
@@ -251,6 +286,12 @@ export default function Home() {
             Undo
           </Button>
         }
+      />
+      <CreateOrOverwriteDialog
+        open={Boolean(tempExperiment)}
+        handleCancel={handleCancelDialog}
+        handleOverwrite={handleOverwriteDialog}
+        handleCreate={handleCreateDialog}
       />
     </Layout>
   )
