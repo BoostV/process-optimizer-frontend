@@ -22,7 +22,6 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { paths } from '../../paths'
 import { ExperimentType } from '../../types/common'
 import { useGlobal } from '../../context/global-context'
-import { saveExperiment } from '../../context/experiment-context'
 import { v4 as uuid } from 'uuid'
 import { isEmpty } from '../../utility/string-util'
 import { reducer } from '../../reducers/home-reducer'
@@ -59,22 +58,17 @@ export default function Home() {
     acceptedFiles => {
       const saveAndRedirect = async (experiment: ExperimentType) => {
         const id: string = experiment.id
-        if (state.useLocalStorage) {
-          try {
-            const existingExperiment =
-              state.experimentsInLocalStorage.includes(id)
-            if (!existingExperiment) {
-              saveExperimentLocally(experiment)
-            } else {
-              setTempExperiment(experiment)
-            }
-          } catch (e) {
-            console.error('Unable to use local storage')
-            setUploadMessage({ message: 'Upload failed', isError: true })
+        try {
+          const existingExperiment =
+            state.experimentsInLocalStorage.includes(id)
+          if (!existingExperiment) {
+            saveExperimentLocally(experiment)
+          } else {
+            setTempExperiment(experiment)
           }
-        } else {
-          await saveExperiment(experiment)
-          router.push(`${paths.experiment}/${id}`)
+        } catch (e) {
+          console.error('Unable to use local storage')
+          setUploadMessage({ message: 'Upload failed', isError: true })
         }
       }
 
@@ -103,15 +97,10 @@ export default function Home() {
       reader.onload = () => load(reader)
       reader.readAsText(acceptedFiles[0])
     },
-    [
-      router,
-      state.useLocalStorage,
-      saveExperimentLocally,
-      state.experimentsInLocalStorage,
-    ]
+    [saveExperimentLocally, state.experimentsInLocalStorage]
   )
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+  const { getRootProps, getInputProps } = useDropzone({ onDrop })
 
   const createNewExperiment = () => {
     deleteExperiments()
@@ -212,50 +201,45 @@ export default function Home() {
             </Box>
           </Box>
 
-          {state.useLocalStorage && (
-            <Box p={3} className={classes.box}>
-              <Typography variant="h6">Saved experiments</Typography>
-              <Box mb={1}>
-                {state.experimentsInLocalStorage.length > 0 ? (
-                  <List component="nav">
-                    {state.experimentsInLocalStorage
-                      .filter(
-                        id =>
-                          deletionState.experimentsToDelete.indexOf(id) === -1
-                      )
-                      .map((id, i) => (
-                        <ListItem
-                          key={i}
-                          button
-                          onClick={() => openSavedExperiment(id)}
-                        >
-                          <ListItemIcon>
-                            <IconButton
-                              edge="start"
-                              onClick={(e: MouseEvent) =>
-                                deleteExperiment(e, id)
-                              }
-                            >
-                              <DeleteIcon color="secondary" fontSize="small" />
-                            </IconButton>
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={getExperimentName(id)}
-                            secondary={id}
-                            secondaryTypographyProps={{ color: 'inherit' }}
-                          />
-                          <ChevronRightIcon />
-                        </ListItem>
-                      ))}
-                  </List>
-                ) : (
-                  <Typography variant="body2">
-                    There are no saved experiments
-                  </Typography>
-                )}
-              </Box>
+          <Box p={3} className={classes.box}>
+            <Typography variant="h6">Saved experiments</Typography>
+            <Box mb={1}>
+              {state.experimentsInLocalStorage.length > 0 ? (
+                <List component="nav">
+                  {state.experimentsInLocalStorage
+                    .filter(
+                      id => deletionState.experimentsToDelete.indexOf(id) === -1
+                    )
+                    .map((id, i) => (
+                      <ListItem
+                        key={i}
+                        button
+                        onClick={() => openSavedExperiment(id)}
+                      >
+                        <ListItemIcon>
+                          <IconButton
+                            edge="start"
+                            onClick={(e: MouseEvent) => deleteExperiment(e, id)}
+                          >
+                            <DeleteIcon color="secondary" fontSize="small" />
+                          </IconButton>
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={getExperimentName(id)}
+                          secondary={id}
+                          secondaryTypographyProps={{ color: 'inherit' }}
+                        />
+                        <ChevronRightIcon />
+                      </ListItem>
+                    ))}
+                </List>
+              ) : (
+                <Typography variant="body2">
+                  There are no saved experiments
+                </Typography>
+              )}
             </Box>
-          )}
+          </Box>
         </CardContent>
       </Card>
 

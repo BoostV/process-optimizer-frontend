@@ -1,7 +1,6 @@
 import { ThemeName } from '../theme/theme'
 
 export type State = {
-  useLocalStorage: boolean
   debug: boolean
   experimentsInLocalStorage: string[]
   theme: ThemeName
@@ -23,10 +22,6 @@ export type UISize = {
 }
 
 export type Action =
-  | {
-      type: 'useLocalStorage'
-      payload: boolean
-    }
   | {
       type: 'debug'
       payload: boolean
@@ -58,7 +53,6 @@ export type Action =
 export type Dispatch = (action: Action) => void
 
 export const initialState: State = {
-  useLocalStorage: true,
   debug: false,
   experimentsInLocalStorage: [],
   theme: 'BlueGreen',
@@ -71,8 +65,6 @@ export const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case 'debug':
       return { ...state, debug: action.payload }
-    case 'useLocalStorage':
-      return { ...state, useLocalStorage: action.payload }
     case 'storeExperimentId':
       const id: string = action.payload
       const storedIds: string[] = state.experimentsInLocalStorage

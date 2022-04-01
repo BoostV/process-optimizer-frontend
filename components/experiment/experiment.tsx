@@ -15,11 +15,7 @@ import { Alert, Color } from '@material-ui/lab'
 import Details from '../details'
 import DataPoints from '../data-points/data-points'
 import { useStyles } from './experiment.style'
-import {
-  useExperiment,
-  saveExperiment,
-  runExperiment,
-} from '../../context/experiment-context'
+import { useExperiment, runExperiment } from '../../context/experiment-context'
 import React, { useState, useEffect } from 'react'
 import {
   ValueVariableType,
@@ -37,17 +33,12 @@ import { useGlobal } from '../../context/global-context'
 import { UISizeValue } from '../../reducers/global-reducer'
 import { getSize } from '../../utility/ui-util'
 
-type ExperimentProps = {
-  allowSaveToServer: boolean
-}
-
 type SnackbarMessage = {
   message: string
   severity: Color
 }
 
-export default function Experiment(props: ExperimentProps) {
-  const { allowSaveToServer } = props
+const Experiment = () => {
   const classes = useStyles()
   const {
     state: { experiment },
@@ -56,51 +47,20 @@ export default function Experiment(props: ExperimentProps) {
   } = useExperiment()
   const global = useGlobal()
 
-  const [lastSavedExperiment, setLastSavedExperiment] = useState(experiment)
-  const [isDirty, setDirty] = useState(false)
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
   const [isRunning, setRunning] = useState(false)
-  const [isSaving, setSaving] = useState(false)
   const [highlightNextExperiments, setHighlightNextExperiments] =
     useState(false)
 
-  useEffect(() => {
-    if (
-      lastSavedExperiment &&
-      JSON.stringify(lastSavedExperiment) !== JSON.stringify(experiment)
-    ) {
-      setDirty(true)
-    }
-  }, [experiment, lastSavedExperiment])
-
   const onDownload = () => {
     saveObjectToLocalFile(experiment, experiment.id)
-  }
-
-  const onSave = async () => {
-    setSaving(true)
-    try {
-      await saveExperiment(experiment)
-      setLastSavedExperiment(experiment)
-      saveCompleted({ message: 'Experiment saved', severity: 'success' })
-    } catch (error) {
-      console.error('fetch error', error)
-      saveCompleted({ message: 'Experiment save failed', severity: 'error' })
-    }
-  }
-
-  const saveCompleted = (snackbarMessage: SnackbarMessage) => {
-    setDirty(snackbarMessage.severity !== 'success')
-    setSaving(false)
-    openSnackbar(snackbarMessage)
   }
 
   const onRun = async () => {
     setRunning(true)
     try {
       await runExperiment(dispatch, experiment)
-      setDirty(true)
       runCompleted({ message: 'Experiment run completed', severity: 'success' })
     } catch (error) {
       runCompleted({ message: 'Experiment run failed', severity: 'error' })
@@ -144,12 +104,7 @@ export default function Experiment(props: ExperimentProps) {
 
   return (
     <Layout>
-      <Card
-        className={[
-          classes.experimentContainer,
-          isDirty && allowSaveToServer ? classes.experimentContainerDirty : '',
-        ].join(' ')}
-      >
+      <Card className={classes.experimentContainer}>
         <Box className={classes.cardContentWrapper}>
           <CardContent>
             <Grid container spacing={2}>
@@ -158,9 +113,7 @@ export default function Experiment(props: ExperimentProps) {
                   <Grid item xs={7}>
                     <Typography variant="body2">{experiment.id}</Typography>
                     <Typography variant="h5" gutterBottom>
-                      {/* Experiment {experiment.id} {isDirty && '(unsaved)'} [{experiment.results.rawResult || 'No results'}]  */}
                       {experiment.info.name}{' '}
-                      {isDirty && allowSaveToServer ? '(unsaved)' : ''}
                     </Typography>
                   </Grid>
                   <Grid item xs={5} container justifyContent="flex-end">
@@ -185,16 +138,6 @@ export default function Experiment(props: ExperimentProps) {
                     >
                       Download
                     </Button>
-                    {allowSaveToServer && (
-                      <LoadingButton
-                        onClick={onSave}
-                        isLoading={isSaving}
-                        label="Save"
-                        height={42}
-                        marginLeft={theme.spacing(2)}
-                        isFlashing={isDirty}
-                      />
-                    )}
                     <LoadingButton
                       onClick={onRun}
                       isLoading={isRunning}
@@ -350,3 +293,5 @@ export default function Experiment(props: ExperimentProps) {
     </Layout>
   )
 }
+
+export default Experiment

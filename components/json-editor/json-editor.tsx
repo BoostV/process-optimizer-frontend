@@ -8,15 +8,11 @@ import {
   Typography,
 } from '@material-ui/core'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { useExperiment, saveExperiment } from '../../context/experiment-context'
+import { useExperiment } from '../../context/experiment-context'
 import useStyles from './json-editor.style'
 import { ExperimentType } from '../../types/common'
 import CloseIcon from '@material-ui/icons/Close'
 import { useGlobal } from '../../context/global-context'
-
-type JsonEditorProps = {
-  allowSaveToServer: boolean
-}
 
 type DisplayedResults = {
   id: string
@@ -25,8 +21,7 @@ type DisplayedResults = {
   extras: object
 }
 
-export default function JsonEditor(props: JsonEditorProps) {
-  const { allowSaveToServer } = props
+const JsonEditor = () => {
   const classes = useStyles()
   const [errorMsg, setErrorMsg] = useState('')
   const [displayedExperiment, setDisplayedExperiment] = useState('')
@@ -72,11 +67,7 @@ export default function JsonEditor(props: JsonEditorProps) {
     try {
       const experimentToSave: ExperimentType =
         experimentFromDisplayedExperiment(displayedExperiment)
-      if (allowSaveToServer) {
-        await saveExperiment(experimentToSave)
-      } else {
-        dispatch({ type: 'updateExperiment', payload: experimentToSave })
-      }
+      dispatch({ type: 'updateExperiment', payload: experimentToSave })
       location.reload()
     } catch (e) {
       setErrorMsg('Error: ' + e.message)
@@ -133,3 +124,5 @@ export default function JsonEditor(props: JsonEditorProps) {
     </Card>
   )
 }
+
+export default JsonEditor
