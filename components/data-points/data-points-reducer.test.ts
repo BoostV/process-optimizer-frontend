@@ -3,7 +3,7 @@ import {
   DataPointsState,
   DataPointsTableAction,
 } from './data-points-reducer'
-import { TableDataRow } from '../types/common'
+import { TableDataRow } from '../../types/common'
 
 describe('data points reducer', () => {
   const initialState: DataPointsState = {
