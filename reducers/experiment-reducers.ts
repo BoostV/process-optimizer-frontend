@@ -63,6 +63,9 @@ export type ExperimentAction =
   | {
       type: 'experiment/toggleMultiObjective'
     }
+  | {
+      type: 'experiment/toggleShowConfidence'
+    }
 
 export const experimentReducer = (
   experimentState: ExperimentType,
@@ -189,6 +192,16 @@ export const experimentReducer = (
               dp.push({ name: scoreName, value: '0' })
           })
         })
+      }
+    case 'experiment/toggleShowConfidence':
+      return {
+        ...experimentState,
+        extras: {
+          ...experimentState.extras,
+          includeConfidence: !(
+            experimentState.extras['includeConfidence'] ?? false
+          ),
+        },
       }
       return newState
   }

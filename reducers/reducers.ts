@@ -20,6 +20,7 @@ export const rootReducer = (state: State, action: Action) => {
     case 'addDataPoints':
     case 'updateDataPoints':
     case 'experiment/toggleMultiObjective':
+    case 'experiment/toggleShowConfidence':
       return {
         ...state,
         experiment: experimentReducer(state.experiment, action),

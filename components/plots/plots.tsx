@@ -1,19 +1,30 @@
 import { useExperiment } from '../../context/experiment-context'
 import useStyles from './plots.style'
 import { TitleCard } from '../title-card/title-card'
-import { Typography, Tooltip, IconButton, Hidden } from '@material-ui/core'
+import {
+  Typography,
+  Tooltip,
+  IconButton,
+  Hidden,
+  Switch,
+} from '@material-ui/core'
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap'
 import { useGlobal } from '../../context/global-context'
 import { isUIBig } from '../../utility/ui-util'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
+import { Label } from 'recharts'
 
 export const Plots = () => {
   const {
     state: { experiment },
+    dispatch,
   } = useExperiment()
   const global = useGlobal()
   const classes = useStyles()
+
+  const toggleShowConfidence = () =>
+    dispatch({ type: 'experiment/toggleShowConfidence' })
 
   return (
     <>
@@ -21,6 +32,10 @@ export const Plots = () => {
         title={
           <>
             Plots
+            <Switch
+              checked={experiment.extras['includeConfidence'] ?? false}
+              onChange={toggleShowConfidence}
+            />
             <Hidden lgDown>
               <Tooltip
                 title={
