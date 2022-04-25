@@ -4,14 +4,17 @@ import {
   Card,
   CardContent,
   Grid,
+  Link,
   Snackbar,
   Switch,
+  Tab,
+  Tabs,
   Typography,
 } from '@material-ui/core'
 import Layout from '../layout/layout'
 import OptimizerModel from '../input-model/optimizer-model'
 import OptimizerConfigurator from '../optimizer-configurator'
-import { Alert, Color } from '@material-ui/lab'
+import { Alert, Color, TabContext, TabList, TabPanel } from '@material-ui/lab'
 import Details from '../details'
 import DataPoints from '../data-points/data-points'
 import { useStyles } from './experiment.style'
@@ -97,6 +100,11 @@ const Experiment = () => {
       : []
 
   const expectedMinimum: any[][] = experiment.results.expectedMinimum
+  const [value, setValue] = React.useState('1')
+
+  const handleChange = (_event, newValue) => {
+    setValue(newValue)
+  }
 
   if (loading) {
     return <LoadingExperiment />
@@ -104,179 +112,134 @@ const Experiment = () => {
 
   return (
     <Layout>
-      <Card className={classes.experimentContainer}>
-        <Box className={classes.cardContentWrapper}>
-          <CardContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Grid container>
-                  <Grid item xs={7}>
-                    <Typography variant="body2">{experiment.id}</Typography>
-                    <Typography variant="h5" gutterBottom>
-                      {experiment.info.name}{' '}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5} container justifyContent="flex-end">
-                    {global.state.debug && (
-                      <Switch
-                        checked={
-                          experiment.scoreVariables.filter(it => it.enabled)
-                            .length > 1
-                        }
-                        onChange={() =>
-                          dispatch({ type: 'experiment/toggleMultiObjective' })
-                        }
-                        name="multiobj"
-                        color="secondary"
-                      />
-                    )}
-                    <Button
-                      variant="contained"
-                      className={classes.actionButton}
-                      onClick={onDownload}
-                      color="primary"
-                    >
-                      Download
-                    </Button>
-                    <LoadingButton
-                      onClick={onRun}
-                      isLoading={isRunning}
-                      label="Run"
-                      marginLeft={theme.spacing(2)}
-                      height={42}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Grid item xs={3}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Details
-                      info={experiment.info}
-                      updateName={(name: string) =>
-                        dispatch({
-                          type: 'updateExperimentName',
-                          payload: name,
-                        })
-                      }
-                      updateDescription={(description: string) =>
-                        dispatch({
-                          type: 'updateExperimentDescription',
-                          payload: description,
-                        })
-                      }
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <OptimizerModel
-                      valueVariables={valueVariables}
-                      categoricalVariables={categoricalVariables}
-                      disabled={experiment.dataPoints.length > 0}
-                      onDeleteValueVariable={(
-                        valueVariable: ValueVariableType
-                      ) => {
-                        dispatch({
-                          type: 'deleteValueVariable',
-                          payload: valueVariable,
-                        })
-                      }}
-                      onDeleteCategoricalVariable={(
-                        categoricalVariable: CategoricalVariableType
-                      ) => {
-                        dispatch({
-                          type: 'deleteCategorialVariable',
-                          payload: categoricalVariable,
-                        })
-                      }}
-                      addValueVariable={(valueVariable: ValueVariableType) =>
-                        dispatch({
-                          type: 'addValueVariable',
-                          payload: valueVariable,
-                        })
-                      }
-                      addCategoricalVariable={(
-                        categoricalVariable: CategoricalVariableType
-                      ) =>
-                        dispatch({
-                          type: 'addCategorialVariable',
-                          payload: categoricalVariable,
-                        })
-                      }
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <OptimizerConfigurator
-                      config={experiment.optimizerConfig}
-                      onConfigUpdated={(config: OptimizerConfig) =>
-                        dispatch({
-                          type: 'updateConfiguration',
-                          payload: config,
-                        })
-                      }
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Grid item xs={9}>
-                <Grid container spacing={2}>
-                  <Grid
-                    item
-                    xs={UISizeValue.Big}
-                    xl={getSize(global.state, 'result-data')}
-                  >
-                    <Grid
-                      container
-                      spacing={2}
-                      className={
-                        highlightNextExperiments ? classes.highlight : ''
-                      }
-                    >
-                      <Grid item xs={12}>
-                        <ResultData
-                          nextValues={nextValues}
-                          headers={headers}
-                          expectedMinimum={expectedMinimum}
-                          onMouseEnterExpand={() =>
-                            setHighlightNextExperiments(true)
-                          }
-                          onMouseLeaveExpand={() =>
-                            setHighlightNextExperiments(false)
-                          }
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <DataPoints
-                          valueVariables={experiment.valueVariables}
-                          categoricalVariables={experiment.categoricalVariables}
-                          scoreVariables={experiment.scoreVariables}
-                          dataPoints={experiment.dataPoints}
-                          onUpdateDataPoints={(dataPoints: DataPointType[][]) =>
-                            dispatch({
-                              type: 'updateDataPoints',
-                              payload: dataPoints,
-                            })
-                          }
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={UISizeValue.Big}
-                    xl={getSize(global.state, 'plots')}
-                  >
-                    <Plots />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </CardContent>
+      <TabContext value={value}>
+        <Box>
+          <Typography variant="body2">{experiment.id}</Typography>
+          <Typography variant="h5" gutterBottom>
+            {experiment.info.name}{' '}
+          </Typography>
+          <TabList onChange={handleChange}>
+            <Tab label="Item One" value="1" />
+            <Tab label="Item Two" value="2" />
+          </TabList>
         </Box>
-      </Card>
+        <Box className={classes.cardContentWrapper}>
+          {global.state.debug && (
+            <Switch
+              checked={
+                experiment.scoreVariables.filter(it => it.enabled).length > 1
+              }
+              onChange={() =>
+                dispatch({
+                  type: 'experiment/toggleMultiObjective',
+                })
+              }
+              name="multiobj"
+              color="secondary"
+            />
+          )}
+          <Button
+            variant="contained"
+            className={classes.actionButton}
+            onClick={onDownload}
+            color="primary"
+          >
+            Download
+          </Button>
+          <LoadingButton
+            onClick={onRun}
+            isLoading={isRunning}
+            label="Run"
+            marginLeft={theme.spacing(2)}
+            height={42}
+          />
+
+          <TabPanel value="1">
+            <Details
+              info={experiment.info}
+              updateName={(name: string) =>
+                dispatch({
+                  type: 'updateExperimentName',
+                  payload: name,
+                })
+              }
+              updateDescription={(description: string) =>
+                dispatch({
+                  type: 'updateExperimentDescription',
+                  payload: description,
+                })
+              }
+            />
+
+            <OptimizerModel
+              valueVariables={valueVariables}
+              categoricalVariables={categoricalVariables}
+              disabled={experiment.dataPoints.length > 0}
+              onDeleteValueVariable={(valueVariable: ValueVariableType) => {
+                dispatch({
+                  type: 'deleteValueVariable',
+                  payload: valueVariable,
+                })
+              }}
+              onDeleteCategoricalVariable={(
+                categoricalVariable: CategoricalVariableType
+              ) => {
+                dispatch({
+                  type: 'deleteCategorialVariable',
+                  payload: categoricalVariable,
+                })
+              }}
+              addValueVariable={(valueVariable: ValueVariableType) =>
+                dispatch({
+                  type: 'addValueVariable',
+                  payload: valueVariable,
+                })
+              }
+              addCategoricalVariable={(
+                categoricalVariable: CategoricalVariableType
+              ) =>
+                dispatch({
+                  type: 'addCategorialVariable',
+                  payload: categoricalVariable,
+                })
+              }
+            />
+
+            <OptimizerConfigurator
+              config={experiment.optimizerConfig}
+              onConfigUpdated={(config: OptimizerConfig) =>
+                dispatch({
+                  type: 'updateConfiguration',
+                  payload: config,
+                })
+              }
+            />
+
+            <ResultData
+              nextValues={nextValues}
+              headers={headers}
+              expectedMinimum={expectedMinimum}
+              onMouseEnterExpand={() => setHighlightNextExperiments(true)}
+              onMouseLeaveExpand={() => setHighlightNextExperiments(false)}
+            />
+            <DataPoints
+              valueVariables={experiment.valueVariables}
+              categoricalVariables={experiment.categoricalVariables}
+              scoreVariables={experiment.scoreVariables}
+              dataPoints={experiment.dataPoints}
+              onUpdateDataPoints={(dataPoints: DataPointType[][]) =>
+                dispatch({
+                  type: 'updateDataPoints',
+                  payload: dataPoints,
+                })
+              }
+            />
+
+            <Plots />
+          </TabPanel>
+          <TabPanel value="2">Empty</TabPanel>
+        </Box>
+      </TabContext>
 
       <Snackbar
         open={isSnackbarOpen}
