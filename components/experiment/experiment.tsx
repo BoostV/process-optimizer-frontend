@@ -35,6 +35,7 @@ import { saveObjectToLocalFile } from '../../utility/save-to-local-file'
 import { useGlobal } from '../../context/global-context'
 import { UISizeValue } from '../../reducers/global-reducer'
 import { getSize } from '../../utility/ui-util'
+import { ConfigurationTab } from './configurationTab'
 
 type SnackbarMessage = {
   message: string
@@ -155,66 +156,9 @@ const Experiment = () => {
           />
 
           <TabPanel value="1">
-            <Details
-              info={experiment.info}
-              updateName={(name: string) =>
-                dispatch({
-                  type: 'updateExperimentName',
-                  payload: name,
-                })
-              }
-              updateDescription={(description: string) =>
-                dispatch({
-                  type: 'updateExperimentDescription',
-                  payload: description,
-                })
-              }
-            />
-
-            <OptimizerModel
-              valueVariables={valueVariables}
-              categoricalVariables={categoricalVariables}
-              disabled={experiment.dataPoints.length > 0}
-              onDeleteValueVariable={(valueVariable: ValueVariableType) => {
-                dispatch({
-                  type: 'deleteValueVariable',
-                  payload: valueVariable,
-                })
-              }}
-              onDeleteCategoricalVariable={(
-                categoricalVariable: CategoricalVariableType
-              ) => {
-                dispatch({
-                  type: 'deleteCategorialVariable',
-                  payload: categoricalVariable,
-                })
-              }}
-              addValueVariable={(valueVariable: ValueVariableType) =>
-                dispatch({
-                  type: 'addValueVariable',
-                  payload: valueVariable,
-                })
-              }
-              addCategoricalVariable={(
-                categoricalVariable: CategoricalVariableType
-              ) =>
-                dispatch({
-                  type: 'addCategorialVariable',
-                  payload: categoricalVariable,
-                })
-              }
-            />
-
-            <OptimizerConfigurator
-              config={experiment.optimizerConfig}
-              onConfigUpdated={(config: OptimizerConfig) =>
-                dispatch({
-                  type: 'updateConfiguration',
-                  payload: config,
-                })
-              }
-            />
-
+            <ConfigurationTab />
+          </TabPanel>
+          <TabPanel value="2">
             <ResultData
               nextValues={nextValues}
               headers={headers}
@@ -237,7 +181,6 @@ const Experiment = () => {
 
             <Plots />
           </TabPanel>
-          <TabPanel value="2">Empty</TabPanel>
         </Box>
       </TabContext>
 
