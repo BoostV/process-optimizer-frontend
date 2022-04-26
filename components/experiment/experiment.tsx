@@ -112,8 +112,19 @@ const Experiment = () => {
             <Box>
               <TabList onChange={handleChange}>
                 <Tab label="Configuration" value="1" />
-                <Tab label="Data Entry" value="2" />
-                <Tab label="Results" value="3" />
+                <Tab
+                  label="Data Entry"
+                  value="2"
+                  disabled={
+                    experiment.valueVariables.length === 0 &&
+                    experiment.categoricalVariables.length === 0
+                  }
+                />
+                <Tab
+                  label="Results"
+                  value="3"
+                  disabled={experiment.results.plots.length === 0}
+                />
               </TabList>
             </Box>
           </Grid>
@@ -154,27 +165,25 @@ const Experiment = () => {
             <ConfigurationTab />
           </TabPanel>
           <TabPanel value="2">
-            <Container>
-              <ResultData
-                nextValues={nextValues}
-                headers={headers}
-                expectedMinimum={expectedMinimum}
-                onMouseEnterExpand={() => setHighlightNextExperiments(true)}
-                onMouseLeaveExpand={() => setHighlightNextExperiments(false)}
-              />
-              <DataPoints
-                valueVariables={experiment.valueVariables}
-                categoricalVariables={experiment.categoricalVariables}
-                scoreVariables={experiment.scoreVariables}
-                dataPoints={experiment.dataPoints}
-                onUpdateDataPoints={(dataPoints: DataPointType[][]) =>
-                  dispatch({
-                    type: 'updateDataPoints',
-                    payload: dataPoints,
-                  })
-                }
-              />
-            </Container>
+            <ResultData
+              nextValues={nextValues}
+              headers={headers}
+              expectedMinimum={expectedMinimum}
+              onMouseEnterExpand={() => setHighlightNextExperiments(true)}
+              onMouseLeaveExpand={() => setHighlightNextExperiments(false)}
+            />
+            <DataPoints
+              valueVariables={experiment.valueVariables}
+              categoricalVariables={experiment.categoricalVariables}
+              scoreVariables={experiment.scoreVariables}
+              dataPoints={experiment.dataPoints}
+              onUpdateDataPoints={(dataPoints: DataPointType[][]) =>
+                dispatch({
+                  type: 'updateDataPoints',
+                  payload: dataPoints,
+                })
+              }
+            />
           </TabPanel>
           <TabPanel value="3">
             <Plots />
