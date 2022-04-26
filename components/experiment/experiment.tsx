@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   Grid,
   Snackbar,
   Switch,
@@ -85,32 +86,30 @@ const Experiment = () => {
   return (
     <Layout>
       <TabContext value={value}>
-        <Box>
-          <Typography variant="body2">{experiment.id}</Typography>
-          <Typography variant="h5" gutterBottom>
-            {experiment.info.name}{' '}
-          </Typography>
-        </Box>
-        <Grid container justifyContent="space-between">
-          <Grid item>
-            <Box>
-              <TabList onChange={handleChange}>
-                <Tab label="Configuration" value="1" />
-                <Tab
-                  label="Data Entry"
-                  value="2"
-                  disabled={
-                    experiment.valueVariables.length === 0 &&
-                    experiment.categoricalVariables.length === 0
-                  }
-                />
-                <Tab
-                  label="Results"
-                  value="3"
-                  disabled={experiment.results.plots.length === 0}
-                />
-              </TabList>
-            </Box>
+        <Grid container justifyContent="space-around">
+          <Grid item xs>
+            <Typography variant="h4" gutterBottom>
+              {experiment.info.name}
+            </Typography>
+            <Typography variant="caption">{experiment.id}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <TabList onChange={handleChange}>
+              <Tab label="Configuration" value="1" />
+              <Tab
+                label="Data Entry"
+                value="2"
+                disabled={
+                  experiment.valueVariables.length === 0 &&
+                  experiment.categoricalVariables.length === 0
+                }
+              />
+              <Tab
+                label="Results"
+                value="3"
+                disabled={experiment.results.plots.length === 0}
+              />
+            </TabList>
           </Grid>
           <Grid item xs="auto">
             {global.state.debug && (
