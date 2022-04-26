@@ -1,9 +1,11 @@
-import { Grid } from '@material-ui/core'
+import { Box, Grid } from '@material-ui/core'
 import { useState } from 'react'
 import { useExperiment } from '../../context/experiment-context'
 import { DataPointType } from '../../types/common'
 import DataPoints from '../data-points/data-points'
 import { ResultData } from '../result-data/result-data'
+import { SingleDataPoint } from '../result-data/single-data-point'
+import { TitleCard } from '../title-card/title-card'
 import experiment from './experiment'
 
 export const DataEntryTab = () => {
@@ -33,7 +35,7 @@ export const DataEntryTab = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
+      <Grid item xs={6}>
         <ResultData
           nextValues={nextValues}
           headers={headers}
@@ -41,6 +43,19 @@ export const DataEntryTab = () => {
           onMouseEnterExpand={() => setHighlightNextExperiments(true)}
           onMouseLeaveExpand={() => setHighlightNextExperiments(false)}
         />
+      </Grid>
+      <Grid item xs={6}>
+        <TitleCard title="Expected minimum">
+          {expectedMinimum?.length > 0 && (
+            <Box pt={2} pl={2} pr={2}>
+              <SingleDataPoint
+                title="Expected minimum"
+                headers={headers}
+                dataPoint={expectedMinimum}
+              />
+            </Box>
+          )}
+        </TitleCard>
       </Grid>
       <Grid item xs={12}>
         <DataPoints
