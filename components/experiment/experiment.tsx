@@ -1,32 +1,20 @@
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   Container,
   Grid,
-  Link,
   Snackbar,
   Switch,
   Tab,
-  Tabs,
   Typography,
 } from '@material-ui/core'
 import Layout from '../layout/layout'
-import OptimizerModel from '../input-model/optimizer-model'
-import OptimizerConfigurator from '../optimizer-configurator'
 import { Alert, Color, TabContext, TabList, TabPanel } from '@material-ui/lab'
-import Details from '../details'
 import DataPoints from '../data-points/data-points'
 import { useStyles } from './experiment.style'
 import { useExperiment, runExperiment } from '../../context/experiment-context'
-import React, { useState, useEffect } from 'react'
-import {
-  ValueVariableType,
-  CategoricalVariableType,
-  OptimizerConfig,
-  DataPointType,
-} from '../../types/common'
+import React, { useState } from 'react'
+import { DataPointType } from '../../types/common'
 import LoadingExperiment from './loading-experiment'
 import { ResultData } from '../result-data/result-data'
 import LoadingButton from '../loading-button/loading-button'
@@ -34,8 +22,6 @@ import { theme } from '../../theme/theme'
 import { Plots } from '../plots/plots'
 import { saveObjectToLocalFile } from '../../utility/save-to-local-file'
 import { useGlobal } from '../../context/global-context'
-import { UISizeValue } from '../../reducers/global-reducer'
-import { getSize } from '../../utility/ui-util'
 import { ConfigurationTab } from './configurationTab'
 
 type SnackbarMessage = {
