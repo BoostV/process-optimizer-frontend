@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CardContent,
+  Container,
   Grid,
   Link,
   Snackbar,
@@ -119,66 +120,77 @@ const Experiment = () => {
           <Typography variant="h5" gutterBottom>
             {experiment.info.name}{' '}
           </Typography>
-          <TabList onChange={handleChange}>
-            <Tab label="Item One" value="1" />
-            <Tab label="Item Two" value="2" />
-          </TabList>
         </Box>
-        <Box className={classes.cardContentWrapper}>
-          {global.state.debug && (
-            <Switch
-              checked={
-                experiment.scoreVariables.filter(it => it.enabled).length > 1
-              }
-              onChange={() =>
-                dispatch({
-                  type: 'experiment/toggleMultiObjective',
-                })
-              }
-              name="multiobj"
-              color="secondary"
+        <Grid container justifyContent="space-between">
+          <Grid item>
+            <Box>
+              <TabList onChange={handleChange}>
+                <Tab label="Configuration" value="1" />
+                <Tab label="Data Entry" value="2" />
+                <Tab label="Results" value="3" />
+              </TabList>
+            </Box>
+          </Grid>
+          <Grid item xs="auto">
+            {global.state.debug && (
+              <Switch
+                checked={
+                  experiment.scoreVariables.filter(it => it.enabled).length > 1
+                }
+                onChange={() =>
+                  dispatch({
+                    type: 'experiment/toggleMultiObjective',
+                  })
+                }
+                name="multiobj"
+                color="secondary"
+              />
+            )}
+            <Button
+              variant="contained"
+              className={classes.actionButton}
+              onClick={onDownload}
+              color="primary"
+            >
+              Download
+            </Button>
+            <LoadingButton
+              onClick={onRun}
+              isLoading={isRunning}
+              label="Run"
+              marginLeft={theme.spacing(2)}
+              height={42}
             />
-          )}
-          <Button
-            variant="contained"
-            className={classes.actionButton}
-            onClick={onDownload}
-            color="primary"
-          >
-            Download
-          </Button>
-          <LoadingButton
-            onClick={onRun}
-            isLoading={isRunning}
-            label="Run"
-            marginLeft={theme.spacing(2)}
-            height={42}
-          />
-
+          </Grid>
+        </Grid>
+        <Box className={classes.cardContentWrapper}>
           <TabPanel value="1">
             <ConfigurationTab />
           </TabPanel>
           <TabPanel value="2">
-            <ResultData
-              nextValues={nextValues}
-              headers={headers}
-              expectedMinimum={expectedMinimum}
-              onMouseEnterExpand={() => setHighlightNextExperiments(true)}
-              onMouseLeaveExpand={() => setHighlightNextExperiments(false)}
-            />
-            <DataPoints
-              valueVariables={experiment.valueVariables}
-              categoricalVariables={experiment.categoricalVariables}
-              scoreVariables={experiment.scoreVariables}
-              dataPoints={experiment.dataPoints}
-              onUpdateDataPoints={(dataPoints: DataPointType[][]) =>
-                dispatch({
-                  type: 'updateDataPoints',
-                  payload: dataPoints,
-                })
-              }
-            />
-
+            <Container>
+              <ResultData
+                nextValues={nextValues}
+                headers={headers}
+                expectedMinimum={expectedMinimum}
+                onMouseEnterExpand={() => setHighlightNextExperiments(true)}
+                onMouseLeaveExpand={() => setHighlightNextExperiments(false)}
+              />
+              <DataPoints
+                valueVariables={experiment.valueVariables}
+                categoricalVariables={experiment.categoricalVariables}
+                scoreVariables={experiment.scoreVariables}
+                dataPoints={experiment.dataPoints}
+                onUpdateDataPoints={(dataPoints: DataPointType[][]) =>
+                  dispatch({
+                    type: 'updateDataPoints',
+                    payload: dataPoints,
+                  })
+                }
+              />
+            </Container>
+          </TabPanel>
+          <TabPanel value="3">
             <Plots />
           </TabPanel>
         </Box>
