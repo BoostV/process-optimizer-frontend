@@ -23,6 +23,7 @@ import { Plots } from '../plots/plots'
 import { saveObjectToLocalFile } from '../../utility/save-to-local-file'
 import { useGlobal } from '../../context/global-context'
 import { ConfigurationTab } from './configurationTab'
+import { DataEntryTab } from './dataEntryTab'
 
 type SnackbarMessage = {
   message: string
@@ -41,8 +42,6 @@ const Experiment = () => {
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
   const [isRunning, setRunning] = useState(false)
-  const [highlightNextExperiments, setHighlightNextExperiments] =
-    useState(false)
 
   const onDownload = () => {
     saveObjectToLocalFile(experiment, experiment.id)
@@ -73,21 +72,6 @@ const Experiment = () => {
     setSnackbarOpen(true)
   }
 
-  const valueVariables = experiment.valueVariables
-  const categoricalVariables = experiment.categoricalVariables
-
-  const headers = valueVariables
-    .map(it => it.name)
-    .concat(categoricalVariables.map(it => it.name))
-
-  const nextValues: any[][] =
-    experiment.results.next && Array.isArray(experiment.results.next[0])
-      ? (experiment.results.next as unknown as any[][])
-      : experiment.results.next
-      ? [experiment.results.next]
-      : []
-
-  const expectedMinimum: any[][] = experiment.results.expectedMinimum
   const [value, setValue] = React.useState('1')
 
   const handleChange = (_event, newValue) => {
@@ -165,25 +149,7 @@ const Experiment = () => {
             <ConfigurationTab />
           </TabPanel>
           <TabPanel value="2">
-            <ResultData
-              nextValues={nextValues}
-              headers={headers}
-              expectedMinimum={expectedMinimum}
-              onMouseEnterExpand={() => setHighlightNextExperiments(true)}
-              onMouseLeaveExpand={() => setHighlightNextExperiments(false)}
-            />
-            <DataPoints
-              valueVariables={experiment.valueVariables}
-              categoricalVariables={experiment.categoricalVariables}
-              scoreVariables={experiment.scoreVariables}
-              dataPoints={experiment.dataPoints}
-              onUpdateDataPoints={(dataPoints: DataPointType[][]) =>
-                dispatch({
-                  type: 'updateDataPoints',
-                  payload: dataPoints,
-                })
-              }
-            />
+            <DataEntryTab />
           </TabPanel>
           <TabPanel value="3">
             <Plots />
