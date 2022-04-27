@@ -107,7 +107,10 @@ const Experiment = () => {
               <Tab
                 label="Results"
                 value="3"
-                disabled={experiment.results.plots.length === 0}
+                disabled={
+                  !experiment.results.plots ||
+                  experiment.results.plots.length === 0
+                }
               />
             </TabList>
           </Grid>
