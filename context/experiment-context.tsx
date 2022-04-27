@@ -82,7 +82,7 @@ function useExperiment() {
 const fetchExperimentResult = async (
   experiment: ExperimentType
 ): Promise<ExperimentResultType> => {
-  const API_SERVER = process.env.NEXT_API_SERVER
+  const API_SERVER = process.env.NEXT_PUBLIC_API_SERVER
   const api = new DefaultApi(new Configuration({ basePath: API_SERVER }))
   const cfg = experiment.optimizerConfig
   const extras = experiment.extras || {}

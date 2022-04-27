@@ -32,13 +32,13 @@ yarn dev
 
 ```bash
 docker build -t process-optimizer-frontend .
-docker run --rm -it --name process-optimizer-frontend -p 3000:3000 process-optimizer-frontend
+docker run --rm -it --name process-optimizer-frontend -p 3000:3000 --env API_URL=http://localhost:9090/v1.0 process-optimizer-frontend
 ```
 
 ## Run pre-built docker image
 
 ```bash
-docker run -d -p3000:3000 ghcr.io/boostv/process-optimizer-frontend:main
+docker run -d -p3000:3000 --env API_URL=http://localhost:9090/v1.0 ghcr.io/boostv/process-optimizer-frontend:main
 ```
 
 ## Update OpenAPI client
