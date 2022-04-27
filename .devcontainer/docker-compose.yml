@@ -25,4 +25,6 @@ services:
     image:  ghcr.io/boostv/process-optimizer-api:main
     network_mode: host
     restart: unless-stopped
+    environment:
+      - FLASK_ENV=development
 
