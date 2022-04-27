@@ -2,6 +2,7 @@
 .devcontainer
 .github
 node_modules
+out
 public
 tmp
 openapi
