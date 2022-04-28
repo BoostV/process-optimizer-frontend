@@ -5,8 +5,8 @@ import { DataPointType } from '../../types/common'
 import DataPoints from '../data-points/data-points'
 import { ResultData } from '../result-data/result-data'
 import { SingleDataPoint } from '../result-data/single-data-point'
+import { SummaryConfiguration } from '../summary-configuration'
 import { TitleCard } from '../title-card/title-card'
-import experiment from './experiment'
 
 export const DataEntryTab = () => {
   const {
@@ -35,7 +35,10 @@ export const DataEntryTab = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={6}>
+      <Grid item xs={2}>
+        <SummaryConfiguration />
+      </Grid>
+      <Grid item xs={5}>
         <ResultData
           nextValues={nextValues}
           headers={headers}
@@ -44,7 +47,7 @@ export const DataEntryTab = () => {
           onMouseLeaveExpand={() => setHighlightNextExperiments(false)}
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={5}>
         <TitleCard title="Expected minimum">
           {expectedMinimum?.length > 0 && (
             <Box pt={2} pl={2} pr={2}>
