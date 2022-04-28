@@ -193,6 +193,7 @@ export const experimentReducer = (
           })
         })
       }
+      return newState
     case 'experiment/toggleShowConfidence':
       return {
         ...experimentState,
@@ -203,6 +204,5 @@ export const experimentReducer = (
           ),
         },
       }
-      return newState
   }
 }

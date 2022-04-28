@@ -7,6 +7,8 @@ import {
   IconButton,
   Hidden,
   Switch,
+  FormControlLabel,
+  Box,
 } from '@material-ui/core'
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap'
 import { useGlobal } from '../../context/global-context'
@@ -31,32 +33,48 @@ export const Plots = () => {
       <TitleCard
         title={
           <>
-            Plots
-            <Switch
-              checked={experiment.extras['includeConfidence'] ?? false}
-              onChange={toggleShowConfidence}
-            />
-            <Hidden lgDown>
-              <Tooltip
-                title={
-                  (isUIBig(global.state, 'plots') ? 'Collapse' : 'Expand') +
-                  " 'Plots'"
-                }
-              >
-                <IconButton
-                  size="small"
-                  className={classes.titleButton}
-                  onClick={() =>
-                    global.dispatch({ type: 'toggleUISize', payload: 'plots' })
-                  }
-                >
-                  <ZoomOutMapIcon
-                    fontSize="small"
-                    className={classes.titleIcon}
+            <Box display="flex" justifyContent="space-between">
+              <Box>Plots</Box>
+              <Box>
+                <Tooltip title="Enable/disable the appereance of confidence intervals for the Objective plot">
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        size="small"
+                        checked={experiment.extras['includeConfidence'] ?? true}
+                        onChange={toggleShowConfidence}
+                        name="confidence"
+                      />
+                    }
+                    label="Confidence interval"
                   />
-                </IconButton>
-              </Tooltip>
-            </Hidden>
+                </Tooltip>
+                <Hidden lgDown>
+                  <Tooltip
+                    title={
+                      (isUIBig(global.state, 'plots') ? 'Collapse' : 'Expand') +
+                      " 'Plots'"
+                    }
+                  >
+                    <IconButton
+                      size="small"
+                      className={classes.titleButton}
+                      onClick={() =>
+                        global.dispatch({
+                          type: 'toggleUISize',
+                          payload: 'plots',
+                        })
+                      }
+                    >
+                      <ZoomOutMapIcon
+                        fontSize="small"
+                        className={classes.titleIcon}
+                      />
+                    </IconButton>
+                  </Tooltip>
+                </Hidden>
+              </Box>
+            </Box>
           </>
         }
       >
