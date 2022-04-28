@@ -18,7 +18,6 @@
   "extensions": [
     "dbaeumer.vscode-eslint",
     "mhutchie.git-graph",
-    "Orta.vscode-jest",
     "esbenp.prettier-vscode"
   ],
 
