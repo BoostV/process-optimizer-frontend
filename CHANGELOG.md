@@ -1,6 +1,28 @@
 # Changelog
 
-## [v1.4.1](https://github.com/BoostV/process-optimizer-frontend/tree/HEAD)
+## [v1.5.0](https://github.com/BoostV/process-optimizer-frontend/tree/HEAD)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.4.1...v1.5.0)
+
+**Implemented enhancements:**
+
+- Migrate API paths to client side logic [\#150](https://github.com/BoostV/process-optimizer-frontend/issues/150)
+- Remove server side storage [\#149](https://github.com/BoostV/process-optimizer-frontend/issues/149)
+- Copy or overwrite experiment [\#130](https://github.com/BoostV/process-optimizer-frontend/issues/130)
+- Move API interaction to client [\#154](https://github.com/BoostV/process-optimizer-frontend/pull/154) ([lasseborly](https://github.com/lasseborly))
+- Feature/add "Create or Overwrite experiment" dialog [\#147](https://github.com/BoostV/process-optimizer-frontend/pull/147) ([lasseborly](https://github.com/lasseborly))
+
+**Closed issues:**
+
+- Update Next.JS and dependencies [\#144](https://github.com/BoostV/process-optimizer-frontend/issues/144)
+
+**Merged pull requests:**
+
+- Remove server side storage [\#151](https://github.com/BoostV/process-optimizer-frontend/pull/151) ([langdal](https://github.com/langdal))
+- Bump ansi-regex from 3.0.0 to 3.0.1 [\#146](https://github.com/BoostV/process-optimizer-frontend/pull/146) ([dependabot[bot]](https://github.com/apps/dependabot))
+- 144 update nextjs and dependencies [\#145](https://github.com/BoostV/process-optimizer-frontend/pull/145) ([langdal](https://github.com/langdal))
+
+## [v1.4.1](https://github.com/BoostV/process-optimizer-frontend/tree/v1.4.1) (2022-03-29)
 
 [Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.4.0...v1.4.1)
 
