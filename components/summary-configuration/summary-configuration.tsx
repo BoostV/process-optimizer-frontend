@@ -14,8 +14,11 @@ import {
   Tooltip,
   Typography,
   Slider,
+  Avatar,
+  CardHeader,
 } from '@material-ui/core'
 import LensIcon from '@material-ui/icons/Lens'
+import Settings from '@material-ui/icons/Settings'
 import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye'
 import { useExperiment } from '../../context/experiment-context'
 import useStyles from './summary-configuration.style'
@@ -29,18 +32,10 @@ export const SummaryConfiguration = () => {
     <Card>
       <CardActionArea>
         <CardContent>
-          <Typography variant="overline" gutterBottom>
-            Configuration
-          </Typography>
+          <CardHeader avatar={<Settings />} title="Configuration" />
+          <Divider />
           <Box>
             <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell>Parameters</TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableHead>
               <TableBody>
                 {experiment.valueVariables.map((variable, idx) => (
                   <TableRow key={idx}>

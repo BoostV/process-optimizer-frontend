@@ -78,10 +78,8 @@ export default function Layout({ children }) {
         </Toolbar>
       </AppBar>
       <Box ml={1} mr={1} mb={7} mt={7}>
-        <Paper>
-          {state.debug && <pre>{JSON.stringify(state, null, 2)}</pre>}
-          {children}
-        </Paper>
+        {state.debug && <pre>{JSON.stringify(state, null, 2)}</pre>}
+        {children}
       </Box>
     </>
   )
