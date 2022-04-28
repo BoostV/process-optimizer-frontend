@@ -38,7 +38,10 @@ const Experiment = () => {
     dispatch,
     loading,
   } = useExperiment()
-  const global = useGlobal()
+  const {
+    state: { focus, debug },
+    dispatch: globalDispatch,
+  } = useGlobal()
 
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
@@ -73,10 +76,8 @@ const Experiment = () => {
     setSnackbarOpen(true)
   }
 
-  const [value, setValue] = React.useState('1')
-
   const handleChange = (_event, newValue) => {
-    setValue(newValue)
+    globalDispatch({ type: 'global/setFocus', payload: newValue })
   }
 
   if (loading) {
@@ -85,7 +86,7 @@ const Experiment = () => {
 
   return (
     <Layout>
-      <TabContext value={value}>
+      <TabContext value={focus}>
         <Grid container justifyContent="space-around">
           <Grid item xs>
             <Typography variant="h4" gutterBottom>
@@ -95,10 +96,10 @@ const Experiment = () => {
           </Grid>
           <Grid item xs={6}>
             <TabList onChange={handleChange}>
-              <Tab label="Configuration" value="1" />
+              <Tab label="Configuration" value="configuration" />
               <Tab
                 label="Data Entry"
-                value="2"
+                value="data-entry"
                 disabled={
                   experiment.valueVariables.length === 0 &&
                   experiment.categoricalVariables.length === 0
@@ -106,7 +107,7 @@ const Experiment = () => {
               />
               <Tab
                 label="Results"
-                value="3"
+                value="results"
                 disabled={
                   !experiment.results.plots ||
                   experiment.results.plots.length === 0
@@ -115,7 +116,7 @@ const Experiment = () => {
             </TabList>
           </Grid>
           <Grid item xs="auto">
-            {global.state.debug && (
+            {debug && (
               <Switch
                 checked={
                   experiment.scoreVariables.filter(it => it.enabled).length > 1
@@ -147,13 +148,13 @@ const Experiment = () => {
           </Grid>
         </Grid>
         <Box className={classes.cardContentWrapper}>
-          <TabPanel value="1">
+          <TabPanel value="configuration">
             <ConfigurationTab />
           </TabPanel>
-          <TabPanel value="2">
+          <TabPanel value="data-entry">
             <DataEntryTab />
           </TabPanel>
-          <TabPanel value="3">
+          <TabPanel value="results">
             <Plots />
           </TabPanel>
         </Box>

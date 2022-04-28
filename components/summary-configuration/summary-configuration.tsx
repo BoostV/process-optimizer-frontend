@@ -22,14 +22,20 @@ import Settings from '@material-ui/icons/Settings'
 import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye'
 import { useExperiment } from '../../context/experiment-context'
 import useStyles from './summary-configuration.style'
+import { useGlobal } from '../../context/global-context'
 
 export const SummaryConfiguration = () => {
   const {
     state: { experiment },
   } = useExperiment()
+  const { dispatch } = useGlobal()
   const classes = useStyles()
   return (
-    <Card>
+    <Card
+      onClick={() =>
+        dispatch({ type: 'global/setFocus', payload: 'configuration' })
+      }
+    >
       <CardActionArea>
         <CardContent>
           <CardHeader avatar={<Settings />} title="Configuration" />
