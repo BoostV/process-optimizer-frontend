@@ -5,6 +5,7 @@ models/Experiment.ts
 models/ExperimentData.ts
 models/ExperimentOptimizerConfig.ts
 models/ExperimentOptimizerConfigSpace.ts
+models/ModelError.ts
 models/Result.ts
 models/ResultPlots.ts
 models/ResultResult.ts

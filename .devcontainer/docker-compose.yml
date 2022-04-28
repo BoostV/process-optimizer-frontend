@@ -22,7 +22,7 @@ services:
     # user: node
 
   api:
-    image:  ghcr.io/boostv/process-optimizer-api:main
+    image:  ghcr.io/boostv/process-optimizer-api:2.1.0
     restart: unless-stopped
     expose:
       - 9090
