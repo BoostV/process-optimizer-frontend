@@ -18,7 +18,7 @@ import {
     ResultResultModelsFromJSON,
     ResultResultModelsFromJSONTyped,
     ResultResultModelsToJSON,
-} from './';
+} from './ResultResultModels';
 
 /**
  * 
@@ -84,5 +84,4 @@ export function ResultResultToJSON(value?: ResultResult | null): any {
         'extras': value.extras,
     };
 }
-
 

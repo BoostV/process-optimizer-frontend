@@ -18,7 +18,7 @@ import {
     ExperimentOptimizerConfigSpaceFromJSON,
     ExperimentOptimizerConfigSpaceFromJSONTyped,
     ExperimentOptimizerConfigSpaceToJSON,
-} from './';
+} from './ExperimentOptimizerConfigSpace';
 
 /**
  * 
@@ -100,5 +100,4 @@ export function ExperimentOptimizerConfigToJSON(value?: ExperimentOptimizerConfi
         'space': value.space === undefined ? undefined : ((value.space as Array<any>).map(ExperimentOptimizerConfigSpaceToJSON)),
     };
 }
-
 

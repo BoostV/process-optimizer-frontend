@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    string | number,
+    string | numberFromJSON,
+    string | numberFromJSONTyped,
+    string | numberToJSON,
+} from './string | number';
+
 /**
  * 
  * @export
@@ -21,11 +28,10 @@ import { exists, mapValues } from '../runtime';
 export interface ExperimentData {
     /**
      * 
-     * @type {Array}
+     * @type {Array<string | number>}
      * @memberof ExperimentData
      */
-    // @ts-ignore
-    xi?: Array;
+    xi?: Array<string | number>;
     /**
      * 
      * @type {Array<number>}
@@ -44,7 +50,7 @@ export function ExperimentDataFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'xi': !exists(json, 'xi') ? undefined : json['xi'],
+        'xi': !exists(json, 'xi') ? undefined : ((json['xi'] as Array<any>).map(string | numberFromJSON)),
         'yi': !exists(json, 'yi') ? undefined : json['yi'],
     };
 }
@@ -57,9 +63,9 @@ export function ExperimentDataToJSON(value?: ExperimentData | null): any {
         return null;
     }
     return {
-        'xi': value.xi,
+        
+        'xi': value.xi === undefined ? undefined : ((value.xi as Array<any>).map(string | numberToJSON)),
         'yi': value.yi,
     };
 }
-
 

@@ -18,11 +18,13 @@ import {
     ResultPlotsFromJSON,
     ResultPlotsFromJSONTyped,
     ResultPlotsToJSON,
+} from './ResultPlots';
+import {
     ResultResult,
     ResultResultFromJSON,
     ResultResultFromJSONTyped,
     ResultResultToJSON,
-} from './';
+} from './ResultResult';
 
 /**
  * 
@@ -72,5 +74,4 @@ export function ResultToJSON(value?: Result | null): any {
         'result': ResultResultToJSON(value.result),
     };
 }
-
 
