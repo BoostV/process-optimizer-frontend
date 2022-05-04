@@ -13,12 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    string | number,
-    string | numberFromJSON,
-    string | numberFromJSONTyped,
-    string | numberToJSON,
-} from './string | number';
 
 /**
  * 
@@ -50,7 +44,7 @@ export function ExperimentDataFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'xi': !exists(json, 'xi') ? undefined : ((json['xi'] as Array<any>).map(string | numberFromJSON)),
+        'xi': !exists(json, 'xi') ? undefined : ((json['xi'] as Array<any>)),
         'yi': !exists(json, 'yi') ? undefined : json['yi'],
     };
 }
@@ -64,7 +58,7 @@ export function ExperimentDataToJSON(value?: ExperimentData | null): any {
     }
     return {
         
-        'xi': value.xi === undefined ? undefined : ((value.xi as Array<any>).map(string | numberToJSON)),
+        'xi': value.xi === undefined ? undefined : ((value.xi as Array<any>)),
         'yi': value.yi,
     };
 }
