@@ -57,8 +57,16 @@ export default function DataPoints(props: DataPointProps) {
   )
 
   const buildCombinedVariables = useCallback((): CombinedVariableType[] => {
-    return (valueVariables as CombinedVariableType[]).concat(
-      categoricalVariables as CombinedVariableType[]
+    return (
+      valueVariables.map(v => ({
+        ...v,
+        tooltip: `[${v.min}, ${v.max}]`,
+      })) as CombinedVariableType[]
+    ).concat(
+      categoricalVariables.map(v => ({
+        ...v,
+        tooltip: `${v.options.length} options`,
+      })) as CombinedVariableType[]
     )
   }, [categoricalVariables, valueVariables])
 
@@ -70,6 +78,7 @@ export default function DataPoints(props: DataPointProps) {
             name: variable.name,
             value: variable.options ? variable.options[0] : '',
             options: variable.options,
+            tooltip: variable.tooltip,
           }
         })
         .concat(
@@ -77,6 +86,7 @@ export default function DataPoints(props: DataPointProps) {
             name: s,
             value: '0',
             options: undefined,
+            tooltip: undefined,
           }))
         ),
       isEditMode: true,
@@ -127,6 +137,7 @@ export default function DataPoints(props: DataPointProps) {
               name: v.name,
               value: v.value.toString(),
               options: combinedVariables[idx]?.options,
+              tooltip: combinedVariables[idx].tooltip,
             }
           })
           const scores: TableDataPoint[] = item
@@ -203,10 +214,7 @@ export default function DataPoints(props: DataPointProps) {
       title={
         <>
           <Box display="flex" justifyContent="space-between">
-            <Box>
-              Data points
-              <br />
-            </Box>
+            Data points
             <Box>
               <DownloadCSVButton light />
               <UploadCSVButton
@@ -244,6 +252,7 @@ export default function DataPoints(props: DataPointProps) {
       {buildCombinedVariables().length > 0 && !isLoadingState && (
         <Box className={classes.tableContainer}>
           <EditableTable
+            newestFirst={!global.state.dataPointsNewestFirst}
             rows={
               (newestFirst
                 ? [...state.rows].reverse()

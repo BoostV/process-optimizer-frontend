@@ -4,8 +4,9 @@ import {
   Select,
   TableCell,
   TextField,
+  Tooltip,
 } from '@material-ui/core'
-import { ChangeEvent } from 'react'
+import { ChangeEvent, CSSProperties, ReactElement } from 'react'
 import useStyles from './editable-table-cell.style'
 
 type EditableTableCellProps = {
@@ -13,16 +14,28 @@ type EditableTableCellProps = {
   isEditMode: boolean
   options?: string[]
   onChange: (value: string) => void
+  tooltip?: string
+  style?: CSSProperties
 }
 
 export function EditableTableCell(props: EditableTableCellProps) {
-  const { value, isEditMode, options, onChange } = props
+  const { value, isEditMode, options, onChange, tooltip } = props
   const classes = useStyles()
+
+  const textField = (
+    <TextField
+      size="small"
+      value={value}
+      onChange={(e: ChangeEvent) =>
+        onChange('' + (e.target as HTMLInputElement).value)
+      }
+    />
+  )
 
   return (
     <>
       {isEditMode ? (
-        <TableCell className={classes.cell}>
+        <TableCell className={classes.cell} style={{ ...props.style }}>
           {options && options.length > 0 ? (
             <FormControl>
               <Select
@@ -41,17 +54,17 @@ export function EditableTableCell(props: EditableTableCellProps) {
               </Select>
             </FormControl>
           ) : (
-            <TextField
-              size="small"
-              value={value}
-              onChange={(e: ChangeEvent) =>
-                onChange('' + (e.target as HTMLInputElement).value)
-              }
-            />
+            <>
+              {props.tooltip !== undefined ? (
+                <Tooltip title={tooltip}>{textField}</Tooltip>
+              ) : (
+                <>{textField}</>
+              )}
+            </>
           )}
         </TableCell>
       ) : (
-        <TableCell>{value}</TableCell>
+        <TableCell style={{ ...props.style }}>{value}</TableCell>
       )}
     </>
   )
