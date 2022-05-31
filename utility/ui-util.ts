@@ -15,3 +15,9 @@ export const getSize = (globalState: State, key: UISizeKey): GridSize => {
   const size = globalState.uiSizes.find(s => s.key === key)
   return (size !== undefined ? size.value : UISizeValue.Small) as GridSize
 }
+
+export const getRowId = (
+  newestFirst: boolean,
+  rowIndex: number,
+  rowsLength: number
+) => (newestFirst ? rowIndex + 1 : rowsLength - rowIndex)

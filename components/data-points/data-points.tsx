@@ -21,6 +21,7 @@ import { TitleCard } from '../title-card/title-card'
 import useStyles from './data-points.style'
 import DownloadCSVButton from '../download-csv-button'
 import UploadCSVButton from '../upload-csv-button'
+import { useExperiment } from '../../context/experiment-context'
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]
@@ -50,6 +51,11 @@ export default function DataPoints(props: DataPointProps) {
   const isLoadingState = state.rows.length === 0
   const global = useGlobal()
   const newestFirst = global.state.dataPointsNewestFirst
+  const {
+    state: {
+      experiment: { results },
+    },
+  } = useExperiment()
 
   const scoreNames = useMemo(
     () => scoreVariables.filter(it => it.enabled).map(it => it.name),
@@ -84,7 +90,7 @@ export default function DataPoints(props: DataPointProps) {
         .concat(
           scoreNames.map(s => ({
             name: s,
-            value: '0',
+            value: '',
             options: undefined,
             tooltip: undefined,
           }))
@@ -174,10 +180,6 @@ export default function DataPoints(props: DataPointProps) {
     updateFn(rowIndex, ...args)
   }
 
-  const updateTable = (dataPoints: DataPointType[][]) => {
-    dispatch({ type: 'setInitialState', payload: buildState(dataPoints) })
-  }
-
   useEffect(() => {
     dispatch({ type: 'setInitialState', payload: buildState(dataPoints) })
   }, [valueVariables, categoricalVariables, scoreNames, buildState, dataPoints])
@@ -253,6 +255,7 @@ export default function DataPoints(props: DataPointProps) {
         <Box className={classes.tableContainer}>
           <EditableTable
             newestFirst={!global.state.dataPointsNewestFirst}
+            suggestedValues={results.next}
             rows={
               (newestFirst
                 ? [...state.rows].reverse()
@@ -265,9 +268,6 @@ export default function DataPoints(props: DataPointProps) {
               onEditConfirm(row, rowIndex)
             }
             onEditCancel={(rowIndex: number) => updateRow(rowIndex, cancelEdit)}
-            onToggleEditMode={(rowIndex: number) =>
-              updateRow(rowIndex, toggleEditMode)
-            }
             onDelete={(rowIndex: number) => updateRow(rowIndex, deleteRow)}
           />
         </Box>

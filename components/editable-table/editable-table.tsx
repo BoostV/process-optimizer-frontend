@@ -1,33 +1,32 @@
 import {
-  Box,
-  Button,
   IconButton,
-  Paper,
   Table,
   TableBody,
   TableCell,
   TableFooter,
   TableHead,
   TableRow,
+  Tooltip,
 } from '@material-ui/core'
 import { EditableTableCell } from './editable-table-cell'
 import EditIcon from '@material-ui/icons/Edit'
-import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import CancelIcon from '@material-ui/icons/Cancel'
 import AddIcon from '@material-ui/icons/Add'
 import DeleteIcon from '@material-ui/icons/Delete'
-import CloseIcon from '@material-ui/icons/Close'
+import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects'
 import { TableDataRow } from '../../types/common'
 import useStyles from './editable-table.style'
 import { useState } from 'react'
+import { getRowId } from '../../utility/ui-util'
+import { ExpandedRow } from './expanded-row'
 
 type EditableTableProps = {
   rows: TableDataRow[]
   newestFirst: boolean
+  suggestedValues?: (string | number)[]
   onEdit: (editValue: string, rowIndex: number, itemIndex: number) => void
   onEditConfirm: (row: TableDataRow, rowIndex: number) => void
   onEditCancel: (rowIndex: number) => void
-  onToggleEditMode: (rowIndex: number) => void
   onDelete: (rowIndex: number) => void
 }
 
@@ -35,10 +34,10 @@ export function EditableTable(props: EditableTableProps) {
   const {
     rows,
     newestFirst,
+    suggestedValues,
     onEdit,
     onEditConfirm,
     onEditCancel,
-    onToggleEditMode,
     onDelete,
   } = props
   const classes = useStyles()
@@ -46,11 +45,12 @@ export function EditableTable(props: EditableTableProps) {
 
   const NON_DATA_ROWS = 3
 
-  const getRowId = (
-    newestFirst: boolean,
-    rowIndex: number,
-    rowsLength: number
-  ) => (newestFirst ? rowIndex + 1 : rowsLength - rowIndex)
+  const isNewEdited = (rows: TableDataRow[]) =>
+    rows
+      .filter(r => r.isNew)[0]
+      .dataPoints.some(
+        d => d.name !== 'score' && d.options === undefined && d.value !== ''
+      )
 
   return (
     <Table size="small">
@@ -58,17 +58,7 @@ export function EditableTable(props: EditableTableProps) {
         <TableRow>
           <TableCell>#</TableCell>
           {rows[0].dataPoints.map((item, index) => (
-            <TableCell
-              key={index}
-              style={
-                {
-                  // paddingLeft: index === 0 ? '32px' : '0px',
-                  // border: 'none'
-                }
-              }
-            >
-              {item.name}
-            </TableCell>
+            <TableCell key={index}>{item.name}</TableCell>
           ))}
           <TableCell />
         </TableRow>
@@ -77,14 +67,14 @@ export function EditableTable(props: EditableTableProps) {
         {rows.map((row, rowIndex) => (
           <>
             {expandedRow !== rowIndex ? (
-              <TableRow key={'expanded' + rowIndex}>
+              <TableRow key={'expandedrow' + rowIndex}>
                 <TableCell style={{ color: '#999', paddingRight: '8px' }}>
                   {getRowId(newestFirst, rowIndex, rows.length)}
                 </TableCell>
                 {row.dataPoints.map((item, itemIndex) => (
                   <>
                     <EditableTableCell
-                      key={itemIndex}
+                      key={'editablecell' + itemIndex}
                       value={item.value}
                       isEditMode={row.isEditMode}
                       options={item.options}
@@ -92,188 +82,115 @@ export function EditableTable(props: EditableTableProps) {
                       onChange={(value: string) =>
                         onEdit(value, rowIndex, itemIndex)
                       }
-                      style={
-                        {
-                          // paddingLeft: itemIndex === 0 ? '32px' : '0px',
-                          // border: 'none'
-                        }
-                      }
                     />
                   </>
                 ))}
                 <TableCell
-                  key={'b' + rowIndex}
+                  key={'buttoncell' + rowIndex}
                   style={{
-                    // border: 'none',
-                    // paddingRight: '32px'
                     paddingRight: '0px',
                   }}
                 >
                   <div className={classes.buttonContainer}>
-                    {row.isEditMode ? (
+                    {row.isNew ? (
                       <>
-                        <IconButton
-                          size="small"
-                          aria-label="confirm edit"
-                          onClick={() => onEditConfirm(row, rowIndex)}
-                        >
-                          {row.isNew ? (
+                        <Tooltip title="Add">
+                          <IconButton
+                            size="small"
+                            aria-label="confirm edit"
+                            onClick={() => onEditConfirm(row, rowIndex)}
+                          >
                             <AddIcon fontSize="small" color="primary" />
-                          ) : (
-                            <CheckCircleIcon fontSize="small" color="primary" />
-                          )}
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          aria-label="cancel edit"
-                          onClick={() => onEditCancel(rowIndex)}
-                        >
-                          <CancelIcon fontSize="small" color="primary" />
-                        </IconButton>
+                          </IconButton>
+                        </Tooltip>
+                        {isNewEdited(rows) || suggestedValues === undefined ? (
+                          <Tooltip title="Reset">
+                            <IconButton
+                              size="small"
+                              aria-label="cancel edit"
+                              onClick={() => onEditCancel(rowIndex)}
+                            >
+                              <CancelIcon fontSize="small" color="primary" />
+                            </IconButton>
+                          </Tooltip>
+                        ) : (
+                          <Tooltip title="Use suggested values">
+                            <IconButton
+                              size="small"
+                              aria-label="Use suggested values"
+                              onClick={() =>
+                                suggestedValues.forEach((s, i) =>
+                                  onEdit(s.toString(), rowIndex, i)
+                                )
+                              }
+                            >
+                              <EmojiObjectsIcon
+                                fontSize="small"
+                                color="primary"
+                              />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </>
                     ) : (
                       <>
-                        {/* <IconButton
-                          size="small"
-                          aria-label="toggle edit"
-                          onClick={() => onToggleEditMode(rowIndex)}
-                        >
-                          <EditIcon fontSize="small" color="primary" />
-                        </IconButton> */}
-                        <IconButton
-                          size="small"
-                          aria-label="expand"
-                          onClick={() => {
-                            if (expandedRow !== -1) {
-                              onEditCancel(expandedRow)
-                            }
-                            setExpandedRow(rowIndex)
-                          }}
-                        >
-                          <EditIcon fontSize="small" color="primary" />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          aria-label="delete"
-                          onClick={() => onDelete(rowIndex)}
-                        >
-                          <DeleteIcon fontSize="small" color="primary" />
-                        </IconButton>
+                        <Tooltip title="Edit">
+                          <IconButton
+                            size="small"
+                            aria-label="expand"
+                            onClick={() => {
+                              if (expandedRow !== -1) {
+                                onEditCancel(expandedRow)
+                              }
+                              setExpandedRow(rowIndex)
+                            }}
+                          >
+                            <EditIcon fontSize="small" color="primary" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton
+                            size="small"
+                            aria-label="delete"
+                            onClick={() => onDelete(rowIndex)}
+                          >
+                            <DeleteIcon fontSize="small" color="primary" />
+                          </IconButton>
+                        </Tooltip>
                       </>
                     )}
                   </div>
                 </TableCell>
               </TableRow>
             ) : (
-              <TableRow key={rowIndex}>
+              <TableRow key={'collapsedrow' + rowIndex}>
                 <TableCell
                   colSpan={row.dataPoints.length + NON_DATA_ROWS}
                   style={{
-                    // border: 'none',
-                    paddingRight: '0px',
-                    paddingTop: '8px',
-                    paddingBottom: '8px',
+                    paddingRight: 0,
+                    paddingTop: 8,
+                    paddingBottom: 8,
                   }}
                 >
-                  <Paper
-                    elevation={2}
-                    style={{
-                      padding: '16px',
-                      margin: '8px 4px 8px 4px',
-                    }}
-                  >
-                    <Box display="flex" justifyContent="space-between" mb={1}>
-                      <span style={{ fontWeight: 500, fontSize: '1rem' }}>
-                        {getRowId(newestFirst, rowIndex, rows.length)}
-                      </span>
-                      <IconButton
-                        size="small"
-                        aria-label="delete"
-                        onClick={() => {
-                          onEditCancel(rowIndex)
-                          setExpandedRow(-1)
-                        }}
-                      >
-                        <CloseIcon fontSize="small" color="primary" />
-                      </IconButton>
-                    </Box>
-
-                    <Table size="small">
-                      <TableHead>
-                        <TableRow>
-                          {row.dataPoints.map((d, i) => (
-                            <TableCell
-                              style={{
-                                fontSize: '12px',
-                                fontWeight: 600,
-                                borderBottom: 'none',
-                                paddingRight: '16px',
-                              }}
-                            >
-                              {d.name}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <TableRow>
-                          {row.dataPoints.map((d, i) => (
-                            <TableCell
-                              style={{
-                                fontSize: '12px',
-                                fontWeight: 400,
-                                borderBottom: 'none',
-                                paddingRight: '16px',
-                              }}
-                            >
-                              {d.tooltip}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                        <TableRow>
-                          {row.dataPoints.map((d, i) => (
-                            <EditableTableCell
-                              value={d.value}
-                              isEditMode
-                              onChange={(value: string) =>
-                                onEdit(value, rowIndex, i)
-                              }
-                              options={d.options}
-                              style={{
-                                fontSize: '14px',
-                                paddingRight: 16,
-                                borderBottom: 'none',
-                              }}
-                            />
-                          ))}
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                    <Box display="flex" justifyContent="end" mt={2}>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        style={{ float: 'right' }}
-                        onClick={() => {
-                          onEditConfirm(row, rowIndex)
-                          setExpandedRow(-1)
-                        }}
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        style={{ float: 'right', marginLeft: '8px' }}
-                        onClick={() => {
-                          onEditCancel(rowIndex)
-                          setExpandedRow(-1)
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                    </Box>
-                  </Paper>
+                  <ExpandedRow
+                    key={'expandedcontent' + rowIndex}
+                    row={row}
+                    rowIndex={rowIndex}
+                    rowsLength={rows.length}
+                    newestFirst={newestFirst}
+                    onEdit={(
+                      editValue: string,
+                      rowIndex: number,
+                      itemIndex: number
+                    ) => onEdit(editValue, rowIndex, itemIndex)}
+                    onEditCancel={(rowIndex: number) => onEditCancel(rowIndex)}
+                    onEditConfirm={(row: TableDataRow, rowIndex: number) =>
+                      onEditConfirm(row, rowIndex)
+                    }
+                    setExpandedRow={(rowIndex: number) =>
+                      setExpandedRow(rowIndex)
+                    }
+                  />
                 </TableCell>
               </TableRow>
             )}
@@ -285,7 +202,7 @@ export function EditableTable(props: EditableTableProps) {
           <TableCell />
           {rows[0].dataPoints.map((item, index) => (
             <TableCell
-              key={index}
+              key={'footercell' + index}
               style={{
                 fontSize: '0.875rem',
                 fontWeight: 500,

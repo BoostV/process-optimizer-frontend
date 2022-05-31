@@ -1,5 +1,5 @@
 import { initialState, State, UISizeValue } from '../reducers/global-reducer'
-import { getSize, isUIBig, isUISmall } from './ui-util'
+import { getRowId, getSize, isUIBig, isUISmall } from './ui-util'
 
 const globalStateDummy: State = {
   ...initialState,
@@ -36,6 +36,12 @@ describe('ui-util', () => {
       expect(getSize({ ...globalStateDummy, uiSizes: [] }, 'plots')).toBe(
         UISizeValue.Small
       )
+    })
+  })
+  describe('getRowId', () => {
+    it('should return correct id', async () => {
+      expect(getRowId(true, 10, 20)).toBe(11)
+      expect(getRowId(false, 10, 20)).toBe(10)
     })
   })
 })
