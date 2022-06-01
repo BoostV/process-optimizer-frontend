@@ -1,10 +1,6 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@material-ui/core'
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
+import { useCallback, useEffect, useMemo, useReducer } from 'react'
 import { useGlobal } from '../../context/global-context'
-import {
-  dataPointsReducer,
-  DataPointsState,
-} from '../../reducers/data-points-reducer'
 import {
   DataPointType,
   TableDataPoint,
@@ -22,6 +18,10 @@ import useStyles from './data-points.style'
 import DownloadCSVButton from '../download-csv-button'
 import UploadCSVButton from '../upload-csv-button'
 import { useExperiment } from '../../context/experiment-context'
+import {
+  dataPointsReducer,
+  DataPointsState,
+} from '../../reducers/data-points-reducer'
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]
@@ -30,8 +30,6 @@ type DataPointProps = {
   dataPoints: DataPointType[][]
   onUpdateDataPoints: (dataPoints: DataPointType[][]) => void
 }
-
-type UpdateFnType = (rowIndex: number, ...args: any[]) => void
 
 export default function DataPoints(props: DataPointProps) {
   const {
@@ -44,9 +42,7 @@ export default function DataPoints(props: DataPointProps) {
   const classes = useStyles()
   const [state, dispatch] = useReducer(dataPointsReducer, {
     rows: [],
-    prevRows: [],
     changed: false,
-    hasTempChange: false,
   })
   const isLoadingState = state.rows.length === 0
   const global = useGlobal()
@@ -95,42 +91,34 @@ export default function DataPoints(props: DataPointProps) {
             tooltip: undefined,
           }))
         ),
-      isEditMode: true,
       isNew: true,
     }
   }, [buildCombinedVariables, scoreNames])
 
-  const toggleEditMode = (rowIndex: number) => {
-    dispatch({ type: 'DATA_POINTS_TABLE_EDIT_TOGGLED', payload: rowIndex })
-  }
-
-  const cancelEdit = (rowIndex: number) => {
-    dispatch({ type: 'DATA_POINTS_TABLE_EDIT_CANCELLED', payload: rowIndex })
-  }
-
-  const edit = (rowIndex: number, editValue: string, itemIndex: number) => {
+  const rowAdded = (row: TableDataRow) =>
     dispatch({
-      type: 'DATA_POINTS_TABLE_EDITED',
+      type: 'rowAdded',
+      payload: row,
+    })
+
+  const rowDeleted = (rowIndex: number) =>
+    dispatch({
+      type: 'rowDeleted',
+      payload: rowIndex,
+    })
+
+  const rowEdited = (rowIndex: number, row: TableDataRow) =>
+    dispatch({
+      type: 'rowEdited',
       payload: {
-        itemIndex,
         rowIndex,
-        value: editValue,
+        row,
       },
     })
-  }
-
-  const deleteRow = (rowIndex: number) => {
-    dispatch({ type: 'DATA_POINTS_TABLE_ROW_DELETED', payload: rowIndex })
-  }
-
-  const addRow = (emptyRow: TableDataRow) => {
-    dispatch({ type: 'DATA_POINTS_TABLE_ROW_ADDED', payload: emptyRow })
-  }
 
   const buildState = useCallback(
     (dataPoints: DataPointType[][]): DataPointsState => {
       const combinedVariables: CombinedVariableType[] = buildCombinedVariables()
-      const emptyRow: TableDataRow = buildEmptyRow()
       const dataPointRows: TableDataRow[] = dataPoints
         .map(item => {
           const rowData: DataPointType[] = item.filter(
@@ -151,34 +139,18 @@ export default function DataPoints(props: DataPointProps) {
             .map(score => ({ name: score.name, value: score.value as string }))
           return {
             dataPoints: vars.concat(scores),
-            isEditMode: false,
             isNew: false,
           }
         })
-        .concat(emptyRow as any)
+        .concat(buildEmptyRow())
 
       return {
         rows: dataPointRows,
-        prevRows: dataPointRows,
         changed: false,
-        hasTempChange: false,
       }
     },
-    [buildCombinedVariables, buildEmptyRow, scoreNames]
+    [buildCombinedVariables, scoreNames]
   )
-
-  const onEditConfirm = (row: TableDataRow, rowIndex: number) => {
-    if (row.isNew) {
-      addRow(buildEmptyRow())
-    } else {
-      updateRow(rowIndex, toggleEditMode)
-    }
-  }
-
-  const updateRow = (index: number, updateFn: UpdateFnType, ...args: any[]) => {
-    const rowIndex = newestFirst ? state.rows.length - 1 - index : index
-    updateFn(rowIndex, ...args)
-  }
 
   useEffect(() => {
     dispatch({ type: 'setInitialState', payload: buildState(dataPoints) })
@@ -210,6 +182,9 @@ export default function DataPoints(props: DataPointProps) {
       updateDataPoints(state.rows.filter(item => !item.isNew) as TableDataRow[])
     }
   }, [onUpdateDataPoints, scoreNames, state.changed, state.rows])
+
+  const calcIndex = (rowIndex: number) =>
+    newestFirst ? state.rows.length - 1 - rowIndex : rowIndex
 
   return (
     <TitleCard
@@ -259,16 +234,13 @@ export default function DataPoints(props: DataPointProps) {
             rows={
               (newestFirst
                 ? [...state.rows].reverse()
-                : state.rows) as TableDataRow[]
+                : [...state.rows]) as TableDataRow[]
             }
-            onEdit={(editValue: string, rowIndex: number, itemIndex: number) =>
-              updateRow(rowIndex, edit, editValue, itemIndex)
+            onRowAdded={(row: TableDataRow) => rowAdded(row)}
+            onRowDeleted={(rowIndex: number) => rowDeleted(calcIndex(rowIndex))}
+            onRowEdited={(rowIndex: number, row: TableDataRow) =>
+              rowEdited(calcIndex(rowIndex), row)
             }
-            onEditConfirm={(row: TableDataRow, rowIndex: number) =>
-              onEditConfirm(row, rowIndex)
-            }
-            onEditCancel={(rowIndex: number) => updateRow(rowIndex, cancelEdit)}
-            onDelete={(rowIndex: number) => updateRow(rowIndex, deleteRow)}
           />
         </Box>
       )}

@@ -13,7 +13,7 @@ type EditableTableCellProps = {
   value: string
   isEditMode: boolean
   options?: string[]
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
   tooltip?: string
   style?: CSSProperties
 }

@@ -100,7 +100,6 @@ export type TableDataPoint = {
 
 export type TableDataRow = {
   dataPoints: TableDataPoint[]
-  isEditMode: boolean
   isNew: boolean
 }
 
