@@ -44,7 +44,7 @@ export const calculateData = (
           numericValues.find(p => p.name === it.name)
             ? Number(it.value)
             : it.value
-        ),
+        ) as Array<string | number>, // This type cast is valid here because only scores can be number[] and they are filtered out
       yi: run
         .filter(it => enabledScoreNames.includes(it.name))
         .map(it => it.value)
