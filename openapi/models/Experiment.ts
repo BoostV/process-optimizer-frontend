@@ -18,11 +18,13 @@ import {
     ExperimentDataFromJSON,
     ExperimentDataFromJSONTyped,
     ExperimentDataToJSON,
+} from './ExperimentData';
+import {
     ExperimentOptimizerConfig,
     ExperimentOptimizerConfigFromJSON,
     ExperimentOptimizerConfigFromJSONTyped,
     ExperimentOptimizerConfigToJSON,
-} from './';
+} from './ExperimentOptimizerConfig';
 
 /**
  * 
@@ -80,5 +82,4 @@ export function ExperimentToJSON(value?: Experiment | null): any {
         'optimizerConfig': ExperimentOptimizerConfigToJSON(value.optimizerConfig),
     };
 }
-
 

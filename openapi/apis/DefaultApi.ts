@@ -38,7 +38,7 @@ export class DefaultApi extends runtime.BaseAPI {
     /**
      * Run optimizer with the specified parameters
      */
-    async optimizerapiOptimizerRunRaw(requestParameters: OptimizerapiOptimizerRunRequest): Promise<runtime.ApiResponse<Result>> {
+    async optimizerapiOptimizerRunRaw(requestParameters: OptimizerapiOptimizerRunRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<Result>> {
         if (requestParameters.experiment === null || requestParameters.experiment === undefined) {
             throw new runtime.RequiredError('experiment','Required parameter requestParameters.experiment was null or undefined when calling optimizerapiOptimizerRun.');
         }
@@ -55,7 +55,7 @@ export class DefaultApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: ExperimentToJSON(requestParameters.experiment),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ResultFromJSON(jsonValue));
     }
@@ -63,8 +63,8 @@ export class DefaultApi extends runtime.BaseAPI {
     /**
      * Run optimizer with the specified parameters
      */
-    async optimizerapiOptimizerRun(requestParameters: OptimizerapiOptimizerRunRequest): Promise<Result> {
-        const response = await this.optimizerapiOptimizerRunRaw(requestParameters);
+    async optimizerapiOptimizerRun(requestParameters: OptimizerapiOptimizerRunRequest, initOverrides?: RequestInit): Promise<Result> {
+        const response = await this.optimizerapiOptimizerRunRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
