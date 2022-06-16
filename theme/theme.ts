@@ -61,6 +61,8 @@ type CustomColours = {
   transparentBox: string
 }
 
+export const tableBorder = '1px solid rgba(224, 224, 224, 1)'
+
 const createCustomTheme = (custom: CustomColours): Theme => {
   return createTheme({
     overrides,

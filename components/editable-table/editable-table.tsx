@@ -9,6 +9,7 @@ import {
 import { TableDataRow } from '../../types/common'
 import { getRowId } from '../../utility/ui-util'
 import { EditableTableRow } from './editable-table-row'
+import useStyles from './editable-table.style'
 
 type EditableTableProps = {
   rows: TableDataRow[]
@@ -19,41 +20,35 @@ type EditableTableProps = {
   onRowEdited: (rowIndex: number, row: TableDataRow) => void
 }
 
-export function EditableTable(props: EditableTableProps) {
-  const {
-    rows,
-    newestFirst,
-    suggestedValues,
-    onRowAdded,
-    onRowDeleted,
-    onRowEdited,
-  } = props
-
-  const NON_DATA_ROWS = 3
-
-  const isNewEdited = (rows: TableDataRow[]) =>
-    rows
-      .filter(r => r.isNew)[0]
-      .dataPoints.some(
-        d => d.name !== 'score' && d.options === undefined && d.value !== ''
-      )
+export const EditableTable = ({
+  rows,
+  newestFirst,
+  suggestedValues,
+  onRowAdded,
+  onRowDeleted,
+  onRowEdited,
+}: EditableTableProps) => {
+  const classes = useStyles()
 
   return (
     <>
       <Table size="small">
         <TableHead>
           <TableRow>
+            <TableCell className={classes.emptyCell} />
             <TableCell>#</TableCell>
             {rows[0].dataPoints.map((item, index) => (
               <TableCell key={index}>{item.name}</TableCell>
             ))}
-            <TableCell />
+            <TableCell align="right">Edit</TableCell>
+            <TableCell className={classes.emptyCell} />
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row, rowIndex) => (
             <EditableTableRow
-              colSpan={rows.length + NON_DATA_ROWS}
+              key={rowIndex}
+              colSpan={5} //TODO: Calc colspan
               rowId={getRowId(newestFirst, rowIndex, rows.length)}
               onSave={(row: TableDataRow) => onRowEdited(rowIndex, row)}
               onDelete={() => onRowDeleted(rowIndex)}
@@ -65,21 +60,20 @@ export function EditableTable(props: EditableTableProps) {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell />
+            <TableCell className={classes.emptyCell} />
+            <TableCell className={classes.emptyFooterCell} />
             {rows[0].dataPoints.map((item, index) => (
               <TableCell
                 key={'footercell' + index}
-                style={{
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  lineHeight: '1.5rem',
-                  color: 'black',
-                }}
+                className={classes.footerCell}
               >
                 {item.name}
               </TableCell>
             ))}
-            <TableCell />
+            <TableCell align="right" className={classes.footerCell}>
+              Edit
+            </TableCell>
+            <TableCell className={classes.emptyCell} />
           </TableRow>
         </TableFooter>
       </Table>

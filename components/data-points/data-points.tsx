@@ -149,7 +149,7 @@ export default function DataPoints(props: DataPointProps) {
         changed: false,
       }
     },
-    [buildCombinedVariables, scoreNames]
+    [buildCombinedVariables, scoreNames, buildEmptyRow]
   )
 
   useEffect(() => {
