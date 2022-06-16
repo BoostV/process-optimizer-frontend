@@ -62,4 +62,3 @@ export function ResultResultModelsToJSON(value?: ResultResultModels | null): any
     };
 }
 
-

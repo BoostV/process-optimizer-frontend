@@ -62,4 +62,3 @@ export function ResultPlotsToJSON(value?: ResultPlots | null): any {
     };
 }
 
-

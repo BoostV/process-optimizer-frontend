@@ -19,7 +19,7 @@ import { NextRouter, useRouter } from 'next/router'
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { paths } from '../../paths'
+import { buildPath, paths } from '../../paths'
 import { ExperimentType } from '../../types/common'
 import { useGlobal } from '../../context/global-context'
 import { v4 as uuid } from 'uuid'
@@ -49,7 +49,7 @@ export default function Home() {
   const saveExperimentLocally = useCallback(
     (experiment: ExperimentType) => {
       localStorage.setItem(experiment.id, JSON.stringify({ experiment }))
-      router.push(`${paths.experiment}/${experiment.id}`)
+      router.push(buildPath(paths.experiment, experiment.id))
     },
     [router]
   )
@@ -104,12 +104,12 @@ export default function Home() {
 
   const createNewExperiment = () => {
     deleteExperiments()
-    router.push(`${paths.experiment}/${uuid()}`)
+    router.push(buildPath(paths.experiment, uuid()))
   }
 
   const openSavedExperiment = (key: string) => {
     deleteExperiments()
-    router.push(`${paths.experiment}/${key}`)
+    router.push(buildPath(paths.experiment, key))
   }
 
   const getExperimentName = (key: string) => {
