@@ -7,8 +7,8 @@ import {
   TableRow,
 } from '@material-ui/core'
 import { TableDataRow } from '../../types/common'
-import { getRowId } from '../../utility/ui-util'
 import { EditableTableRow } from './editable-table-row'
+import { getRowIndex, getRowId } from './editable-table-util'
 import useStyles from './editable-table.style'
 
 type EditableTableProps = {
@@ -50,8 +50,15 @@ export const EditableTable = ({
               key={'editablerow' + rowIndex}
               colSpan={5} //TODO: Calc colspan
               rowId={getRowId(newestFirst, rowIndex, rows.length)}
-              onSave={(row: TableDataRow) => onRowEdited(rowIndex, row)}
-              onDelete={() => onRowDeleted(rowIndex)}
+              onSave={(row: TableDataRow) =>
+                onRowEdited(
+                  getRowIndex(newestFirst, rowIndex, rows.length),
+                  row
+                )
+              }
+              onDelete={() =>
+                onRowDeleted(getRowIndex(newestFirst, rowIndex, rows.length))
+              }
               onAdd={(row: TableDataRow) => onRowAdded(row)}
               tableRow={row}
               suggestedValues={suggestedValues}

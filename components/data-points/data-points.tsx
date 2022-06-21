@@ -183,9 +183,6 @@ export default function DataPoints(props: DataPointProps) {
     }
   }, [onUpdateDataPoints, scoreNames, state.changed, state.rows])
 
-  const calcIndex = (rowIndex: number) =>
-    newestFirst ? state.rows.length - rowIndex - 1 : rowIndex
-
   return (
     <TitleCard
       title={
@@ -229,7 +226,7 @@ export default function DataPoints(props: DataPointProps) {
       {buildCombinedVariables().length > 0 && !isLoadingState && (
         <Box className={classes.tableContainer}>
           <EditableTable
-            newestFirst={!global.state.dataPointsNewestFirst}
+            newestFirst={global.state.dataPointsNewestFirst}
             suggestedValues={results.next}
             rows={
               (newestFirst
@@ -237,9 +234,9 @@ export default function DataPoints(props: DataPointProps) {
                 : [...state.rows]) as TableDataRow[]
             }
             onRowAdded={(row: TableDataRow) => rowAdded(row)}
-            onRowDeleted={(rowIndex: number) => rowDeleted(calcIndex(rowIndex))}
+            onRowDeleted={(rowIndex: number) => rowDeleted(rowIndex)}
             onRowEdited={(rowIndex: number, row: TableDataRow) =>
-              rowEdited(calcIndex(rowIndex), row)
+              rowEdited(rowIndex, row)
             }
           />
         </Box>
