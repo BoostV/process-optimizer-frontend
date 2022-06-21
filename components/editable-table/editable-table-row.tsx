@@ -1,5 +1,5 @@
 import { TableDataRow } from '../../types/common'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { EditableTableExpandedRow } from './editable-table-expanded-row'
 import { EditableTableCollapsedRow } from './editable-table-collapsed-row'
 
@@ -22,7 +22,6 @@ export const EditableTableRow = ({
   onDelete,
   onAdd,
 }: EditableTableRowProps) => {
-  const [row, setRow] = useState<TableDataRow>({ ...tableRow })
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -31,11 +30,10 @@ export const EditableTableRow = ({
         <EditableTableExpandedRow
           colSpan={colSpan + 2}
           rowId={rowId}
-          row={row}
           tableRow={tableRow}
+          suggestedValues={suggestedValues}
           onAdd={row => onAdd(row)}
           onSave={row => onSave(row)}
-          setRow={row => setRow(row)}
           setExpanded={expanded => setExpanded(expanded)}
         />
       ) : (

@@ -13,14 +13,14 @@ import {
 import CloseIcon from '@material-ui/icons/Close'
 import { TableDataRow } from '../../types/common'
 import { EditableTableCell } from './editable-table-cell'
+import { useState } from 'react'
 
 interface EditableTableExpandedRowProps {
   colSpan: number
   rowId: number
-  row: TableDataRow
   tableRow: TableDataRow
+  suggestedValues: (string | number)[]
   setExpanded: (expanded: boolean) => void
-  setRow: (row: TableDataRow) => void
   onAdd: (row: TableDataRow) => void
   onSave: (row: TableDataRow) => void
 }
@@ -28,14 +28,14 @@ interface EditableTableExpandedRowProps {
 export const EditableTableExpandedRow = ({
   colSpan,
   rowId,
-  setRow,
   tableRow,
-  row,
+  suggestedValues,
   setExpanded,
   onAdd,
   onSave,
 }: EditableTableExpandedRowProps) => {
   const classes = useStyles()
+  const [editedRow, setEditedRow] = useState<TableDataRow>({ ...tableRow })
 
   return (
     <TableRow className={classes.row}>
@@ -46,10 +46,7 @@ export const EditableTableExpandedRow = ({
             <IconButton
               size="small"
               aria-label="close"
-              onClick={() => {
-                setRow({ ...tableRow })
-                setExpanded(false)
-              }}
+              onClick={() => setExpanded(false)}
             >
               <CloseIcon fontSize="small" color="primary" />
             </IconButton>
@@ -58,7 +55,7 @@ export const EditableTableExpandedRow = ({
           <Table size="small">
             <TableHead>
               <TableRow>
-                {row.dataPoints.map((d, i) => (
+                {editedRow.dataPoints.map((d, i) => (
                   <TableCell
                     key={'header' + i}
                     className={classes.rowHeaderCell}
@@ -70,7 +67,7 @@ export const EditableTableExpandedRow = ({
             </TableHead>
             <TableBody>
               <TableRow>
-                {row.dataPoints.map((d, i) => (
+                {editedRow.dataPoints.map((d, i) => (
                   <TableCell
                     key={'subheader' + i}
                     className={classes.rowMetaHeaderCell}
@@ -80,16 +77,16 @@ export const EditableTableExpandedRow = ({
                 ))}
               </TableRow>
               <TableRow>
-                {row.dataPoints.map((d, i) => (
+                {editedRow.dataPoints.map((d, i) => (
                   <EditableTableCell
                     key={'expandedvalues' + i}
                     value={d.value}
                     isEditMode
                     onChange={(value: string) =>
-                      setRow({
-                        ...row,
+                      setEditedRow({
+                        ...editedRow,
                         dataPoints: [
-                          ...row.dataPoints.map((d, n) =>
+                          ...editedRow.dataPoints.map((d, n) =>
                             n === i
                               ? {
                                   ...d,
@@ -104,7 +101,8 @@ export const EditableTableExpandedRow = ({
                     style={{
                       fontSize: 14,
                       border: 'none',
-                      paddingRight: row.dataPoints.length - 1 === i ? 0 : 16,
+                      paddingRight:
+                        editedRow.dataPoints.length - 1 === i ? 0 : 16,
                     }}
                   />
                 ))}
@@ -112,37 +110,39 @@ export const EditableTableExpandedRow = ({
             </TableBody>
           </Table>
           <Box display="flex" justifyContent="end" mt={2}>
-            {/* TODO: Suggested values {tableRow.isNew && (
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => {
-                console.log('suggestedValues', suggestedValues)
-                setRow({
-                  ...row,
-                  dataPoints: [
-                    ...row.dataPoints.map((d, i) => ({
-                      ...d,
-                      value: suggestedValues[i].toString(),
-                    })),
-                  ],
-                })
-              }}
-            >
-              Insert suggested values
-            </Button>
-          )} */}
+            {tableRow.isNew && (
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => {
+                  const suggestedRow: TableDataRow = {
+                    ...editedRow,
+                    dataPoints: [
+                      ...editedRow.dataPoints.map((d, i) => ({
+                        ...d,
+                        value:
+                          suggestedValues[i] !== undefined
+                            ? '' + suggestedValues[i]
+                            : '',
+                      })),
+                    ],
+                  }
+                  setEditedRow({ ...suggestedRow })
+                }}
+              >
+                Insert suggested values
+              </Button>
+            )}
             <Button
               variant="outlined"
               size="small"
               style={{ float: 'right', marginLeft: 8 }}
               onClick={() => {
                 if (tableRow.isNew) {
-                  onAdd(row)
+                  onAdd(editedRow)
                 } else {
-                  onSave(row)
+                  onSave(editedRow)
                 }
-                setRow({ ...tableRow })
                 setExpanded(false)
               }}
             >
@@ -152,10 +152,7 @@ export const EditableTableExpandedRow = ({
               variant="outlined"
               size="small"
               style={{ float: 'right', marginLeft: 8 }}
-              onClick={() => {
-                setRow({ ...tableRow })
-                setExpanded(false)
-              }}
+              onClick={() => setExpanded(false)}
             >
               Cancel
             </Button>

@@ -47,7 +47,7 @@ export const EditableTable = ({
         <TableBody>
           {rows.map((row, rowIndex) => (
             <EditableTableRow
-              key={rowIndex}
+              key={'editablerow' + rowIndex}
               colSpan={5} //TODO: Calc colspan
               rowId={getRowId(newestFirst, rowIndex, rows.length)}
               onSave={(row: TableDataRow) => onRowEdited(rowIndex, row)}

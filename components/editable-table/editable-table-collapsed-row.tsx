@@ -27,13 +27,7 @@ export const EditableTableCollapsedRow = ({
     <TableRow className={classes.row}>
       {tableRow.isNew ? (
         <>
-          <TableCell
-            style={{
-              // background: 'brown',
-              border: 'none',
-              width: 8,
-            }}
-          />
+          <TableCell className={classes.emptyCell} />
           <TableCell align="right" colSpan={colSpan} className={classes.newRow}>
             <Tooltip title="Add data point">
               <IconButton
@@ -52,15 +46,13 @@ export const EditableTableCollapsedRow = ({
           <TableCell className={classes.emptyCell} />
           <TableCell className={classes.cell}>{rowId}</TableCell>
           {tableRow.dataPoints.map((item, itemIndex) => (
-            <>
-              <EditableTableCell
-                key={'editablecell' + itemIndex}
-                value={item.value}
-                isEditMode={false}
-                options={item.options}
-                tooltip={item.tooltip}
-              />
-            </>
+            <EditableTableCell
+              key={'editablecell' + itemIndex}
+              value={item.value}
+              isEditMode={false}
+              options={item.options}
+              tooltip={item.tooltip}
+            />
           ))}
           <TableCell className={classes.editCell}>
             <div className={classes.buttonContainer}>

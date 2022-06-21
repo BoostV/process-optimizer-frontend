@@ -131,7 +131,7 @@ export default function DataPoints(props: DataPointProps) {
               name: v.name,
               value: v.value.toString(),
               options: combinedVariables[idx]?.options,
-              tooltip: combinedVariables[idx].tooltip,
+              tooltip: combinedVariables[idx]?.tooltip,
             }
           })
           const scores: TableDataPoint[] = item
@@ -184,7 +184,7 @@ export default function DataPoints(props: DataPointProps) {
   }, [onUpdateDataPoints, scoreNames, state.changed, state.rows])
 
   const calcIndex = (rowIndex: number) =>
-    newestFirst ? state.rows.length - 1 - rowIndex : rowIndex
+    newestFirst ? state.rows.length - rowIndex - 1 : rowIndex
 
   return (
     <TitleCard
