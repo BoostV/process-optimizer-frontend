@@ -19,7 +19,6 @@ interface EditableTableExpandedRowProps {
   colSpan: number
   rowId: number
   tableRow: TableDataRow
-  suggestedValues: (string | number)[]
   setExpanded: (expanded: boolean) => void
   onAdd: (row: TableDataRow) => void
   onSave: (row: TableDataRow) => void
@@ -29,7 +28,6 @@ export const EditableTableExpandedRow = ({
   colSpan,
   rowId,
   tableRow,
-  suggestedValues,
   setExpanded,
   onAdd,
   onSave,
@@ -110,29 +108,6 @@ export const EditableTableExpandedRow = ({
             </TableBody>
           </Table>
           <Box display="flex" justifyContent="end" mt={2}>
-            {tableRow.isNew && (
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => {
-                  const suggestedRow: TableDataRow = {
-                    ...editedRow,
-                    dataPoints: [
-                      ...editedRow.dataPoints.map((d, i) => ({
-                        ...d,
-                        value:
-                          suggestedValues[i] !== undefined
-                            ? '' + suggestedValues[i]
-                            : '',
-                      })),
-                    ],
-                  }
-                  setEditedRow({ ...suggestedRow })
-                }}
-              >
-                Insert suggested values
-              </Button>
-            )}
             <Button
               variant="outlined"
               size="small"

@@ -14,7 +14,6 @@ import useStyles from './editable-table.style'
 type EditableTableProps = {
   rows: TableDataRow[]
   newestFirst: boolean
-  suggestedValues?: (string | number)[]
   onRowAdded: (row: TableDataRow) => void
   onRowDeleted: (rowIndex: number) => void
   onRowEdited: (rowIndex: number, row: TableDataRow) => void
@@ -23,7 +22,6 @@ type EditableTableProps = {
 export const EditableTable = ({
   rows,
   newestFirst,
-  suggestedValues,
   onRowAdded,
   onRowDeleted,
   onRowEdited,
@@ -48,7 +46,7 @@ export const EditableTable = ({
           {rows.map((row, rowIndex) => (
             <EditableTableRow
               key={'editablerow' + rowIndex}
-              colSpan={5} //TODO: Calc colspan
+              colSpan={row.dataPoints.length + 2}
               rowId={getRowId(newestFirst, rowIndex, rows.length)}
               onSave={(row: TableDataRow) =>
                 onRowEdited(
@@ -61,7 +59,6 @@ export const EditableTable = ({
               }
               onAdd={(row: TableDataRow) => onRowAdded(row)}
               tableRow={row}
-              suggestedValues={suggestedValues}
             />
           ))}
         </TableBody>

@@ -7,7 +7,6 @@ interface EditableTableRowProps {
   tableRow: TableDataRow
   colSpan: number
   rowId: number
-  suggestedValues: (string | number)[]
   onSave: (row: TableDataRow) => void
   onDelete: () => void
   onAdd: (row: TableDataRow) => void
@@ -17,7 +16,6 @@ export const EditableTableRow = ({
   tableRow,
   rowId,
   colSpan,
-  suggestedValues,
   onSave,
   onDelete,
   onAdd,
@@ -31,7 +29,6 @@ export const EditableTableRow = ({
           colSpan={colSpan + 2}
           rowId={rowId}
           tableRow={tableRow}
-          suggestedValues={suggestedValues}
           onAdd={row => onAdd(row)}
           onSave={row => onSave(row)}
           setExpanded={expanded => setExpanded(expanded)}

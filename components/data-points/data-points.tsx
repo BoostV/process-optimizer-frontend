@@ -47,11 +47,6 @@ export default function DataPoints(props: DataPointProps) {
   const isLoadingState = state.rows.length === 0
   const global = useGlobal()
   const newestFirst = global.state.dataPointsNewestFirst
-  const {
-    state: {
-      experiment: { results },
-    },
-  } = useExperiment()
 
   const scoreNames = useMemo(
     () => scoreVariables.filter(it => it.enabled).map(it => it.name),
@@ -227,7 +222,6 @@ export default function DataPoints(props: DataPointProps) {
         <Box className={classes.tableContainer}>
           <EditableTable
             newestFirst={global.state.dataPointsNewestFirst}
-            suggestedValues={results.next}
             rows={
               (newestFirst
                 ? [...state.rows].reverse()
