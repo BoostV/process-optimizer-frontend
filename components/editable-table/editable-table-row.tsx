@@ -1,5 +1,5 @@
 import { TableDataRow } from '../../types/common'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { EditableTableExpandedRow } from './editable-table-expanded-row'
 import { EditableTableCollapsedRow } from './editable-table-collapsed-row'
 

@@ -17,7 +17,6 @@ import { TitleCard } from '../title-card/title-card'
 import useStyles from './data-points.style'
 import DownloadCSVButton from '../download-csv-button'
 import UploadCSVButton from '../upload-csv-button'
-import { useExperiment } from '../../context/experiment-context'
 import {
   dataPointsReducer,
   DataPointsState,
