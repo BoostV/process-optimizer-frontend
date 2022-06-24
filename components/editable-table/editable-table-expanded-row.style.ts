@@ -26,6 +26,7 @@ export const useStyles = makeStyles(theme => ({
     fontWeight: 500,
     paddingRight: 16,
     alignItems: 'center',
+    color: colors.silver,
   },
   rowHeaderCell: {
     fontSize: 16,

@@ -10,7 +10,6 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close'
 import { TableDataRow } from '../../types/common'
 import { EditableTableCell } from './editable-table-cell'
 import { useState } from 'react'
@@ -39,16 +38,6 @@ export const EditableTableExpandedRow = ({
     <TableRow className={classes.row}>
       <TableCell colSpan={colSpan + 2} className={classes.spanCell}>
         <Paper elevation={2} className={classes.paper}>
-          <Box display="flex" justifyContent="right" mb={1}>
-            <IconButton
-              size="small"
-              aria-label="close"
-              onClick={() => setExpanded(false)}
-            >
-              <CloseIcon fontSize="small" color="primary" />
-            </IconButton>
-          </Box>
-
           <Box display="flex">
             <Box className={classes.rowId}>{rowId}</Box>
             <Box pt={1}>

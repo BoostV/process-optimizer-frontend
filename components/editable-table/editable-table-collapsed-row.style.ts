@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core'
-import { tableBorder } from '../../theme/theme'
+import { colors, tableBorder } from '../../theme/theme'
 
 export const useStyles = makeStyles(theme => ({
   buttonContainer: {
@@ -7,7 +7,7 @@ export const useStyles = makeStyles(theme => ({
     float: 'right',
   },
   cell: {
-    color: '#999',
+    color: colors.silver,
     paddingRight: '8px',
     border: 'none',
     borderTop: tableBorder,
