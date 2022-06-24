@@ -1,8 +1,13 @@
 import { makeStyles } from '@material-ui/core'
+import { tableBorder } from '../../theme/theme'
 
 export const useStyles = makeStyles(theme => ({
-  cell: {
+  editCell: {
     minWidth: 48,
+  },
+  cell: {
+    border: 'none',
+    borderTop: tableBorder,
   },
 }))
 

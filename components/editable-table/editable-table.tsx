@@ -1,108 +1,86 @@
 import {
-  IconButton,
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableRow,
 } from '@material-ui/core'
-import { EditableTableCell } from './editable-table-cell'
-import EditIcon from '@material-ui/icons/Edit'
-import CheckCircleIcon from '@material-ui/icons/CheckCircle'
-import CancelIcon from '@material-ui/icons/Cancel'
-import AddIcon from '@material-ui/icons/Add'
-import DeleteIcon from '@material-ui/icons/Delete'
 import { TableDataRow } from '../../types/common'
+import { EditableTableRow } from './editable-table-row'
+import { getRowIndex, getRowId } from './editable-table-util'
 import useStyles from './editable-table.style'
 
 type EditableTableProps = {
   rows: TableDataRow[]
-  onEdit: (editValue: string, rowIndex: number, itemIndex: number) => void
-  onEditConfirm: (row: TableDataRow, rowIndex: number) => void
-  onEditCancel: (rowIndex: number) => void
-  onToggleEditMode: (rowIndex: number) => void
-  onDelete: (rowIndex: number) => void
+  newestFirst: boolean
+  onRowAdded: (row: TableDataRow) => void
+  onRowDeleted: (rowIndex: number) => void
+  onRowEdited: (rowIndex: number, row: TableDataRow) => void
 }
 
-export function EditableTable(props: EditableTableProps) {
-  const {
-    rows,
-    onEdit,
-    onEditConfirm,
-    onEditCancel,
-    onToggleEditMode,
-    onDelete,
-  } = props
+export const EditableTable = ({
+  rows,
+  newestFirst,
+  onRowAdded,
+  onRowDeleted,
+  onRowEdited,
+}: EditableTableProps) => {
   const classes = useStyles()
 
   return (
-    <Table size="small">
-      <TableHead>
-        <TableRow>
-          {rows[0].dataPoints.map((item, index) => (
-            <TableCell key={index}>{item.name}</TableCell>
-          ))}
-          <TableCell />
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {rows.map((row, rowIndex) => (
-          <TableRow key={rowIndex}>
-            {row.dataPoints.map((item, itemIndex) => (
-              <EditableTableCell
-                key={itemIndex}
-                value={item.value}
-                isEditMode={row.isEditMode}
-                options={item.options}
-                onChange={(value: string) => onEdit(value, rowIndex, itemIndex)}
-              />
+    <>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell className={classes.emptyCell} />
+            <TableCell>#</TableCell>
+            {rows[0].dataPoints.map((item, index) => (
+              <TableCell key={index}>{item.name}</TableCell>
             ))}
-            <TableCell key={rowIndex}>
-              <div className={classes.buttonContainer}>
-                {row.isEditMode ? (
-                  <>
-                    <IconButton
-                      size="small"
-                      aria-label="confirm edit"
-                      onClick={() => onEditConfirm(row, rowIndex)}
-                    >
-                      {row.isNew ? (
-                        <AddIcon fontSize="small" color="primary" />
-                      ) : (
-                        <CheckCircleIcon fontSize="small" color="primary" />
-                      )}
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      aria-label="cancel edit"
-                      onClick={() => onEditCancel(rowIndex)}
-                    >
-                      <CancelIcon fontSize="small" color="primary" />
-                    </IconButton>
-                  </>
-                ) : (
-                  <>
-                    <IconButton
-                      size="small"
-                      aria-label="toggle edit"
-                      onClick={() => onToggleEditMode(rowIndex)}
-                    >
-                      <EditIcon fontSize="small" color="primary" />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      aria-label="delete"
-                      onClick={() => onDelete(rowIndex)}
-                    >
-                      <DeleteIcon fontSize="small" color="primary" />
-                    </IconButton>
-                  </>
-                )}
-              </div>
-            </TableCell>
+            <TableCell align="right">Edit</TableCell>
+            <TableCell className={classes.emptyCell} />
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHead>
+        <TableBody>
+          {rows.map((row, rowIndex) => (
+            <EditableTableRow
+              key={'editablerow' + rowIndex}
+              colSpan={row.dataPoints.length + 2}
+              rowId={getRowId(newestFirst, rowIndex, rows.length)}
+              onSave={(row: TableDataRow) =>
+                onRowEdited(
+                  getRowIndex(newestFirst, rowIndex, rows.length),
+                  row
+                )
+              }
+              onDelete={() =>
+                onRowDeleted(getRowIndex(newestFirst, rowIndex, rows.length))
+              }
+              onAdd={(row: TableDataRow) => onRowAdded(row)}
+              tableRow={row}
+            />
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell className={classes.emptyCell} />
+            <TableCell className={classes.emptyFooterCell} />
+            {rows[0].dataPoints.map((item, index) => (
+              <TableCell
+                key={'footercell' + index}
+                className={classes.footerCell}
+              >
+                {item.name}
+              </TableCell>
+            ))}
+            <TableCell align="right" className={classes.footerCell}>
+              Edit
+            </TableCell>
+            <TableCell className={classes.emptyCell} />
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </>
   )
 }
