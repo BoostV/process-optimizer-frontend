@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core'
-import { tableBorder } from '../../theme/theme'
+import { colors } from '../../theme/theme'
 
 export const useStyles = makeStyles(theme => ({
   row: {
@@ -21,16 +21,20 @@ export const useStyles = makeStyles(theme => ({
     margin: '2px 4px 2px 4px',
   },
   rowId: {
+    display: 'flex',
+    fontSize: 60,
     fontWeight: 500,
-    fontSize: '1rem',
+    paddingRight: 16,
+    alignItems: 'center',
   },
   rowHeaderCell: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 600,
     border: 'none',
     paddingRight: 16,
   },
   rowMetaHeaderCell: {
+    color: colors.silver,
     fontSize: 12,
     fontWeight: 400,
     border: 'none',
