@@ -32,8 +32,8 @@ export function EditableTableCell({
     <TextField
       size="small"
       value={value}
-      onChange={(e: ChangeEvent) =>
-        onChange('' + (e.target as HTMLInputElement).value)
+      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+        onChange('' + e.target.value)
       }
     />
   )
@@ -46,8 +46,8 @@ export function EditableTableCell({
             <FormControl>
               <Select
                 value={value}
-                onChange={(e: ChangeEvent<any>) =>
-                  onChange(e.target.value as string)
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  onChange(e.target.value)
                 }
                 displayEmpty
                 inputProps={{ 'aria-label': 'select value' }}
