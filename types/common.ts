@@ -94,19 +94,18 @@ export type SpaceType = {
 export type TableDataPoint = {
   name: string
   value: string
+  tooltip?: string
   options?: string[] | undefined
 }
 
 export type TableDataRow = {
   dataPoints: TableDataPoint[]
-  isEditMode: boolean
   isNew: boolean
 }
 
 export type CombinedVariableType = {
   name: string
   description: string
-  minVal?: number
-  maxVal?: number
+  tooltip?: string
   options?: string[]
 }

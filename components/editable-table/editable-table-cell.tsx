@@ -4,31 +4,50 @@ import {
   Select,
   TableCell,
   TextField,
+  Tooltip,
 } from '@material-ui/core'
-import { ChangeEvent } from 'react'
+import { ChangeEvent, CSSProperties } from 'react'
 import useStyles from './editable-table-cell.style'
 
 type EditableTableCellProps = {
   value: string
   isEditMode: boolean
   options?: string[]
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
+  tooltip?: string
+  style?: CSSProperties
 }
 
-export function EditableTableCell(props: EditableTableCellProps) {
-  const { value, isEditMode, options, onChange } = props
+export function EditableTableCell({
+  value,
+  isEditMode,
+  options,
+  onChange,
+  tooltip,
+  style,
+}: EditableTableCellProps) {
   const classes = useStyles()
+
+  const textField = (
+    <TextField
+      size="small"
+      value={value}
+      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+        onChange('' + e.target.value)
+      }
+    />
+  )
 
   return (
     <>
       {isEditMode ? (
-        <TableCell className={classes.cell}>
+        <TableCell className={classes.editCell} style={{ ...style }}>
           {options && options.length > 0 ? (
             <FormControl>
               <Select
                 value={value}
-                onChange={(e: ChangeEvent<any>) =>
-                  onChange(e.target.value as string)
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  onChange(e.target.value)
                 }
                 displayEmpty
                 inputProps={{ 'aria-label': 'select value' }}
@@ -41,17 +60,19 @@ export function EditableTableCell(props: EditableTableCellProps) {
               </Select>
             </FormControl>
           ) : (
-            <TextField
-              size="small"
-              value={value}
-              onChange={(e: ChangeEvent) =>
-                onChange('' + (e.target as HTMLInputElement).value)
-              }
-            />
+            <>
+              {tooltip !== undefined ? (
+                <Tooltip title={tooltip}>{textField}</Tooltip>
+              ) : (
+                <>{textField}</>
+              )}
+            </>
           )}
         </TableCell>
       ) : (
-        <TableCell>{value}</TableCell>
+        <TableCell className={classes.cell} style={{ ...style }}>
+          {value}
+        </TableCell>
       )}
     </>
   )

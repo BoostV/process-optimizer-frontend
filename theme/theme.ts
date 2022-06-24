@@ -61,6 +61,11 @@ type CustomColours = {
   transparentBox: string
 }
 
+export const tableBorder = '1px solid rgba(224, 224, 224, 1)'
+export const colors = {
+  silver: '#898989',
+}
+
 const createCustomTheme = (custom: CustomColours): Theme => {
   return createTheme({
     overrides,
@@ -113,12 +118,6 @@ const cyans: CustomColours = {
   transparentBox: 'rgba(255,255,255,0.15)',
 }
 
-/*
-bee:
-rgba(235,150,5,1)
-#e6c338
-*/
-
 const bee: CustomColours = {
   primary: 'rgba(235,150,5,1)',
   secondary: '#e6c338',
@@ -145,17 +144,6 @@ const blueGreen: CustomColours = {
   textInsideBox: '#fff',
   transparentBox: 'rgba(255,255,255,0.15)',
 }
-
-/*
-earth:
-rgba(136,91,90,1)
-rgba(171,104,94,1)
-rgba(240,139,106,1)
-rgba(250,176,99,1)
-rgba(241,233,218,1)
-and
-rgba(236,228,213,1)
-*/
 
 const earth: CustomColours = {
   primary: 'rgba(171,104,94,1)',
@@ -190,4 +178,4 @@ export const themes: CustomTheme[] = [
   { name: 'Earth', theme: createCustomTheme(earth) },
 ]
 
-export const theme: Theme = createCustomTheme(blueGreen)
+export const theme: Theme = createCustomTheme(bee)

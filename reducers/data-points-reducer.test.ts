@@ -1,452 +1,164 @@
-import {
-  dataPointsReducer,
-  DataPointsState,
-  DataPointsTableAction,
-} from './data-points-reducer'
+import { dataPointsReducer, DataPointsState } from './data-points-reducer'
 import { TableDataRow } from '../types/common'
 
 describe('data points reducer', () => {
   const initialState: DataPointsState = {
     changed: false,
-    hasTempChange: false,
     rows: [],
-    prevRows: [],
   }
 
-  describe('DataPointsTableEditToggledAction', () => {
-    it('should toggle edit mode and save previous row', async () => {
-      const payload = 0
-
-      const action: DataPointsTableAction = {
-        type: 'DATA_POINTS_TABLE_EDIT_TOGGLED',
-        payload,
-      }
-
-      const initPrevRows: TableDataRow[] = [
-        {
-          dataPoints: [
-            {
-              name: 'Milk',
-              value: '100',
-            },
-            {
-              name: 'score',
-              value: '1',
-            },
-          ],
-          isEditMode: false,
-          isNew: false,
-        },
-      ]
-
-      const initRows: TableDataRow[] = [
-        {
-          dataPoints: [
-            {
-              name: 'Milk',
-              value: '200',
-            },
-            {
-              name: 'score',
-              value: '1',
-            },
-          ],
-          isEditMode: false,
-          isNew: false,
-        },
-      ]
-
-      const initState: DataPointsState = {
-        ...initialState,
-        prevRows: initPrevRows,
-        rows: initRows,
-      }
-
-      expect(dataPointsReducer(initState, action)).toEqual({
-        ...initialState,
-        changed: false,
-        hasTempChange: false,
-        prevRows: initRows,
-        rows: [
-          {
-            ...initRows[0],
-            isEditMode: true,
-            isNew: false,
-          },
-        ],
-      })
-    })
-  })
-
-  describe('DataPointsTableEditCancelledAction', () => {
-    it('should toggle edit mode and set row to prevRow', async () => {
-      const payload = 0
-
-      const action: DataPointsTableAction = {
-        type: 'DATA_POINTS_TABLE_EDIT_CANCELLED',
-        payload,
-      }
-
-      const initState: DataPointsState = {
-        ...initialState,
-        prevRows: [
-          {
-            dataPoints: [
-              {
-                name: 'Water',
-                value: '100',
-              },
-            ],
-            isEditMode: false,
-            isNew: false,
-          },
-        ],
-        rows: [
-          {
-            dataPoints: [
-              {
-                name: 'Water',
-                value: '200',
-              },
-            ],
-            isEditMode: true,
-            isNew: false,
-          },
-        ],
-      }
-
-      expect(dataPointsReducer(initState, action)).toEqual({
-        prevRows: initState.prevRows,
-        rows: initState.prevRows,
-        changed: false,
-        hasTempChange: false,
-      })
-    })
-
-    it('should set row to prevRow but not toggle edit mode for new row', async () => {
-      const payload = 0
-
-      const action: DataPointsTableAction = {
-        type: 'DATA_POINTS_TABLE_EDIT_CANCELLED',
-        payload,
-      }
-
-      const initState: DataPointsState = {
-        ...initialState,
-        prevRows: [
-          {
-            dataPoints: [
-              {
-                name: 'Water',
-                value: '',
-              },
-            ],
-            isEditMode: true,
-            isNew: true,
-          },
-        ],
-        rows: [
-          {
-            dataPoints: [
-              {
-                name: 'Water',
-                value: '100',
-              },
-            ],
-            isEditMode: true,
-            isNew: true,
-          },
-        ],
-      }
-      expect(dataPointsReducer(initState, action)).toEqual({
-        changed: false,
-        hasTempChange: false,
-        prevRows: initState.prevRows,
-        rows: initState.prevRows,
-      })
-    })
-  })
-
-  describe('DataPointsTableEditedAction', () => {
-    it('should edit table cell', async () => {
-      const payload = {
-        value: '300',
-        rowIndex: 0,
-        itemIndex: 1,
-        useArrayForValue: 'score',
-      }
-
-      const action: DataPointsTableAction = {
-        type: 'DATA_POINTS_TABLE_EDITED',
-        payload,
-      }
-
-      const initState: DataPointsState = {
-        ...initialState,
-        prevRows: [],
-        rows: [
-          {
-            dataPoints: [
-              {
-                name: 'Water',
-                value: '100',
-              },
-              {
-                name: 'Milk',
-                value: '200',
-              },
-              {
-                name: 'score',
-                value: '0.5',
-              },
-            ],
-            isEditMode: true,
-            isNew: false,
-          },
-        ],
-      }
-
-      expect(dataPointsReducer(initState, action)).toEqual({
-        ...initState,
-        changed: false,
-        hasTempChange: true,
-        rows: [
-          {
-            ...initState.rows[0],
-            dataPoints: [
-              { ...initState.rows[0].dataPoints[0] },
-              { ...initState.rows[0].dataPoints[1], value: payload.value },
-              { ...initState.rows[0].dataPoints[2] },
-            ],
-          },
-        ],
-      })
-    })
-  })
-
-  describe('DataPointsTableUpdatedAction', () => {
-    it('should update table', async () => {
-      const payload = [
-        {
-          dataPoints: [
-            {
-              name: 'Milk',
-              value: '200',
-            },
-            {
-              name: 'score',
-              value: '0.3',
-            },
-          ],
-          isEditMode: false,
-          isNew: false,
-        },
-      ]
-
-      const action: DataPointsTableAction = {
-        type: 'DATA_POINTS_TABLE_UPDATED',
-        payload,
-      }
-
-      const initState: DataPointsState = {
-        ...initialState,
-        prevRows: [],
-        rows: [
-          {
-            dataPoints: [
-              {
-                name: 'Water',
-                value: '100',
-              },
-              {
-                name: 'score',
-                value: '0.1',
-              },
-            ],
-            isEditMode: false,
-            isNew: false,
-          },
-        ],
-      }
-
-      expect(dataPointsReducer(initState, action)).toEqual({
-        ...initialState,
-        prevRows: [],
-        rows: payload,
-      })
-    })
-  })
-
-  describe('DataPointsTableDeletedAction', () => {
-    it('should delete row', async () => {
-      const payload = 1
-
-      const action: DataPointsTableAction = {
-        type: 'DATA_POINTS_TABLE_ROW_DELETED',
-        payload,
-      }
-
-      const initRows: TableDataRow[] = [
-        {
-          dataPoints: [
-            {
-              name: 'Water',
-              value: '100',
-            },
-            {
-              name: 'score',
-              value: '0.1',
-            },
-          ],
-          isEditMode: false,
-          isNew: false,
-        },
-        {
-          dataPoints: [
-            {
-              name: 'Water',
-              value: '200',
-            },
-            {
-              name: 'score',
-              value: '0.2',
-            },
-          ],
-          isEditMode: false,
-          isNew: false,
-        },
-      ]
-
-      const initState: DataPointsState = {
-        ...initialState,
-        prevRows: initRows,
-        rows: initRows,
-      }
-
-      expect(dataPointsReducer(initState, action)).toEqual({
-        ...initialState,
-        prevRows: initState.prevRows.slice(0, 1),
-        rows: initState.rows.slice(0, 1),
-        changed: true,
-        hasTempChange: false,
-      })
-    })
-  })
-
-  describe('DataPointsTableRowAddedAction', () => {
-    it('should add row', async () => {
-      const payload = {
-        dataPoints: [
-          {
-            name: 'Milk',
-            value: '',
-          },
-          {
-            name: 'score',
-            value: '0',
-          },
-        ],
-        isEditMode: true,
-        isNew: true,
-      }
-
-      const action: DataPointsTableAction = {
-        type: 'DATA_POINTS_TABLE_ROW_ADDED',
-        payload,
-      }
-
-      const initRows: TableDataRow[] = [
-        {
-          dataPoints: [
-            {
-              name: 'Milk',
-              value: '100',
-            },
-            {
-              name: 'score',
-              value: '0.1',
-            },
-          ],
-          isEditMode: true,
-          isNew: true,
-        },
-      ]
-
-      const initState: DataPointsState = {
-        ...initialState,
-        prevRows: initRows,
-        rows: initRows,
-      }
-
-      expect(dataPointsReducer(initState, action)).toEqual({
-        ...initialState,
-        changed: true,
-        hasTempChange: false,
-        prevRows: [
-          {
-            ...initState.rows[0],
-            isEditMode: false,
-            isNew: false,
-          },
-          payload,
-        ],
-        rows: [
-          {
-            ...initState.rows[0],
-            isEditMode: false,
-            isNew: false,
-          },
-          payload,
-        ],
-      })
-    })
-  })
-
-  describe('setInitialState', () => {
-    it('should set state', async () => {
+  describe('dataPointsReducer - setInitialState', () => {
+    it('should set initial state', async () => {
       const payload: DataPointsState = {
         changed: false,
-        hasTempChange: false,
         rows: [
           {
             isNew: false,
-            isEditMode: false,
             dataPoints: [
               {
-                name: 'A',
-                value: '1',
-              },
-            ],
-          },
-        ],
-        prevRows: [
-          {
-            isNew: false,
-            isEditMode: false,
-            dataPoints: [
-              {
-                name: 'A',
-                value: '1',
+                name: 'test',
+                value: '100',
               },
             ],
           },
         ],
       }
-
       expect(
         dataPointsReducer(
-          {
-            changed: false,
-            hasTempChange: false,
-            rows: [],
-            prevRows: [],
-          },
+          { ...initialState },
           {
             type: 'setInitialState',
             payload,
           }
         )
-      ).toEqual({ ...payload, changed: false })
+      ).toEqual(payload)
+    })
+  })
+  describe('dataPointsReducer - rowAdded', () => {
+    it('should add a row and set changed to true', async () => {
+      const payload: TableDataRow = {
+        isNew: false,
+        dataPoints: [
+          {
+            name: 'test',
+            value: '100',
+          },
+        ],
+      }
+      expect(
+        dataPointsReducer(
+          { ...initialState },
+          {
+            type: 'rowAdded',
+            payload,
+          }
+        )
+      ).toEqual({
+        ...initialState,
+        rows: [...initialState.rows, payload],
+        changed: true,
+      })
+    })
+  })
+  describe('dataPointsReducer - rowDeleted', () => {
+    it('should delete a row and set changed to true', async () => {
+      expect(
+        dataPointsReducer(
+          {
+            ...initialState,
+            rows: [
+              {
+                isNew: false,
+                dataPoints: [
+                  {
+                    name: 'test1',
+                    value: '100',
+                  },
+                ],
+              },
+              {
+                isNew: false,
+                dataPoints: [
+                  {
+                    name: 'test2',
+                    value: '200',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'rowDeleted',
+            payload: 1,
+          }
+        )
+      ).toEqual({
+        ...initialState,
+        rows: [
+          {
+            isNew: false,
+            dataPoints: [
+              {
+                name: 'test1',
+                value: '100',
+              },
+            ],
+          },
+        ],
+        changed: true,
+      })
+    })
+  })
+  describe('dataPointsReducer - rowEdited', () => {
+    it('should edit a row and set changed to true', async () => {
+      const payload = {
+        row: {
+          isNew: false,
+          dataPoints: [
+            {
+              name: 'testNew',
+              value: '999',
+            },
+          ],
+        },
+        rowIndex: 0,
+      }
+      expect(
+        dataPointsReducer(
+          {
+            ...initialState,
+            rows: [
+              {
+                isNew: false,
+                dataPoints: [
+                  {
+                    name: 'test1',
+                    value: '100',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'rowEdited',
+            payload,
+          }
+        )
+      ).toEqual({
+        ...initialState,
+        rows: [
+          {
+            isNew: false,
+            dataPoints: [
+              {
+                name: payload.row.dataPoints[0].name,
+                value: payload.row.dataPoints[0].value,
+              },
+            ],
+          },
+        ],
+        changed: true,
+      })
     })
   })
 })
