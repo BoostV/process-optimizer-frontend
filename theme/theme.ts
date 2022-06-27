@@ -1,7 +1,6 @@
 import { createTheme, Theme } from '@mui/material'
-import { adaptV4Theme } from '@mui/material/styles'
 import { cyan, grey, teal } from '@mui/material/colors'
-import { Overrides } from '@mui/material/styles/overrides'
+
 declare module '@mui/material/styles/createPalette' {
   interface Palette {
     custom: {
@@ -19,25 +18,31 @@ declare module '@mui/material/styles/createPalette' {
   }
 }
 
-const overrides: Overrides = {
+const overrides = {
   MuiTableCell: {
-    sizeSmall: {
-      padding: '0 2px 0 2px',
+    styleOverrides: {
+      sizeSmall: {
+        padding: '0 2px 0 2px',
+      },
     },
   },
   MuiSelect: {
-    select: {
-      paddingBottom: 4,
+    styleOverrides: {
+      select: {
+        paddingBottom: 4,
+      },
     },
   },
   MuiListItem: {
-    root: {
-      paddingTop: 0,
-      paddingBottom: 0,
+    styleOverrides: {
+      root: {
+        paddingTop: 0,
+        paddingBottom: 0,
+      },
     },
   },
 }
-declare module '@mui/material/styles/createTheme' {
+declare module '@mui/material/styles' {
   interface Theme {
     sizes: {
       mainWidthMin: number
@@ -45,7 +50,7 @@ declare module '@mui/material/styles/createTheme' {
     }
   }
 
-  interface DeprecatedThemeOptions {
+  interface ThemeOptions {
     sizes?: {
       mainWidthMin?: number
       mainWidthMax?: number
@@ -68,39 +73,39 @@ export const colors = {
 }
 
 const createCustomTheme = (custom: CustomColours): Theme => {
-  return createTheme(
-    adaptV4Theme({
-      overrides,
-      sizes: {
-        mainWidthMin: 1280,
-        mainWidthMax: 3840,
+  return createTheme({
+    components: {
+      ...overrides,
+    },
+    sizes: {
+      mainWidthMin: 1280,
+      mainWidthMax: 3840,
+    },
+    palette: {
+      primary: {
+        main: custom.primary,
       },
-      palette: {
-        primary: {
-          main: custom.primary,
+      secondary: {
+        main: custom.secondary,
+      },
+      custom: {
+        background: {
+          main:
+            'linear-gradient(90deg, ' +
+            custom.backPrimary +
+            ' 30%,' +
+            custom.backSecondary +
+            ' 100%)',
         },
-        secondary: {
-          main: custom.secondary,
+        textInsideBox: {
+          main: custom.textInsideBox,
         },
-        custom: {
-          background: {
-            main:
-              'linear-gradient(90deg, ' +
-              custom.backPrimary +
-              ' 30%,' +
-              custom.backSecondary +
-              ' 100%)',
-          },
-          textInsideBox: {
-            main: custom.textInsideBox,
-          },
-          transparentBox: {
-            main: custom.transparentBox,
-          },
+        transparentBox: {
+          main: custom.transparentBox,
         },
       },
-    })
-  )
+    },
+  })
 }
 
 const teals: CustomColours = {
