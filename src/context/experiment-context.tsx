@@ -63,14 +63,6 @@ function ExperimentProvider({
   )
 }
 
-function TestExperimentProvider({ value, children }) {
-  return (
-    <ExperimentContext.Provider value={value}>
-      {children}
-    </ExperimentContext.Provider>
-  )
-}
-
 function useExperiment() {
   const context = React.useContext(ExperimentContext)
   if (context === undefined) {
@@ -113,14 +105,12 @@ const fetchExperimentResult = async (
   const experimentResult: ExperimentResultType = {
     id: experiment.id,
     plots:
-      result.plots &&
-      result.plots.map(p => {
-        return { id: p.id, plot: p.plot }
-      }),
-    next: result.result.next,
-    pickled: result.result.pickled,
-    expectedMinimum: result.result.models.find(() => true)?.expectedMinimum,
-    extras: result.result.extras,
+      result.plots?.map(p => ({ id: p.id ?? '', plot: p.plot ?? '' })) ?? [],
+    next: result.result?.next ?? [],
+    pickled: result.result?.pickled ?? '',
+    expectedMinimum: result.result?.models?.find(() => true)
+      ?.expectedMinimum ?? [[]],
+    extras: result.result?.extras ?? {},
   }
 
   return experimentResult
@@ -131,9 +121,4 @@ async function runExperiment(dispatch: Dispatch, experiment: ExperimentType) {
   dispatch({ type: 'registerResult', payload: result })
 }
 
-export {
-  ExperimentProvider,
-  TestExperimentProvider,
-  useExperiment,
-  runExperiment,
-}
+export { ExperimentProvider, useExperiment, runExperiment }

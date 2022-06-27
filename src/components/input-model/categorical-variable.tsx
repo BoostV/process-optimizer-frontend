@@ -15,7 +15,7 @@ type CategoricalVariableProps = {
 export default function CategoricalVariable(props: CategoricalVariableProps) {
   const classes = useStyles()
   const { isDisabled, onAdded } = props
-  const [options, setOptions] = useState([])
+  const [options, setOptions] = useState<string[]>([])
   const { register, handleSubmit, reset, formState, setError, clearErrors } =
     useForm<CategoricalVariableType>()
   const isOptionsValid = useCallback(() => {
@@ -51,7 +51,6 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
-          name="name"
           {...register('name', { ...validation.required })}
           label="Name"
           fullWidth
@@ -61,7 +60,6 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           helperText={formState.errors.name?.message}
         />
         <TextField
-          name="description"
           {...register('description')}
           label="Description"
           fullWidth
@@ -93,8 +91,8 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           }}
           error={
             formState.errors.options !== undefined
-              ? formState.errors.options[0].message
-              : undefined
+              ? formState.errors.options[0]?.message ?? ''
+              : ''
           }
         />
         <Box mt={2}>

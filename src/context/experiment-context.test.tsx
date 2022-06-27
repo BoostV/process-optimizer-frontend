@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
-import { useExperiment, TestExperimentProvider } from './experiment-context'
+import { useExperiment, ExperimentProvider } from './experiment-context'
+import { GlobalStateProvider } from './global-context'
 
 describe('useExperiment', () => {
   it('fails if called outside provider', async () => {
@@ -20,11 +21,13 @@ describe('useExperiment', () => {
       return <div data-testid="json">{JSON.stringify(context)}</div>
     }
     render(
-      <TestExperimentProvider value={{ name: 'test' }}>
-        <ExperimentTester />
-      </TestExperimentProvider>
+      <GlobalStateProvider>
+        <ExperimentProvider experimentId="123">
+          <ExperimentTester />
+        </ExperimentProvider>
+      </GlobalStateProvider>
     )
     const rawJson = screen.getByTestId('json')
-    expect(rawJson.innerHTML).toEqual(JSON.stringify({ name: 'test' }))
+    expect(rawJson.innerHTML).toMatch(/123/)
   })
 })

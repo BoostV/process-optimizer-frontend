@@ -36,6 +36,7 @@ describe('experiment reducer', () => {
           max: 200,
         },
       ],
+      scoreVariables: [],
       optimizerConfig: {
         baseEstimator: 'GP',
         acqFunc: 'gp_hedge',
@@ -83,6 +84,7 @@ describe('experiment reducer', () => {
           max: 201,
         },
       ],
+      scoreVariables: [],
       optimizerConfig: {
         baseEstimator: 'GP',
         acqFunc: 'gp_hedge',

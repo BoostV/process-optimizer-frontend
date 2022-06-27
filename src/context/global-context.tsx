@@ -18,7 +18,11 @@ const GlobalContext = React.createContext<
   { state: State; dispatch: Dispatch } | undefined
 >(undefined)
 
-function GlobalStateProvider({ children }) {
+interface GlobalStateProviderProps {
+  children: React.ReactNode
+}
+
+function GlobalStateProvider({ children }: GlobalStateProviderProps) {
   const [state, dispatch] = useLocalStorageReducer(
     reducer,
     initialState,

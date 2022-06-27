@@ -5,7 +5,7 @@ import { Action } from '../reducers/reducers'
 
 describe('useLocalStorageReducer', () => {
   it('can be called once', () => {
-    const reducer = (state: State, action: Action) => state
+    const reducer = (state: State, _action: Action) => state
     const { result } = renderHook(() =>
       useLocalStorageReducer(reducer, initialState)
     )
@@ -14,7 +14,7 @@ describe('useLocalStorageReducer', () => {
 
   it('can be called twice', () => {
     localStorage.removeItem('321')
-    const reducer = (state: State, action: Action) => state
+    const reducer = (state: State, _action: Action) => state
     const { result: result1 } = renderHook(() =>
       useLocalStorageReducer(reducer, initialState)
     )

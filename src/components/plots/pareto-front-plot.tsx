@@ -10,26 +10,26 @@ import {
   Label,
 } from 'recharts'
 
-const CustomTooltip = ({ active, payload, label, cheese }: any) => {
+const CustomTooltip = ({ payload, label }: any) => {
   console.log('payload', payload, label)
-  if (active && payload && payload.length) {
-    return (
-      <div style={{ background: 'white', padding: '2px' }}>
-        <b>
-          {payload[0].value}, {payload[1].value}
-        </b>
-        <br />
-        {payload[0].payload.inputs !== undefined
-          ? payload[0].payload.inputs.map(p => (
-              <>
-                {p.name}: {p.value}
-                <br />
-              </>
-            ))
-          : ''}
-      </div>
-    )
-  }
+  // if (active && payload && payload.length) {
+  //   return (
+  //     <div style={{ background: 'white', padding: '2px' }}>
+  //       <b>
+  //         {payload[0].value}, {payload[1].value}
+  //       </b>
+  //       <br />
+  //       {payload[0].payload.inputs !== undefined
+  //         ? payload[0].payload.inputs.map(p => (
+  //             <>
+  //               {p.name}: {p.value}
+  //               <br />
+  //             </>
+  //           ))
+  //         : ''}
+  //     </div>
+  //   )
+  // }
   return null
 }
 

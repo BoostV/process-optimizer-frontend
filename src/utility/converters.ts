@@ -4,7 +4,6 @@ import {
   DataPointType,
   DataPointTypeValue,
   ExperimentType,
-  ScoreDataPointType,
   ScoreVariableType,
   SpaceType,
   ValueVariableType,
@@ -25,9 +24,9 @@ export const calculateSpace = (experiment: ExperimentType): SpaceType => {
   return numerical.concat(categorical)
 }
 
-const numPat = / [0-9] + /
+// const numPat = / [0-9] + /
 export const calculateData = (
-  categoricalValues: CategoricalVariableType[],
+  _categoricalValues: CategoricalVariableType[],
   numericValues: ValueVariableType[],
   scoreValues: ScoreVariableType[],
   dataPoints: DataPointType[][]
@@ -102,7 +101,7 @@ export const csvToDataPoints = (
   const lines = csv.split(newlinePattern)
   if ('' === csv || lines.length < 2) return [[]]
   else {
-    const header = lines[0].split(separator)
+    const header = lines[0]?.split(separator) ?? []
     if (
       header.length >= expectedHeader.length &&
       expectedHeader.every((value, _) => header.includes(value))
@@ -117,7 +116,7 @@ export const csvToDataPoints = (
                 value: convertValue(
                   valueHeaders,
                   categorialHeaders,
-                  header[idx],
+                  header[idx] ?? '',
                   value
                 ),
               } as DataPointType)

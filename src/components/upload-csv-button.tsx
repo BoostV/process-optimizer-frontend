@@ -3,12 +3,13 @@ import { useExperiment } from '../context/experiment-context'
 import { DataPointType } from '../types/common'
 import { csvToDataPoints } from '../utility/converters'
 import PublishIcon from '@mui/icons-material/Publish'
+import { ChangeEvent } from 'react'
 
-const readFile = (file, dataHandler) => {
+const readFile = (file: Blob, dataHandler: (s: string) => void) => {
   var result = ''
   if (file) {
     const reader = new FileReader()
-    reader.onload = e => dataHandler(e.target.result as string)
+    reader.onload = e => dataHandler(e.target?.result as string)
     reader.readAsText(file)
   }
   return result
@@ -24,17 +25,20 @@ const UploadCSVButton = ({ onUpload, light }: UploadCSVButtonProps) => {
       experiment: { valueVariables, categoricalVariables, scoreVariables },
     },
   } = useExperiment()
-  const handleFileUpload = e =>
-    readFile(e.target.files[0], data =>
-      onUpload(
-        csvToDataPoints(
-          data,
-          valueVariables,
-          categoricalVariables,
-          scoreVariables
+  const handleFileUpload = (files: string | any[] | FileList) => {
+    if (files && files.length > 0) {
+      readFile(files[0], data =>
+        onUpload(
+          csvToDataPoints(
+            data,
+            valueVariables,
+            categoricalVariables,
+            scoreVariables
+          )
         )
       )
-    )
+    }
+  }
 
   return (
     <Tooltip title="Upload CSV">
@@ -47,7 +51,9 @@ const UploadCSVButton = ({ onUpload, light }: UploadCSVButtonProps) => {
           inputProps={{
             accept: '.csv',
           }}
-          onChange={handleFileUpload}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            handleFileUpload(e.target.files ?? [])
+          }
         />
       </IconButton>
     </Tooltip>

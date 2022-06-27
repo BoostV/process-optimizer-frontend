@@ -4,12 +4,9 @@ import { ExperimentType } from '../../types/common'
 //TODO: Compare json to current ExperimentType and set missing fields to default values?
 export const migrate = (
   json: any,
-  stopAtVersion = MIGRATIONS[MIGRATIONS.length - 1].version
+  stopAtVersion = MIGRATIONS[MIGRATIONS.length - 1]?.version ?? '0'
 ): ExperimentType => {
-  const version =
-    json.info.dataFormatVersion !== undefined
-      ? json.info.dataFormatVersion
-      : '0'
+  const version = json.info.dataFormatVersion ?? '0'
   const firstMigration = MIGRATIONS.find(
     m => compareVersions(version, m.version) === -1
   )
@@ -23,7 +20,7 @@ const doMigrations = (
   migration: Migration,
   json: any,
   stopAtVersion: string
-): any => {
+): void => {
   json = migration.converter(json)
   const migrationIndex = MIGRATIONS.findIndex(m => m === migration)
   const isLastMigration =
@@ -32,7 +29,10 @@ const doMigrations = (
   if (isLastMigration) {
     return bumpVersion(json, migration.version)
   } else {
-    return doMigrations(MIGRATIONS[migrationIndex + 1], json, stopAtVersion)
+    const nextMigration = MIGRATIONS[migrationIndex + 1]
+    if (nextMigration) {
+      return doMigrations(nextMigration, json, stopAtVersion)
+    }
   }
 }
 
@@ -43,7 +43,7 @@ const bumpVersion = (json: any, version: string): any => {
 const convertTo3 = (json: any): any => {
   return {
     ...json,
-    valueVariables: json.valueVariables.map(v => {
+    valueVariables: json.valueVariables.map((v: any) => {
       return {
         name: v.name,
         description: v.description,
@@ -78,7 +78,11 @@ const convertTo5 = (json: ExperimentType): ExperimentType => {
       },
     ],
     dataPoints: json.dataPoints.map(dps =>
-      dps.map(dp => (dp.name === 'score' ? { ...dp, value: dp.value[0] } : dp))
+      dps.map(dp =>
+        dp.name === 'score' && Array.isArray(dp.value)
+          ? { ...dp, value: dp.value[0] ?? 0 }
+          : dp
+      )
     ),
   }
 }

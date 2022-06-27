@@ -1,7 +1,7 @@
 import { makeStyles } from '@mui/styles'
 import { colors } from '../../theme/theme'
 
-export const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles(() => ({
   row: {
     '& + tr': {
       '& td': {

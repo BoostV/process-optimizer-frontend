@@ -1,7 +1,6 @@
 import { initialState } from '../store'
 import {
   CategoricalVariableType,
-  DataPointType,
   ExperimentType,
   ScoreVariableType,
   ValueVariableType,
@@ -123,11 +122,11 @@ describe('converters', () => {
 
     it('should retain the correct order of variables', () => {
       const space = calculateSpace(sampleExperiment)
-      expect(space[0].name).toEqual('Sukker')
-      expect(space[1].name).toEqual('Peber')
-      expect(space[2].name).toEqual('Hvedemel')
-      expect(space[3].name).toEqual('Mælk')
-      expect(space[4].name).toEqual('Kunde')
+      expect(space[0]?.name).toEqual('Sukker')
+      expect(space[1]?.name).toEqual('Peber')
+      expect(space[2]?.name).toEqual('Hvedemel')
+      expect(space[3]?.name).toEqual('Mælk')
+      expect(space[4]?.name).toEqual('Kunde')
     })
   })
 

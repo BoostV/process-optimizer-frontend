@@ -44,7 +44,7 @@ export const dataPointsReducer = (
     case 'rowDeleted':
       return {
         ...state,
-        rows: [...state.rows.filter((r, i) => action.payload !== i)],
+        rows: [...state.rows.filter((_r, i) => action.payload !== i)],
         changed: true,
       }
     case 'rowEdited':

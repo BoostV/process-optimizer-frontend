@@ -1,4 +1,5 @@
 import { State } from '../store'
+import { assertUnreachable } from '../utility'
 import { ExperimentAction, experimentReducer } from './experiment-reducers'
 
 export type Action = ExperimentAction
@@ -7,6 +8,7 @@ export type Dispatch = (action: Action) => void
 
 export const rootReducer = (state: State, action: Action) => {
   switch (action.type) {
+    case 'setSwVersion':
     case 'updateSuggestionCount':
     case 'updateExperiment':
     case 'updateExperimentName':
@@ -17,7 +19,6 @@ export const rootReducer = (state: State, action: Action) => {
     case 'deleteValueVariable':
     case 'updateConfiguration':
     case 'registerResult':
-    case 'addDataPoints':
     case 'updateDataPoints':
     case 'experiment/toggleMultiObjective':
       return {
@@ -25,6 +26,6 @@ export const rootReducer = (state: State, action: Action) => {
         experiment: experimentReducer(state.experiment, action),
       }
     default:
-      return state
+      assertUnreachable(action)
   }
 }

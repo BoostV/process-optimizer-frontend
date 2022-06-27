@@ -1,12 +1,8 @@
-import { Box, Grid } from '@mui/material'
-import { useState } from 'react'
+import { Grid } from '@mui/material'
 import { useExperiment } from '../../context/experiment-context'
 import { DataPointType } from '../../types/common'
 import DataPoints from '../data-points/data-points'
 import { ResultData } from '../result-data/result-data'
-import { SingleDataPoint } from '../result-data/single-data-point'
-import { SummaryConfiguration } from '../summary-configuration'
-import { TitleCard } from '../title-card/title-card'
 
 export const DataEntryTab = () => {
   const {
@@ -30,9 +26,6 @@ export const DataEntryTab = () => {
 
   const expectedMinimum: any[][] = experiment.results.expectedMinimum
 
-  const [highlightNextExperiments, setHighlightNextExperiments] =
-    useState(false)
-
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -40,8 +33,6 @@ export const DataEntryTab = () => {
           nextValues={nextValues}
           headers={headers}
           expectedMinimum={expectedMinimum}
-          onMouseEnterExpand={() => setHighlightNextExperiments(true)}
-          onMouseLeaveExpand={() => setHighlightNextExperiments(false)}
         />
       </Grid>
 

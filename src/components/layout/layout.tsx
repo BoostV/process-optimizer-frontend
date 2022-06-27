@@ -6,7 +6,6 @@ import {
   Toolbar,
   Typography,
   FormControlLabel,
-  Paper,
 } from '@mui/material'
 import Link from 'next/link'
 import useStyles from './layout.style'
@@ -14,13 +13,18 @@ import { useGlobal } from '../../context/global-context'
 import { VersionInfo } from '../version-info'
 import { useState } from 'react'
 
-export default function Layout({ children }) {
+interface Props {
+  children: React.ReactNode
+}
+
+export default function Layout({ children }: Props) {
   const [showDebug, setShowDebug] = useState(false)
   const classes = useStyles()
   const { state, dispatch } = useGlobal()
 
   const handleSwitch =
-    flagName => (event: React.ChangeEvent<HTMLInputElement>) => {
+    (flagName: 'debug' | 'setShowJsonEditor') =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       dispatch({ type: flagName, payload: event.target.checked })
     }
   const handleTabSwitch = () => {

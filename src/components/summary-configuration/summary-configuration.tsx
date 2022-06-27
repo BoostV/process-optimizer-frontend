@@ -1,20 +1,16 @@
 import {
   Box,
-  Button,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   Divider,
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableRow,
   Tooltip,
   Typography,
   Slider,
-  Avatar,
   CardHeader,
 } from '@mui/material'
 import LensIcon from '@mui/icons-material/Lens'
