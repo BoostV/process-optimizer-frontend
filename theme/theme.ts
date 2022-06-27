@@ -82,6 +82,9 @@ const createCustomTheme = (custom: CustomColours): Theme => {
       mainWidthMax: 3840,
     },
     palette: {
+      success: {
+        main: custom.primary,
+      },
       primary: {
         main: custom.primary,
       },

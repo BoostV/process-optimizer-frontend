@@ -42,6 +42,7 @@ export default function Layout({ children }) {
                   checked={state.debug}
                   onChange={handleSwitch('debug')}
                   name="debug"
+                  color="secondary"
                 />
               }
               label="debug"
@@ -54,6 +55,7 @@ export default function Layout({ children }) {
                   checked={state.showJsonEditor}
                   onChange={handleSwitch('setShowJsonEditor')}
                   name="showJsonEditor"
+                  color="secondary"
                 />
               }
               label="JSON editor"
@@ -66,6 +68,7 @@ export default function Layout({ children }) {
                   checked={state.focus !== 'legacy'}
                   onChange={handleTabSwitch}
                   name="Use tabs"
+                  color="secondary"
                 />
               }
               label="Use tabs"
