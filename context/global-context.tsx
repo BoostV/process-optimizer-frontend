@@ -1,4 +1,4 @@
-import { Theme, ThemeProvider } from '@mui/material'
+import { Theme, ThemeProvider, StyledEngineProvider } from '@mui/material'
 import * as React from 'react'
 import ThemeSelector from '../components/theme-selector/theme-selector'
 import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
@@ -9,6 +9,11 @@ import {
   reducer,
 } from '../reducers/global-reducer'
 import { theme, themes, CustomTheme } from '../theme/theme'
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
 
 const GlobalContext = React.createContext<
   { state: State; dispatch: Dispatch } | undefined
@@ -30,10 +35,12 @@ function GlobalStateProvider({ children }) {
 
   return (
     <GlobalContext.Provider value={{ state, dispatch }}>
-      <ThemeProvider theme={loadTheme()}>
-        {children}
-        <ThemeSelector />
-      </ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={loadTheme()}>
+          {children}
+          <ThemeSelector />
+        </ThemeProvider>
+      </StyledEngineProvider>
     </GlobalContext.Provider>
   )
 }

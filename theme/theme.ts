@@ -1,4 +1,5 @@
 import { createTheme, Theme } from '@mui/material'
+import { adaptV4Theme } from '@mui/material/styles'
 import { cyan, grey, teal } from '@mui/material/colors'
 import { Overrides } from '@mui/material/styles/overrides'
 declare module '@mui/material/styles/createPalette' {
@@ -44,7 +45,7 @@ declare module '@mui/material/styles/createTheme' {
     }
   }
 
-  interface ThemeOptions {
+  interface DeprecatedThemeOptions {
     sizes?: {
       mainWidthMin?: number
       mainWidthMax?: number
@@ -67,37 +68,39 @@ export const colors = {
 }
 
 const createCustomTheme = (custom: CustomColours): Theme => {
-  return createTheme({
-    overrides,
-    sizes: {
-      mainWidthMin: 1280,
-      mainWidthMax: 3840,
-    },
-    palette: {
-      primary: {
-        main: custom.primary,
+  return createTheme(
+    adaptV4Theme({
+      overrides,
+      sizes: {
+        mainWidthMin: 1280,
+        mainWidthMax: 3840,
       },
-      secondary: {
-        main: custom.secondary,
+      palette: {
+        primary: {
+          main: custom.primary,
+        },
+        secondary: {
+          main: custom.secondary,
+        },
+        custom: {
+          background: {
+            main:
+              'linear-gradient(90deg, ' +
+              custom.backPrimary +
+              ' 30%,' +
+              custom.backSecondary +
+              ' 100%)',
+          },
+          textInsideBox: {
+            main: custom.textInsideBox,
+          },
+          transparentBox: {
+            main: custom.transparentBox,
+          },
+        },
       },
-      custom: {
-        background: {
-          main:
-            'linear-gradient(90deg, ' +
-            custom.backPrimary +
-            ' 30%,' +
-            custom.backSecondary +
-            ' 100%)',
-        },
-        textInsideBox: {
-          main: custom.textInsideBox,
-        },
-        transparentBox: {
-          main: custom.transparentBox,
-        },
-      },
-    },
-  })
+    })
+  )
 }
 
 const teals: CustomColours = {
