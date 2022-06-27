@@ -35,10 +35,7 @@ export const DataEntryTab = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={2}>
-        <SummaryConfiguration />
-      </Grid>
-      <Grid item xs={5}>
+      <Grid item xs={12}>
         <ResultData
           nextValues={nextValues}
           headers={headers}
@@ -47,19 +44,7 @@ export const DataEntryTab = () => {
           onMouseLeaveExpand={() => setHighlightNextExperiments(false)}
         />
       </Grid>
-      <Grid item xs={5}>
-        <TitleCard title="Expected minimum">
-          {expectedMinimum?.length > 0 && (
-            <Box pt={2} pl={2} pr={2}>
-              <SingleDataPoint
-                title="Expected minimum"
-                headers={headers}
-                dataPoint={expectedMinimum}
-              />
-            </Box>
-          )}
-        </TitleCard>
-      </Grid>
+
       <Grid item xs={12}>
         <DataPoints
           valueVariables={experiment.valueVariables}
