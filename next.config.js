@@ -1,3 +1,5 @@
+/** @type {import('next').NextConfig} */
+
 const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
 
 module.exports = {

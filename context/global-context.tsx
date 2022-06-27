@@ -1,4 +1,4 @@
-import { Theme, ThemeProvider, StyledEngineProvider } from '@mui/material'
+import { Theme, ThemeProvider } from '@mui/material'
 import * as React from 'react'
 import ThemeSelector from '../components/theme-selector/theme-selector'
 import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
@@ -11,7 +11,6 @@ import {
 import { theme, themes, CustomTheme } from '../theme/theme'
 
 declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DefaultTheme extends Theme {}
 }
 
@@ -33,14 +32,26 @@ function GlobalStateProvider({ children }) {
     return themeToLoad ? { ...themeToLoad.theme } : { ...theme }
   }
 
+  /**
+   * Disable server side rendering for the main component
+   * The following snippet is based on these resources:
+   * https://nextjs.org/docs/messages/react-hydration-error
+   * https://www.joshwcomeau.com/react/the-perils-of-rehydration/
+   */
+  const [hasMounted, setHasMounted] = React.useState(false)
+  React.useEffect(() => {
+    setHasMounted(true)
+  }, [])
+  if (!hasMounted) {
+    return null
+  }
+
   return (
     <GlobalContext.Provider value={{ state, dispatch }}>
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={loadTheme()}>
-          {children}
-          <ThemeSelector />
-        </ThemeProvider>
-      </StyledEngineProvider>
+      <ThemeProvider theme={loadTheme()}>
+        {children}
+        <ThemeSelector />
+      </ThemeProvider>
     </GlobalContext.Provider>
   )
 }

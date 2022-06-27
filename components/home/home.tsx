@@ -242,7 +242,6 @@ export default function Home() {
           </Box>
         </CardContent>
       </Card>
-
       <Snackbar
         open={isSnackbarOpen}
         autoHideDuration={4000}
