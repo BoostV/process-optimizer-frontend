@@ -19,7 +19,7 @@ import { NextRouter, useRouter } from 'next/router'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { buildPath, paths } from '../../paths'
+import { buildPath, paths } from '../../../paths'
 import { ExperimentType } from '../../types/common'
 import { useGlobal } from '../../context/global-context'
 import { v4 as uuid } from 'uuid'
@@ -242,7 +242,6 @@ export default function Home() {
           </Box>
         </CardContent>
       </Card>
-
       <Snackbar
         open={isSnackbarOpen}
         autoHideDuration={4000}

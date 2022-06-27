@@ -1,5 +1,5 @@
 import { useLocalStorageReducer } from './useLocalStorageReducer'
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react'
 import { initialState, State } from '../store'
 import { Action } from '../reducers/reducers'
 
