@@ -220,6 +220,7 @@ export default function Home() {
                           <IconButton
                             edge="start"
                             onClick={(e: MouseEvent) => deleteExperiment(e, id)}
+                            size="large"
                           >
                             <DeleteIcon color="secondary" fontSize="small" />
                           </IconButton>

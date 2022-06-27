@@ -40,7 +40,7 @@ export const ResultData = (props: ResultDataProps) => {
       title={
         <>
           Result data
-          <Hidden lgDown>
+          <Hidden xlDown>
             <Tooltip
               title={
                 (isUIBig(global.state, 'result-data') ? 'Collapse' : 'Expand') +

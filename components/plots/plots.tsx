@@ -21,7 +21,7 @@ export const Plots = () => {
         title={
           <>
             Plots
-            <Hidden lgDown>
+            <Hidden xlDown>
               <Tooltip
                 title={
                   (isUIBig(global.state, 'plots') ? 'Collapse' : 'Expand') +
