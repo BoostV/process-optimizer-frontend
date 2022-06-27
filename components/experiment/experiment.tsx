@@ -16,7 +16,7 @@ import Details from '../details'
 import DataPoints from '../data-points/data-points'
 import { useStyles } from './experiment.style'
 import { useExperiment, runExperiment } from '../../context/experiment-context'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   ValueVariableType,
   CategoricalVariableType,
@@ -38,7 +38,7 @@ type SnackbarMessage = {
   severity: Color
 }
 
-const Experiment = () => {
+const LegacyExperiment = () => {
   const classes = useStyles()
   const {
     state: { experiment },
@@ -294,4 +294,4 @@ const Experiment = () => {
   )
 }
 
-export default Experiment
+export default LegacyExperiment

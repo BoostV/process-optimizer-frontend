@@ -7,6 +7,7 @@ export type State = {
   dataPointsNewestFirst: boolean
   showJsonEditor: boolean
   uiSizes: UISize[]
+  focus: 'configuration' | 'data-entry' | 'results' | 'legacy'
 }
 
 export enum UISizeValue {
@@ -50,6 +51,10 @@ export type Action =
       type: 'toggleUISize'
       payload: UISizeKey
     }
+  | {
+      type: 'global/setFocus'
+      payload: State['focus']
+    }
 export type Dispatch = (action: Action) => void
 
 export const initialState: State = {
@@ -59,6 +64,7 @@ export const initialState: State = {
   dataPointsNewestFirst: false,
   showJsonEditor: false,
   uiSizes: [],
+  focus: 'legacy',
 }
 
 export const reducer = (state: State, action: Action) => {
@@ -111,6 +117,8 @@ export const reducer = (state: State, action: Action) => {
         })
       }
       return { ...state, uiSizes: newSizes }
+    case 'global/setFocus':
+      return { ...state, focus: action.payload }
     default:
       return state
   }
