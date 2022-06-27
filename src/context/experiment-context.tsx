@@ -5,7 +5,7 @@ import {
   Configuration,
   DefaultApi,
   OptimizerapiOptimizerRunRequest,
-} from '../openapi'
+} from '../../openapi'
 import { Dispatch, rootReducer } from '../reducers/reducers'
 import { initialState, State } from '../store'
 import { ExperimentResultType, ExperimentType } from '../types/common'
