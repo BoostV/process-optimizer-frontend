@@ -116,7 +116,7 @@ export default function Home() {
     try {
       const json: any = JSON.parse(localStorage.getItem(key))
       const experiment: ExperimentType = json.experiment
-      return !isEmpty(experiment.info.name) ? experiment.info.name : '-'
+      return '' !== experiment.info.name ? experiment.info.name : '-'
     } catch (e) {
       console.error('Error parsing saved experiment')
     }
