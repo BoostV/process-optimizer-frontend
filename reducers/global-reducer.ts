@@ -7,7 +7,7 @@ export type State = {
   dataPointsNewestFirst: boolean
   showJsonEditor: boolean
   uiSizes: UISize[]
-  focus: 'configuration' | 'data-entry' | 'results'
+  focus: 'configuration' | 'data-entry' | 'results' | 'legacy'
 }
 
 export enum UISizeValue {
@@ -53,7 +53,7 @@ export type Action =
     }
   | {
       type: 'global/setFocus'
-      payload: 'configuration' | 'data-entry' | 'results'
+      payload: State['focus']
     }
 export type Dispatch = (action: Action) => void
 

@@ -26,7 +26,7 @@ type SnackbarMessage = {
   severity: Color
 }
 
-const Experiment = () => {
+const LegacyExperiment = () => {
   const classes = useStyles()
   const {
     state: { experiment },
@@ -171,4 +171,4 @@ const Experiment = () => {
   )
 }
 
-export default Experiment
+export default LegacyExperiment
