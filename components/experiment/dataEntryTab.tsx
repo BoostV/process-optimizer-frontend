@@ -1,4 +1,4 @@
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid } from '@mui/material'
 import { useState } from 'react'
 import { useExperiment } from '../../context/experiment-context'
 import { DataPointType } from '../../types/common'

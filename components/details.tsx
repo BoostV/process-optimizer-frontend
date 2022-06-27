@@ -1,4 +1,4 @@
-import { TextField } from '@material-ui/core'
+import { TextField } from '@mui/material'
 import { Info } from '../types/common'
 import { TitleCard } from './title-card/title-card'
 

@@ -1,4 +1,4 @@
-import { Theme, ThemeProvider } from '@material-ui/core'
+import { Theme, ThemeProvider } from '@mui/material'
 import * as React from 'react'
 import ThemeSelector from '../components/theme-selector/theme-selector'
 import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'

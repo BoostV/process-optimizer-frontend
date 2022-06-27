@@ -1,6 +1,6 @@
 import { OptimizerConfig } from '../types/common'
 import { TitleCard } from './title-card/title-card'
-import { TextField } from '@material-ui/core'
+import { TextField } from '@mui/material'
 
 type OptimizerConfiguratorProps = {
   config: OptimizerConfig

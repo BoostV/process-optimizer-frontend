@@ -7,11 +7,11 @@ import {
   Snackbar,
   Switch,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import Layout from '../layout/layout'
 import OptimizerModel from '../input-model/optimizer-model'
 import OptimizerConfigurator from '../optimizer-configurator'
-import { Alert, Color } from '@material-ui/lab'
+import { Alert, Color } from '@mui/lab'
 import Details from '../details'
 import DataPoints from '../data-points/data-points'
 import { useStyles } from './experiment.style'

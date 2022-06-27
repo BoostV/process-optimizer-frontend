@@ -7,7 +7,7 @@ import {
   Typography,
   FormControlLabel,
   Paper,
-} from '@material-ui/core'
+} from '@mui/material'
 import Link from 'next/link'
 import useStyles from './layout.style'
 import { useGlobal } from '../../context/global-context'

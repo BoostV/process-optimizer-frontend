@@ -1,4 +1,4 @@
-import { Button, CircularProgress } from '@material-ui/core'
+import { Button, CircularProgress } from '@mui/material'
 import useStyles from './loading-button.style'
 
 type LoadingButtonProps = {

@@ -1,4 +1,4 @@
-import { Box, Button } from '@material-ui/core'
+import { Box, Button } from '@mui/material'
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import useStyles from './value-variable.style'

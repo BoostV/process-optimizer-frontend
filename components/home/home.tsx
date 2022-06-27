@@ -10,15 +10,15 @@ import {
   ListItemText,
   Snackbar,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import { MouseEvent, useCallback, useReducer, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import Layout from '../layout/layout'
 import useStyles from './home.style'
 import { NextRouter, useRouter } from 'next/router'
-import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import DeleteIcon from '@material-ui/icons/Delete'
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import DeleteIcon from '@mui/icons-material/Delete'
 import { buildPath, paths } from '../../paths'
 import { ExperimentType } from '../../types/common'
 import { useGlobal } from '../../context/global-context'

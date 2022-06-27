@@ -4,7 +4,7 @@ import {
   Tooltip,
   FormControlLabel,
   Radio,
-} from '@material-ui/core'
+} from '@mui/material'
 import React from 'react'
 import { Controller } from 'react-hook-form'
 

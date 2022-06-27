@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@material-ui/core'
+import { Card, CardContent } from '@mui/material'
 import { useExperiment } from '../context/experiment-context'
 
 export default function DebugExperiment() {

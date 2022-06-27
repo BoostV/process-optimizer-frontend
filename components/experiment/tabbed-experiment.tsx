@@ -6,9 +6,9 @@ import {
   Switch,
   Tab,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import Layout from '../layout/layout'
-import { Alert, Color, TabContext, TabList, TabPanel } from '@material-ui/lab'
+import { Alert, Color, TabContext, TabList, TabPanel } from '@mui/lab'
 import { useStyles } from './experiment.style'
 import { useExperiment, runExperiment } from '../../context/experiment-context'
 import React, { useState } from 'react'

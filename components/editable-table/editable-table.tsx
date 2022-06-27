@@ -5,7 +5,7 @@ import {
   TableFooter,
   TableHead,
   TableRow,
-} from '@material-ui/core'
+} from '@mui/material'
 import { TableDataRow } from '../../types/common'
 import { EditableTableRow } from './editable-table-row'
 import { getRowIndex, getRowId } from './editable-table-util'
