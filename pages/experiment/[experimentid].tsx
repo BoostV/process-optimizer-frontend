@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { ExperimentProvider } from '../../context/experiment-context'
+import TabbedExperiment from '../../components/experiment/tabbed-experiment'
 import Experiment from '../../components/experiment/experiment'
-import LegacyExperiment from '../../components/experiment/legacyExperiment'
 import DebugExperiment from '../../components/debug-experiment'
 import { useGlobal } from '../../context/global-context'
 import LoadingExperiment from '../../components/experiment/loading-experiment'
@@ -24,7 +24,7 @@ export default function ExperimentContainer() {
           Array.isArray(experimentid) ? experimentid[0] : experimentid
         }
       >
-        {focus === 'legacy' ? <LegacyExperiment /> : <Experiment />}
+        {focus === 'legacy' ? <Experiment /> : <TabbedExperiment />}
         {debug && <DebugExperiment />}
         {showJsonEditor && <JsonEditor />}
       </ExperimentProvider>

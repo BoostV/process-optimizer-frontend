@@ -1,46 +1,57 @@
 import {
   Box,
   Button,
+  Card,
+  CardContent,
   Grid,
   Snackbar,
   Switch,
-  Tab,
   Typography,
 } from '@material-ui/core'
 import Layout from '../layout/layout'
-import { Alert, Color, TabContext, TabList, TabPanel } from '@material-ui/lab'
+import OptimizerModel from '../input-model/optimizer-model'
+import OptimizerConfigurator from '../optimizer-configurator'
+import { Alert, Color } from '@material-ui/lab'
+import Details from '../details'
+import DataPoints from '../data-points/data-points'
 import { useStyles } from './experiment.style'
 import { useExperiment, runExperiment } from '../../context/experiment-context'
 import React, { useState } from 'react'
+import {
+  ValueVariableType,
+  CategoricalVariableType,
+  OptimizerConfig,
+  DataPointType,
+} from '../../types/common'
 import LoadingExperiment from './loading-experiment'
+import { ResultData } from '../result-data/result-data'
 import LoadingButton from '../loading-button/loading-button'
 import { theme } from '../../theme/theme'
 import { Plots } from '../plots/plots'
 import { saveObjectToLocalFile } from '../../utility/save-to-local-file'
 import { useGlobal } from '../../context/global-context'
-import { ConfigurationTab } from './configurationTab'
-import { DataEntryTab } from './dataEntryTab'
+import { UISizeValue } from '../../reducers/global-reducer'
+import { getSize } from '../../utility/ui-util'
 
 type SnackbarMessage = {
   message: string
   severity: Color
 }
 
-const Experiment = () => {
+const LegacyExperiment = () => {
   const classes = useStyles()
   const {
     state: { experiment },
     dispatch,
     loading,
   } = useExperiment()
-  const {
-    state: { focus, debug },
-    dispatch: globalDispatch,
-  } = useGlobal()
+  const global = useGlobal()
 
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
   const [isRunning, setRunning] = useState(false)
+  const [highlightNextExperiments, setHighlightNextExperiments] =
+    useState(false)
 
   const onDownload = () => {
     saveObjectToLocalFile(experiment, experiment.id)
@@ -71,9 +82,21 @@ const Experiment = () => {
     setSnackbarOpen(true)
   }
 
-  const handleChange = (_event, newValue) => {
-    globalDispatch({ type: 'global/setFocus', payload: newValue })
-  }
+  const valueVariables = experiment.valueVariables
+  const categoricalVariables = experiment.categoricalVariables
+
+  const headers = valueVariables
+    .map(it => it.name)
+    .concat(categoricalVariables.map(it => it.name))
+
+  const nextValues: any[][] =
+    experiment.results.next && Array.isArray(experiment.results.next[0])
+      ? (experiment.results.next as unknown as any[][])
+      : experiment.results.next
+      ? [experiment.results.next]
+      : []
+
+  const expectedMinimum: any[][] = experiment.results.expectedMinimum
 
   if (loading) {
     return <LoadingExperiment />
@@ -81,79 +104,179 @@ const Experiment = () => {
 
   return (
     <Layout>
-      <TabContext value={focus}>
-        <Grid container justifyContent="space-around">
-          <Grid item xs>
-            <Typography variant="h4" gutterBottom>
-              {experiment.info.name}
-            </Typography>
-            <Typography variant="caption">{experiment.id}</Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <TabList onChange={handleChange}>
-              <Tab label="Configuration" value="configuration" />
-              <Tab
-                label="Data Entry"
-                value="data-entry"
-                disabled={
-                  experiment.valueVariables.length === 0 &&
-                  experiment.categoricalVariables.length === 0
-                }
-              />
-              <Tab
-                label="Results"
-                value="results"
-                disabled={
-                  !experiment.results.plots ||
-                  experiment.results.plots.length === 0
-                }
-              />
-            </TabList>
-          </Grid>
-          <Grid item xs="auto">
-            {debug && (
-              <Switch
-                checked={
-                  experiment.scoreVariables.filter(it => it.enabled).length > 1
-                }
-                onChange={() =>
-                  dispatch({
-                    type: 'experiment/toggleMultiObjective',
-                  })
-                }
-                name="multiobj"
-                color="secondary"
-              />
-            )}
-            <Button
-              variant="contained"
-              className={classes.actionButton}
-              onClick={onDownload}
-              color="primary"
-            >
-              Download
-            </Button>
-            <LoadingButton
-              onClick={onRun}
-              isLoading={isRunning}
-              label="Run"
-              marginLeft={theme.spacing(2)}
-              height={42}
-            />
-          </Grid>
-        </Grid>
+      <Card className={classes.experimentContainer}>
         <Box className={classes.cardContentWrapper}>
-          <TabPanel value="configuration">
-            <ConfigurationTab />
-          </TabPanel>
-          <TabPanel value="data-entry">
-            <DataEntryTab />
-          </TabPanel>
-          <TabPanel value="results">
-            <Plots />
-          </TabPanel>
+          <CardContent>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Grid container>
+                  <Grid item xs={7}>
+                    <Typography variant="body2">{experiment.id}</Typography>
+                    <Typography variant="h5" gutterBottom>
+                      {experiment.info.name}{' '}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={5} container justifyContent="flex-end">
+                    {global.state.debug && (
+                      <Switch
+                        checked={
+                          experiment.scoreVariables.filter(it => it.enabled)
+                            .length > 1
+                        }
+                        onChange={() =>
+                          dispatch({ type: 'experiment/toggleMultiObjective' })
+                        }
+                        name="multiobj"
+                        color="secondary"
+                      />
+                    )}
+                    <Button
+                      variant="contained"
+                      className={classes.actionButton}
+                      onClick={onDownload}
+                      color="primary"
+                    >
+                      Download
+                    </Button>
+                    <LoadingButton
+                      onClick={onRun}
+                      isLoading={isRunning}
+                      label="Run"
+                      marginLeft={theme.spacing(2)}
+                      height={42}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid item xs={3}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Details
+                      info={experiment.info}
+                      updateName={(name: string) =>
+                        dispatch({
+                          type: 'updateExperimentName',
+                          payload: name,
+                        })
+                      }
+                      updateDescription={(description: string) =>
+                        dispatch({
+                          type: 'updateExperimentDescription',
+                          payload: description,
+                        })
+                      }
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <OptimizerModel
+                      valueVariables={valueVariables}
+                      categoricalVariables={categoricalVariables}
+                      disabled={experiment.dataPoints.length > 0}
+                      onDeleteValueVariable={(
+                        valueVariable: ValueVariableType
+                      ) => {
+                        dispatch({
+                          type: 'deleteValueVariable',
+                          payload: valueVariable,
+                        })
+                      }}
+                      onDeleteCategoricalVariable={(
+                        categoricalVariable: CategoricalVariableType
+                      ) => {
+                        dispatch({
+                          type: 'deleteCategorialVariable',
+                          payload: categoricalVariable,
+                        })
+                      }}
+                      addValueVariable={(valueVariable: ValueVariableType) =>
+                        dispatch({
+                          type: 'addValueVariable',
+                          payload: valueVariable,
+                        })
+                      }
+                      addCategoricalVariable={(
+                        categoricalVariable: CategoricalVariableType
+                      ) =>
+                        dispatch({
+                          type: 'addCategorialVariable',
+                          payload: categoricalVariable,
+                        })
+                      }
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <OptimizerConfigurator
+                      config={experiment.optimizerConfig}
+                      onConfigUpdated={(config: OptimizerConfig) =>
+                        dispatch({
+                          type: 'updateConfiguration',
+                          payload: config,
+                        })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid item xs={9}>
+                <Grid container spacing={2}>
+                  <Grid
+                    item
+                    xs={UISizeValue.Big}
+                    xl={getSize(global.state, 'result-data')}
+                  >
+                    <Grid
+                      container
+                      spacing={2}
+                      className={
+                        highlightNextExperiments ? classes.highlight : ''
+                      }
+                    >
+                      <Grid item xs={12}>
+                        <ResultData
+                          nextValues={nextValues}
+                          headers={headers}
+                          expectedMinimum={expectedMinimum}
+                          onMouseEnterExpand={() =>
+                            setHighlightNextExperiments(true)
+                          }
+                          onMouseLeaveExpand={() =>
+                            setHighlightNextExperiments(false)
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <DataPoints
+                          valueVariables={experiment.valueVariables}
+                          categoricalVariables={experiment.categoricalVariables}
+                          scoreVariables={experiment.scoreVariables}
+                          dataPoints={experiment.dataPoints}
+                          onUpdateDataPoints={(dataPoints: DataPointType[][]) =>
+                            dispatch({
+                              type: 'updateDataPoints',
+                              payload: dataPoints,
+                            })
+                          }
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={UISizeValue.Big}
+                    xl={getSize(global.state, 'plots')}
+                  >
+                    <Plots />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </CardContent>
         </Box>
-      </TabContext>
+      </Card>
 
       <Snackbar
         open={isSnackbarOpen}
@@ -171,4 +294,4 @@ const Experiment = () => {
   )
 }
 
-export default Experiment
+export default LegacyExperiment

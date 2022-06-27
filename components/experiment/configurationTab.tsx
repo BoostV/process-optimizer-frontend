@@ -4,15 +4,10 @@ import {
   ValueVariableType,
   CategoricalVariableType,
   OptimizerConfig,
-  DataPointType,
 } from '../../types/common'
-import DataPoints from '../data-points/data-points'
 import Details from '../details'
 import OptimizerModel from '../input-model/optimizer-model'
 import OptimizerConfigurator from '../optimizer-configurator'
-import { Plots } from '../plots/plots'
-import { ResultData } from '../result-data/result-data'
-import experiment from './experiment'
 
 export const ConfigurationTab = () => {
   const {
