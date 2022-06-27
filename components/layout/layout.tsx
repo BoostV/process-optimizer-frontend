@@ -23,6 +23,13 @@ export default function Layout({ children }) {
     flagName => (event: React.ChangeEvent<HTMLInputElement>) => {
       dispatch({ type: flagName, payload: event.target.checked })
     }
+  const handleTabSwitch = () => {
+    if (state.focus === 'legacy') {
+      dispatch({ type: 'global/setFocus', payload: 'configuration' })
+    } else {
+      dispatch({ type: 'global/setFocus', payload: 'legacy' })
+    }
+  }
 
   return (
     <>
@@ -50,6 +57,18 @@ export default function Layout({ children }) {
                 />
               }
               label="JSON editor"
+            />
+          )}
+          {showDebug && (
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={state.focus !== 'legacy'}
+                  onChange={handleTabSwitch}
+                  name="Use tabs"
+                />
+              }
+              label="Use tabs"
             />
           )}
           {
