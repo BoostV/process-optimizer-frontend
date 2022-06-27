@@ -1,40 +1,30 @@
-import { AppProps } from 'next/app'
-import { useEffect } from 'react'
+import * as React from 'react'
 import Head from 'next/head'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import { GlobalStateProvider } from '../context/global-context'
+import { AppProps } from 'next/app'
+import CssBaseline from '@mui/material/CssBaseline'
+import { CacheProvider, EmotionCache } from '@emotion/react'
+import createEmotionCache from '../src/createEmotionCache'
+import { GlobalStateProvider } from '../src/context/global-context'
 
-function SafeHydrate({ children }) {
-  return (
-    <div suppressHydrationWarning>
-      {typeof window === 'undefined' ? null : children}
-    </div>
-  )
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache()
+
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache
 }
 
-function App({ Component, pageProps }: AppProps) {
-  useEffect(() => {
-    // Remove the server-side injected CSS.
-    const jssStyles = document.querySelector('#jss-server-side')
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles)
-    }
-  }, [])
+export default function MyApp(props: MyAppProps) {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
   return (
-    <SafeHydrate>
+    <CacheProvider value={emotionCache}>
       <Head>
-        <title>Brownie Bee</title>
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width"
-        />
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <GlobalStateProvider>
+        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <Component {...pageProps} />
       </GlobalStateProvider>
-    </SafeHydrate>
+    </CacheProvider>
   )
 }
-
-export default App
