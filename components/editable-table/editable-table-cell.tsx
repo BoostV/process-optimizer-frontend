@@ -33,7 +33,7 @@ export function EditableTableCell({
       size="small"
       value={value}
       onChange={(e: ChangeEvent<HTMLInputElement>) =>
-        onChange('' + e.target.value)
+        onChange?.('' + e.target.value)
       }
     />
   )

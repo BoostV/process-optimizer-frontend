@@ -22,7 +22,7 @@ export const useLocalStorageReducer = <S, A>(
   reducer: (state: S, action: A) => S,
   initialState: S,
   localStorageKey: string = 'rootState',
-  transform = x => x
+  transform = (x: S) => x
 ) => {
   const localStorageReducer = (state: S, action: A) => {
     const newState = reducer(state, action)

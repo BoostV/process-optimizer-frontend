@@ -8,6 +8,7 @@ const initState: State = {
   dataPointsNewestFirst: false,
   showJsonEditor: false,
   uiSizes: [{ key: 'plots', value: 12 }],
+  focus: 'legacy',
 }
 
 describe('storeExperimentId', () => {
