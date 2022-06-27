@@ -64,7 +64,7 @@ export const initialState: State = {
   dataPointsNewestFirst: false,
   showJsonEditor: false,
   uiSizes: [],
-  focus: 'configuration',
+  focus: 'legacy',
 }
 
 export const reducer = (state: State, action: Action) => {
