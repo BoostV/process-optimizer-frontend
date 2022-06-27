@@ -1,11 +1,5 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  TextField,
-  Typography,
-} from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete'
+import { Box, Button, IconButton, TextField, Typography } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
 import { useState, useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import CategoricalVariableOptions from './categorical-variable-options'

@@ -5,7 +5,7 @@ import {
   TableCell,
   TextField,
   Tooltip,
-} from '@material-ui/core'
+} from '@mui/material'
 import { ChangeEvent, CSSProperties } from 'react'
 import useStyles from './editable-table-cell.style'
 

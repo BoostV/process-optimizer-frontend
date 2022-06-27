@@ -1,8 +1,8 @@
-import { IconButton, Tooltip } from '@material-ui/core'
+import { IconButton, Tooltip } from '@mui/material'
 import { useExperiment } from '../context/experiment-context'
 import { dataPointsToCSV } from '../utility/converters'
 import { saveCSVToLocalFile } from '../utility/save-to-local-file'
-import GetAppIcon from '@material-ui/icons/GetApp'
+import GetAppIcon from '@mui/icons-material/GetApp'
 
 interface DownloadCSVButtonProps {
   light?: boolean

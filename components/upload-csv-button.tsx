@@ -1,8 +1,8 @@
-import { IconButton, Input, Tooltip } from '@material-ui/core'
+import { IconButton, Input, Tooltip } from '@mui/material'
 import { useExperiment } from '../context/experiment-context'
 import { DataPointType } from '../types/common'
 import { csvToDataPoints } from '../utility/converters'
-import PublishIcon from '@material-ui/icons/Publish'
+import PublishIcon from '@mui/icons-material/Publish'
 
 const readFile = (file, dataHandler) => {
   var result = ''

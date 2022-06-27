@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 import { useExperiment } from '../../context/experiment-context'
 import useStyles from './plot-item.style'
 

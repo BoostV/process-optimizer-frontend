@@ -8,14 +8,14 @@ import {
   TableRow,
   Typography,
   Tooltip,
-} from '@material-ui/core'
+} from '@mui/material'
 import { CategoricalVariableType, ValueVariableType } from '../../types/common'
-import DeleteIcon from '@material-ui/icons/Delete'
+import DeleteIcon from '@mui/icons-material/Delete'
 import VariableEditor from './variable-editor'
 import useStyles from './optimizer-model.style'
 import { TitleCard } from '../title-card/title-card'
-import LensIcon from '@material-ui/icons/Lens'
-import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye'
+import LensIcon from '@mui/icons-material/Lens'
+import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
 
 type OptimizerModelProps = {
   valueVariables: ValueVariableType[]

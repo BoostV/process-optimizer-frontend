@@ -7,11 +7,11 @@ import {
   Snackbar,
   Switch,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import Layout from '../layout/layout'
 import OptimizerModel from '../input-model/optimizer-model'
 import OptimizerConfigurator from '../optimizer-configurator'
-import { Alert, Color } from '@material-ui/lab'
+import { Alert, Color } from '@mui/material'
 import Details from '../details'
 import DataPoints from '../data-points/data-points'
 import { useStyles } from './experiment.style'
@@ -32,10 +32,11 @@ import { saveObjectToLocalFile } from '../../utility/save-to-local-file'
 import { useGlobal } from '../../context/global-context'
 import { UISizeValue } from '../../reducers/global-reducer'
 import { getSize } from '../../utility/ui-util'
+import { AlertColor } from '@mui/material'
 
 type SnackbarMessage = {
   message: string
-  severity: Color
+  severity: AlertColor
 }
 
 const LegacyExperiment = () => {
@@ -142,7 +143,7 @@ const LegacyExperiment = () => {
                       onClick={onRun}
                       isLoading={isRunning}
                       label="Run"
-                      marginLeft={theme.spacing(2)}
+                      marginLeft={2}
                       height={42}
                     />
                   </Grid>

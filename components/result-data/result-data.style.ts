@@ -1,5 +1,5 @@
-import { makeStyles } from '@material-ui/core'
-import { grey } from '@material-ui/core/colors'
+import { makeStyles } from '@mui/styles'
+import { grey } from '@mui/material/colors'
 
 export const useStyles = makeStyles(theme => ({
   titleButton: {

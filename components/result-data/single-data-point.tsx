@@ -6,7 +6,7 @@ import {
   TableCell,
   Typography,
   Box,
-} from '@material-ui/core'
+} from '@mui/material'
 import useStyles from './single-data-point.style'
 
 interface SingleDataPointProps {

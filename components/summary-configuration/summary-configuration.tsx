@@ -16,10 +16,10 @@ import {
   Slider,
   Avatar,
   CardHeader,
-} from '@material-ui/core'
-import LensIcon from '@material-ui/icons/Lens'
-import Settings from '@material-ui/icons/Settings'
-import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye'
+} from '@mui/material'
+import LensIcon from '@mui/icons-material/Lens'
+import Settings from '@mui/icons-material/Settings'
+import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
 import { useExperiment } from '../../context/experiment-context'
 import useStyles from './summary-configuration.style'
 import { useGlobal } from '../../context/global-context'

@@ -1,7 +1,7 @@
-import { createTheme, Theme } from '@material-ui/core'
-import { cyan, grey, teal } from '@material-ui/core/colors'
-import { Overrides } from '@material-ui/core/styles/overrides'
-declare module '@material-ui/core/styles/createPalette' {
+import { createTheme, Theme } from '@mui/material'
+import { cyan, grey, teal } from '@mui/material/colors'
+
+declare module '@mui/material/styles/createPalette' {
   interface Palette {
     custom: {
       background: PaletteColor
@@ -18,25 +18,31 @@ declare module '@material-ui/core/styles/createPalette' {
   }
 }
 
-const overrides: Overrides = {
+const overrides = {
   MuiTableCell: {
-    sizeSmall: {
-      padding: '0 2px 0 2px',
+    styleOverrides: {
+      sizeSmall: {
+        padding: '0 2px 0 2px',
+      },
     },
   },
   MuiSelect: {
-    select: {
-      paddingBottom: 4,
+    styleOverrides: {
+      select: {
+        paddingBottom: 4,
+      },
     },
   },
   MuiListItem: {
-    root: {
-      paddingTop: 0,
-      paddingBottom: 0,
+    styleOverrides: {
+      root: {
+        paddingTop: 0,
+        paddingBottom: 0,
+      },
     },
   },
 }
-declare module '@material-ui/core/styles/createTheme' {
+declare module '@mui/material/styles' {
   interface Theme {
     sizes: {
       mainWidthMin: number
@@ -68,12 +74,17 @@ export const colors = {
 
 const createCustomTheme = (custom: CustomColours): Theme => {
   return createTheme({
-    overrides,
+    components: {
+      ...overrides,
+    },
     sizes: {
       mainWidthMin: 1280,
       mainWidthMax: 3840,
     },
     palette: {
+      success: {
+        main: custom.primary,
+      },
       primary: {
         main: custom.primary,
       },

@@ -1,4 +1,4 @@
-import { GridSize } from '@material-ui/core'
+import { GridSize } from '@mui/material'
 import { State, UISizeKey, UISizeValue } from '../reducers/global-reducer'
 
 export const isUIBig = (globalState: State, key: UISizeKey): boolean => {

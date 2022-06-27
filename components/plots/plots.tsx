@@ -1,8 +1,8 @@
 import { useExperiment } from '../../context/experiment-context'
 import useStyles from './plots.style'
 import { TitleCard } from '../title-card/title-card'
-import { Typography, Tooltip, IconButton, Hidden } from '@material-ui/core'
-import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap'
+import { Typography, Tooltip, IconButton, Hidden } from '@mui/material'
+import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import { useGlobal } from '../../context/global-context'
 import { isUIBig } from '../../utility/ui-util'
 import { PlotList } from './plot-list'
@@ -21,7 +21,7 @@ export const Plots = () => {
         title={
           <>
             Plots
-            <Hidden lgDown>
+            <Hidden xlDown>
               <Tooltip
                 title={
                   (isUIBig(global.state, 'plots') ? 'Collapse' : 'Expand') +

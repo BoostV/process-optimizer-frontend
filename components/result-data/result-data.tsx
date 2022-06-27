@@ -1,8 +1,8 @@
 import { useExperiment } from '../../context/experiment-context'
 import { Suggestions } from './suggestions'
 import { TitleCard } from '../title-card/title-card'
-import { Tooltip, IconButton, Hidden, Box } from '@material-ui/core'
-import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap'
+import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
+import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import { useGlobal } from '../../context/global-context'
 import { isUIBig } from '../../utility/ui-util'
 import useStyles from './result-data.style'
@@ -40,7 +40,7 @@ export const ResultData = (props: ResultDataProps) => {
       title={
         <>
           Result data
-          <Hidden lgDown>
+          <Hidden xlDown>
             <Tooltip
               title={
                 (isUIBig(global.state, 'result-data') ? 'Collapse' : 'Expand') +

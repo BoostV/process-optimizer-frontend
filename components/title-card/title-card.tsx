@@ -1,4 +1,4 @@
-import { Box, Card, CardContent } from '@material-ui/core'
+import { Box, Card, CardContent } from '@mui/material'
 import { ReactNode } from 'react'
 import useStyles from './title-card.style'
 

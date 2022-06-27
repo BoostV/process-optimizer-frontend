@@ -17,9 +17,12 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/lab": "^5.0.0-alpha.87",
+    "@mui/material": "^5.8.5",
+    "@mui/styles": "^5.8.4",
     "@types/recharts": "^1.8.23",
     "compare-versions": "^3.6.0",
     "eslint-config-prettier": "8.5.0",

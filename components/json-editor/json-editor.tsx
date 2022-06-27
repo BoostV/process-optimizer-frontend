@@ -6,12 +6,12 @@ import {
   IconButton,
   TextareaAutosize,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useExperiment } from '../../context/experiment-context'
 import useStyles from './json-editor.style'
 import { ExperimentType } from '../../types/common'
-import CloseIcon from '@material-ui/icons/Close'
+import CloseIcon from '@mui/icons-material/Close'
 import { useGlobal } from '../../context/global-context'
 
 type DisplayedResults = {

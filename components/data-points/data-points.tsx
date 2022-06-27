@@ -1,4 +1,4 @@
-import { CircularProgress, IconButton, Box, Tooltip } from '@material-ui/core'
+import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useCallback, useEffect, useMemo, useReducer } from 'react'
 import { useGlobal } from '../../context/global-context'
 import {
@@ -12,7 +12,7 @@ import {
   ScoreVariableType,
 } from '../../types/common'
 import { EditableTable } from '../editable-table/editable-table'
-import SwapVertIcon from '@material-ui/icons/SwapVert'
+import SwapVertIcon from '@mui/icons-material/SwapVert'
 import { TitleCard } from '../title-card/title-card'
 import useStyles from './data-points.style'
 import DownloadCSVButton from '../download-csv-button'

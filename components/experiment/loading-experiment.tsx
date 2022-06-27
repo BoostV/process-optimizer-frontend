@@ -4,7 +4,7 @@ import {
   CardContent,
   CircularProgress,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import useStyles from './loading-experiment.style'
 import Layout from '../layout/layout'
 

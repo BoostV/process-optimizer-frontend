@@ -1,10 +1,10 @@
 import useStyles from './editable-table-collapsed-row.style'
-import { IconButton, TableCell, TableRow, Tooltip } from '@material-ui/core'
+import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material'
 import { TableDataRow } from '../../types/common'
 import { EditableTableCell } from './editable-table-cell'
-import AddIcon from '@material-ui/icons/Add'
-import EditIcon from '@material-ui/icons/Edit'
-import DeleteIcon from '@material-ui/icons/Delete'
+import AddIcon from '@mui/icons-material/Add'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 interface EditableTableCollapsedRowProps {
   colSpan: number

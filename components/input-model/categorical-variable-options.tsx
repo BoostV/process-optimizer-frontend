@@ -1,5 +1,5 @@
-import { Grid, IconButton, TextField } from '@material-ui/core'
-import AddIcon from '@material-ui/icons/Add'
+import { Grid, IconButton, TextField } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
 import { ChangeEvent, useState } from 'react'
 
 type CategoricalVariableOptionProps = {
