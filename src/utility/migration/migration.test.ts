@@ -10,14 +10,17 @@ import fs from 'fs'
 
 const loadLatestJson = () => {
   const fileVersions: number[] = fs
-    .readdirSync('utility/migration/data-formats')
+    .readdirSync('src/utility/migration/data-formats')
     .map(f => parseInt(f.replace(/[^0-9]/, '')))
   const latestVersion = Math.max(...fileVersions)
   return JSON.parse(
-    fs.readFileSync(`utility/migration/data-formats/${latestVersion}.json`, {
-      encoding: 'utf8',
-      flag: 'r',
-    })
+    fs.readFileSync(
+      `src/utility/migration/data-formats/${latestVersion}.json`,
+      {
+        encoding: 'utf8',
+        flag: 'r',
+      }
+    )
   )
 }
 
