@@ -43,7 +43,7 @@ const bumpVersion = (json: any, version: string): any => {
 const convertTo3 = (json: any): any => {
   return {
     ...json,
-    valueVariables: json.valueVariables.map(v => {
+    valueVariables: json.valueVariables.map((v: any) => {
       return {
         name: v.name,
         description: v.description,
@@ -78,7 +78,11 @@ const convertTo5 = (json: ExperimentType): ExperimentType => {
       },
     ],
     dataPoints: json.dataPoints.map(dps =>
-      dps.map(dp => (dp.name === 'score' ? { ...dp, value: dp.value[0] } : dp))
+      dps.map(dp =>
+        dp.name === 'score' && Array.isArray(dp.value)
+          ? { ...dp, value: dp.value[0] }
+          : dp
+      )
     ),
   }
 }
