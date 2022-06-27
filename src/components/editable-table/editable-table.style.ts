@@ -1,7 +1,7 @@
 import { makeStyles } from '@mui/styles'
 import { tableBorder } from '../../theme/theme'
 
-export const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles(() => ({
   emptyCell: {
     border: 'none',
     width: 16,

@@ -1,5 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import App from '../../pages/index'
+export {}
 
 describe('App', () => {
   it('renders without crashing', async () => {

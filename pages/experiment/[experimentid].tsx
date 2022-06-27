@@ -21,7 +21,7 @@ export default function ExperimentContainer() {
     <>
       <ExperimentProvider
         experimentId={
-          Array.isArray(experimentid) ? experimentid[0] : experimentid
+          Array.isArray(experimentid) ? experimentid[0] ?? '' : experimentid
         }
       >
         {focus === 'legacy' ? <Experiment /> : <TabbedExperiment />}

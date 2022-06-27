@@ -69,10 +69,10 @@ export default function DataPoints(props: DataPointProps) {
   const buildEmptyRow = useCallback((): TableDataRow => {
     return {
       dataPoints: buildCombinedVariables()
-        .map((variable, i) => {
+        .map(variable => {
           return {
             name: variable.name,
-            value: variable.options ? variable.options[0] : '',
+            value: variable.options?.[0] ?? '',
             options: variable.options,
             tooltip: variable.tooltip,
           }

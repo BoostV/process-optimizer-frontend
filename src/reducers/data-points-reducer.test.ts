@@ -151,8 +151,8 @@ describe('data points reducer', () => {
             isNew: false,
             dataPoints: [
               {
-                name: payload.row.dataPoints[0].name,
-                value: payload.row.dataPoints[0].value,
+                name: payload.row.dataPoints[0]?.name,
+                value: payload.row.dataPoints[0]?.value,
               },
             ],
           },

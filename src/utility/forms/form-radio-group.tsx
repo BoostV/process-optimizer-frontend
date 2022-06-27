@@ -37,8 +37,8 @@ export const FormRadioGroup = ({
         onChange={e => onChange(e.target.value)}
         {...rest}
       >
-        {values.map((v, i) => (
-          <Tooltip key={i} title={tooltips[i]}>
+        {values.map((_v, i) => (
+          <Tooltip key={i} title={tooltips[i] ?? ''}>
             <FormControlLabel
               value={values[i]}
               control={<Radio />}

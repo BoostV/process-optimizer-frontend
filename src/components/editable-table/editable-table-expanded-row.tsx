@@ -2,7 +2,6 @@ import useStyles from './editable-table-expanded-row.style'
 import {
   Box,
   Button,
-  IconButton,
   Paper,
   Table,
   TableBody,

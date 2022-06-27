@@ -35,7 +35,7 @@ export const EditableTable = ({
           <TableRow>
             <TableCell className={classes.emptyCell} />
             <TableCell>#</TableCell>
-            {rows[0].dataPoints.map((item, index) => (
+            {rows[0]?.dataPoints.map((item, index) => (
               <TableCell key={index}>{item.name}</TableCell>
             ))}
             <TableCell align="right">Edit</TableCell>
@@ -66,7 +66,7 @@ export const EditableTable = ({
           <TableRow>
             <TableCell className={classes.emptyCell} />
             <TableCell className={classes.emptyFooterCell} />
-            {rows[0].dataPoints.map((item, index) => (
+            {rows[0]?.dataPoints.map((item, index) => (
               <TableCell
                 key={'footercell' + index}
                 className={classes.footerCell}

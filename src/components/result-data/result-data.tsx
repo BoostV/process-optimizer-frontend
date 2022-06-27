@@ -13,8 +13,8 @@ interface ResultDataProps {
   nextValues: string[][]
   headers: string[]
   expectedMinimum?: any[][]
-  onMouseEnterExpand: () => void
-  onMouseLeaveExpand: () => void
+  onMouseEnterExpand?: () => void
+  onMouseLeaveExpand?: () => void
 }
 
 export const ResultData = (props: ResultDataProps) => {
@@ -55,8 +55,8 @@ export const ResultData = (props: ResultDataProps) => {
                     payload: 'result-data',
                   })
                 }
-                onMouseEnter={() => onMouseEnterExpand()}
-                onMouseLeave={() => onMouseLeaveExpand()}
+                onMouseEnter={() => onMouseEnterExpand?.()}
+                onMouseLeave={() => onMouseLeaveExpand?.()}
               >
                 <ZoomOutMapIcon
                   fontSize="small"

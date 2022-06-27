@@ -61,7 +61,7 @@ describe('migration', () => {
     })
 
     it(`should migrate to newest version (${
-      MIGRATIONS.slice(-1)[0].version
+      MIGRATIONS.slice(-1)[0]?.version
     })`, async () => {
       const expected = loadLatestJson() as ExperimentType
       const actual = migrate({ ...version2 })

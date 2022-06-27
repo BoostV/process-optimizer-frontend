@@ -94,7 +94,10 @@ export default function Home() {
       reader.onprogress = () =>
         setUploadMessage({ message: 'Loading file...', isError: false })
       reader.onload = () => load(reader)
-      reader.readAsText(acceptedFiles[0])
+      const file = acceptedFiles[0]
+      if (file) {
+        reader.readAsText(file)
+      }
     },
     [saveExperimentLocally, state.experimentsInLocalStorage]
   )
