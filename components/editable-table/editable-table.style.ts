@@ -1,4 +1,4 @@
-import { makeStyles } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import { tableBorder } from '../../theme/theme'
 
 export const useStyles = makeStyles(theme => ({
