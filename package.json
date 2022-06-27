@@ -49,6 +49,7 @@
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.14",
     "@types/rimraf": "^3.0.0",
+    "@types/uuid": "^8.3.4",
     "eslint": "8.18.0",
     "eslint-config-next": "12.1.6",
     "git-revision-webpack-plugin": "^5.0.0",

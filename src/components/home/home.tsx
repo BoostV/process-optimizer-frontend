@@ -54,7 +54,7 @@ export default function Home() {
   )
 
   const onDrop = useCallback(
-    acceptedFiles => {
+    (acceptedFiles: Blob[]) => {
       const saveAndRedirect = async (experiment: ExperimentType) => {
         const id: string = experiment.id
         try {
@@ -72,7 +72,7 @@ export default function Home() {
       }
 
       const load = (reader: FileReader) => {
-        const binaryResult: string | ArrayBuffer = reader.result
+        const binaryResult: string | ArrayBuffer | null = reader.result
         try {
           const experiment: ExperimentType = JSON.parse(binaryResult as string)
           if (experiment.id === undefined) {
@@ -113,7 +113,7 @@ export default function Home() {
 
   const getExperimentName = (key: string) => {
     try {
-      const json: any = JSON.parse(localStorage.getItem(key))
+      const json: any = JSON.parse(localStorage.getItem(key) ?? '')
       const experiment: ExperimentType = json.experiment
       return '' !== experiment.info.name ? experiment.info.name : '-'
     } catch (e) {
@@ -139,12 +139,16 @@ export default function Home() {
   }
 
   const handleOverwriteDialog = () => {
-    saveExperimentLocally(tempExperiment)
+    if (tempExperiment) {
+      saveExperimentLocally(tempExperiment)
+    }
     setTempExperiment(undefined)
   }
 
   const handleCreateDialog = () => {
-    saveExperimentLocally({ ...tempExperiment, id: uuid() })
+    if (tempExperiment) {
+      saveExperimentLocally({ ...tempExperiment, id: uuid() })
+    }
     setTempExperiment(undefined)
   }
 

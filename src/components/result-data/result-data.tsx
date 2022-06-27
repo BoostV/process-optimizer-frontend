@@ -30,9 +30,8 @@ export const ResultData = (props: ResultDataProps) => {
     state: { experiment },
   } = useExperiment()
   const global = useGlobal()
-  const suggestionCount: number = experiment?.extras
-    ? experiment.extras['experimentSuggestionCount']
-    : 1
+  const suggestionCount: number =
+    (experiment.extras['experimentSuggestionCount'] as number) ?? 1
 
   return (
     <TitleCard
@@ -73,12 +72,12 @@ export const ResultData = (props: ResultDataProps) => {
         <NextExperiments suggestionCount={suggestionCount} />
         <Suggestions values={nextValues} headers={headers} />
       </Box>
-      {expectedMinimum?.length > 0 && (
+      {(expectedMinimum?.length ?? 0) > 0 && (
         <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
           <SingleDataPoint
             title="Expected minimum"
             headers={headers}
-            dataPoint={expectedMinimum}
+            dataPoint={expectedMinimum ?? [[]]}
           />
         </Box>
       )}

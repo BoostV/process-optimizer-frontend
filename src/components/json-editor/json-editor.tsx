@@ -13,6 +13,7 @@ import useStyles from './json-editor.style'
 import { ExperimentType } from '../../types/common'
 import CloseIcon from '@mui/icons-material/Close'
 import { useGlobal } from '../../context/global-context'
+import { errorMessage } from '../../utility'
 
 type DisplayedResults = {
   id: string
@@ -69,8 +70,8 @@ const JsonEditor = () => {
         experimentFromDisplayedExperiment(displayedExperiment)
       dispatch({ type: 'updateExperiment', payload: experimentToSave })
       location.reload()
-    } catch (e) {
-      setErrorMsg('Error: ' + e.message)
+    } catch (e: unknown) {
+      setErrorMsg(`Error: ${errorMessage(e)}`)
       console.error('Error editing json', e)
     }
   }

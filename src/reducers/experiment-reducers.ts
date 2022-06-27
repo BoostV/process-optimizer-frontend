@@ -7,6 +7,8 @@ import {
   OptimizerConfig,
   ValueVariableType,
 } from '../types/common'
+import { assertUnreachable } from '../utility'
+
 export type ExperimentAction =
   | {
       type: 'setSwVersion'
@@ -47,10 +49,6 @@ export type ExperimentAction =
   | {
       type: 'updateConfiguration'
       payload: OptimizerConfig
-    }
-  | {
-      type: 'addDataPoints'
-      payload: DataPointType[]
     }
   | {
       type: 'updateDataPoints'
@@ -191,5 +189,7 @@ export const experimentReducer = (
         })
       }
       return newState
+    default:
+      assertUnreachable(action)
   }
 }

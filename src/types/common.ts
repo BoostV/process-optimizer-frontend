@@ -1,7 +1,7 @@
 export type ExperimentType = {
   id: string
   info: Info
-  extras: object
+  extras: Record<string, unknown>
   categoricalVariables: CategoricalVariableType[]
   valueVariables: ValueVariableType[]
   scoreVariables: ScoreVariableType[]

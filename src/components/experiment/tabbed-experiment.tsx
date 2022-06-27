@@ -16,12 +16,12 @@ import { useExperiment, runExperiment } from '../../context/experiment-context'
 import React, { useState } from 'react'
 import LoadingExperiment from './loading-experiment'
 import LoadingButton from '../loading-button/loading-button'
-import { theme } from '../../theme/theme'
 import { Plots } from '../plots/plots'
 import { saveObjectToLocalFile } from '../../utility/save-to-local-file'
 import { useGlobal } from '../../context/global-context'
 import { ConfigurationTab } from './configurationTab'
 import { DataEntryTab } from './dataEntryTab'
+import { State } from '../../reducers/global-reducer'
 
 type SnackbarMessage = {
   message: string
@@ -73,7 +73,7 @@ const TabbedExperiment = () => {
     setSnackbarOpen(true)
   }
 
-  const handleChange = (_event, newValue) => {
+  const handleChange = (_event: unknown, newValue: State['focus']) => {
     globalDispatch({ type: 'global/setFocus', payload: newValue })
   }
 

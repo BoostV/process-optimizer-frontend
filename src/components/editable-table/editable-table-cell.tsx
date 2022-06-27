@@ -2,6 +2,7 @@ import {
   FormControl,
   MenuItem,
   Select,
+  SelectChangeEvent,
   TableCell,
   TextField,
   Tooltip,
@@ -46,9 +47,7 @@ export function EditableTableCell({
             <FormControl>
               <Select
                 value={value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  onChange(e.target.value)
-                }
+                onChange={(e: SelectChangeEvent) => onChange?.(e.target.value)}
                 displayEmpty
                 inputProps={{ 'aria-label': 'select value' }}
               >
