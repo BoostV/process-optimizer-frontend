@@ -23,7 +23,6 @@ import { buildPath, paths } from '../../paths'
 import { ExperimentType } from '../../types/common'
 import { useGlobal } from '../../context/global-context'
 import { v4 as uuid } from 'uuid'
-import { isEmpty } from '../../utility/string-util'
 import { reducer } from '../../reducers/home-reducer'
 import { CreateOrOverwriteDialog } from '../create-or-overwrite-dialog/create-or-overwrite-dialog'
 

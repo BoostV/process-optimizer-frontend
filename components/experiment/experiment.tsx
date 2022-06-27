@@ -143,7 +143,7 @@ const LegacyExperiment = () => {
                       onClick={onRun}
                       isLoading={isRunning}
                       label="Run"
-                      marginLeft={theme.spacing(2)}
+                      marginLeft={2}
                       height={42}
                     />
                   </Grid>

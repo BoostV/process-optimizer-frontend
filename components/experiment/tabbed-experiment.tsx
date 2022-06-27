@@ -1,4 +1,5 @@
 import {
+  AlertColor,
   Box,
   Button,
   Grid,
@@ -8,7 +9,8 @@ import {
   Typography,
 } from '@mui/material'
 import Layout from '../layout/layout'
-import { Alert, Color, TabContext, TabList, TabPanel } from '@mui/lab'
+import { Alert } from '@mui/material'
+import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { useStyles } from './experiment.style'
 import { useExperiment, runExperiment } from '../../context/experiment-context'
 import React, { useState } from 'react'
@@ -23,7 +25,7 @@ import { DataEntryTab } from './dataEntryTab'
 
 type SnackbarMessage = {
   message: string
-  severity: Color
+  severity: AlertColor
 }
 
 const TabbedExperiment = () => {
@@ -137,7 +139,7 @@ const TabbedExperiment = () => {
               onClick={onRun}
               isLoading={isRunning}
               label="Run"
-              marginLeft={theme.spacing(2)}
+              marginLeft={2}
               height={42}
             />
           </Grid>
