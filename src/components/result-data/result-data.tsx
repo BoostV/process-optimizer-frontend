@@ -75,8 +75,9 @@ export const ResultData = (props: ResultDataProps) => {
         <NextExperiments suggestionCount={suggestionCount} />
         <Suggestions values={nextValues} headers={headers} />
       </Box>
-      {isInitializing && <InitializationProgress />}
-      {(expectedMinimum?.length ?? 0) > 0 && (
+      {isInitializing ? (
+        <InitializationProgress />
+      ) : (
         <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
           <SingleDataPoint
             title="Expected minimum"

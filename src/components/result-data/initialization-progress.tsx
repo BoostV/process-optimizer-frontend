@@ -1,4 +1,5 @@
-import { LinearProgress, Typography } from '@mui/material'
+import { Box, IconButton, LinearProgress, Typography } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit'
 import { useExperiment } from '../../context/experiment-context'
 
 export const InitializationProgress = () => {
@@ -10,9 +11,16 @@ export const InitializationProgress = () => {
   const progress = (dataPoints.length / optimizerConfig.initialPoints) * 100.0
   return (
     <>
-      <Typography variant="h1">
-        {dataPoints.length}/{optimizerConfig.initialPoints}
-      </Typography>
+      <Box sx={{ textAlign: 'center' }}>
+        <Typography variant="overline">Initializing model</Typography>
+        <Typography variant="h4">
+          {dataPoints.length}/{optimizerConfig.initialPoints}
+          <IconButton>
+            <EditIcon fontSize="small" color="primary" />
+          </IconButton>
+        </Typography>
+        <Typography variant="caption">date points added</Typography>
+      </Box>
       <LinearProgress variant="determinate" value={progress} />
     </>
   )
