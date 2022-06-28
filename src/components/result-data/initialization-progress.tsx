@@ -32,9 +32,8 @@ export const InitializationProgress = () => {
       <>
         <Box sx={{ textAlign: 'center' }}>
           <TextField
+            sx={{ marginBottom: 2 }}
             name="initialPoints"
-            fullWidth
-            margin="dense"
             value={initialPoints}
             label="N initial points"
             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
@@ -45,6 +44,7 @@ export const InitializationProgress = () => {
             }
           />
           <IconButton
+            sx={{ marginTop: 1 }}
             onClick={() => {
               handleInitialPointsChanged(initialPoints)
               setEditActive(!editActive)
