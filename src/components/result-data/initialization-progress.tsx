@@ -13,7 +13,7 @@ export const InitializationProgress = () => {
     <>
       <Box sx={{ textAlign: 'center' }}>
         <Typography variant="overline">Initializing model</Typography>
-        <Typography variant="h4">
+        <Typography variant="h4" sx={{ marginLeft: 2 }}>
           {dataPoints.length}/{optimizerConfig.initialPoints}
           <IconButton>
             <EditIcon fontSize="small" color="primary" />
