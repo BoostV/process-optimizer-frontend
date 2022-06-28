@@ -8,7 +8,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit'
 import CheckIcon from '@mui/icons-material/Check'
 import { useExperiment } from '../../context/experiment-context'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export const InitializationProgress = () => {
   const {
@@ -20,6 +20,10 @@ export const InitializationProgress = () => {
   const [editActive, setEditActive] = useState(false)
   const [initialPoints, setInitialPoints] = useState(
     optimizerConfig.initialPoints
+  )
+  useEffect(
+    () => setInitialPoints(optimizerConfig.initialPoints),
+    [optimizerConfig.initialPoints]
   )
   const progress = (dataPoints.length / optimizerConfig.initialPoints) * 100.0
   const handleInitialPointsChanged = (newValue: number) =>
