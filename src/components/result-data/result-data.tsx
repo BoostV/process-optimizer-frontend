@@ -72,7 +72,9 @@ export const ResultData = (props: ResultDataProps) => {
       }
     >
       <Box p={2}>
-        <NextExperiments suggestionCount={suggestionCount} />
+        {isInitializing || (
+          <NextExperiments suggestionCount={suggestionCount} />
+        )}
         <Suggestions values={nextValues} headers={headers} />
       </Box>
       {isInitializing ? (
