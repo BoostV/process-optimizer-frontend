@@ -8,6 +8,7 @@ import { isUIBig } from '../../utility/ui-util'
 import useStyles from './result-data.style'
 import { SingleDataPoint } from './single-data-point'
 import { NextExperiments } from './next-experiments'
+import { InitializationProgress } from './initialization-progress'
 
 interface ResultDataProps {
   nextValues: string[][]
@@ -33,6 +34,8 @@ export const ResultData = (props: ResultDataProps) => {
   const suggestionCount: number =
     (experiment.extras['experimentSuggestionCount'] as number) ?? 1
 
+  const isInitializing =
+    experiment.dataPoints.length < experiment.optimizerConfig.initialPoints
   return (
     <TitleCard
       padding={0}
@@ -72,12 +75,13 @@ export const ResultData = (props: ResultDataProps) => {
         <NextExperiments suggestionCount={suggestionCount} />
         <Suggestions values={nextValues} headers={headers} />
       </Box>
+      {isInitializing && <InitializationProgress />}
       {(expectedMinimum?.length ?? 0) > 0 && (
         <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
           <SingleDataPoint
             title="Expected minimum"
             headers={headers}
-            dataPoint={expectedMinimum ?? [[]]}
+            dataPoint={expectedMinimum ?? []}
           />
         </Box>
       )}

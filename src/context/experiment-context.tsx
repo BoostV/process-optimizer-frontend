@@ -108,8 +108,8 @@ const fetchExperimentResult = async (
       result.plots?.map(p => ({ id: p.id ?? '', plot: p.plot ?? '' })) ?? [],
     next: result.result?.next ?? [],
     pickled: result.result?.pickled ?? '',
-    expectedMinimum: result.result?.models?.find(() => true)
-      ?.expectedMinimum ?? [[]],
+    expectedMinimum:
+      result.result?.models?.find(() => true)?.expectedMinimum ?? [],
     extras: result.result?.extras ?? {},
   }
 
