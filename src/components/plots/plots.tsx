@@ -12,7 +12,10 @@ export const Plots = () => {
   const {
     state: { experiment },
   } = useExperiment()
-  const global = useGlobal()
+  const {
+    state: { uiSizes },
+    dispatch,
+  } = useGlobal()
   const classes = useStyles()
 
   return (
@@ -24,7 +27,7 @@ export const Plots = () => {
             <Hidden xlDown>
               <Tooltip
                 title={
-                  (isUIBig(global.state, 'plots') ? 'Collapse' : 'Expand') +
+                  (isUIBig(uiSizes, 'plots') ? 'Collapse' : 'Expand') +
                   " 'Plots'"
                 }
               >
@@ -32,7 +35,7 @@ export const Plots = () => {
                   size="small"
                   className={classes.titleButton}
                   onClick={() =>
-                    global.dispatch({ type: 'toggleUISize', payload: 'plots' })
+                    dispatch({ type: 'toggleUISize', payload: 'plots' })
                   }
                 >
                   <ZoomOutMapIcon

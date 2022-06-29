@@ -30,7 +30,10 @@ export const ResultData = (props: ResultDataProps) => {
   const {
     state: { experiment },
   } = useExperiment()
-  const global = useGlobal()
+  const {
+    state: { uiSizes },
+    dispatch,
+  } = useGlobal()
   const suggestionCount: number =
     (experiment.extras['experimentSuggestionCount'] as number) ?? 1
 
@@ -58,7 +61,7 @@ export const ResultData = (props: ResultDataProps) => {
           <Hidden xlDown>
             <Tooltip
               title={
-                (isUIBig(global.state, 'result-data') ? 'Collapse' : 'Expand') +
+                (isUIBig(uiSizes, 'result-data') ? 'Collapse' : 'Expand') +
                 " 'Result data' and 'Data points'"
               }
             >
@@ -66,7 +69,7 @@ export const ResultData = (props: ResultDataProps) => {
                 size="small"
                 className={classes.titleButton}
                 onClick={() =>
-                  global.dispatch({
+                  dispatch({
                     type: 'toggleUISize',
                     payload: 'result-data',
                   })
@@ -88,6 +91,10 @@ export const ResultData = (props: ResultDataProps) => {
         {!isInitializing && (
           <NextExperiments suggestionCount={suggestionCount} />
         )}
+        {!nextValues ||
+          (nextValues.length === 0 && (
+            <div>Please run experiment calculate suggestions</div>
+          ))}
         <Suggestions values={nextValues} headers={headers} />
       </Box>
       {summary}
