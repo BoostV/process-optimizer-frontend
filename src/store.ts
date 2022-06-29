@@ -3,6 +3,7 @@ import { versionInfo } from './components/version-info'
 
 export const emptyExperiment: ExperimentType = {
   id: '',
+  changedSinceLastEvaluation: false,
   info: {
     name: '',
     description: '',

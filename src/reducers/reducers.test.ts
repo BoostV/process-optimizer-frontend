@@ -1,6 +1,6 @@
 import { ExperimentAction } from './experiment-reducers'
 import { rootReducer } from './reducers'
-import { State } from '../store'
+import { State, emptyExperiment } from '../store'
 import {
   CategoricalVariableType,
   DataPointType,
@@ -13,6 +13,7 @@ import {
 describe('experiment reducer', () => {
   const initState: State = {
     experiment: {
+      ...emptyExperiment,
       id: '1234',
       info: {
         swVersion: '',
@@ -62,6 +63,7 @@ describe('experiment reducer', () => {
   it('should update whole experiment', async () => {
     const payload: ExperimentType = {
       id: '5678',
+      changedSinceLastEvaluation: false,
       info: {
         swVersion: '',
         name: 'Not cake',
@@ -168,6 +170,7 @@ describe('experiment reducer', () => {
     expect(rootReducer(initState, action)).toEqual({
       experiment: {
         ...initState.experiment,
+        changedSinceLastEvaluation: true,
         valueVariables: [
           {
             name: 'Water',
@@ -197,7 +200,11 @@ describe('experiment reducer', () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment: { ...initState.experiment, valueVariables: [] },
+      experiment: {
+        ...initState.experiment,
+        changedSinceLastEvaluation: true,
+        valueVariables: [],
+      },
     })
   })
 
@@ -216,6 +223,7 @@ describe('experiment reducer', () => {
     expect(rootReducer(initState, action)).toEqual({
       experiment: {
         ...initState.experiment,
+        changedSinceLastEvaluation: true,
         categoricalVariables: [
           {
             name: 'Icing',
@@ -241,7 +249,11 @@ describe('experiment reducer', () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment: { ...initState.experiment, categoricalVariables: [] },
+      experiment: {
+        ...initState.experiment,
+        changedSinceLastEvaluation: true,
+        categoricalVariables: [],
+      },
     })
   })
 
@@ -260,7 +272,11 @@ describe('experiment reducer', () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment: { ...initState.experiment, optimizerConfig: payload },
+      experiment: {
+        ...initState.experiment,
+        changedSinceLastEvaluation: true,
+        optimizerConfig: payload,
+      },
     })
   })
 
@@ -281,7 +297,11 @@ describe('experiment reducer', () => {
       }
 
       expect(rootReducer(initState, action)).toEqual({
-        experiment: { ...initState.experiment, results: payload },
+        experiment: {
+          ...initState.experiment,
+          changedSinceLastEvaluation: false,
+          results: payload,
+        },
       })
     })
   })
@@ -307,7 +327,11 @@ describe('experiment reducer', () => {
       }
 
       expect(rootReducer(initState, action)).toEqual({
-        experiment: { ...initState.experiment, dataPoints: payload },
+        experiment: {
+          ...initState.experiment,
+          changedSinceLastEvaluation: true,
+          dataPoints: payload,
+        },
       })
     })
   })

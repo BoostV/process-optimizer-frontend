@@ -36,6 +36,19 @@ export const ResultData = (props: ResultDataProps) => {
 
   const isInitializing =
     experiment.dataPoints.length < experiment.optimizerConfig.initialPoints
+  const summary = isInitializing ? (
+    <InitializationProgress />
+  ) : expectedMinimum && expectedMinimum.length > 0 ? (
+    <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
+      <SingleDataPoint
+        title="Expected minimum"
+        headers={headers}
+        dataPoint={expectedMinimum ?? []}
+      />
+    </Box>
+  ) : (
+    <div>Please run experiment</div>
+  )
   return (
     <TitleCard
       padding={0}
@@ -77,17 +90,7 @@ export const ResultData = (props: ResultDataProps) => {
         )}
         <Suggestions values={nextValues} headers={headers} />
       </Box>
-      {isInitializing ? (
-        <InitializationProgress />
-      ) : (
-        <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
-          <SingleDataPoint
-            title="Expected minimum"
-            headers={headers}
-            dataPoint={expectedMinimum ?? []}
-          />
-        </Box>
-      )}
+      {summary}
     </TitleCard>
   )
 }

@@ -87,6 +87,13 @@ const convertTo5 = (json: ExperimentType): ExperimentType => {
   }
 }
 
+const convertTo6 = (json: any): any => {
+  return {
+    ...json,
+    changedSinceLastEvaluation: false,
+  }
+}
+
 interface Migration {
   version: string
   converter: (json: any) => any
@@ -101,4 +108,5 @@ export const MIGRATIONS: Migration[] = [
   { version: '3', converter: convertTo3 },
   { version: '4', converter: convertTo4 },
   { version: '5', converter: convertTo5 },
+  { version: '6', converter: convertTo6 },
 ]

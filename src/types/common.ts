@@ -1,5 +1,6 @@
 export type ExperimentType = {
   id: string
+  changedSinceLastEvaluation: boolean
   info: Info
   extras: Record<string, unknown>
   categoricalVariables: CategoricalVariableType[]

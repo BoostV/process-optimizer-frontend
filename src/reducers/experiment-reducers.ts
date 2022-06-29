@@ -99,6 +99,7 @@ export const experimentReducer = (
     case 'updateSuggestionCount':
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         extras: {
           ...experimentState.extras,
           experimentSuggestionCount: Number(action.payload),
@@ -114,6 +115,7 @@ export const experimentReducer = (
       )
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         valueVariables: varsAfterAdd,
       }
     case 'deleteValueVariable':
@@ -123,6 +125,7 @@ export const experimentReducer = (
       varsAfterDelete.splice(indexOfDelete, 1)
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         valueVariables: varsAfterDelete,
       }
     case 'addCategorialVariable':
@@ -135,6 +138,7 @@ export const experimentReducer = (
       )
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         categoricalVariables: catVarsAfterAdd,
       }
     case 'deleteCategorialVariable':
@@ -146,26 +150,31 @@ export const experimentReducer = (
       catVarsAfterDelete.splice(indexOfCatDelete, 1)
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         categoricalVariables: catVarsAfterDelete,
       }
     case 'updateConfiguration':
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         optimizerConfig: action.payload,
       }
     case 'registerResult':
       return {
         ...experimentState,
+        changedSinceLastEvaluation: false,
         results: action.payload,
       }
     case 'updateDataPoints':
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         dataPoints: action.payload,
       }
     case 'experiment/toggleMultiObjective':
       const newState = {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         scoreVariables: experimentState.scoreVariables.map((it, idx) => ({
           ...it,
           enabled: idx < 1 || !it.enabled,
