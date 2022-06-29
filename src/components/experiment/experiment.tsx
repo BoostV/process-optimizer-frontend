@@ -139,6 +139,7 @@ const LegacyExperiment = () => {
                       Download
                     </Button>
                     <LoadingButton
+                      disabled={!experiment.changedSinceLastEvaluation}
                       onClick={onRun}
                       isLoading={isRunning}
                       label="Run"

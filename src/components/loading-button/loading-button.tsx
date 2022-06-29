@@ -8,16 +8,25 @@ type LoadingButtonProps = {
   height?: number
   marginLeft?: number
   isFlashing?: boolean
+  disabled?: boolean
 }
 
 export default function LoadingButton(props: LoadingButtonProps) {
   const classes = useStyles()
-  const { isLoading, label, onClick, height, marginLeft, isFlashing } = props
+  const {
+    isLoading,
+    label,
+    onClick,
+    height,
+    marginLeft,
+    isFlashing,
+    disabled,
+  } = props
 
   return (
     <Button
       style={{ height, marginLeft }}
-      disabled={isLoading}
+      disabled={disabled || isLoading}
       variant="contained"
       color="primary"
       onClick={onClick}
