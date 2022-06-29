@@ -261,7 +261,7 @@ describe('experiment reducer', () => {
     const payload: OptimizerConfig = {
       baseEstimator: 'GP',
       acqFunc: 'gp_hedge',
-      initialPoints: 4,
+      initialPoints: 1,
       kappa: 1.97,
       xi: 0.02,
     }

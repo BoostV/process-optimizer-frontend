@@ -154,10 +154,23 @@ export const experimentReducer = (
         categoricalVariables: catVarsAfterDelete,
       }
     case 'updateConfiguration':
+      if (
+        action.payload.initialPoints !==
+        experimentState.optimizerConfig.initialPoints
+      ) {
+      }
       return {
         ...experimentState,
         changedSinceLastEvaluation: true,
         optimizerConfig: action.payload,
+        extras: {
+          ...experimentState.extras,
+          experimentSuggestionCount:
+            action.payload.initialPoints !==
+            experimentState.optimizerConfig.initialPoints
+              ? action.payload.initialPoints
+              : experimentState.extras.experimentSuggestionCount,
+        },
       }
     case 'registerResult':
       return {
