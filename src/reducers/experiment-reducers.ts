@@ -9,6 +9,9 @@ import {
 } from '../types/common'
 import { assertUnreachable } from '../utility'
 
+const calculateInitialPoints = (state: ExperimentType) =>
+  (state.categoricalVariables.length + state.valueVariables.length) * 3
+
 export type ExperimentAction =
   | {
       type: 'setSwVersion'
@@ -114,20 +117,34 @@ export const experimentReducer = (
         0,
         action.payload
       )
-      return {
+      newState = {
         ...experimentState,
         changedSinceLastEvaluation: true,
         valueVariables: varsAfterAdd,
+      }
+      return {
+        ...newState,
+        optimizerConfig: {
+          ...experimentState.optimizerConfig,
+          initialPoints: calculateInitialPoints(newState),
+        },
       }
     case 'deleteValueVariable':
       let varsAfterDelete: ValueVariableType[] =
         experimentState.valueVariables.slice()
       let indexOfDelete = experimentState.valueVariables.indexOf(action.payload)
       varsAfterDelete.splice(indexOfDelete, 1)
-      return {
+      newState = {
         ...experimentState,
         changedSinceLastEvaluation: true,
         valueVariables: varsAfterDelete,
+      }
+      return {
+        ...newState,
+        optimizerConfig: {
+          ...experimentState.optimizerConfig,
+          initialPoints: calculateInitialPoints(newState),
+        },
       }
     case 'addCategorialVariable':
       let catVarsAfterAdd: CategoricalVariableType[] =
@@ -137,10 +154,17 @@ export const experimentReducer = (
         0,
         action.payload
       )
-      return {
+      newState = {
         ...experimentState,
         changedSinceLastEvaluation: true,
         categoricalVariables: catVarsAfterAdd,
+      }
+      return {
+        ...newState,
+        optimizerConfig: {
+          ...experimentState.optimizerConfig,
+          initialPoints: calculateInitialPoints(newState),
+        },
       }
     case 'deleteCategorialVariable':
       let catVarsAfterDelete: CategoricalVariableType[] =
@@ -149,10 +173,17 @@ export const experimentReducer = (
         action.payload
       )
       catVarsAfterDelete.splice(indexOfCatDelete, 1)
-      return {
+      newState = {
         ...experimentState,
         changedSinceLastEvaluation: true,
         categoricalVariables: catVarsAfterDelete,
+      }
+      return {
+        ...newState,
+        optimizerConfig: {
+          ...experimentState.optimizerConfig,
+          initialPoints: calculateInitialPoints(newState),
+        },
       }
     case 'updateConfiguration':
       if (

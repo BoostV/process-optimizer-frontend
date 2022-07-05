@@ -178,6 +178,10 @@ describe('experiment reducer', () => {
         expect(rootReducer(initState, action)).toEqual({
           experiment: {
             ...initState.experiment,
+            optimizerConfig: {
+              ...initState.experiment.optimizerConfig,
+              initialPoints: 9,
+            },
             changedSinceLastEvaluation: true,
             valueVariables: [
               {
@@ -212,6 +216,10 @@ describe('experiment reducer', () => {
         expect(rootReducer(initState, action)).toEqual({
           experiment: {
             ...initState.experiment,
+            optimizerConfig: {
+              ...initState.experiment.optimizerConfig,
+              initialPoints: 3,
+            },
             changedSinceLastEvaluation: true,
             valueVariables: [],
           },
@@ -235,6 +243,10 @@ describe('experiment reducer', () => {
         expect(rootReducer(initState, action)).toEqual({
           experiment: {
             ...initState.experiment,
+            optimizerConfig: {
+              ...initState.experiment.optimizerConfig,
+              initialPoints: 9,
+            },
             changedSinceLastEvaluation: true,
             categoricalVariables: [
               {
@@ -265,6 +277,10 @@ describe('experiment reducer', () => {
         expect(rootReducer(initState, action)).toEqual({
           experiment: {
             ...initState.experiment,
+            optimizerConfig: {
+              ...initState.experiment.optimizerConfig,
+              initialPoints: 3,
+            },
             changedSinceLastEvaluation: true,
             categoricalVariables: [],
           },
