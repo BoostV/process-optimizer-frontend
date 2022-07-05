@@ -66,6 +66,7 @@ export const experimentReducer = (
   experimentState: ExperimentType,
   action: ExperimentAction
 ): ExperimentType => {
+  let newState = experimentState
   switch (action.type) {
     case 'setSwVersion':
       return {
@@ -156,21 +157,21 @@ export const experimentReducer = (
     case 'updateConfiguration':
       if (
         action.payload.initialPoints !==
-        experimentState.optimizerConfig.initialPoints
+          experimentState.optimizerConfig.initialPoints &&
+        experimentState.dataPoints.length < action.payload.initialPoints
       ) {
+        newState = {
+          ...newState,
+          extras: {
+            ...newState.extras,
+            experimentSuggestionCount: action.payload.initialPoints,
+          },
+        }
       }
       return {
-        ...experimentState,
+        ...newState,
         changedSinceLastEvaluation: true,
         optimizerConfig: action.payload,
-        extras: {
-          ...experimentState.extras,
-          experimentSuggestionCount:
-            action.payload.initialPoints !==
-            experimentState.optimizerConfig.initialPoints
-              ? action.payload.initialPoints
-              : experimentState.extras.experimentSuggestionCount,
-        },
       }
     case 'registerResult':
       return {
@@ -179,13 +180,38 @@ export const experimentReducer = (
         results: action.payload,
       }
     case 'updateDataPoints':
+      if (
+        action.payload.length < experimentState.dataPoints.length &&
+        experimentState.dataPoints.length ===
+          experimentState.optimizerConfig.initialPoints
+      ) {
+        newState = {
+          ...newState,
+          extras: {
+            ...newState.extras,
+            experimentSuggestionCount:
+              experimentState.optimizerConfig.initialPoints,
+          },
+        }
+      }
+      if (
+        action.payload.length >=
+          experimentState.optimizerConfig.initialPoints &&
+        experimentState.dataPoints.length <
+          experimentState.optimizerConfig.initialPoints
+      ) {
+        newState = {
+          ...newState,
+          extras: { ...newState.extras, experimentSuggestionCount: 1 },
+        }
+      }
       return {
-        ...experimentState,
+        ...newState,
         changedSinceLastEvaluation: true,
         dataPoints: action.payload,
       }
     case 'experiment/toggleMultiObjective':
-      const newState = {
+      newState = {
         ...experimentState,
         changedSinceLastEvaluation: true,
         scoreVariables: experimentState.scoreVariables.map((it, idx) => ({

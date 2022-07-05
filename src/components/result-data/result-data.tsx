@@ -93,7 +93,7 @@ export const ResultData = (props: ResultDataProps) => {
         )}
         {!nextValues ||
           (nextValues.length === 0 && (
-            <div>Please run experiment calculate suggestions</div>
+            <div>Please run experiment to calculate suggestions</div>
           ))}
         <Suggestions values={nextValues} headers={headers} />
       </Box>
