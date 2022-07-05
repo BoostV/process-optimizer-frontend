@@ -94,6 +94,8 @@ const LegacyExperiment = () => {
   const nextValues: any[][] =
     experiment.results.next && Array.isArray(experiment.results.next[0])
       ? (experiment.results.next as unknown as any[][])
+      : experiment.results.next
+      ? [experiment.results.next]
       : []
 
   const expectedMinimum: any[][] = experiment.results.expectedMinimum
