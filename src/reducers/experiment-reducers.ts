@@ -66,6 +66,7 @@ export const experimentReducer = (
   experimentState: ExperimentType,
   action: ExperimentAction
 ): ExperimentType => {
+  let newState = experimentState
   switch (action.type) {
     case 'setSwVersion':
       return {
@@ -99,6 +100,7 @@ export const experimentReducer = (
     case 'updateSuggestionCount':
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         extras: {
           ...experimentState.extras,
           experimentSuggestionCount: Number(action.payload),
@@ -114,6 +116,7 @@ export const experimentReducer = (
       )
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         valueVariables: varsAfterAdd,
       }
     case 'deleteValueVariable':
@@ -123,6 +126,7 @@ export const experimentReducer = (
       varsAfterDelete.splice(indexOfDelete, 1)
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         valueVariables: varsAfterDelete,
       }
     case 'addCategorialVariable':
@@ -135,6 +139,7 @@ export const experimentReducer = (
       )
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         categoricalVariables: catVarsAfterAdd,
       }
     case 'deleteCategorialVariable':
@@ -146,26 +151,69 @@ export const experimentReducer = (
       catVarsAfterDelete.splice(indexOfCatDelete, 1)
       return {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         categoricalVariables: catVarsAfterDelete,
       }
     case 'updateConfiguration':
+      if (
+        action.payload.initialPoints !==
+          experimentState.optimizerConfig.initialPoints &&
+        experimentState.dataPoints.length < action.payload.initialPoints
+      ) {
+        newState = {
+          ...newState,
+          extras: {
+            ...newState.extras,
+            experimentSuggestionCount: action.payload.initialPoints,
+          },
+        }
+      }
       return {
-        ...experimentState,
+        ...newState,
+        changedSinceLastEvaluation: true,
         optimizerConfig: action.payload,
       }
     case 'registerResult':
       return {
         ...experimentState,
+        changedSinceLastEvaluation: false,
         results: action.payload,
       }
     case 'updateDataPoints':
+      if (
+        action.payload.length < experimentState.dataPoints.length &&
+        experimentState.dataPoints.length ===
+          experimentState.optimizerConfig.initialPoints
+      ) {
+        newState = {
+          ...newState,
+          extras: {
+            ...newState.extras,
+            experimentSuggestionCount:
+              experimentState.optimizerConfig.initialPoints,
+          },
+        }
+      }
+      if (
+        action.payload.length >=
+          experimentState.optimizerConfig.initialPoints &&
+        experimentState.dataPoints.length <
+          experimentState.optimizerConfig.initialPoints
+      ) {
+        newState = {
+          ...newState,
+          extras: { ...newState.extras, experimentSuggestionCount: 1 },
+        }
+      }
       return {
-        ...experimentState,
+        ...newState,
+        changedSinceLastEvaluation: true,
         dataPoints: action.payload,
       }
     case 'experiment/toggleMultiObjective':
-      const newState = {
+      newState = {
         ...experimentState,
+        changedSinceLastEvaluation: true,
         scoreVariables: experimentState.scoreVariables.map((it, idx) => ({
           ...it,
           enabled: idx < 1 || !it.enabled,

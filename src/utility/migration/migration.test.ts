@@ -1,4 +1,5 @@
 import { migrate, MIGRATIONS } from './migration'
+import version6 from './data-formats/6.json'
 import version5 from './data-formats/5.json'
 import version4 from './data-formats/4.json'
 import version3 from './data-formats/3.json'
@@ -60,6 +61,10 @@ describe('migration', () => {
       expect(migrate(version3, '4')).toEqual(version4)
     })
 
+    it('should migrate to 6 from 4 (changedSinceEvaluation added to root)', () => {
+      expect(migrate(version5, '6')).toEqual(version6)
+    })
+
     it(`should migrate to newest version (${
       MIGRATIONS.slice(-1)[0]?.version
     })`, async () => {
@@ -73,10 +78,10 @@ describe('migration', () => {
     //TODO: More/better tests
     it('newest data format json should match default empty experiment', () => {
       expect(Object.keys(emptyExperiment).length).toBe(
-        Object.keys(version5).length
+        Object.keys(version6).length
       )
       Object.keys(emptyExperiment).forEach(p =>
-        expect(version5).toHaveProperty(p)
+        expect(version6).toHaveProperty(p)
       )
     })
   })

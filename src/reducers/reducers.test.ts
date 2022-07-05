@@ -1,6 +1,6 @@
 import { ExperimentAction } from './experiment-reducers'
 import { rootReducer } from './reducers'
-import { State } from '../store'
+import { State, emptyExperiment } from '../store'
 import {
   CategoricalVariableType,
   DataPointType,
@@ -13,6 +13,7 @@ import {
 describe('experiment reducer', () => {
   const initState: State = {
     experiment: {
+      ...emptyExperiment,
       id: '1234',
       info: {
         swVersion: '',
@@ -62,6 +63,7 @@ describe('experiment reducer', () => {
   it('should update whole experiment', async () => {
     const payload: ExperimentType = {
       id: '5678',
+      changedSinceLastEvaluation: false,
       info: {
         swVersion: '',
         name: 'Not cake',
@@ -168,6 +170,7 @@ describe('experiment reducer', () => {
     expect(rootReducer(initState, action)).toEqual({
       experiment: {
         ...initState.experiment,
+        changedSinceLastEvaluation: true,
         valueVariables: [
           {
             name: 'Water',
@@ -197,7 +200,11 @@ describe('experiment reducer', () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment: { ...initState.experiment, valueVariables: [] },
+      experiment: {
+        ...initState.experiment,
+        changedSinceLastEvaluation: true,
+        valueVariables: [],
+      },
     })
   })
 
@@ -216,6 +223,7 @@ describe('experiment reducer', () => {
     expect(rootReducer(initState, action)).toEqual({
       experiment: {
         ...initState.experiment,
+        changedSinceLastEvaluation: true,
         categoricalVariables: [
           {
             name: 'Icing',
@@ -241,26 +249,100 @@ describe('experiment reducer', () => {
     }
 
     expect(rootReducer(initState, action)).toEqual({
-      experiment: { ...initState.experiment, categoricalVariables: [] },
+      experiment: {
+        ...initState.experiment,
+        changedSinceLastEvaluation: true,
+        categoricalVariables: [],
+      },
     })
   })
 
-  it('should update configuration', async () => {
-    const payload: OptimizerConfig = {
-      baseEstimator: 'GP',
-      acqFunc: 'gp_hedge',
-      initialPoints: 4,
-      kappa: 1.97,
-      xi: 0.02,
-    }
+  describe('updateConfiguration', () => {
+    it('should update configuration', async () => {
+      const payload: OptimizerConfig = {
+        baseEstimator: 'GP',
+        acqFunc: 'gp_hedge',
+        initialPoints: 1,
+        kappa: 1.97,
+        xi: 0.02,
+      }
 
-    const action: ExperimentAction = {
-      type: 'updateConfiguration',
-      payload,
-    }
+      const action: ExperimentAction = {
+        type: 'updateConfiguration',
+        payload,
+      }
 
-    expect(rootReducer(initState, action)).toEqual({
-      experiment: { ...initState.experiment, optimizerConfig: payload },
+      expect(rootReducer(initState, action)).toEqual({
+        experiment: {
+          ...initState.experiment,
+          changedSinceLastEvaluation: true,
+          optimizerConfig: payload,
+        },
+      })
+    })
+
+    it('should set suggested experiments to intial points if length of datapoints is less than initial points', () => {
+      const payload: OptimizerConfig = {
+        ...emptyExperiment.optimizerConfig,
+        initialPoints: 4,
+      }
+      expect(
+        rootReducer(initState, { type: 'updateConfiguration', payload })
+          .experiment.extras.experimentSuggestionCount
+      ).toEqual(4)
+    })
+
+    it('should not change suggested experiments when changing initial points to something less than length of data points', () => {
+      const payload: OptimizerConfig = {
+        ...emptyExperiment.optimizerConfig,
+        initialPoints: 2,
+      }
+      const testState = {
+        ...initState,
+        experiment: {
+          ...initState.experiment,
+          extras: {
+            experimentSuggestionCount: 1,
+          },
+          dataPoints: [
+            [
+              {
+                name: 'New point 1',
+                value: '1',
+              },
+              {
+                name: 'score',
+                value: [2],
+              },
+            ],
+            [
+              {
+                name: 'New point 1',
+                value: '1',
+              },
+              {
+                name: 'score',
+                value: [2],
+              },
+            ],
+            [
+              {
+                name: 'New point 1',
+                value: '1',
+              },
+              {
+                name: 'score',
+                value: [2],
+              },
+            ],
+          ],
+        },
+      }
+
+      expect(
+        rootReducer(testState, { type: 'updateConfiguration', payload })
+          .experiment.extras.experimentSuggestionCount
+      ).toEqual(1)
     })
   })
 
@@ -281,7 +363,11 @@ describe('experiment reducer', () => {
       }
 
       expect(rootReducer(initState, action)).toEqual({
-        experiment: { ...initState.experiment, results: payload },
+        experiment: {
+          ...initState.experiment,
+          changedSinceLastEvaluation: false,
+          results: payload,
+        },
       })
     })
   })
@@ -307,8 +393,138 @@ describe('experiment reducer', () => {
       }
 
       expect(rootReducer(initState, action)).toEqual({
-        experiment: { ...initState.experiment, dataPoints: payload },
+        experiment: {
+          ...initState.experiment,
+          changedSinceLastEvaluation: true,
+          dataPoints: payload,
+        },
       })
+    })
+
+    it('should set suggested experiments to 1 when adding the nth data point where n = initial points', () => {
+      const payload: DataPointType[][] = [
+        [
+          {
+            name: 'New point 1',
+            value: '1',
+          },
+          {
+            name: 'score',
+            value: [2],
+          },
+        ],
+        [
+          {
+            name: 'New point 1',
+            value: '1',
+          },
+          {
+            name: 'score',
+            value: [2],
+          },
+        ],
+        [
+          {
+            name: 'New point 1',
+            value: '1',
+          },
+          {
+            name: 'score',
+            value: [2],
+          },
+        ],
+      ]
+
+      const action: ExperimentAction = {
+        type: 'updateDataPoints',
+        payload,
+      }
+
+      const testState = {
+        ...initState,
+        experiment: {
+          ...initState.experiment,
+          extras: { experimentSuggestionCount: 3 },
+        },
+      }
+      expect(
+        rootReducer(testState, action).experiment.extras
+          .experimentSuggestionCount
+      ).toEqual(1)
+    })
+
+    it('should set suggested experiments to initial points when removing the nth data point where n = initial points', () => {
+      const payload: DataPointType[][] = [
+        [
+          {
+            name: 'New point 1',
+            value: '1',
+          },
+          {
+            name: 'score',
+            value: [2],
+          },
+        ],
+        [
+          {
+            name: 'New point 1',
+            value: '1',
+          },
+          {
+            name: 'score',
+            value: [2],
+          },
+        ],
+      ]
+
+      const action: ExperimentAction = {
+        type: 'updateDataPoints',
+        payload,
+      }
+
+      const testState = {
+        ...initState,
+        experiment: {
+          ...initState.experiment,
+          dataPoints: [
+            [
+              {
+                name: 'New point 1',
+                value: '1',
+              },
+              {
+                name: 'score',
+                value: [2],
+              },
+            ],
+            [
+              {
+                name: 'New point 1',
+                value: '1',
+              },
+              {
+                name: 'score',
+                value: [2],
+              },
+            ],
+            [
+              {
+                name: 'New point 1',
+                value: '1',
+              },
+              {
+                name: 'score',
+                value: [2],
+              },
+            ],
+          ],
+          extras: { experimentSuggestionCount: 1 },
+        },
+      }
+      expect(
+        rootReducer(testState, action).experiment.extras
+          .experimentSuggestionCount
+      ).toEqual(3)
     })
   })
 })

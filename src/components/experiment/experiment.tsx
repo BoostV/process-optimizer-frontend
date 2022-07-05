@@ -45,7 +45,9 @@ const LegacyExperiment = () => {
     dispatch,
     loading,
   } = useExperiment()
-  const global = useGlobal()
+  const {
+    state: { debug, uiSizes },
+  } = useGlobal()
 
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
@@ -117,7 +119,7 @@ const LegacyExperiment = () => {
                     </Typography>
                   </Grid>
                   <Grid item xs={5} container justifyContent="flex-end">
-                    {global.state.debug && (
+                    {debug && (
                       <Switch
                         checked={
                           experiment.scoreVariables.filter(it => it.enabled)
@@ -139,6 +141,9 @@ const LegacyExperiment = () => {
                       Download
                     </Button>
                     <LoadingButton
+                      disabled={
+                        !experiment.changedSinceLastEvaluation && !debug
+                      }
                       onClick={onRun}
                       isLoading={isRunning}
                       label="Run"
@@ -226,7 +231,7 @@ const LegacyExperiment = () => {
                   <Grid
                     item
                     xs={UISizeValue.Big}
-                    xl={getSize(global.state, 'result-data')}
+                    xl={getSize(uiSizes, 'result-data')}
                   >
                     <Grid
                       container
@@ -267,7 +272,7 @@ const LegacyExperiment = () => {
                   <Grid
                     item
                     xs={UISizeValue.Big}
-                    xl={getSize(global.state, 'plots')}
+                    xl={getSize(uiSizes, 'plots')}
                   >
                     <Plots />
                   </Grid>
