@@ -1,8 +1,8 @@
 import { ThemeName } from '../theme/theme'
-import produce, { Draft, Immutable } from 'immer'
+import produce from 'immer'
 import { assertUnreachable } from '../utility'
 
-export type State = Immutable<{
+export type State = {
   debug: boolean
   experimentsInLocalStorage: string[]
   theme: ThemeName
@@ -10,7 +10,7 @@ export type State = Immutable<{
   showJsonEditor: boolean
   uiSizes: UISize[]
   focus: 'configuration' | 'data-entry' | 'results' | 'legacy'
-}>
+}
 
 export enum UISizeValue {
   Small = 6,
@@ -69,7 +69,7 @@ export const initialState: State = {
   focus: 'legacy',
 }
 
-export const reducer = produce((state: Draft<State>, action: Action) => {
+export const reducer = produce((state: State, action: Action) => {
   switch (action.type) {
     case 'debug':
       state.debug = action.payload
