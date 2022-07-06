@@ -8,7 +8,7 @@ export const emptyExperiment: ExperimentType = {
     name: '',
     description: '',
     swVersion: versionInfo.version,
-    dataFormatVersion: '0',
+    dataFormatVersion: '7',
   },
   categoricalVariables: [],
   valueVariables: [],
