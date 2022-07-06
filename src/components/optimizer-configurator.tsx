@@ -1,6 +1,7 @@
 import { OptimizerConfig } from '../types/common'
 import { TitleCard } from './title-card/title-card'
 import { TextField } from '@mui/material'
+import { useGlobal } from '../context/global-context'
 
 type OptimizerConfiguratorProps = {
   config: OptimizerConfig
@@ -11,23 +12,15 @@ export default function OptimizerConfigurator(
   props: OptimizerConfiguratorProps
 ) {
   const { config, onConfigUpdated } = props
+  const {
+    state: { debug },
+  } = useGlobal()
 
   return (
     <TitleCard title="Configuration">
       <TextField
-        name="baseEstimator"
-        disabled
-        fullWidth
-        margin="dense"
-        defaultValue={config.baseEstimator}
-        label="Base estimator"
-        onChange={e =>
-          onConfigUpdated({ ...config, baseEstimator: e.target.value })
-        }
-      />
-      <TextField
         name="acqFunc"
-        disabled
+        disabled={!debug}
         fullWidth
         margin="dense"
         defaultValue={config.acqFunc}

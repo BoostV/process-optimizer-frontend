@@ -21,6 +21,7 @@ const doMigrations = (
   json: any,
   stopAtVersion: string
 ): void => {
+  console.log('Migrating', json.info.dataFormatVersion)
   json = migration.converter(json)
   const migrationIndex = MIGRATIONS.findIndex(m => m === migration)
   const isLastMigration =
@@ -94,6 +95,20 @@ const convertTo6 = (json: any): any => {
   }
 }
 
+const convertTo7 = (json: any): any => {
+  if (json.optimizerConfig.acqFunc === 'gp_hedge') {
+    return {
+      ...json,
+      optimizerConfig: { ...json.optimizerConfig, acqFunc: 'EI' },
+      changedSinceLastEvaluation: true,
+    }
+  }
+  return {
+    ...json,
+    changedSinceLastEvaluation: false,
+  }
+}
+
 interface Migration {
   version: string
   converter: (json: any) => any
@@ -109,4 +124,5 @@ export const MIGRATIONS: Migration[] = [
   { version: '4', converter: convertTo4 },
   { version: '5', converter: convertTo5 },
   { version: '6', converter: convertTo6 },
+  { version: '7', converter: convertTo7 },
 ]
