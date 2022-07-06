@@ -8,6 +8,7 @@ import {
   ValueVariableType,
 } from '../types/common'
 import { assertUnreachable } from '../utility'
+import produce from 'immer'
 
 const calculateInitialPoints = (state: ExperimentType) =>
   (state.categoricalVariables.length + state.valueVariables.length) * 3
@@ -65,210 +66,118 @@ export type ExperimentAction =
       type: 'experiment/toggleMultiObjective'
     }
 
-export const experimentReducer = (
-  experimentState: ExperimentType,
-  action: ExperimentAction
-): ExperimentType => {
-  let newState = experimentState
-  switch (action.type) {
-    case 'setSwVersion':
-      return {
-        ...experimentState,
-        info: {
-          ...experimentState.info,
-          swVersion: action.payload,
-        },
-      }
-    case 'updateExperiment':
-      return {
-        ...action.payload,
-        info: { ...action.payload.info, swVersion: versionInfo.version },
-      }
-    case 'updateExperimentName':
-      return {
-        ...experimentState,
-        info: {
-          ...experimentState.info,
-          name: action.payload,
-        },
-      }
-    case 'updateExperimentDescription':
-      return {
-        ...experimentState,
-        info: {
-          ...experimentState.info,
-          description: action.payload,
-        },
-      }
-    case 'updateSuggestionCount':
-      return {
-        ...experimentState,
-        changedSinceLastEvaluation: true,
-        extras: {
-          ...experimentState.extras,
-          experimentSuggestionCount: Number(action.payload),
-        },
-      }
-    case 'addValueVariable':
-      let varsAfterAdd: ValueVariableType[] =
-        experimentState.valueVariables.slice()
-      varsAfterAdd.splice(
-        experimentState.valueVariables.length,
-        0,
-        action.payload
-      )
-      newState = {
-        ...experimentState,
-        changedSinceLastEvaluation: true,
-        valueVariables: varsAfterAdd,
-      }
-      return {
-        ...newState,
-        optimizerConfig: {
-          ...experimentState.optimizerConfig,
-          initialPoints: calculateInitialPoints(newState),
-        },
-      }
-    case 'deleteValueVariable':
-      let varsAfterDelete: ValueVariableType[] =
-        experimentState.valueVariables.slice()
-      let indexOfDelete = experimentState.valueVariables.indexOf(action.payload)
-      varsAfterDelete.splice(indexOfDelete, 1)
-      newState = {
-        ...experimentState,
-        changedSinceLastEvaluation: true,
-        valueVariables: varsAfterDelete,
-      }
-      return {
-        ...newState,
-        optimizerConfig: {
-          ...experimentState.optimizerConfig,
-          initialPoints: calculateInitialPoints(newState),
-        },
-      }
-    case 'addCategorialVariable':
-      let catVarsAfterAdd: CategoricalVariableType[] =
-        experimentState.categoricalVariables.slice()
-      catVarsAfterAdd.splice(
-        experimentState.categoricalVariables.length,
-        0,
-        action.payload
-      )
-      newState = {
-        ...experimentState,
-        changedSinceLastEvaluation: true,
-        categoricalVariables: catVarsAfterAdd,
-      }
-      return {
-        ...newState,
-        optimizerConfig: {
-          ...experimentState.optimizerConfig,
-          initialPoints: calculateInitialPoints(newState),
-        },
-      }
-    case 'deleteCategorialVariable':
-      let catVarsAfterDelete: CategoricalVariableType[] =
-        experimentState.categoricalVariables.slice()
-      let indexOfCatDelete = experimentState.categoricalVariables.indexOf(
-        action.payload
-      )
-      catVarsAfterDelete.splice(indexOfCatDelete, 1)
-      newState = {
-        ...experimentState,
-        changedSinceLastEvaluation: true,
-        categoricalVariables: catVarsAfterDelete,
-      }
-      return {
-        ...newState,
-        optimizerConfig: {
-          ...experimentState.optimizerConfig,
-          initialPoints: calculateInitialPoints(newState),
-        },
-      }
-    case 'updateConfiguration':
-      if (
-        action.payload.initialPoints !==
-          experimentState.optimizerConfig.initialPoints &&
-        experimentState.dataPoints.length < action.payload.initialPoints
-      ) {
-        newState = {
-          ...newState,
-          extras: {
-            ...newState.extras,
-            experimentSuggestionCount: action.payload.initialPoints,
-          },
+export const experimentReducer = produce(
+  (state: ExperimentType, action: ExperimentAction): void | ExperimentType => {
+    switch (action.type) {
+      case 'setSwVersion':
+        state.info.swVersion = action.payload
+        break
+      case 'updateExperiment':
+        return {
+          ...action.payload,
+          info: { ...action.payload.info, swVersion: versionInfo.version },
         }
-      }
-      return {
-        ...newState,
-        changedSinceLastEvaluation: true,
-        optimizerConfig: action.payload,
-      }
-    case 'registerResult':
-      return {
-        ...experimentState,
-        changedSinceLastEvaluation: false,
-        results: action.payload,
-      }
-    case 'updateDataPoints':
-      if (
-        action.payload.length < experimentState.dataPoints.length &&
-        experimentState.dataPoints.length ===
-          experimentState.optimizerConfig.initialPoints
-      ) {
-        newState = {
-          ...newState,
-          extras: {
-            ...newState.extras,
-            experimentSuggestionCount:
-              experimentState.optimizerConfig.initialPoints,
-          },
+      case 'updateExperimentName':
+        state.info.name = action.payload
+        break
+      case 'updateExperimentDescription':
+        state.info.description = action.payload
+        break
+      case 'updateSuggestionCount':
+        state.changedSinceLastEvaluation = true
+        state.extras.experimentSuggestionCount = Number(action.payload)
+        break
+      case 'addValueVariable':
+        state.changedSinceLastEvaluation = true
+        state.valueVariables.splice(
+          state.valueVariables.length,
+          0,
+          action.payload
+        )
+        state.optimizerConfig.initialPoints = calculateInitialPoints(state)
+        break
+      case 'deleteValueVariable':
+        state.changedSinceLastEvaluation = true
+        let indexOfDelete = state.valueVariables.indexOf(action.payload)
+        state.valueVariables.splice(indexOfDelete, 1)
+        state.optimizerConfig.initialPoints = calculateInitialPoints(state)
+        break
+      case 'addCategorialVariable':
+        state.changedSinceLastEvaluation = true
+        state.categoricalVariables.splice(
+          state.categoricalVariables.length,
+          0,
+          action.payload
+        )
+        state.optimizerConfig.initialPoints = calculateInitialPoints(state)
+        break
+      case 'deleteCategorialVariable':
+        state.changedSinceLastEvaluation = true
+        let indexOfCatDelete = state.categoricalVariables.indexOf(
+          action.payload
+        )
+        state.categoricalVariables.splice(indexOfCatDelete, 1)
+        state.optimizerConfig.initialPoints = calculateInitialPoints(state)
+        break
+      case 'updateConfiguration':
+        state.changedSinceLastEvaluation = true
+        if (
+          action.payload.initialPoints !==
+            state.optimizerConfig.initialPoints &&
+          state.dataPoints.length < action.payload.initialPoints
+        ) {
+          state.extras.experimentSuggestionCount = action.payload.initialPoints
         }
-      }
-      if (
-        action.payload.length >=
-          experimentState.optimizerConfig.initialPoints &&
-        experimentState.dataPoints.length <
-          experimentState.optimizerConfig.initialPoints
-      ) {
-        newState = {
-          ...newState,
-          extras: { ...newState.extras, experimentSuggestionCount: 1 },
+        state.optimizerConfig = action.payload
+        break
+      case 'registerResult':
+        state.changedSinceLastEvaluation = false
+        state.results = action.payload
+        break
+      case 'updateDataPoints':
+        if (
+          action.payload.length < state.dataPoints.length &&
+          state.dataPoints.length === state.optimizerConfig.initialPoints
+        ) {
+          state.extras.experimentSuggestionCount =
+            state.optimizerConfig.initialPoints
         }
-      }
-      return {
-        ...newState,
-        changedSinceLastEvaluation: true,
-        dataPoints: action.payload,
-      }
-    case 'experiment/toggleMultiObjective':
-      newState = {
-        ...experimentState,
-        changedSinceLastEvaluation: true,
-        scoreVariables: experimentState.scoreVariables.map((it, idx) => ({
+        if (
+          action.payload.length >= state.optimizerConfig.initialPoints &&
+          state.dataPoints.length < state.optimizerConfig.initialPoints
+        ) {
+          state.extras.experimentSuggestionCount = 1
+        }
+        state.dataPoints = action.payload
+        state.changedSinceLastEvaluation = true
+        break
+      case 'experiment/toggleMultiObjective':
+        state.changedSinceLastEvaluation = true
+        state.scoreVariables = state.scoreVariables.map((it, idx) => ({
           ...it,
           enabled: idx < 1 || !it.enabled,
-        })),
-      }
-      if (newState.scoreVariables.length < 2) {
-        newState.scoreVariables.push({
-          name: 'score2',
-          description: 'score 2',
-          enabled: true,
-        })
-        const scoreNames = newState.scoreVariables.map(it => it.name)
-        newState.dataPoints.forEach(dp => {
-          const containedScores = dp
-            .filter(it => scoreNames.includes(it.name))
-            .map(it => it.name)
-          scoreNames.forEach(scoreName => {
-            if (!containedScores.includes(scoreName))
-              dp.push({ name: scoreName, value: '0' })
+        }))
+
+        if (state.scoreVariables.length < 2) {
+          state.scoreVariables.push({
+            name: 'score2',
+            description: 'score 2',
+            enabled: true,
           })
-        })
-      }
-      return newState
-    default:
-      assertUnreachable(action)
+          const scoreNames = state.scoreVariables.map(it => it.name)
+          state.dataPoints.forEach(dp => {
+            const containedScores = dp
+              .filter(it => scoreNames.includes(it.name))
+              .map(it => it.name)
+            scoreNames.forEach(scoreName => {
+              if (!containedScores.includes(scoreName))
+                dp.push({ name: scoreName, value: '0' })
+            })
+          })
+        }
+        break
+      default:
+        assertUnreachable(action)
+    }
   }
-}
+)
