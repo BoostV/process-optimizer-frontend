@@ -175,26 +175,42 @@ describe('experiment reducer', () => {
           payload,
         }
 
-        expect(rootReducer(initState, action)).toEqual({
-          experiment: {
-            ...initState.experiment,
-            optimizerConfig: {
-              ...initState.experiment.optimizerConfig,
-              initialPoints: 9,
-            },
-            changedSinceLastEvaluation: true,
-            valueVariables: [
-              {
-                name: 'Water',
-                description: 'Wet',
-                type: 'continuous',
-                min: 100,
-                max: 200,
-              },
-              payload,
-            ],
+        expect(
+          rootReducer(initState, action).experiment.valueVariables
+        ).toEqual([
+          {
+            name: 'Water',
+            description: 'Wet',
+            type: 'continuous',
+            min: 100,
+            max: 200,
           },
-        })
+          payload,
+        ])
+      })
+
+      it('should set initial points and suggestion', async () => {
+        const payload: ValueVariableType = {
+          type: 'continuous',
+          name: 'Flour',
+          description: 'Wet',
+          min: 300,
+          max: 400,
+        }
+
+        const action: ExperimentAction = {
+          type: 'addValueVariable',
+          payload,
+        }
+
+        expect(
+          rootReducer(initState, action).experiment.optimizerConfig
+            .initialPoints
+        ).toEqual(9)
+        expect(
+          rootReducer(initState, action).experiment.extras
+            .experimentSuggestionCount
+        ).toEqual(9)
       })
     })
 
@@ -213,17 +229,33 @@ describe('experiment reducer', () => {
           payload,
         }
 
-        expect(rootReducer(initState, action)).toEqual({
-          experiment: {
-            ...initState.experiment,
-            optimizerConfig: {
-              ...initState.experiment.optimizerConfig,
-              initialPoints: 3,
-            },
-            changedSinceLastEvaluation: true,
-            valueVariables: [],
-          },
-        })
+        expect(
+          rootReducer(initState, action).experiment.valueVariables
+        ).toEqual([])
+      })
+
+      it('should reset initial points and suggestion', async () => {
+        const payload: ValueVariableType = {
+          type: 'continuous',
+          name: 'Water',
+          description: 'Wet',
+          min: 100,
+          max: 200,
+        }
+
+        const action: ExperimentAction = {
+          type: 'deleteValueVariable',
+          payload,
+        }
+
+        expect(
+          rootReducer(initState, action).experiment.optimizerConfig
+            .initialPoints
+        ).toEqual(3)
+        expect(
+          rootReducer(initState, action).experiment.extras
+            .experimentSuggestionCount
+        ).toEqual(3)
       })
     })
 
@@ -240,24 +272,38 @@ describe('experiment reducer', () => {
           payload,
         }
 
-        expect(rootReducer(initState, action)).toEqual({
-          experiment: {
-            ...initState.experiment,
-            optimizerConfig: {
-              ...initState.experiment.optimizerConfig,
-              initialPoints: 9,
-            },
-            changedSinceLastEvaluation: true,
-            categoricalVariables: [
-              {
-                name: 'Icing',
-                description: 'Sugary',
-                options: [],
-              },
-              payload,
-            ],
+        expect(
+          rootReducer(initState, action).experiment.categoricalVariables
+        ).toEqual([
+          {
+            name: 'Icing',
+            description: 'Sugary',
+            options: [],
           },
-        })
+          payload,
+        ])
+      })
+
+      it('should set initial points and suggestion', async () => {
+        const payload: CategoricalVariableType = {
+          name: 'Fat',
+          description: 'Fatty',
+          options: [],
+        }
+
+        const action: ExperimentAction = {
+          type: 'addCategorialVariable',
+          payload,
+        }
+
+        expect(
+          rootReducer(initState, action).experiment.optimizerConfig
+            .initialPoints
+        ).toEqual(9)
+        expect(
+          rootReducer(initState, action).experiment.extras
+            .experimentSuggestionCount
+        ).toEqual(9)
       })
     })
 
@@ -274,17 +320,31 @@ describe('experiment reducer', () => {
           payload,
         }
 
-        expect(rootReducer(initState, action)).toEqual({
-          experiment: {
-            ...initState.experiment,
-            optimizerConfig: {
-              ...initState.experiment.optimizerConfig,
-              initialPoints: 3,
-            },
-            changedSinceLastEvaluation: true,
-            categoricalVariables: [],
-          },
-        })
+        expect(
+          rootReducer(initState, action).experiment.categoricalVariables
+        ).toEqual([])
+      })
+
+      it('should reset suggestion count and initial points', async () => {
+        const payload: CategoricalVariableType = {
+          name: 'Icing',
+          description: 'Sugary',
+          options: [],
+        }
+
+        const action: ExperimentAction = {
+          type: 'deleteCategorialVariable',
+          payload,
+        }
+
+        expect(
+          rootReducer(initState, action).experiment.optimizerConfig
+            .initialPoints
+        ).toEqual(3)
+        expect(
+          rootReducer(initState, action).experiment.extras
+            .experimentSuggestionCount
+        ).toEqual(3)
       })
     })
   })
