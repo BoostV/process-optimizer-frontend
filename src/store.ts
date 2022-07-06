@@ -21,7 +21,7 @@ export const emptyExperiment: ExperimentType = {
   ],
   optimizerConfig: {
     baseEstimator: 'GP',
-    acqFunc: 'gp_hedge',
+    acqFunc: 'EI',
     initialPoints: 3,
     kappa: 1.96,
     xi: 0.01,
