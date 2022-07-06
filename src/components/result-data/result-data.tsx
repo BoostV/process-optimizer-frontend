@@ -34,8 +34,6 @@ export const ResultData = (props: ResultDataProps) => {
     state: { uiSizes },
     dispatch,
   } = useGlobal()
-  const suggestionCount: number =
-    (experiment.extras['experimentSuggestionCount'] as number) ?? 1
 
   const isInitializing =
     experiment.optimizerConfig.initialPoints === 0 ||
@@ -89,9 +87,7 @@ export const ResultData = (props: ResultDataProps) => {
       }
     >
       <Box p={2}>
-        {!isInitializing && (
-          <NextExperiments suggestionCount={suggestionCount} />
-        )}
+        {!isInitializing && <NextExperiments />}
         {!nextValues ||
           (nextValues.length === 0 && (
             <div>Please run experiment to calculate suggestions</div>
