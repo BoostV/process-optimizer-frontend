@@ -2,7 +2,7 @@ import { Grid } from '@mui/material'
 import { useExperiment } from '../../context/experiment-context'
 import { DataPointType } from '../../types/common'
 import DataPoints from '../data-points/data-points'
-import { ResultData } from '../result-data/result-data'
+import { ExperimentationGuide } from '../result-data/experimentation-guide'
 
 export const DataEntryTab = () => {
   const {
@@ -29,7 +29,7 @@ export const DataEntryTab = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <ResultData
+        <ExperimentationGuide
           nextValues={nextValues}
           headers={headers}
           expectedMinimum={expectedMinimum}

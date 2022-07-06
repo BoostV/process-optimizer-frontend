@@ -5,7 +5,7 @@ import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import { useGlobal } from '../../context/global-context'
 import { isUIBig } from '../../utility/ui-util'
-import useStyles from './result-data.style'
+import useStyles from './experimentation-guide.style'
 import { SingleDataPoint } from './single-data-point'
 import { NextExperiments } from './next-experiments'
 import { InitializationProgress } from './initialization-progress'
@@ -18,7 +18,7 @@ interface ResultDataProps {
   onMouseLeaveExpand?: () => void
 }
 
-export const ResultData = (props: ResultDataProps) => {
+export const ExperimentationGuide = (props: ResultDataProps) => {
   const {
     nextValues,
     headers,
@@ -56,7 +56,7 @@ export const ResultData = (props: ResultDataProps) => {
       padding={0}
       title={
         <>
-          Result data
+          Experimentation guide
           <Hidden xlDown>
             <Tooltip
               title={

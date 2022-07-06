@@ -24,7 +24,7 @@ import {
   DataPointType,
 } from '../../types/common'
 import LoadingExperiment from './loading-experiment'
-import { ResultData } from '../result-data/result-data'
+import { ExperimentationGuide } from '../result-data/experimentation-guide'
 import LoadingButton from '../loading-button/loading-button'
 import { Plots } from '../plots/plots'
 import { saveObjectToLocalFile } from '../../utility/save-to-local-file'
@@ -247,7 +247,7 @@ const LegacyExperiment = () => {
                       }
                     >
                       <Grid item xs={12}>
-                        <ResultData
+                        <ExperimentationGuide
                           nextValues={nextValues}
                           headers={headers}
                           expectedMinimum={expectedMinimum}
