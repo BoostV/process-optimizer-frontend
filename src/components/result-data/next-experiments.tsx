@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Stack, TextField } from '@mui/material'
+import { Divider, Stack, TextField } from '@mui/material'
 import { useExperiment } from '../../context/experiment-context'
 
 export const NextExperiments = () => {
