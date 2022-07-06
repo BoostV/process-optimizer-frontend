@@ -1,6 +1,8 @@
 import { ThemeName } from '../theme/theme'
+import produce, { Draft, Immutable } from 'immer'
+import { assertUnreachable } from '../utility'
 
-export type State = {
+export type State = Immutable<{
   debug: boolean
   experimentsInLocalStorage: string[]
   theme: ThemeName
@@ -8,7 +10,7 @@ export type State = {
   showJsonEditor: boolean
   uiSizes: UISize[]
   focus: 'configuration' | 'data-entry' | 'results' | 'legacy'
-}
+}>
 
 export enum UISizeValue {
   Small = 6,
@@ -67,43 +69,45 @@ export const initialState: State = {
   focus: 'legacy',
 }
 
-export const reducer = (state: State, action: Action) => {
+export const reducer = produce((state: Draft<State>, action: Action) => {
   switch (action.type) {
     case 'debug':
-      return { ...state, debug: action.payload }
+      state.debug = action.payload
+      break
     case 'storeExperimentId':
       const id: string = action.payload
-      const storedIds: string[] = state.experimentsInLocalStorage
-      if (storedIds.indexOf(id) === -1) {
-        let idsAfterAdd: string[] = storedIds.slice()
-        idsAfterAdd.splice(storedIds.length, 0, id)
-        return { ...state, experimentsInLocalStorage: idsAfterAdd }
-      } else {
-        return state
+      if (state.experimentsInLocalStorage.indexOf(id) === -1) {
+        state.experimentsInLocalStorage.splice(
+          state.experimentsInLocalStorage.length,
+          0,
+          id
+        )
       }
+      break
     case 'deleteExperimentId':
-      let idsAfterDelete: string[] = state.experimentsInLocalStorage.slice()
       let indexOfDelete = state.experimentsInLocalStorage.indexOf(
         action.payload
       )
-      idsAfterDelete.splice(indexOfDelete, 1)
-      return { ...state, experimentsInLocalStorage: idsAfterDelete }
+      state.experimentsInLocalStorage.splice(indexOfDelete, 1)
+      break
     case 'setTheme':
-      return { ...state, theme: action.payload }
+      state.theme = action.payload
+      break
     case 'setDataPointsNewestFirst':
-      return { ...state, dataPointsNewestFirst: action.payload }
+      state.dataPointsNewestFirst = action.payload
+      break
     case 'setShowJsonEditor':
-      return { ...state, showJsonEditor: action.payload }
+      state.showJsonEditor = action.payload
+      break
     case 'toggleUISize':
       const indexSize = state.uiSizes.findIndex(u => u.key === action.payload)
-      let newSizes = state.uiSizes.slice()
       if (indexSize === -1) {
-        newSizes.splice(state.uiSizes.length, 0, {
+        state.uiSizes.splice(state.uiSizes.length, 0, {
           key: action.payload,
           value: UISizeValue.Big,
         })
       } else {
-        newSizes = state.uiSizes.map(size => {
+        state.uiSizes = state.uiSizes.map(size => {
           if (size.key !== action.payload) {
             return size
           }
@@ -116,10 +120,11 @@ export const reducer = (state: State, action: Action) => {
           }
         })
       }
-      return { ...state, uiSizes: newSizes }
+      break
     case 'global/setFocus':
-      return { ...state, focus: action.payload }
+      state.focus = action.payload
+      break
     default:
-      return state
+      assertUnreachable(action)
   }
-}
+})
