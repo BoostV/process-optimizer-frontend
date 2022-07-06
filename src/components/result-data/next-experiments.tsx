@@ -1,4 +1,5 @@
 import { Divider, Stack, TextField } from '@mui/material'
+import { ChangeEvent } from 'react'
 import { useExperiment } from '../../context/experiment-context'
 
 export const NextExperiments = () => {
@@ -9,6 +10,24 @@ export const NextExperiments = () => {
   const suggestionCount: number =
     (experiment.extras['experimentSuggestionCount'] as number) ?? 1
 
+  const handleSuggestionChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    dispatch({ type: 'updateSuggestionCount', payload: e.target.value })
+  }
+
+  const handleXiChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    dispatch({
+      type: 'updateConfiguration',
+      payload: {
+        ...experiment.optimizerConfig,
+        xi: Number(e.target.value),
+      },
+    })
+  }
+
   return (
     <Stack
       direction="row"
@@ -18,28 +37,18 @@ export const NextExperiments = () => {
       <TextField
         fullWidth
         type="number"
-        defaultValue={suggestionCount}
+        value={suggestionCount}
         name="numberOfSuggestions"
         label="Number of suggested experiments"
-        onChange={e =>
-          dispatch({ type: 'updateSuggestionCount', payload: e.target.value })
-        }
+        onChange={handleSuggestionChange}
       />
       <TextField
         fullWidth
         type="number"
-        defaultValue={experiment.optimizerConfig.xi}
+        value={experiment.optimizerConfig.xi}
         name="Xi"
         label="Xi"
-        onChange={e =>
-          dispatch({
-            type: 'updateConfiguration',
-            payload: {
-              ...experiment.optimizerConfig,
-              xi: Number(e.target.value),
-            },
-          })
-        }
+        onChange={handleXiChange}
       />
     </Stack>
   )
