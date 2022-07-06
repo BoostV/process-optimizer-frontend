@@ -46,7 +46,11 @@ const LegacyExperiment = () => {
     loading,
   } = useExperiment()
   const {
-    state: { debug, uiSizes },
+    state: {
+      debug,
+      uiSizes,
+      flags: { advancedConfiguration },
+    },
   } = useGlobal()
 
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
@@ -212,17 +216,19 @@ const LegacyExperiment = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <OptimizerConfigurator
-                      config={experiment.optimizerConfig}
-                      onConfigUpdated={(config: OptimizerConfig) =>
-                        dispatch({
-                          type: 'updateConfiguration',
-                          payload: config,
-                        })
-                      }
-                    />
-                  </Grid>
+                  {advancedConfiguration && (
+                    <Grid item xs={12}>
+                      <OptimizerConfigurator
+                        config={experiment.optimizerConfig}
+                        onConfigUpdated={(config: OptimizerConfig) =>
+                          dispatch({
+                            type: 'updateConfiguration',
+                            payload: config,
+                          })
+                        }
+                      />
+                    </Grid>
+                  )}
                 </Grid>
               </Grid>
 
