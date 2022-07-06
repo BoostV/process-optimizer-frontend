@@ -1,15 +1,7 @@
 import { ThemeName } from '../theme/theme'
-import { reducer, State, UISizeValue } from './global-reducer'
+import { initialState, reducer, State, UISizeValue } from './global-reducer'
 
-const initState: State = {
-  debug: false,
-  experimentsInLocalStorage: [],
-  theme: 'BlueGreen',
-  dataPointsNewestFirst: false,
-  showJsonEditor: false,
-  uiSizes: [{ key: 'plots', value: 12 }],
-  focus: 'legacy',
-}
+const initState = initialState
 
 describe('storeExperimentId', () => {
   it('should store id', async () => {
@@ -98,8 +90,26 @@ describe('toggleUISize', () => {
       ...initState,
       uiSizes: [{ key: payload, value: UISizeValue.Small }],
     }
-    expect(reducer(initState, { type: 'toggleUISize', payload })).toEqual(
+    const testState: State = {
+      ...initState,
+      uiSizes: [{ key: 'plots', value: 12 }],
+    }
+    expect(reducer(testState, { type: 'toggleUISize', payload })).toEqual(
       expectedState
     )
+  })
+})
+
+describe('toggleAdvancedConfiguration', () => {
+  it('should toggle advanced configuration flag', () => {
+    let state = reducer(initState, {
+      type: 'global/toggleAdvancedConfiguration',
+    })
+    expect(state.flags.advancedConfiguration).toBeTruthy()
+
+    state = reducer(state, {
+      type: 'global/toggleAdvancedConfiguration',
+    })
+    expect(state.flags.advancedConfiguration).toBeFalsy()
   })
 })

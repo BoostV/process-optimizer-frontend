@@ -24,7 +24,7 @@ import {
   DataPointType,
 } from '../../types/common'
 import LoadingExperiment from './loading-experiment'
-import { ResultData } from '../result-data/result-data'
+import { ExperimentationGuide } from '../result-data/experimentation-guide'
 import LoadingButton from '../loading-button/loading-button'
 import { Plots } from '../plots/plots'
 import { saveObjectToLocalFile } from '../../utility/save-to-local-file'
@@ -46,7 +46,11 @@ const LegacyExperiment = () => {
     loading,
   } = useExperiment()
   const {
-    state: { debug, uiSizes },
+    state: {
+      debug,
+      uiSizes,
+      flags: { advancedConfiguration },
+    },
   } = useGlobal()
 
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
@@ -212,17 +216,19 @@ const LegacyExperiment = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <OptimizerConfigurator
-                      config={experiment.optimizerConfig}
-                      onConfigUpdated={(config: OptimizerConfig) =>
-                        dispatch({
-                          type: 'updateConfiguration',
-                          payload: config,
-                        })
-                      }
-                    />
-                  </Grid>
+                  {advancedConfiguration && (
+                    <Grid item xs={12}>
+                      <OptimizerConfigurator
+                        config={experiment.optimizerConfig}
+                        onConfigUpdated={(config: OptimizerConfig) =>
+                          dispatch({
+                            type: 'updateConfiguration',
+                            payload: config,
+                          })
+                        }
+                      />
+                    </Grid>
+                  )}
                 </Grid>
               </Grid>
 
@@ -241,7 +247,7 @@ const LegacyExperiment = () => {
                       }
                     >
                       <Grid item xs={12}>
-                        <ResultData
+                        <ExperimentationGuide
                           nextValues={nextValues}
                           headers={headers}
                           expectedMinimum={expectedMinimum}

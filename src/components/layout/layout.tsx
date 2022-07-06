@@ -35,6 +35,9 @@ export default function Layout({ children }: Props) {
     }
   }
 
+  const toggleAdvancedConfiguration = () =>
+    dispatch({ type: 'global/toggleAdvancedConfiguration' })
+
   return (
     <>
       <AppBar>
@@ -76,6 +79,19 @@ export default function Layout({ children }: Props) {
                 />
               }
               label="Use tabs"
+            />
+          )}
+          {showDebug && (
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={state.flags.advancedConfiguration}
+                  onChange={toggleAdvancedConfiguration}
+                  name="showJsonEditor"
+                  color="secondary"
+                />
+              }
+              label="Advanced configuration"
             />
           )}
           {

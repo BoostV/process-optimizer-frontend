@@ -5,7 +5,7 @@ import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import { useGlobal } from '../../context/global-context'
 import { isUIBig } from '../../utility/ui-util'
-import useStyles from './result-data.style'
+import useStyles from './experimentation-guide.style'
 import { SingleDataPoint } from './single-data-point'
 import { NextExperiments } from './next-experiments'
 import { InitializationProgress } from './initialization-progress'
@@ -18,7 +18,7 @@ interface ResultDataProps {
   onMouseLeaveExpand?: () => void
 }
 
-export const ResultData = (props: ResultDataProps) => {
+export const ExperimentationGuide = (props: ResultDataProps) => {
   const {
     nextValues,
     headers,
@@ -34,8 +34,6 @@ export const ResultData = (props: ResultDataProps) => {
     state: { uiSizes },
     dispatch,
   } = useGlobal()
-  const suggestionCount: number =
-    (experiment.extras['experimentSuggestionCount'] as number) ?? 1
 
   const isInitializing =
     experiment.optimizerConfig.initialPoints === 0 ||
@@ -58,7 +56,7 @@ export const ResultData = (props: ResultDataProps) => {
       padding={0}
       title={
         <>
-          Result data
+          Experimentation guide
           <Hidden xlDown>
             <Tooltip
               title={
@@ -89,9 +87,7 @@ export const ResultData = (props: ResultDataProps) => {
       }
     >
       <Box p={2}>
-        {!isInitializing && (
-          <NextExperiments suggestionCount={suggestionCount} />
-        )}
+        {!isInitializing && <NextExperiments />}
         {!nextValues ||
           (nextValues.length === 0 && (
             <div>Please run experiment to calculate suggestions</div>

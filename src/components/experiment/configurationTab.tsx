@@ -1,5 +1,6 @@
 import { Grid } from '@mui/material'
 import { useExperiment } from '../../context/experiment-context'
+import { useGlobal } from '../../context/global-context'
 import {
   ValueVariableType,
   CategoricalVariableType,
@@ -14,13 +15,18 @@ export const ConfigurationTab = () => {
     state: { experiment },
     dispatch,
   } = useExperiment()
+  const {
+    state: {
+      flags: { advancedConfiguration },
+    },
+  } = useGlobal()
 
   const valueVariables = experiment.valueVariables
   const categoricalVariables = experiment.categoricalVariables
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs>
+      <Grid item xs="auto">
         <Details
           info={experiment.info}
           updateName={(name: string) =>
@@ -73,17 +79,19 @@ export const ConfigurationTab = () => {
           }
         />
       </Grid>
-      <Grid item xs>
-        <OptimizerConfigurator
-          config={experiment.optimizerConfig}
-          onConfigUpdated={(config: OptimizerConfig) =>
-            dispatch({
-              type: 'updateConfiguration',
-              payload: config,
-            })
-          }
-        />
-      </Grid>
+      {advancedConfiguration && (
+        <Grid item xs>
+          <OptimizerConfigurator
+            config={experiment.optimizerConfig}
+            onConfigUpdated={(config: OptimizerConfig) =>
+              dispatch({
+                type: 'updateConfiguration',
+                payload: config,
+              })
+            }
+          />
+        </Grid>
+      )}
     </Grid>
   )
 }

@@ -10,6 +10,9 @@ export type State = {
   showJsonEditor: boolean
   uiSizes: UISize[]
   focus: 'configuration' | 'data-entry' | 'results' | 'legacy'
+  flags: {
+    advancedConfiguration: boolean
+  }
 }
 
 export enum UISizeValue {
@@ -57,6 +60,7 @@ export type Action =
       type: 'global/setFocus'
       payload: State['focus']
     }
+  | { type: 'global/toggleAdvancedConfiguration' }
 export type Dispatch = (action: Action) => void
 
 export const initialState: State = {
@@ -67,6 +71,9 @@ export const initialState: State = {
   showJsonEditor: false,
   uiSizes: [],
   focus: 'legacy',
+  flags: {
+    advancedConfiguration: false,
+  },
 }
 
 export const reducer = produce((state: State, action: Action) => {
@@ -123,6 +130,9 @@ export const reducer = produce((state: State, action: Action) => {
       break
     case 'global/setFocus':
       state.focus = action.payload
+      break
+    case 'global/toggleAdvancedConfiguration':
+      state.flags.advancedConfiguration = !state.flags.advancedConfiguration
       break
     default:
       assertUnreachable(action)
