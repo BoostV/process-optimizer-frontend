@@ -100,7 +100,7 @@ const convertTo7 = (json: any): any => {
     return {
       ...json,
       optimizerConfig: { ...json.optimizerConfig, acqFunc: 'EI' },
-      changedSinceLastEvaluation: false,
+      changedSinceLastEvaluation: true,
     }
   }
   return {

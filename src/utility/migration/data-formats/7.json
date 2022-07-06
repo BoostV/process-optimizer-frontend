@@ -1,6 +1,6 @@
 {
   "id": "1234",
-  "changedSinceLastEvaluation": false,
+  "changedSinceLastEvaluation": true,
   "info": {
     "dataFormatVersion": "7",
     "swVersion": "v1.2.0-16",
