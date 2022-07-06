@@ -38,6 +38,7 @@ export const ResultData = (props: ResultDataProps) => {
     (experiment.extras['experimentSuggestionCount'] as number) ?? 1
 
   const isInitializing =
+    experiment.optimizerConfig.initialPoints === 0 ||
     experiment.dataPoints.length < experiment.optimizerConfig.initialPoints
   const summary = isInitializing ? (
     <InitializationProgress />

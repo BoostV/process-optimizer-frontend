@@ -10,6 +10,12 @@ import {
 import { assertUnreachable } from '../utility'
 import produce from 'immer'
 
+const calculateInitialPoints = (state: ExperimentType) =>
+  Math.max(
+    3,
+    (state.categoricalVariables.length + state.valueVariables.length) * 3
+  )
+
 export type ExperimentAction =
   | {
       type: 'setSwVersion'
@@ -91,11 +97,17 @@ export const experimentReducer = produce(
           0,
           action.payload
         )
+        state.optimizerConfig.initialPoints = calculateInitialPoints(state)
+        state.extras.experimentSuggestionCount =
+          state.optimizerConfig.initialPoints
         break
       case 'deleteValueVariable':
         state.changedSinceLastEvaluation = true
         let indexOfDelete = state.valueVariables.indexOf(action.payload)
         state.valueVariables.splice(indexOfDelete, 1)
+        state.optimizerConfig.initialPoints = calculateInitialPoints(state)
+        state.extras.experimentSuggestionCount =
+          state.optimizerConfig.initialPoints
         break
       case 'addCategorialVariable':
         state.changedSinceLastEvaluation = true
@@ -104,6 +116,9 @@ export const experimentReducer = produce(
           0,
           action.payload
         )
+        state.optimizerConfig.initialPoints = calculateInitialPoints(state)
+        state.extras.experimentSuggestionCount =
+          state.optimizerConfig.initialPoints
         break
       case 'deleteCategorialVariable':
         state.changedSinceLastEvaluation = true
@@ -111,6 +126,9 @@ export const experimentReducer = produce(
           action.payload
         )
         state.categoricalVariables.splice(indexOfCatDelete, 1)
+        state.optimizerConfig.initialPoints = calculateInitialPoints(state)
+        state.extras.experimentSuggestionCount =
+          state.optimizerConfig.initialPoints
         break
       case 'updateConfiguration':
         state.changedSinceLastEvaluation = true
