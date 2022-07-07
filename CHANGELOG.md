@@ -1,6 +1,41 @@
 # Changelog
 
-## [v1.5.0](https://github.com/BoostV/process-optimizer-frontend/tree/HEAD)
+## [v1.6.0](https://github.com/BoostV/process-optimizer-frontend/tree/v1.6.0) (2022-07-07)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.5.0...v1.6.0)
+
+**Implemented enhancements:**
+
+- 167 change default acquisition model [\#177](https://github.com/BoostV/process-optimizer-frontend/pull/177) ([langdal](https://github.com/langdal))
+- Feature/advanced configuration [\#176](https://github.com/BoostV/process-optimizer-frontend/pull/176) ([langdal](https://github.com/langdal))
+- 159 number of initial experiments should be dynamically calculated [\#173](https://github.com/BoostV/process-optimizer-frontend/pull/173) ([langdal](https://github.com/langdal))
+- Hide model configuration until n initial experiments [\#172](https://github.com/BoostV/process-optimizer-frontend/pull/172) ([langdal](https://github.com/langdal))
+- Prepend "/" to experiment paths [\#162](https://github.com/BoostV/process-optimizer-frontend/pull/162) ([lasseborly](https://github.com/lasseborly))
+
+**Closed issues:**
+
+- Use Immer in reducer to simplify state updates [\#174](https://github.com/BoostV/process-optimizer-frontend/issues/174)
+- Upgrade to react 18 [\#170](https://github.com/BoostV/process-optimizer-frontend/issues/170)
+- Change default acquisition model [\#167](https://github.com/BoostV/process-optimizer-frontend/issues/167)
+- Hide model configuration until N initial experiments are run [\#164](https://github.com/BoostV/process-optimizer-frontend/issues/164)
+- Implement expandable table rows for data points [\#163](https://github.com/BoostV/process-optimizer-frontend/issues/163)
+- Number of initial experiments should be dynamically calculated [\#159](https://github.com/BoostV/process-optimizer-frontend/issues/159)
+- Migrate from material-ui to mui [\#157](https://github.com/BoostV/process-optimizer-frontend/issues/157)
+- Declutter interface by introducing activity focus mode \(Tabs and summaries\) [\#155](https://github.com/BoostV/process-optimizer-frontend/issues/155)
+- Maintenance: Enable Typescript "strict" mode [\#152](https://github.com/BoostV/process-optimizer-frontend/issues/152)
+- Move expected minimum into its own card [\#133](https://github.com/BoostV/process-optimizer-frontend/issues/133)
+
+**Merged pull requests:**
+
+- 174 use immer in reducer to simplify state updates [\#175](https://github.com/BoostV/process-optimizer-frontend/pull/175) ([langdal](https://github.com/langdal))
+- Upgrade to react 18 [\#171](https://github.com/BoostV/process-optimizer-frontend/pull/171) ([langdal](https://github.com/langdal))
+- Maintenance/157 migrate from material UI to mui [\#169](https://github.com/BoostV/process-optimizer-frontend/pull/169) ([langdal](https://github.com/langdal))
+- Feature/163 implement expandable table rows for data points [\#168](https://github.com/BoostV/process-optimizer-frontend/pull/168) ([j-or](https://github.com/j-or))
+- Maintenance: Update OpenAPI tools and parsing [\#165](https://github.com/BoostV/process-optimizer-frontend/pull/165) ([langdal](https://github.com/langdal))
+- Feature/155 tabs example implementation of simple tab mechanism [\#158](https://github.com/BoostV/process-optimizer-frontend/pull/158) ([langdal](https://github.com/langdal))
+- Maintenance/152 maintenance enable typescript strict mode [\#153](https://github.com/BoostV/process-optimizer-frontend/pull/153) ([langdal](https://github.com/langdal))
+
+## [v1.5.0](https://github.com/BoostV/process-optimizer-frontend/tree/v1.5.0) (2022-04-28)
 
 [Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.4.1...v1.5.0)
 
@@ -151,15 +186,15 @@
 
 ## [v1.2.0](https://github.com/BoostV/process-optimizer-frontend/tree/v1.2.0) (2021-06-18)
 
-[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.1.1...v1.2.0)
-
-## [v1.1.1](https://github.com/BoostV/process-optimizer-frontend/tree/v1.1.1) (2021-06-18)
-
-[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.1.0...v1.1.1)
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.1.0...v1.2.0)
 
 ## [v1.1.0](https://github.com/BoostV/process-optimizer-frontend/tree/v1.1.0) (2021-06-18)
 
-[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.0.1...v1.1.0)
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.1.1...v1.1.0)
+
+## [v1.1.1](https://github.com/BoostV/process-optimizer-frontend/tree/v1.1.1) (2021-06-18)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.0.1...v1.1.1)
 
 **Implemented enhancements:**
 
