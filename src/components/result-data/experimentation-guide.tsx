@@ -1,4 +1,4 @@
-import { useExperiment, useSelector } from '../../context/experiment-context'
+import { useSelector } from '../../context/experiment-context'
 import { Suggestions } from './suggestions'
 import { TitleCard } from '../title-card/title-card'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
