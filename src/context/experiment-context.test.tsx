@@ -1,33 +1,42 @@
-import { render, screen } from '@testing-library/react'
-import { useExperiment, ExperimentProvider } from './experiment-context'
+import { renderHook } from '@testing-library/react'
+import { FC } from 'react'
+import { State } from '../store'
+import {
+  useExperiment,
+  ExperimentProvider,
+  useSelector,
+} from './experiment-context'
 import { GlobalStateProvider } from './global-context'
+
+const ExperimentWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
+  <GlobalStateProvider>
+    <ExperimentProvider experimentId="123">{children}</ExperimentProvider>
+  </GlobalStateProvider>
+)
 
 describe('useExperiment', () => {
   it('fails if called outside provider', async () => {
     console.error = jest.fn()
-    function ExperimentTester() {
-      const context = useExperiment()
-      return <>{JSON.stringify(context)}</>
-    }
-    expect(() => render(<ExperimentTester />)).toThrow(
+    expect(() => renderHook(() => useExperiment())).toThrow(
       'useExperiment must be used within an ExperimentProvider'
     )
     expect(console.error).toHaveBeenCalled()
   })
 
   it('provides context when called inside provider', async () => {
-    function ExperimentTester() {
-      const context = useExperiment()
-      return <div data-testid="json">{JSON.stringify(context)}</div>
-    }
-    render(
-      <GlobalStateProvider>
-        <ExperimentProvider experimentId="123">
-          <ExperimentTester />
-        </ExperimentProvider>
-      </GlobalStateProvider>
-    )
-    const rawJson = screen.getByTestId('json')
-    expect(rawJson.innerHTML).toMatch(/123/)
+    const { result } = renderHook(() => useExperiment(), {
+      wrapper: ExperimentWrapper,
+    })
+    expect(result.current.state.experiment.id).toMatch(/123/)
+  })
+})
+
+describe('useSelector', () => {
+  it('should bind selector to state', () => {
+    const testSelector = (state: State) => state.experiment.id
+    const { result } = renderHook(() => useSelector(testSelector), {
+      wrapper: ExperimentWrapper,
+    })
+    expect(result.current).toEqual('123')
   })
 })
