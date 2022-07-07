@@ -56,12 +56,12 @@ export default function DataPoints(props: DataPointProps) {
     return (
       valueVariables.map(v => ({
         ...v,
-        tooltip: `[${v.min}, ${v.max}]`,
+        tooltip: `[${v.min}, ${v.max}] ${v.description}`,
       })) as CombinedVariableType[]
     ).concat(
       categoricalVariables.map(v => ({
         ...v,
-        tooltip: `${v.options.length} options`,
+        tooltip: `${v.options.length} options ${v.description}`,
       })) as CombinedVariableType[]
     )
   }, [categoricalVariables, valueVariables])
