@@ -5,7 +5,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
 import CheckIcon from '@mui/icons-material/Check'
 import { useExperiment } from '../../context/experiment-context'
 import { useEffect, useState } from 'react'
@@ -66,11 +65,13 @@ export const InitializationProgress = () => {
     <>
       <Box sx={{ textAlign: 'center' }}>
         <Typography variant="overline">Initializing model</Typography>
-        <Typography variant="h4" sx={{ marginLeft: 2 }}>
+
+        <Typography
+          variant="h4"
+          sx={{ cursor: 'pointer' }}
+          onClick={() => setEditActive(!editActive)}
+        >
           {dataPoints.length}/{optimizerConfig.initialPoints}
-          <IconButton onClick={() => setEditActive(!editActive)}>
-            <EditIcon fontSize="small" color="primary" />
-          </IconButton>
         </Typography>
         <Typography variant="caption">date points added</Typography>
       </Box>
