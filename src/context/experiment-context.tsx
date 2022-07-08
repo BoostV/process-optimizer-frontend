@@ -71,6 +71,14 @@ function useExperiment() {
   return context
 }
 
+export const useSelector = <T,>(selector: (state: State) => T) => {
+  const context = React.useContext(ExperimentContext)
+  if (context === undefined) {
+    throw new Error('useSelector must be used within an ExperimentProvider')
+  }
+  return selector(context.state)
+}
+
 const fetchExperimentResult = async (
   experiment: ExperimentType
 ): Promise<ExperimentResultType> => {

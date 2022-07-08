@@ -12,7 +12,11 @@ import Layout from '../layout/layout'
 import { Alert } from '@mui/material'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { useStyles } from './experiment.style'
-import { useExperiment, runExperiment } from '../../context/experiment-context'
+import {
+  useExperiment,
+  runExperiment,
+  useSelector,
+} from '../../context/experiment-context'
 import React, { useState } from 'react'
 import LoadingExperiment from './loading-experiment'
 import LoadingButton from '../loading-button/loading-button'
@@ -22,6 +26,7 @@ import { useGlobal } from '../../context/global-context'
 import { ConfigurationTab } from './configurationTab'
 import { DataEntryTab } from './dataEntryTab'
 import { State } from '../../reducers/global-reducer'
+import { selectIsInitializing } from '../../reducers/experiment-selectors'
 
 type SnackbarMessage = {
   message: string
@@ -40,6 +45,8 @@ const TabbedExperiment = () => {
     dispatch: globalDispatch,
   } = useGlobal()
 
+  const isInitializing = useSelector(selectIsInitializing)
+
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
   const [isRunning, setRunning] = useState(false)
@@ -51,7 +58,11 @@ const TabbedExperiment = () => {
   const onRun = async () => {
     setRunning(true)
     try {
-      await runExperiment(dispatch, experiment)
+      if (isInitializing) {
+        await runExperiment(dispatch, { ...experiment, dataPoints: [] })
+      } else {
+        await runExperiment(dispatch, experiment)
+      }
       runCompleted({ message: 'Experiment run completed', severity: 'success' })
     } catch (error) {
       runCompleted({ message: 'Experiment run failed', severity: 'error' })

@@ -1,4 +1,4 @@
-import { useExperiment } from '../../context/experiment-context'
+import { useSelector } from '../../context/experiment-context'
 import { Suggestions } from './suggestions'
 import { TitleCard } from '../title-card/title-card'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
@@ -9,6 +9,7 @@ import useStyles from './experimentation-guide.style'
 import { SingleDataPoint } from './single-data-point'
 import { NextExperiments } from './next-experiments'
 import { InitializationProgress } from './initialization-progress'
+import { selectIsInitializing } from '../../reducers/experiment-selectors'
 
 interface ResultDataProps {
   nextValues: string[][]
@@ -28,16 +29,11 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   } = props
   const classes = useStyles()
   const {
-    state: { experiment },
-  } = useExperiment()
-  const {
     state: { uiSizes },
     dispatch,
   } = useGlobal()
 
-  const isInitializing =
-    experiment.optimizerConfig.initialPoints === 0 ||
-    experiment.dataPoints.length < experiment.optimizerConfig.initialPoints
+  const isInitializing = useSelector(selectIsInitializing)
   const summary = isInitializing ? (
     <InitializationProgress />
   ) : expectedMinimum && expectedMinimum.length > 0 ? (
