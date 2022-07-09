@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material'
-import { useExperiment } from '../../context/experiment-context'
-import { useGlobal } from '../../context/global-context'
+import { useExperiment } from '../../context/experiment'
+import { useGlobal } from '../../context/global'
 import {
   ValueVariableType,
   CategoricalVariableType,

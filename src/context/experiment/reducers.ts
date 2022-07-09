@@ -1,5 +1,5 @@
-import { State } from '../store'
-import { assertUnreachable } from '../utility'
+import { State } from '../../context/experiment/store'
+import { assertUnreachable } from '../../utility'
 import { ExperimentAction, experimentReducer } from './experiment-reducers'
 
 export type Action = ExperimentAction

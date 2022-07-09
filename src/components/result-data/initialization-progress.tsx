@@ -6,7 +6,7 @@ import {
   Typography,
 } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
-import { useExperiment } from '../../context/experiment-context'
+import { useExperiment } from '../../context/experiment'
 import { useEffect, useState } from 'react'
 
 export const InitializationProgress = () => {

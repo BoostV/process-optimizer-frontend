@@ -1,6 +1,6 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useCallback, useEffect, useMemo, useReducer } from 'react'
-import { useGlobal } from '../../context/global-context'
+import { useGlobal } from '../../context/global'
 import {
   DataPointType,
   TableDataPoint,
@@ -17,10 +17,7 @@ import { TitleCard } from '../title-card/title-card'
 import useStyles from './data-points.style'
 import DownloadCSVButton from '../download-csv-button'
 import UploadCSVButton from '../upload-csv-button'
-import {
-  dataPointsReducer,
-  DataPointsState,
-} from '../../reducers/data-points-reducer'
+import { dataPointsReducer, DataPointsState } from './data-points-reducer'
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]

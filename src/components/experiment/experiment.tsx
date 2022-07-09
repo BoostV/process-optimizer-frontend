@@ -19,7 +19,7 @@ import {
   useExperiment,
   runExperiment,
   useSelector,
-} from '../../context/experiment-context'
+} from '../../context/experiment'
 import React, { useState } from 'react'
 import {
   ValueVariableType,
@@ -32,11 +32,11 @@ import { ExperimentationGuide } from '../result-data/experimentation-guide'
 import LoadingButton from '../loading-button/loading-button'
 import { Plots } from '../plots/plots'
 import { saveObjectToLocalFile } from '../../utility/save-to-local-file'
-import { useGlobal } from '../../context/global-context'
-import { UISizeValue } from '../../reducers/global-reducer'
+import { useGlobal } from '../../context/global'
+import { UISizeValue } from '../../context/global'
 import { getSize } from '../../utility/ui-util'
 import { AlertColor } from '@mui/material'
-import { selectIsInitializing } from '../../reducers/experiment-selectors'
+import { selectIsInitializing } from '../../context/experiment'
 
 type SnackbarMessage = {
   message: string

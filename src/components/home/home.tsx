@@ -21,9 +21,9 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { buildPath, paths } from '../../../paths'
 import { ExperimentType } from '../../types/common'
-import { useGlobal } from '../../context/global-context'
+import { useGlobal } from '../../context/global'
 import { v4 as uuid } from 'uuid'
-import { reducer } from '../../reducers/home-reducer'
+import { reducer } from './home-reducer'
 import { CreateOrOverwriteDialog } from '../create-or-overwrite-dialog/create-or-overwrite-dialog'
 
 type UploadMessage = {

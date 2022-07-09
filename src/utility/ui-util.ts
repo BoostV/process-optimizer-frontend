@@ -1,5 +1,5 @@
 import { GridSize } from '@mui/material'
-import { UISize, UISizeKey, UISizeValue } from '../reducers/global-reducer'
+import { UISize, UISizeKey, UISizeValue } from '../context/global'
 
 export const isUIBig = (uiSizes: UISize[], key: UISizeKey): boolean => {
   return uiSizes.find(u => u.key === key)?.value === UISizeValue.Big

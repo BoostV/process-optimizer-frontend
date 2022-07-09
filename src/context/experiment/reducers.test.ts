@@ -1,6 +1,6 @@
 import { ExperimentAction } from './experiment-reducers'
 import { rootReducer } from './reducers'
-import { State, emptyExperiment } from '../store'
+import { State, emptyExperiment } from '../../context/experiment/store'
 import {
   CategoricalVariableType,
   DataPointType,
@@ -8,7 +8,7 @@ import {
   ExperimentType,
   OptimizerConfig,
   ValueVariableType,
-} from '../types/common'
+} from '../../types/common'
 
 describe('experiment reducer', () => {
   const initState: State = {

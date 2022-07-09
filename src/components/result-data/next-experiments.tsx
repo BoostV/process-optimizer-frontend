@@ -1,6 +1,6 @@
 import { Divider, Stack, TextField } from '@mui/material'
 import { ChangeEvent } from 'react'
-import { useExperiment } from '../../context/experiment-context'
+import { useExperiment } from '../../context/experiment'
 
 export const NextExperiments = () => {
   const {

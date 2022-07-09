@@ -1,4 +1,4 @@
-import { initialState } from '../store'
+import { initialState } from '../context/experiment/store'
 import {
   CategoricalVariableType,
   ExperimentType,

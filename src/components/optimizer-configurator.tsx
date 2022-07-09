@@ -1,7 +1,7 @@
 import { OptimizerConfig } from '../types/common'
 import { TitleCard } from './title-card/title-card'
 import { TextField } from '@mui/material'
-import { useGlobal } from '../context/global-context'
+import { useGlobal } from '../context/global'
 
 type OptimizerConfiguratorProps = {
   config: OptimizerConfig

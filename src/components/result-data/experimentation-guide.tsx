@@ -1,15 +1,15 @@
-import { useSelector } from '../../context/experiment-context'
+import { useSelector } from '../../context/experiment'
 import { Suggestions } from './suggestions'
 import { TitleCard } from '../title-card/title-card'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
-import { useGlobal } from '../../context/global-context'
+import { useGlobal } from '../../context/global'
 import { isUIBig } from '../../utility/ui-util'
 import useStyles from './experimentation-guide.style'
 import { SingleDataPoint } from './single-data-point'
 import { NextExperiments } from './next-experiments'
 import { InitializationProgress } from './initialization-progress'
-import { selectIsInitializing } from '../../reducers/experiment-selectors'
+import { selectIsInitializing } from '../../context/experiment'
 
 interface ResultDataProps {
   nextValues: string[][]

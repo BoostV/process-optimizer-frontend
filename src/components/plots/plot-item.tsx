@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { Typography } from '@mui/material'
-import { useExperiment } from '../../context/experiment-context'
+import { useExperiment } from '../../context/experiment'
 import useStyles from './plot-item.style'
 
 interface PlotItemProps {

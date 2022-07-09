@@ -1,6 +1,6 @@
-import { ThemeName } from '../theme/theme'
+import { ThemeName } from '../../theme/theme'
 import produce from 'immer'
-import { assertUnreachable } from '../utility'
+import { assertUnreachable } from '../../utility'
 
 export type State = {
   debug: boolean
