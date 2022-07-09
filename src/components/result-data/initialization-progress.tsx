@@ -73,7 +73,7 @@ export const InitializationProgress = () => {
         >
           {dataPoints.length}/{optimizerConfig.initialPoints}
         </Typography>
-        <Typography variant="caption">date points added</Typography>
+        <Typography variant="caption">data points added</Typography>
       </Box>
       <LinearProgress variant="determinate" value={progress} />
     </>
