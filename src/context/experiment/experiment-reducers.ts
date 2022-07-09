@@ -1,4 +1,4 @@
-import { versionInfo } from '../../components/version-info'
+import { versionInfo } from '@/components/version-info'
 import {
   CategoricalVariableType,
   DataPointType,
@@ -6,8 +6,8 @@ import {
   ExperimentType,
   OptimizerConfig,
   ValueVariableType,
-} from '../../types/common'
-import { assertUnreachable } from '../../utility'
+} from '@/types/common'
+import { assertUnreachable } from '@/utility'
 import produce from 'immer'
 
 const calculateInitialPoints = (state: ExperimentType) =>

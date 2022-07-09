@@ -9,7 +9,7 @@ import {
   Typography,
   Tooltip,
 } from '@mui/material'
-import { CategoricalVariableType, ValueVariableType } from '../../types/common'
+import { CategoricalVariableType, ValueVariableType } from '@/types/common'
 import DeleteIcon from '@mui/icons-material/Delete'
 import VariableEditor from './variable-editor'
 import useStyles from './optimizer-model.style'

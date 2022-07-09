@@ -5,13 +5,13 @@ import version4 from './data-formats/4.json'
 import version3 from './data-formats/3.json'
 import version2 from './data-formats/2.json'
 import version1 from './data-formats/1.json'
-import { emptyExperiment } from '../../context/experiment/store'
-import { ExperimentType } from '../../types/common'
+import { emptyExperiment } from '@/context/experiment/store'
+import { ExperimentType } from '@/types/common'
 import fs from 'fs'
 
 const loadLatestJson = () => {
   const fileVersions: number[] = fs
-    .readdirSync('src/utility/migration/data-formats')
+    .readdirSync('./src/utility/migration/data-formats')
     .map(f => parseInt(f.replace(/[^0-9]/, '')))
   const latestVersion = Math.max(...fileVersions)
   return JSON.parse(

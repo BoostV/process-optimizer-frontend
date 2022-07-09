@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react'
 import { FC } from 'react'
-import { State } from '../../context/experiment/store'
+import { State } from '@/context/experiment/store'
 import {
   useExperiment,
   ExperimentProvider,

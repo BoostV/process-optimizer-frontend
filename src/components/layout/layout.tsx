@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import Link from 'next/link'
 import useStyles from './layout.style'
-import { useGlobal } from '../../context/global'
+import { useGlobal } from '@/context/global'
 import { VersionInfo } from '../version-info'
 import { useState } from 'react'
 

@@ -1,6 +1,6 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useCallback, useEffect, useMemo, useReducer } from 'react'
-import { useGlobal } from '../../context/global'
+import { useGlobal } from '@/context/global'
 import {
   DataPointType,
   TableDataPoint,
@@ -10,7 +10,7 @@ import {
   CategoricalVariableType,
   DataPointTypeValue,
   ScoreVariableType,
-} from '../../types/common'
+} from '@/types/common'
 import { EditableTable } from '../editable-table/editable-table'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
 import { TitleCard } from '../title-card/title-card'

@@ -4,6 +4,7 @@ module.exports = {
   watchPathIgnorePatterns: ['<rootDir>/boost-tests-', '<rootDir>/tmp/'],
   moduleNameMapper: {
     '\\.(scss|sass|css)$': 'identity-obj-proxy',
+    '^@/(.*)': ['<rootDir>/src/$1'],
   },
   testEnvironment: 'jsdom',
   transform: {

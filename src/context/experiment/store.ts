@@ -1,5 +1,5 @@
-import { ExperimentType } from '../../types/common'
-import { versionInfo } from '../../components/version-info'
+import { ExperimentType } from '@/types/common'
+import { versionInfo } from '@/components/version-info'
 
 export const emptyExperiment: ExperimentType = {
   id: '',

@@ -4,8 +4,8 @@ import { useState, useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import CategoricalVariableOptions from './categorical-variable-options'
 import { useStyles } from './categorical-variable.style'
-import { CategoricalVariableType } from '../../types/common'
-import { validation } from '../../utility/forms/validation'
+import { CategoricalVariableType } from '@/types/common'
+import { validation } from '@/utility/forms/validation'
 
 type CategoricalVariableProps = {
   isDisabled: boolean

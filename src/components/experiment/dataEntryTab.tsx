@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material'
-import { useExperiment } from '../../context/experiment'
-import { DataPointType } from '../../types/common'
+import { useExperiment } from '@/context/experiment'
+import { DataPointType } from '@/types/common'
 import DataPoints from '../data-points/data-points'
 import { ExperimentationGuide } from '../result-data/experimentation-guide'
 

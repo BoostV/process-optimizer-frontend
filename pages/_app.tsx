@@ -4,7 +4,7 @@ import { AppProps } from 'next/app'
 import CssBaseline from '@mui/material/CssBaseline'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import createEmotionCache from '../src/createEmotionCache'
-import { GlobalStateProvider } from '../src/context/global'
+import { GlobalStateProvider } from '@/context/global'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()

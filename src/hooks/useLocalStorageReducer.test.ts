@@ -1,7 +1,7 @@
 import { useLocalStorageReducer } from './useLocalStorageReducer'
 import { renderHook } from '@testing-library/react'
-import { initialState, State } from '../context/experiment/store'
-import { Action } from '../context/experiment'
+import { initialState, State } from '@/context/experiment/store'
+import { Action } from '@/context/experiment'
 
 describe('useLocalStorageReducer', () => {
   it('can be called once', () => {

@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router'
-import { ExperimentProvider } from '../../src/context/experiment'
-import TabbedExperiment from '../../src/components/experiment/tabbed-experiment'
-import Experiment from '../../src/components/experiment/experiment'
-import DebugExperiment from '../../src/components/experiment/debug-experiment'
-import { useGlobal } from '../../src/context/global'
-import LoadingExperiment from '../../src/components/experiment/loading-experiment'
-import JsonEditor from '../../src/components/json-editor/json-editor'
+import { ExperimentProvider } from '@/context/experiment'
+import TabbedExperiment from '@/components/experiment/tabbed-experiment'
+import Experiment from '@/components/experiment/experiment'
+import DebugExperiment from '@/components/experiment/debug-experiment'
+import { useGlobal } from '@/context/global'
+import LoadingExperiment from '@/components/experiment/loading-experiment'
+import JsonEditor from '@/components/json-editor/json-editor'
 
 export default function ExperimentContainer() {
   const router = useRouter()

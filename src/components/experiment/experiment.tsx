@@ -15,28 +15,24 @@ import { Alert } from '@mui/material'
 import Details from '../details'
 import DataPoints from '../data-points/data-points'
 import { useStyles } from './experiment.style'
-import {
-  useExperiment,
-  runExperiment,
-  useSelector,
-} from '../../context/experiment'
+import { useExperiment, runExperiment, useSelector } from '@/context/experiment'
 import React, { useState } from 'react'
 import {
   ValueVariableType,
   CategoricalVariableType,
   OptimizerConfig,
   DataPointType,
-} from '../../types/common'
+} from '@/types/common'
 import LoadingExperiment from './loading-experiment'
 import { ExperimentationGuide } from '../result-data/experimentation-guide'
 import LoadingButton from '../loading-button/loading-button'
 import { Plots } from '../plots/plots'
-import { saveObjectToLocalFile } from '../../utility/save-to-local-file'
-import { useGlobal } from '../../context/global'
-import { UISizeValue } from '../../context/global'
-import { getSize } from '../../utility/ui-util'
+import { saveObjectToLocalFile } from '@/utility/save-to-local-file'
+import { useGlobal } from '@/context/global'
+import { UISizeValue } from '@/context/global'
+import { getSize } from '@/utility/ui-util'
 import { AlertColor } from '@mui/material'
-import { selectIsInitializing } from '../../context/experiment'
+import { selectIsInitializing } from '@/context/experiment'
 
 type SnackbarMessage = {
   message: string

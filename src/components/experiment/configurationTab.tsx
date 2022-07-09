@@ -1,11 +1,11 @@
 import { Grid } from '@mui/material'
-import { useExperiment } from '../../context/experiment'
-import { useGlobal } from '../../context/global'
+import { useExperiment } from '@/context/experiment'
+import { useGlobal } from '@/context/global'
 import {
   ValueVariableType,
   CategoricalVariableType,
   OptimizerConfig,
-} from '../../types/common'
+} from '@/types/common'
 import Details from '../details'
 import OptimizerModel from '../input-model/optimizer-model'
 import OptimizerConfigurator from '../optimizer-configurator'
