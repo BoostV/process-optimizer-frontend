@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material'
 import { useExperiment } from '@/context/experiment'
-import { useGlobal } from '@/context/global'
+import { useSelector } from '@/context/global'
 import {
   ValueVariableType,
   CategoricalVariableType,
@@ -9,17 +9,15 @@ import {
 import Details from '../details'
 import OptimizerModel from '../input-model/optimizer-model'
 import OptimizerConfigurator from '../optimizer-configurator'
+import { selectAdvancedConfiguration } from '@/context/global/global-selectors'
 
 export const ConfigurationTab = () => {
   const {
     state: { experiment },
     dispatch,
   } = useExperiment()
-  const {
-    state: {
-      flags: { advancedConfiguration },
-    },
-  } = useGlobal()
+
+  const advancedConfiguration = useSelector(selectAdvancedConfiguration)
 
   const valueVariables = experiment.valueVariables
   const categoricalVariables = experiment.categoricalVariables
