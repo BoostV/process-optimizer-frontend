@@ -1,5 +1,22 @@
 # Changelog
 
+## [v1.6.1](https://github.com/BoostV/process-optimizer-frontend/tree/v1.6.1)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.6.0...v1.6.1)
+
+**Fixed bugs:**
+
+- During initialization don't send data points to backend [\#178](https://github.com/BoostV/process-optimizer-frontend/issues/178)
+
+**Closed issues:**
+
+- Remove edit icon on initialization view [\#179](https://github.com/BoostV/process-optimizer-frontend/issues/179)
+
+**Merged pull requests:**
+
+- 178 during initialization dont send data points to backend [\#181](https://github.com/BoostV/process-optimizer-frontend/pull/181) ([langdal](https://github.com/langdal))
+- Remove edit icon on intialization view [\#180](https://github.com/BoostV/process-optimizer-frontend/pull/180) ([langdal](https://github.com/langdal))
+
 ## [v1.6.0](https://github.com/BoostV/process-optimizer-frontend/tree/v1.6.0) (2022-07-07)
 
 [Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.5.0...v1.6.0)
