@@ -26,18 +26,26 @@ const overrides = {
       },
     },
   },
-  MuiSelect: {
-    styleOverrides: {
-      select: {
-        paddingBottom: 4,
-      },
-    },
-  },
   MuiListItem: {
     styleOverrides: {
       root: {
         paddingTop: 0,
         paddingBottom: 0,
+      },
+    },
+  },
+  MuiTextField: {
+    defaultProps: {
+      variant: 'standard',
+    },
+  },
+  MuiSelect: {
+    defaultProps: {
+      variant: 'standard',
+    },
+    styleOverrides: {
+      select: {
+        paddingBottom: 2,
       },
     },
   },
