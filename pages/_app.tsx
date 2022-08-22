@@ -3,8 +3,9 @@ import Head from 'next/head'
 import { AppProps } from 'next/app'
 import CssBaseline from '@mui/material/CssBaseline'
 import { CacheProvider, EmotionCache } from '@emotion/react'
-import createEmotionCache from '../src/createEmotionCache'
+import createEmotionCache from '@/createEmotionCache'
 import { GlobalStateProvider } from '@/context/global'
+import { useRouter } from 'next/router'
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache()
@@ -14,6 +15,14 @@ interface MyAppProps extends AppProps {
 }
 
 export default function MyApp(props: MyAppProps) {
+  const router = useRouter()
+  const [firstLoad, setFirstLoad] = React.useState(true)
+  React.useEffect(() => {
+    if (window.location.pathname !== '/' && firstLoad) {
+      setFirstLoad(false)
+      router.push(window.location.pathname + window.location.search)
+    }
+  }, [firstLoad, router])
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
   return (
     <CacheProvider value={emotionCache}>
