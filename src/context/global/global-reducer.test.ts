@@ -1,4 +1,4 @@
-import { ThemeName } from '../../theme/theme'
+import { ThemeName } from '@/theme/theme'
 import { initialState, reducer, State, UISizeValue } from './global-reducer'
 
 const initState = initialState

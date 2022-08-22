@@ -13,7 +13,7 @@ import { CategoricalVariableType, ValueVariableType } from '@/types/common'
 import DeleteIcon from '@mui/icons-material/Delete'
 import VariableEditor from './variable-editor'
 import useStyles from './optimizer-model.style'
-import { TitleCard } from '../title-card/title-card'
+import { TitleCard } from '@/components/title-card/title-card'
 import LensIcon from '@mui/icons-material/Lens'
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
 

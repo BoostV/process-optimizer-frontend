@@ -5,13 +5,13 @@ import {
   Configuration,
   DefaultApi,
   OptimizerapiOptimizerRunRequest,
-} from '../../../openapi'
+} from '@openapi'
 import { Dispatch, rootReducer } from './reducers'
 import { initialState, State } from '@/context/experiment/store'
 import { ExperimentResultType, ExperimentType } from '@/types/common'
 import { calculateData, calculateSpace } from '@/utility/converters'
 import { migrate } from '@/utility/migration/migration'
-import { useGlobal } from '../global/'
+import { useGlobal } from '@/context/global/'
 
 const ExperimentContext = React.createContext<
   { state: State; dispatch: Dispatch; loading: boolean } | undefined

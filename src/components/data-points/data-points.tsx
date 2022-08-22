@@ -11,12 +11,12 @@ import {
   DataPointTypeValue,
   ScoreVariableType,
 } from '@/types/common'
-import { EditableTable } from '../editable-table/editable-table'
+import { EditableTable } from '@/components/editable-table/editable-table'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
-import { TitleCard } from '../title-card/title-card'
+import { TitleCard } from '@/components/title-card/title-card'
 import useStyles from './data-points.style'
-import DownloadCSVButton from '../download-csv-button'
-import UploadCSVButton from '../upload-csv-button'
+import DownloadCSVButton from '@/components/download-csv-button'
+import UploadCSVButton from '@/components/upload-csv-button'
 import { dataPointsReducer, DataPointsState } from './data-points-reducer'
 
 type DataPointProps = {

@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material'
 import { useExperiment } from '@/context/experiment'
 import { DataPointType } from '@/types/common'
-import DataPoints from '../data-points/data-points'
-import { ExperimentationGuide } from '../result-data/experimentation-guide'
+import DataPoints from '@/components/data-points/data-points'
+import { ExperimentationGuide } from '@/components/result-data/experimentation-guide'
 
 export const DataEntryTab = () => {
   const {

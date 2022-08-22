@@ -10,7 +10,7 @@ import {
 import Link from 'next/link'
 import useStyles from './layout.style'
 import { useGlobal } from '@/context/global'
-import { VersionInfo } from '../version-info'
+import { VersionInfo } from '@/components/version-info'
 import { useState } from 'react'
 
 interface Props {

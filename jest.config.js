@@ -5,6 +5,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(scss|sass|css)$': 'identity-obj-proxy',
     '^@/(.*)': ['<rootDir>/src/$1'],
+    '^@openapi': ['<rootDir>/openapi'],
   },
   testEnvironment: 'jsdom',
   transform: {

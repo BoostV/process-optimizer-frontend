@@ -23,7 +23,7 @@
     "noUncheckedIndexedAccess": true,
     "strictNullChecks": true,
     "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"] }
+    "paths": { "@/*": ["./src/*"], "@openapi": ["./openapi"] }
   },
   "include": ["next-env.d.ts", "global-fetch.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

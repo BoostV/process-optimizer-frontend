@@ -1,4 +1,4 @@
-import { ExperimentData } from '../../openapi'
+import { ExperimentData } from '@openapi'
 import {
   CategoricalVariableType,
   DataPointType,

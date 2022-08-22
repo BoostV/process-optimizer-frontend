@@ -6,7 +6,7 @@ import {
   ExperimentProvider,
   useSelector,
 } from './experiment-context'
-import { GlobalStateProvider } from '../global'
+import { GlobalStateProvider } from '@/context/global'
 
 const ExperimentWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
   <GlobalStateProvider>

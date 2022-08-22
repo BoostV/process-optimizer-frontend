@@ -1,6 +1,6 @@
 import { useExperiment } from '@/context/experiment'
 import useStyles from './plots.style'
-import { TitleCard } from '../title-card/title-card'
+import { TitleCard } from '@/components/title-card/title-card'
 import { Tooltip, IconButton, Hidden } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import { useGlobal } from '@/context/global'
