@@ -2,7 +2,7 @@ export const versionInfo = {
   version:
     // @ts-ignore
     typeof VERSION !== 'undefined' ? VERSION : '',
-  commithasg:
+  commithash:
     // @ts-ignore
     typeof COMMITHASH !== 'undefined' ? COMMITHASH : '',
   branch:
@@ -11,10 +11,11 @@ export const versionInfo = {
 }
 
 export const VersionInfo = () => {
+  const showBranch = !/^HEAD$|^main$/.test(versionInfo.branch)
   return (
     <div>
       {versionInfo.version}
-      {/HEAD|main/.test(versionInfo.branch) || ` [${versionInfo.branch}]`}
+      {showBranch && ` [${versionInfo.branch}]`}
     </div>
   )
 }
