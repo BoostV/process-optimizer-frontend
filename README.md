@@ -73,5 +73,5 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## License
 
-Copyright (c) 2021, BoostV. All rights reserved.
+Copyright (c) 2022, BoostV. All rights reserved.
 Licensed under the BSD 3-Clause License. See [LICENSE](LICENSE.md).
