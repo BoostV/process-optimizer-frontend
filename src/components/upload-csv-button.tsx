@@ -1,7 +1,7 @@
 import { IconButton, Input, Tooltip } from '@mui/material'
-import { useExperiment } from '../context/experiment-context'
-import { DataPointType } from '../types/common'
-import { csvToDataPoints } from '../utility/converters'
+import { useExperiment } from '@/context/experiment'
+import { DataPointType } from '@/types/common'
+import { csvToDataPoints } from '@/utility/converters'
 import PublishIcon from '@mui/icons-material/Publish'
 import { ChangeEvent } from 'react'
 

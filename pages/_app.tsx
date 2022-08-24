@@ -3,8 +3,8 @@ import Head from 'next/head'
 import { AppProps } from 'next/app'
 import CssBaseline from '@mui/material/CssBaseline'
 import { CacheProvider, EmotionCache } from '@emotion/react'
-import createEmotionCache from '../src/createEmotionCache'
-import { GlobalStateProvider } from '../src/context/global-context'
+import createEmotionCache from '@/createEmotionCache'
+import { GlobalStateProvider } from '@/context/global'
 import { useRouter } from 'next/router'
 
 // Client-side cache, shared for the whole session of the user in the browser.

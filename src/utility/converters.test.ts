@@ -1,10 +1,10 @@
-import { initialState } from '../store'
+import { initialState } from '@/context/experiment/store'
 import {
   CategoricalVariableType,
   ExperimentType,
   ScoreVariableType,
   ValueVariableType,
-} from '../types/common'
+} from '@/types/common'
 import {
   calculateSpace,
   calculateData,

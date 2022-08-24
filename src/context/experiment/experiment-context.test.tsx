@@ -1,12 +1,12 @@
 import { renderHook } from '@testing-library/react'
 import { FC } from 'react'
-import { State } from '../store'
+import { State } from '@/context/experiment/store'
 import {
   useExperiment,
   ExperimentProvider,
   useSelector,
 } from './experiment-context'
-import { GlobalStateProvider } from './global-context'
+import { GlobalStateProvider } from '@/context/global'
 
 const ExperimentWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
   <GlobalStateProvider>

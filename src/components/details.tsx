@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material'
-import { Info } from '../types/common'
+import { Info } from '@/types/common'
 import { TitleCard } from './title-card/title-card'
 
 type DetailsProps = {

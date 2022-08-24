@@ -8,25 +8,21 @@ import {
   Tab,
   Typography,
 } from '@mui/material'
-import Layout from '../layout/layout'
+import Layout from '@/components/layout/layout'
 import { Alert } from '@mui/material'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { useStyles } from './experiment.style'
-import {
-  useExperiment,
-  runExperiment,
-  useSelector,
-} from '../../context/experiment-context'
+import { useExperiment, runExperiment, useSelector } from '@/context/experiment'
 import React, { useState } from 'react'
 import LoadingExperiment from './loading-experiment'
-import LoadingButton from '../loading-button/loading-button'
-import { Plots } from '../plots/plots'
-import { saveObjectToLocalFile } from '../../utility/save-to-local-file'
-import { useGlobal } from '../../context/global-context'
+import LoadingButton from '@/components/loading-button/loading-button'
+import { Plots } from '@/components/plots/plots'
+import { saveObjectToLocalFile } from '@/utility/save-to-local-file'
+import { useGlobal } from '@/context/global'
 import { ConfigurationTab } from './configurationTab'
 import { DataEntryTab } from './dataEntryTab'
-import { State } from '../../reducers/global-reducer'
-import { selectIsInitializing } from '../../reducers/experiment-selectors'
+import { State } from '@/context/global'
+import { selectIsInitializing } from '@/context/experiment'
 
 type SnackbarMessage = {
   message: string

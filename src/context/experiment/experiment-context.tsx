@@ -1,17 +1,17 @@
 import * as React from 'react'
-import { versionInfo } from '../components/version-info'
-import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
+import { versionInfo } from '@/components/version-info'
+import { useLocalStorageReducer } from '@/hooks/useLocalStorageReducer'
 import {
   Configuration,
   DefaultApi,
   OptimizerapiOptimizerRunRequest,
-} from '../../openapi'
-import { Dispatch, rootReducer } from '../reducers/reducers'
-import { initialState, State } from '../store'
-import { ExperimentResultType, ExperimentType } from '../types/common'
-import { calculateData, calculateSpace } from '../utility/converters'
-import { migrate } from '../utility/migration/migration'
-import { useGlobal } from './global-context'
+} from '@openapi'
+import { Dispatch, rootReducer } from './reducers'
+import { initialState, State } from '@/context/experiment/store'
+import { ExperimentResultType, ExperimentType } from '@/types/common'
+import { calculateData, calculateSpace } from '@/utility/converters'
+import { migrate } from '@/utility/migration/migration'
+import { useGlobal } from '@/context/global/'
 
 const ExperimentContext = React.createContext<
   { state: State; dispatch: Dispatch; loading: boolean } | undefined
@@ -22,7 +22,7 @@ type ExperimentProviderProps = {
   children: any
 }
 
-function ExperimentProvider({
+export function ExperimentProvider({
   experimentId,
   children,
 }: ExperimentProviderProps) {
@@ -63,7 +63,7 @@ function ExperimentProvider({
   )
 }
 
-function useExperiment() {
+export function useExperiment() {
   const context = React.useContext(ExperimentContext)
   if (context === undefined) {
     throw new Error('useExperiment must be used within an ExperimentProvider')
@@ -124,9 +124,10 @@ const fetchExperimentResult = async (
   return experimentResult
 }
 
-async function runExperiment(dispatch: Dispatch, experiment: ExperimentType) {
+export async function runExperiment(
+  dispatch: Dispatch,
+  experiment: ExperimentType
+) {
   const result = await fetchExperimentResult(experiment)
   dispatch({ type: 'registerResult', payload: result })
 }
-
-export { ExperimentProvider, useExperiment, runExperiment }

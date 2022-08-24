@@ -1,4 +1,4 @@
-import { TableDataRow } from '../../types/common'
+import { TableDataRow } from '@/types/common'
 import { useState } from 'react'
 import { EditableTableExpandedRow } from './editable-table-expanded-row'
 import { EditableTableCollapsedRow } from './editable-table-collapsed-row'
