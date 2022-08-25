@@ -92,18 +92,6 @@ export type SpaceType = {
   categories?: string[]
 }[]
 
-export type TableDataPoint = {
-  name: string
-  value: string
-  tooltip?: string
-  options?: string[] | undefined
-}
-
-export type TableDataRow = {
-  dataPoints: TableDataPoint[]
-  isNew: boolean
-}
-
 export type CombinedVariableType = {
   name: string
   description: string

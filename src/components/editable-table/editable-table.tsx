@@ -6,10 +6,10 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
-import { TableDataRow } from '@/types/common'
 import { EditableTableRow } from './editable-table-row'
 import { getRowIndex, getRowId } from './editable-table-util'
 import useStyles from './editable-table.style'
+import { TableDataRow } from './types'
 
 type EditableTableProps = {
   rows: TableDataRow[]

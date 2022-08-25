@@ -1,4 +1,4 @@
-import { TableDataRow } from '@/types/common'
+import { TableDataRow } from '@/components/editable-table'
 
 interface EditRow {
   row: TableDataRow

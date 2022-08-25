@@ -1,5 +1,5 @@
 import { dataPointsReducer, DataPointsState } from './data-points-reducer'
-import { TableDataRow } from '@/types/common'
+import { TableDataRow } from '@/components/editable-table'
 
 describe('data points reducer', () => {
   const initialState: DataPointsState = {

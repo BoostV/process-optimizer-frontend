@@ -3,8 +3,6 @@ import { useCallback, useEffect, useMemo, useReducer } from 'react'
 import { useGlobal } from '@/context/global'
 import {
   DataPointType,
-  TableDataPoint,
-  TableDataRow,
   CombinedVariableType,
   ValueVariableType,
   CategoricalVariableType,
@@ -18,6 +16,7 @@ import useStyles from './data-points.style'
 import DownloadCSVButton from '@/components/download-csv-button'
 import UploadCSVButton from '@/components/upload-csv-button'
 import { dataPointsReducer, DataPointsState } from './data-points-reducer'
+import { TableDataRow, TableDataPoint } from '@/components/editable-table'
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]
