@@ -26,10 +26,19 @@ const overrides = {
       },
     },
   },
+  MuiTextField: {
+    styleOverrides: {
+      root: {
+        '& input': {
+          padding: '14px 8px 14px 8px',
+        },
+      },
+    },
+  },
   MuiSelect: {
     styleOverrides: {
       select: {
-        paddingBottom: 4,
+        padding: '14px 8px 14px 8px',
       },
     },
   },
