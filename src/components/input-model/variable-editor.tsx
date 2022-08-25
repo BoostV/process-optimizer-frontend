@@ -3,7 +3,7 @@ import ValueVariable from './value-variable'
 import { Box, Tab, Tabs } from '@mui/material'
 import { useState, ChangeEvent } from 'react'
 import useStyles from './variable-editor.style'
-import { CategoricalVariableType, ValueVariableType } from '../../types/common'
+import { CategoricalVariableType, ValueVariableType } from '@/types/common'
 
 type VariableEditorProps = {
   isAddVariableDisabled: boolean

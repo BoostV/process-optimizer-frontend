@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material'
-import { useGlobal } from '../../context/global-context'
+import { useGlobal } from '@/context/global'
 import useStyles from './theme-selector.style'
-import { themes } from '../../theme/theme'
+import { themes } from '@/theme/theme'
 
 export default function ThemeSelector() {
   const classes = useStyles()

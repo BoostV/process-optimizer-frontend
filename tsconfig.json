@@ -21,7 +21,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": { "@/*": ["./src/*"], "@openapi": ["./openapi"] }
   },
   "include": ["next-env.d.ts", "global-fetch.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

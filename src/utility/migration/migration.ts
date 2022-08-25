@@ -1,5 +1,5 @@
 import compareVersions from 'compare-versions'
-import { ExperimentType } from '../../types/common'
+import { ExperimentType } from '@/types/common'
 
 //TODO: Compare json to current ExperimentType and set missing fields to default values?
 export const migrate = (

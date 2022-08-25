@@ -1,4 +1,4 @@
-import { TableDataRow } from '../types/common'
+import { TableDataRow } from '@/types/common'
 
 interface EditRow {
   row: TableDataRow

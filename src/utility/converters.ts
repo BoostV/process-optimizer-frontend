@@ -1,4 +1,4 @@
-import { ExperimentData } from '../../openapi'
+import { ExperimentData } from '@openapi'
 import {
   CategoricalVariableType,
   DataPointType,
@@ -7,7 +7,7 @@ import {
   ScoreVariableType,
   SpaceType,
   ValueVariableType,
-} from '../types/common'
+} from '@/types/common'
 
 export const calculateSpace = (experiment: ExperimentType): SpaceType => {
   const numerical: SpaceType = experiment.valueVariables.map(v => {

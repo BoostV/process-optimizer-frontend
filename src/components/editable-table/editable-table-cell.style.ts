@@ -1,5 +1,5 @@
 import { makeStyles } from '@mui/styles'
-import { tableBorder } from '../../theme/theme'
+import { tableBorder } from '@/theme/theme'
 
 export const useStyles = makeStyles(() => ({
   editCell: {

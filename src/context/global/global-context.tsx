@@ -1,14 +1,9 @@
 import { Theme, ThemeProvider } from '@mui/material'
 import * as React from 'react'
-import ThemeSelector from '../components/theme-selector/theme-selector'
-import { useLocalStorageReducer } from '../hooks/useLocalStorageReducer'
-import {
-  State,
-  Dispatch,
-  initialState,
-  reducer,
-} from '../reducers/global-reducer'
-import { theme, themes, CustomTheme } from '../theme/theme'
+import ThemeSelector from '@/components/theme-selector/theme-selector'
+import { useLocalStorageReducer } from '@/hooks/useLocalStorageReducer'
+import { State, Dispatch, initialState, reducer } from './global-reducer'
+import { theme, themes, CustomTheme } from '@/theme/theme'
 
 declare module '@mui/styles/defaultTheme' {
   interface DefaultTheme extends Theme {}
@@ -22,7 +17,7 @@ interface GlobalStateProviderProps {
   children: React.ReactNode
 }
 
-function GlobalStateProvider({ children }: GlobalStateProviderProps) {
+export function GlobalStateProvider({ children }: GlobalStateProviderProps) {
   const [state, dispatch] = useLocalStorageReducer(
     reducer,
     initialState,
@@ -60,7 +55,7 @@ function GlobalStateProvider({ children }: GlobalStateProviderProps) {
   )
 }
 
-function useGlobal() {
+export function useGlobal() {
   const context = React.useContext(GlobalContext)
   if (context === undefined) {
     throw new Error('useGlobal must be used within a GlobalStateProvider')
@@ -68,4 +63,10 @@ function useGlobal() {
   return context
 }
 
-export { GlobalStateProvider, useGlobal }
+export const useSelector = <T,>(selector: (state: State) => T) => {
+  const context = React.useContext(GlobalContext)
+  if (context === undefined) {
+    throw new Error('useSelector must be used within an GlobalStateProvider')
+  }
+  return selector(context.state)
+}
