@@ -1,6 +1,10 @@
 import { Grid } from '@mui/material'
-import { useExperiment } from '@/context/experiment'
-import { DataPointType } from '@/types/common'
+import {
+  selectDataPoints,
+  useExperiment,
+  useSelector,
+} from '@/context/experiment'
+import { DataEntry } from '@/types/common'
 import DataPoints from '@/components/data-points/data-points'
 import { ExperimentationGuide } from '@/components/result-data/experimentation-guide'
 
@@ -9,6 +13,8 @@ export const DataEntryTab = () => {
     state: { experiment },
     dispatch,
   } = useExperiment()
+
+  const dataPoints: DataEntry[] = useSelector(selectDataPoints)
 
   const valueVariables = experiment.valueVariables
   const categoricalVariables = experiment.categoricalVariables
@@ -41,8 +47,8 @@ export const DataEntryTab = () => {
           valueVariables={experiment.valueVariables}
           categoricalVariables={experiment.categoricalVariables}
           scoreVariables={experiment.scoreVariables}
-          dataPoints={experiment.dataPoints}
-          onUpdateDataPoints={(dataPoints: DataPointType[][]) =>
+          dataPoints={dataPoints}
+          onUpdateDataPoints={dataPoints =>
             dispatch({
               type: 'updateDataPoints',
               payload: dataPoints,

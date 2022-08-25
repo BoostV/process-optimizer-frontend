@@ -6,6 +6,7 @@ import {
   Grid,
   Snackbar,
   Switch,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import Layout from '@/components/layout/layout'
@@ -15,13 +16,18 @@ import { Alert } from '@mui/material'
 import Details from '@/components/details'
 import DataPoints from '@/components/data-points/data-points'
 import { useStyles } from './experiment.style'
-import { useExperiment, runExperiment, useSelector } from '@/context/experiment'
+import {
+  useExperiment,
+  runExperiment,
+  useSelector,
+  selectDataPoints,
+} from '@/context/experiment'
 import React, { useState } from 'react'
 import {
   ValueVariableType,
   CategoricalVariableType,
   OptimizerConfig,
-  DataPointType,
+  DataEntry,
 } from '@/types/common'
 import LoadingExperiment from './loading-experiment'
 import { ExperimentationGuide } from '@/components/result-data/experimentation-guide'
@@ -55,6 +61,7 @@ const LegacyExperiment = () => {
   } = useGlobal()
 
   const isInitializing = useSelector(selectIsInitializing)
+  const dataPoints = useSelector(selectDataPoints)
 
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
@@ -115,6 +122,8 @@ const LegacyExperiment = () => {
     return <LoadingExperiment />
   }
 
+  const tooltipText = `File format: ${experiment.info.dataFormatVersion}\nSoftware version: ${experiment.info.swVersion}`
+
   return (
     <Layout>
       <Card className={classes.experimentContainer}>
@@ -124,7 +133,16 @@ const LegacyExperiment = () => {
               <Grid item xs={12}>
                 <Grid container>
                   <Grid item xs={7}>
-                    <Typography variant="body2">{experiment.id}</Typography>
+                    <Tooltip
+                      placement="bottom-start"
+                      title={
+                        <span style={{ whiteSpace: 'pre-line' }}>
+                          {tooltipText}
+                        </span>
+                      }
+                    >
+                      <Typography variant="body2">{experiment.id}</Typography>
+                    </Tooltip>
                     <Typography variant="h5" gutterBottom>
                       {experiment.info.name}{' '}
                     </Typography>
@@ -271,8 +289,8 @@ const LegacyExperiment = () => {
                           valueVariables={experiment.valueVariables}
                           categoricalVariables={experiment.categoricalVariables}
                           scoreVariables={experiment.scoreVariables}
-                          dataPoints={experiment.dataPoints}
-                          onUpdateDataPoints={(dataPoints: DataPointType[][]) =>
+                          dataPoints={dataPoints}
+                          onUpdateDataPoints={(dataPoints: DataEntry[]) =>
                             dispatch({
                               type: 'updateDataPoints',
                               payload: dataPoints,

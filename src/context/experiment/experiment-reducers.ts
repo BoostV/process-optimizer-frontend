@@ -1,7 +1,7 @@
 import { versionInfo } from '@/components/version-info'
 import {
   CategoricalVariableType,
-  DataPointType,
+  DataEntry,
   ExperimentResultType,
   ExperimentType,
   OptimizerConfig,
@@ -59,7 +59,7 @@ export type ExperimentAction =
     }
   | {
       type: 'updateDataPoints'
-      payload: DataPointType[][]
+      payload: DataEntry[]
     }
   | {
       type: 'updateSuggestionCount'
@@ -176,7 +176,8 @@ export const experimentReducer = produce(
             enabled: true,
           })
           const scoreNames = state.scoreVariables.map(it => it.name)
-          state.dataPoints.forEach(dp => {
+          state.dataPoints.forEach(dataEntry => {
+            const dp = dataEntry.data
             const containedScores = dp
               .filter(it => scoreNames.includes(it.name))
               .map(it => it.name)

@@ -4,22 +4,19 @@ import { TableDataRow } from '@/components/editable-table'
 describe('data points reducer', () => {
   const initialState: DataPointsState = {
     changed: false,
+    meta: [],
     rows: [],
   }
 
   describe('dataPointsReducer - setInitialState', () => {
     it('should set initial state', async () => {
-      const payload: DataPointsState = {
+      const expected: DataPointsState = {
         changed: false,
+        meta: [],
         rows: [
           {
-            isNew: false,
-            dataPoints: [
-              {
-                name: 'test',
-                value: '100',
-              },
-            ],
+            isNew: true,
+            dataPoints: [],
           },
         ],
       }
@@ -28,10 +25,15 @@ describe('data points reducer', () => {
           { ...initialState },
           {
             type: 'setInitialState',
-            payload,
+            payload: {
+              valueVariables: [],
+              categoricalVariables: [],
+              scoreNames: [],
+              data: [],
+            },
           }
         )
-      ).toEqual(payload)
+      ).toEqual(expected)
     })
   })
   describe('dataPointsReducer - rowAdded', () => {
@@ -55,6 +57,7 @@ describe('data points reducer', () => {
         )
       ).toEqual({
         ...initialState,
+        meta: [{ enabled: true, id: 1 }],
         rows: [...initialState.rows, payload],
         changed: true,
       })

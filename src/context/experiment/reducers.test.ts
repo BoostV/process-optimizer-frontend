@@ -3,7 +3,8 @@ import { rootReducer } from './reducers'
 import { State, emptyExperiment } from '@/context/experiment/store'
 import {
   CategoricalVariableType,
-  DataPointType,
+  currentVersion,
+  DataEntry,
   ExperimentResultType,
   ExperimentType,
   OptimizerConfig,
@@ -19,7 +20,7 @@ describe('experiment reducer', () => {
         swVersion: '',
         name: 'Cake',
         description: 'Yummy',
-        dataFormatVersion: '1.0.0',
+        dataFormatVersion: currentVersion,
       },
       categoricalVariables: [
         {
@@ -69,7 +70,7 @@ describe('experiment reducer', () => {
           swVersion: '',
           name: 'Not cake',
           description: 'Not yummy',
-          dataFormatVersion: '1.0.0',
+          dataFormatVersion: currentVersion,
         },
         categoricalVariables: [
           {
@@ -389,45 +390,14 @@ describe('experiment reducer', () => {
         ...emptyExperiment.optimizerConfig,
         initialPoints: 2,
       }
-      const testState = {
+      const testState: State = {
         ...initState,
         experiment: {
           ...initState.experiment,
           extras: {
             experimentSuggestionCount: 1,
           },
-          dataPoints: [
-            [
-              {
-                name: 'New point 1',
-                value: '1',
-              },
-              {
-                name: 'score',
-                value: [2],
-              },
-            ],
-            [
-              {
-                name: 'New point 1',
-                value: '1',
-              },
-              {
-                name: 'score',
-                value: [2],
-              },
-            ],
-            [
-              {
-                name: 'New point 1',
-                value: '1',
-              },
-              {
-                name: 'score',
-                value: [2],
-              },
-            ],
-          ],
+          dataPoints: createDataPoints(3),
         },
       }
 
@@ -466,66 +436,20 @@ describe('experiment reducer', () => {
 
   describe('DataPointsUpdatedAction', () => {
     it('should update data points', async () => {
-      const payload: DataPointType[][] = [
-        [
-          {
-            name: 'New point 1',
-            value: '1',
-          },
-          {
-            name: 'score',
-            value: [2],
-          },
-        ],
-      ]
+      const payload: DataEntry[] = createDataPoints(1)
 
       const action: ExperimentAction = {
         type: 'updateDataPoints',
         payload,
       }
 
-      expect(rootReducer(initState, action)).toEqual({
-        experiment: {
-          ...initState.experiment,
-          changedSinceLastEvaluation: true,
-          dataPoints: payload,
-        },
-      })
+      expect(rootReducer(initState, action).experiment.dataPoints).toEqual(
+        payload
+      )
     })
 
     it('should set suggested experiments to 1 when adding the nth data point where n = initial points', () => {
-      const payload: DataPointType[][] = [
-        [
-          {
-            name: 'New point 1',
-            value: '1',
-          },
-          {
-            name: 'score',
-            value: [2],
-          },
-        ],
-        [
-          {
-            name: 'New point 1',
-            value: '1',
-          },
-          {
-            name: 'score',
-            value: [2],
-          },
-        ],
-        [
-          {
-            name: 'New point 1',
-            value: '1',
-          },
-          {
-            name: 'score',
-            value: [2],
-          },
-        ],
-      ]
+      const payload: DataEntry[] = createDataPoints(3)
 
       const action: ExperimentAction = {
         type: 'updateDataPoints',
@@ -546,28 +470,7 @@ describe('experiment reducer', () => {
     })
 
     it('should set suggested experiments to initial points when removing the nth data point where n = initial points', () => {
-      const payload: DataPointType[][] = [
-        [
-          {
-            name: 'New point 1',
-            value: '1',
-          },
-          {
-            name: 'score',
-            value: [2],
-          },
-        ],
-        [
-          {
-            name: 'New point 1',
-            value: '1',
-          },
-          {
-            name: 'score',
-            value: [2],
-          },
-        ],
-      ]
+      const payload: DataEntry[] = createDataPoints(2)
 
       const action: ExperimentAction = {
         type: 'updateDataPoints',
@@ -578,38 +481,7 @@ describe('experiment reducer', () => {
         ...initState,
         experiment: {
           ...initState.experiment,
-          dataPoints: [
-            [
-              {
-                name: 'New point 1',
-                value: '1',
-              },
-              {
-                name: 'score',
-                value: [2],
-              },
-            ],
-            [
-              {
-                name: 'New point 1',
-                value: '1',
-              },
-              {
-                name: 'score',
-                value: [2],
-              },
-            ],
-            [
-              {
-                name: 'New point 1',
-                value: '1',
-              },
-              {
-                name: 'score',
-                value: [2],
-              },
-            ],
-          ],
+          dataPoints: createDataPoints(3),
           extras: { experimentSuggestionCount: 1 },
         },
       }
@@ -620,3 +492,18 @@ describe('experiment reducer', () => {
     })
   })
 })
+
+const createDataPoints = (count: number): DataEntry[] =>
+  [...Array(count)].map((_id, idx) => ({
+    meta: { enabled: true, id: idx + 1 },
+    data: [
+      {
+        name: 'New point 1',
+        value: '1',
+      },
+      {
+        name: 'score',
+        value: [2],
+      },
+    ],
+  }))
