@@ -35,17 +35,19 @@ const overrides = {
     },
   },
   MuiTextField: {
-    defaultProps: {
-      variant: 'standard',
+    styleOverrides: {
+      root: {
+        '& input': {
+          padding: '14px 8px 14px 8px',
+        },
+      },
     },
   },
   MuiSelect: {
-    defaultProps: {
-      variant: 'standard',
-    },
+    defaultProps: {},
     styleOverrides: {
       select: {
-        paddingBottom: 2,
+        padding: '14px 8px 14px 8px',
       },
     },
   },

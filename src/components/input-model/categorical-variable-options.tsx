@@ -37,7 +37,7 @@ export default function CategoricalVariableOptions({
           helperText={error}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={4} display="flex" alignItems="center">
         <IconButton size="small" onClick={() => optionAdded()}>
           <AddIcon color="primary" />
         </IconButton>
