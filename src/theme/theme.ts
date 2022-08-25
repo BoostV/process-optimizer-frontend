@@ -26,14 +26,6 @@ const overrides = {
       },
     },
   },
-  MuiListItem: {
-    styleOverrides: {
-      root: {
-        paddingTop: 0,
-        paddingBottom: 0,
-      },
-    },
-  },
   MuiTextField: {
     styleOverrides: {
       root: {
@@ -44,10 +36,17 @@ const overrides = {
     },
   },
   MuiSelect: {
-    defaultProps: {},
     styleOverrides: {
       select: {
         padding: '14px 8px 14px 8px',
+      },
+    },
+  },
+  MuiListItem: {
+    styleOverrides: {
+      root: {
+        paddingTop: 0,
+        paddingBottom: 0,
       },
     },
   },
