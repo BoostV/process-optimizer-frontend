@@ -1,4 +1,12 @@
-import { TableDataRow } from '@/types/common'
+import { TableDataPoint, TableDataRow } from '@/components/editable-table'
+import {
+  ValueVariableType,
+  CategoricalVariableType,
+  CombinedVariableType,
+  DataEntry,
+} from '@/types/common'
+import { assertUnreachable } from '@/utility'
+import produce from 'immer'
 
 interface EditRow {
   row: TableDataRow
@@ -6,6 +14,7 @@ interface EditRow {
 }
 
 export interface DataPointsState {
+  meta: DataEntry['meta'][]
   rows: TableDataRow[]
   changed: boolean
 }
@@ -13,7 +22,12 @@ export interface DataPointsState {
 export type DataPointsAction =
   | {
       type: 'setInitialState'
-      payload: DataPointsState
+      payload: {
+        valueVariables: ValueVariableType[]
+        categoricalVariables: CategoricalVariableType[]
+        scoreNames: string[]
+        data: DataEntry[]
+      }
     }
   | {
       type: 'rowAdded'
@@ -28,32 +42,124 @@ export type DataPointsAction =
       payload: EditRow
     }
 
-export const dataPointsReducer = (
-  state: DataPointsState,
-  action: DataPointsAction
-): DataPointsState => {
-  switch (action.type) {
-    case 'setInitialState':
-      return { ...action.payload }
-    case 'rowAdded':
-      return {
-        ...state,
-        rows: [...state.rows, { ...action.payload, isNew: false }],
-        changed: true,
-      }
-    case 'rowDeleted':
-      return {
-        ...state,
-        rows: [...state.rows.filter((_r, i) => action.payload !== i)],
-        changed: true,
-      }
-    case 'rowEdited':
-      return {
-        ...state,
-        rows: [...state.rows].map((r, i) =>
-          action.payload.rowIndex === i ? action.payload.row : r
-        ),
-        changed: true,
-      }
+export const dataPointsReducer = produce(
+  (state: DataPointsState, action: DataPointsAction) => {
+    switch (action.type) {
+      case 'setInitialState':
+        const { valueVariables, categoricalVariables, scoreNames, data } =
+          action.payload
+        state.rows = buildRows(
+          valueVariables,
+          categoricalVariables,
+          scoreNames,
+          data
+        )
+        state.meta = data.map(dp => dp.meta)
+        state.changed = false
+        break
+      case 'rowAdded':
+        state.rows.push({ ...action.payload, isNew: false })
+        state.meta.push({
+          enabled: true,
+          id: Math.max(0, ...state.meta.map(m => m.id)) + 1,
+        })
+        state.changed = true
+        break
+      case 'rowDeleted':
+        state.rows.splice(action.payload, 1)
+        state.meta.splice(action.payload, 1)
+        state.changed = true
+        break
+      case 'rowEdited':
+        state.rows[action.payload.rowIndex] = action.payload.row
+        state.changed = true
+        break
+      default:
+        assertUnreachable(action)
+    }
   }
+)
+
+const buildCombinedVariables = (
+  valueVariables: ValueVariableType[],
+  categoricalVariables: CategoricalVariableType[]
+): CombinedVariableType[] => {
+  return (
+    valueVariables.map(v => ({
+      ...v,
+      tooltip: `[${v.min}, ${v.max}]`,
+    })) as CombinedVariableType[]
+  ).concat(
+    categoricalVariables.map(v => ({
+      ...v,
+      tooltip: `${v.options.length} options`,
+    })) as CombinedVariableType[]
+  )
+}
+
+const buildEmptyRow = (
+  valueVariables: ValueVariableType[],
+  categoricalVariables: CategoricalVariableType[],
+  scoreNames: string[]
+): TableDataRow => {
+  return {
+    dataPoints: buildCombinedVariables(valueVariables, categoricalVariables)
+      .map(variable => {
+        return {
+          name: variable.name,
+          value: variable.options?.[0] ?? '',
+          options: variable.options,
+          tooltip: variable.tooltip,
+        }
+      })
+      .concat(
+        scoreNames.map(s => ({
+          name: s,
+          value: '',
+          options: undefined,
+          tooltip: undefined,
+        }))
+      ),
+    isNew: true,
+  }
+}
+
+const buildRows = (
+  valueVariables: ValueVariableType[],
+  categoricalVariables: CategoricalVariableType[],
+  scoreNames: string[],
+  dataPoints: DataEntry[]
+): TableDataRow[] => {
+  const combinedVariables: CombinedVariableType[] = buildCombinedVariables(
+    valueVariables,
+    categoricalVariables
+  )
+  const dataPointRows: TableDataRow[] = dataPoints
+    .map(item => {
+      const rowData: DataEntry['data'] = item.data.filter(
+        dp => !scoreNames.includes(dp.name)
+      )
+      const vars: TableDataPoint[] = new Array(rowData.length)
+      rowData.forEach(v => {
+        const idx = combinedVariables.findIndex(it => it.name === v.name)
+        vars[idx] = {
+          name: v.name,
+          value: v.value.toString(),
+          options: combinedVariables[idx]?.options,
+          tooltip: combinedVariables[idx]?.tooltip,
+        }
+      })
+      const scores: TableDataPoint[] = item.data
+        .filter(dp => scoreNames.includes(dp.name))
+        .map(score => ({ name: score.name, value: score.value as string }))
+      return {
+        isNew: false,
+        dataPoints: vars.concat(scores),
+        // Uncomment the following line to display a meta data property in the table
+        // .concat([{ name: 'id', value: `${item.meta.id}` }]),
+      }
+    })
+    .concat(buildEmptyRow(valueVariables, categoricalVariables, scoreNames))
+
+  return dataPointRows
 }

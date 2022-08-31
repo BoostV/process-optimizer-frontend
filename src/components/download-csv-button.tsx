@@ -1,5 +1,9 @@
 import { IconButton, Tooltip } from '@mui/material'
-import { useExperiment } from '@/context/experiment'
+import {
+  selectDataPoints,
+  useExperiment,
+  useSelector,
+} from '@/context/experiment'
 import { dataPointsToCSV } from '@/utility/converters'
 import { saveCSVToLocalFile } from '@/utility/save-to-local-file'
 import GetAppIcon from '@mui/icons-material/GetApp'
@@ -11,9 +15,10 @@ interface DownloadCSVButtonProps {
 const DownloadCSVButton = ({ light }: DownloadCSVButtonProps) => {
   const {
     state: {
-      experiment: { id, dataPoints },
+      experiment: { id },
     },
   } = useExperiment()
+  const dataPoints = useSelector(selectDataPoints)
   return (
     <Tooltip title="Download CSV">
       <IconButton

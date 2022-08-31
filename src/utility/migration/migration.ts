@@ -1,11 +1,30 @@
 import compareVersions from 'compare-versions'
-import { ExperimentType } from '@/types/common'
+import { ExperimentType, isExperiment } from '@/types/common'
+import {
+  migrateToV3,
+  migrateToV4,
+  migrateToV6,
+  migrateToV7,
+  migrateToV5,
+  migrateToV8,
+} from './migrations'
+
+export const migrate = (json: any): ExperimentType => {
+  const migrated = _migrate(
+    json,
+    MIGRATIONS[MIGRATIONS.length - 1]?.version ?? '0'
+  )
+  if (isExperiment(migrated)) {
+    return migrated
+  }
+  throw new Error('Error migrating json to experiment')
+}
 
 //TODO: Compare json to current ExperimentType and set missing fields to default values?
-export const migrate = (
+export const _migrate = (
   json: any,
   stopAtVersion = MIGRATIONS[MIGRATIONS.length - 1]?.version ?? '0'
-): ExperimentType => {
+): unknown => {
   const version = json.info.dataFormatVersion ?? '0'
   const firstMigration = MIGRATIONS.find(
     m => compareVersions(version, m.version) === -1
@@ -20,7 +39,7 @@ const doMigrations = (
   migration: Migration,
   json: any,
   stopAtVersion: string
-): void => {
+): ExperimentType | unknown => {
   console.log('Migrating', json.info.dataFormatVersion)
   json = migration.converter(json)
   const migrationIndex = MIGRATIONS.findIndex(m => m === migration)
@@ -41,74 +60,6 @@ const bumpVersion = (json: any, version: string): any => {
   return { ...json, info: { ...json.info, dataFormatVersion: version } }
 }
 
-const convertTo3 = (json: any): any => {
-  return {
-    ...json,
-    valueVariables: json.valueVariables.map((v: any) => {
-      return {
-        name: v.name,
-        description: v.description,
-        min: parseFloat(v.minVal),
-        max: parseFloat(v.maxVal),
-        type:
-          v.discrete !== undefined
-            ? v.discrete
-              ? 'discrete'
-              : 'continuous'
-            : 'continuous',
-      }
-    }),
-  }
-}
-
-const convertTo4 = (json: any): any => {
-  return {
-    ...json,
-    results: { ...json.results, expectedMinimum: [] },
-  }
-}
-
-const convertTo5 = (json: ExperimentType): ExperimentType => {
-  return {
-    ...json,
-    scoreVariables: [
-      {
-        name: 'score',
-        description: 'score',
-        enabled: true,
-      },
-    ],
-    dataPoints: json.dataPoints.map(dps =>
-      dps.map(dp =>
-        dp.name === 'score' && Array.isArray(dp.value)
-          ? { ...dp, value: dp.value[0] ?? 0 }
-          : dp
-      )
-    ),
-  }
-}
-
-const convertTo6 = (json: any): any => {
-  return {
-    ...json,
-    changedSinceLastEvaluation: false,
-  }
-}
-
-const convertTo7 = (json: any): any => {
-  if (json.optimizerConfig.acqFunc === 'gp_hedge') {
-    return {
-      ...json,
-      optimizerConfig: { ...json.optimizerConfig, acqFunc: 'EI' },
-      changedSinceLastEvaluation: true,
-    }
-  }
-  return {
-    ...json,
-    changedSinceLastEvaluation: false,
-  }
-}
-
 interface Migration {
   version: string
   converter: (json: any) => any
@@ -120,9 +71,10 @@ interface Migration {
 //* Add new migration and converter function below
 //* Write unit test
 export const MIGRATIONS: Migration[] = [
-  { version: '3', converter: convertTo3 },
-  { version: '4', converter: convertTo4 },
-  { version: '5', converter: convertTo5 },
-  { version: '6', converter: convertTo6 },
-  { version: '7', converter: convertTo7 },
+  { version: '3', converter: migrateToV3 },
+  { version: '4', converter: migrateToV4 },
+  { version: '5', converter: migrateToV5 },
+  { version: '6', converter: migrateToV6 },
+  { version: '7', converter: migrateToV7 },
+  { version: '8', converter: migrateToV8 },
 ]

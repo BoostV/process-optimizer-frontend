@@ -6,6 +6,7 @@ import {
   Snackbar,
   Switch,
   Tab,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import Layout from '@/components/layout/layout'
@@ -88,6 +89,8 @@ const TabbedExperiment = () => {
     return <LoadingExperiment />
   }
 
+  const tooltipText = `File format: ${experiment.info.dataFormatVersion}\nSoftware version: ${experiment.info.swVersion}`
+
   return (
     <Layout>
       <TabContext value={focus}>
@@ -96,7 +99,13 @@ const TabbedExperiment = () => {
             <Typography variant="h4" gutterBottom>
               {experiment.info.name}
             </Typography>
-            <Typography variant="caption">{experiment.id}</Typography>
+            <Tooltip
+              title={
+                <span style={{ whiteSpace: 'pre-line' }}>{tooltipText}</span>
+              }
+            >
+              <Typography variant="caption">{experiment.id}</Typography>
+            </Tooltip>
           </Grid>
           <Grid item xs={6}>
             <TabList onChange={handleChange}>
