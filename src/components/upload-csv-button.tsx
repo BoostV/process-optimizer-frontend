@@ -1,6 +1,6 @@
 import { IconButton, Input, Tooltip } from '@mui/material'
 import { useExperiment } from '@/context/experiment'
-import { DataPointType } from '@/types/common'
+import { DataEntry } from '@/types/common'
 import { csvToDataPoints } from '@/utility/converters'
 import PublishIcon from '@mui/icons-material/Publish'
 import { ChangeEvent } from 'react'
@@ -16,7 +16,7 @@ const readFile = (file: Blob, dataHandler: (s: string) => void) => {
 }
 interface UploadCSVButtonProps {
   light?: boolean
-  onUpload: (dataPoints: DataPointType[][]) => void
+  onUpload: (dataPoints: DataEntry[]) => void
 }
 
 const UploadCSVButton = ({ onUpload, light }: UploadCSVButtonProps) => {

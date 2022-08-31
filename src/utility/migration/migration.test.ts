@@ -1,4 +1,4 @@
-import { migrate, MIGRATIONS } from './migration'
+import { migrate, _migrate, MIGRATIONS } from './migration'
 import version6 from './data-formats/6.json'
 import version5 from './data-formats/5.json'
 import version4 from './data-formats/4.json'
@@ -27,18 +27,25 @@ const loadLatestJson = () => {
 
 describe('migration', () => {
   describe('migrate', () => {
+    it('should fail if not migrating to newest version', async () => {
+      const latestJson = await loadLatestJson()
+      expect(() => migrate(latestJson)).not.toThrowError()
+    })
+  })
+
+  describe('_migrate', () => {
     it('should not migrate if version is newer or equal to latest data format json', async () => {
       const latestJson = await loadLatestJson()
       const jsonNoMigration = {
         ...latestJson,
         info: { ...latestJson.info, dataFormatVersion: '10000' },
       }
-      expect(migrate(jsonNoMigration)).toEqual(jsonNoMigration)
-      expect(migrate({ ...latestJson })).toEqual({ ...latestJson })
+      expect(_migrate(jsonNoMigration)).toEqual(jsonNoMigration)
+      expect(_migrate({ ...latestJson })).toEqual({ ...latestJson })
     })
 
     it('should migrate to 3 from 1 (before versioning and no discrete/continuous)', () => {
-      expect(migrate(version1, '3')).toEqual({
+      expect(_migrate(version1, '3')).toEqual({
         ...version3,
         info: {
           ...version3.info,
@@ -54,22 +61,22 @@ describe('migration', () => {
     })
 
     it('should migrate to 3 from 2 (before versioning and with discrete as boolean instead of string)', () => {
-      expect(migrate(version2, '3')).toEqual(version3)
+      expect(_migrate(version2, '3')).toEqual(version3)
     })
 
     it('should migrate to 4 from 3 (expectedMinimum added to result)', () => {
-      expect(migrate(version3, '4')).toEqual(version4)
+      expect(_migrate(version3, '4')).toEqual(version4)
     })
 
     it('should migrate to 6 from 4 (changedSinceEvaluation added to root)', () => {
-      expect(migrate(version5, '6')).toEqual(version6)
+      expect(_migrate(version5, '6')).toEqual(version6)
     })
 
     it(`should migrate to newest version (${
       MIGRATIONS.slice(-1)[0]?.version
     })`, async () => {
       const expected = loadLatestJson() as ExperimentType
-      const actual = migrate({ ...version2 })
+      const actual = _migrate({ ...version2 })
       expect(actual).toEqual(expected)
     })
   })

@@ -1,15 +1,12 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
-import { useCallback, useEffect, useMemo, useReducer } from 'react'
+import { useEffect, useMemo, useReducer } from 'react'
 import { useGlobal } from '@/context/global'
 import {
-  DataPointType,
-  TableDataPoint,
-  TableDataRow,
-  CombinedVariableType,
   ValueVariableType,
   CategoricalVariableType,
   DataPointTypeValue,
   ScoreVariableType,
+  DataEntry,
 } from '@/types/common'
 import { EditableTable } from '@/components/editable-table/editable-table'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
@@ -17,14 +14,15 @@ import { TitleCard } from '@/components/title-card/title-card'
 import useStyles from './data-points.style'
 import DownloadCSVButton from '@/components/download-csv-button'
 import UploadCSVButton from '@/components/upload-csv-button'
-import { dataPointsReducer, DataPointsState } from './data-points-reducer'
+import { dataPointsReducer } from './data-points-reducer'
+import { TableDataRow } from '@/components/editable-table'
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   scoreVariables: ScoreVariableType[]
-  dataPoints: DataPointType[][]
-  onUpdateDataPoints: (dataPoints: DataPointType[][]) => void
+  dataPoints: DataEntry[]
+  onUpdateDataPoints: (dataPoints: DataEntry[]) => void
 }
 
 export default function DataPoints(props: DataPointProps) {
@@ -37,6 +35,7 @@ export default function DataPoints(props: DataPointProps) {
   } = props
   const classes = useStyles()
   const [state, dispatch] = useReducer(dataPointsReducer, {
+    meta: [],
     rows: [],
     changed: false,
   })
@@ -48,43 +47,6 @@ export default function DataPoints(props: DataPointProps) {
     () => scoreVariables.filter(it => it.enabled).map(it => it.name),
     [scoreVariables]
   )
-
-  const buildCombinedVariables = useCallback((): CombinedVariableType[] => {
-    return (
-      valueVariables.map(v => ({
-        ...v,
-        tooltip: `[${v.min}, ${v.max}]`,
-      })) as CombinedVariableType[]
-    ).concat(
-      categoricalVariables.map(v => ({
-        ...v,
-        tooltip: `${v.options.length} options`,
-      })) as CombinedVariableType[]
-    )
-  }, [categoricalVariables, valueVariables])
-
-  const buildEmptyRow = useCallback((): TableDataRow => {
-    return {
-      dataPoints: buildCombinedVariables()
-        .map(variable => {
-          return {
-            name: variable.name,
-            value: variable.options?.[0] ?? '',
-            options: variable.options,
-            tooltip: variable.tooltip,
-          }
-        })
-        .concat(
-          scoreNames.map(s => ({
-            name: s,
-            value: '',
-            options: undefined,
-            tooltip: undefined,
-          }))
-        ),
-      isNew: true,
-    }
-  }, [buildCombinedVariables, scoreNames])
 
   const rowAdded = (row: TableDataRow) =>
     dispatch({
@@ -107,72 +69,55 @@ export default function DataPoints(props: DataPointProps) {
       },
     })
 
-  const buildState = useCallback(
-    (dataPoints: DataPointType[][]): DataPointsState => {
-      const combinedVariables: CombinedVariableType[] = buildCombinedVariables()
-      const dataPointRows: TableDataRow[] = dataPoints
-        .map(item => {
-          const rowData: DataPointType[] = item.filter(
-            dp => !scoreNames.includes(dp.name)
-          )
-          const vars: TableDataPoint[] = new Array(rowData.length)
-          rowData.forEach(v => {
-            const idx = combinedVariables.findIndex(it => it.name === v.name)
-            vars[idx] = {
-              name: v.name,
-              value: v.value.toString(),
-              options: combinedVariables[idx]?.options,
-              tooltip: combinedVariables[idx]?.tooltip,
-            }
-          })
-          const scores: TableDataPoint[] = item
-            .filter(dp => scoreNames.includes(dp.name))
-            .map(score => ({ name: score.name, value: score.value as string }))
-          return {
-            dataPoints: vars.concat(scores),
-            isNew: false,
-          }
-        })
-        .concat(buildEmptyRow())
+  useEffect(() => {
+    dispatch({
+      type: 'setInitialState',
+      payload: {
+        valueVariables,
+        categoricalVariables,
+        scoreNames,
+        data: dataPoints,
+      },
+    })
+  }, [valueVariables, categoricalVariables, scoreNames, dataPoints])
 
-      return {
-        rows: dataPointRows,
-        changed: false,
+  useEffect(() => {
+    const convertEditableRowToExperimentRow = (
+      row: TableDataRow | undefined
+    ) => {
+      if (row === undefined) {
+        return []
       }
-    },
-    [buildCombinedVariables, scoreNames, buildEmptyRow]
-  )
-
-  useEffect(() => {
-    dispatch({ type: 'setInitialState', payload: buildState(dataPoints) })
-  }, [valueVariables, categoricalVariables, scoreNames, buildState, dataPoints])
-
-  useEffect(() => {
-    const updateDataPoints = (dataRows: TableDataRow[]) => {
+      const vars = row.dataPoints.filter(dp => !scoreNames.includes(dp.name))
+      const scores = row.dataPoints
+        .filter(dp => scoreNames.includes(dp.name))
+        .map(s => ({
+          name: s.name,
+          value: parseFloat(s.value),
+        }))
+      return vars
+        .map(dp => ({
+          name: dp.name,
+          value: dp.value as DataPointTypeValue,
+        }))
+        .concat(scores) as DataEntry['data']
+    }
+    const updateDataPoints = (
+      meta: DataEntry['meta'][],
+      rows: TableDataRow[]
+    ) => {
+      const zipped = meta.map((m, idx) => [
+        m,
+        convertEditableRowToExperimentRow(rows.filter(e => !e.isNew)[idx]),
+      ])
       onUpdateDataPoints(
-        dataRows.map(row => {
-          const vars = row.dataPoints.filter(
-            dp => !scoreNames.includes(dp.name)
-          )
-          const scores = row.dataPoints
-            .filter(dp => scoreNames.includes(dp.name))
-            .map(s => ({
-              name: s.name,
-              value: parseFloat(s.value),
-            }))
-          return vars
-            .map(dp => ({
-              name: dp.name,
-              value: dp.value as DataPointTypeValue,
-            }))
-            .concat(scores)
-        })
+        zipped.map(e => ({ meta: e[0], data: e[1] })) as DataEntry[]
       )
     }
     if (state.changed) {
-      updateDataPoints(state.rows.filter(item => !item.isNew) as TableDataRow[])
+      updateDataPoints(state.meta, state.rows)
     }
-  }, [onUpdateDataPoints, scoreNames, state.changed, state.rows])
+  }, [onUpdateDataPoints, scoreNames, state.changed, state.rows, state.meta])
 
   return (
     <TitleCard
@@ -184,7 +129,7 @@ export default function DataPoints(props: DataPointProps) {
               <DownloadCSVButton light />
               <UploadCSVButton
                 light
-                onUpload={(dataPoints: DataPointType[][]) =>
+                onUpload={(dataPoints: DataEntry[]) =>
                   onUpdateDataPoints(dataPoints)
                 }
               />
@@ -210,27 +155,28 @@ export default function DataPoints(props: DataPointProps) {
         </>
       }
     >
-      {buildCombinedVariables().length === 0 && 'Data points will appear here'}
-      {buildCombinedVariables().length > 0 && isLoadingState && (
-        <CircularProgress size={24} />
-      )}
-      {buildCombinedVariables().length > 0 && !isLoadingState && (
-        <Box className={classes.tableContainer}>
-          <EditableTable
-            newestFirst={global.state.dataPointsNewestFirst}
-            rows={
-              (newestFirst
-                ? [...state.rows].reverse()
-                : [...state.rows]) as TableDataRow[]
-            }
-            onRowAdded={(row: TableDataRow) => rowAdded(row)}
-            onRowDeleted={(rowIndex: number) => rowDeleted(rowIndex)}
-            onRowEdited={(rowIndex: number, row: TableDataRow) =>
-              rowEdited(rowIndex, row)
-            }
-          />
-        </Box>
-      )}
+      {valueVariables.length + categoricalVariables.length === 0 &&
+        'Data points will appear here'}
+      {valueVariables.length + categoricalVariables.length > 0 &&
+        isLoadingState && <CircularProgress size={24} />}
+      {valueVariables.length + categoricalVariables.length > 0 &&
+        !isLoadingState && (
+          <Box className={classes.tableContainer}>
+            <EditableTable
+              newestFirst={global.state.dataPointsNewestFirst}
+              rows={
+                (newestFirst
+                  ? [...state.rows].reverse()
+                  : [...state.rows]) as TableDataRow[]
+              }
+              onRowAdded={(row: TableDataRow) => rowAdded(row)}
+              onRowDeleted={(rowIndex: number) => rowDeleted(rowIndex)}
+              onRowEdited={(rowIndex: number, row: TableDataRow) =>
+                rowEdited(rowIndex, row)
+              }
+            />
+          </Box>
+        )}
     </TitleCard>
   )
 }

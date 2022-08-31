@@ -9,7 +9,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
-import { TableDataRow } from '@/types/common'
+import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
 import { useState } from 'react'
 
