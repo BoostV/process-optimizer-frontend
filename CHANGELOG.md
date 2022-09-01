@@ -1,6 +1,23 @@
 # Changelog
 
-## [v1.6.1](https://github.com/BoostV/process-optimizer-frontend/tree/v1.6.1)
+## [1.6.2](https://github.com/BoostV/process-optimizer-frontend/tree/v1.6.2)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.6.1...v1.6.2)
+
+**Implemented enhancements:**
+
+- Change "Xi" to "Desired further improvement" [\#185](https://github.com/BoostV/process-optimizer-frontend/issues/185)
+- Assign meta data to each data point \(numbering of experiments\) [\#138](https://github.com/BoostV/process-optimizer-frontend/issues/138)
+
+**Merged pull requests:**
+
+- 138 assign meta data to each data point numbering of experiments [\#189](https://github.com/BoostV/process-optimizer-frontend/pull/189) ([langdal](https://github.com/langdal))
+- Change Xi to descriptive text [\#187](https://github.com/BoostV/process-optimizer-frontend/pull/187) ([langdal](https://github.com/langdal))
+- Optimize Github CI actions [\#186](https://github.com/BoostV/process-optimizer-frontend/pull/186) ([langdal](https://github.com/langdal))
+- Set MUI input variant defaults [\#183](https://github.com/BoostV/process-optimizer-frontend/pull/183) ([j-or](https://github.com/j-or))
+- Maintenance/reducer restructure [\#182](https://github.com/BoostV/process-optimizer-frontend/pull/182) ([langdal](https://github.com/langdal))
+
+## [v1.6.1](https://github.com/BoostV/process-optimizer-frontend/tree/v1.6.1) (2022-07-09)
 
 [Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.6.0...v1.6.1)
 
