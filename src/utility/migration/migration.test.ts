@@ -5,6 +5,8 @@ import version4 from './data-formats/4.json'
 import version3 from './data-formats/3.json'
 import version2 from './data-formats/2.json'
 import version1 from './data-formats/1.json'
+import catapult from '../../../sample-data/catapult.json'
+import large from '../../../sample-data/large.json'
 import { emptyExperiment } from '@/context/experiment/store'
 import { ExperimentType } from '@/types/common'
 import fs from 'fs'
@@ -78,6 +80,20 @@ describe('migration', () => {
       const expected = loadLatestJson() as ExperimentType
       const actual = _migrate({ ...version2 })
       expect(actual).toEqual(expected)
+    })
+
+    it('should migrate catapult to newest version', async () => {
+      const actual = migrate({ ...catapult })
+      expect(actual.info.dataFormatVersion).toEqual(
+        MIGRATIONS.slice(-1)[0]?.version
+      )
+    })
+
+    it('should migrate large experiment to newest version', async () => {
+      const actual = migrate({ ...large })
+      expect(actual.info.dataFormatVersion).toEqual(
+        MIGRATIONS.slice(-1)[0]?.version
+      )
     })
   })
 
