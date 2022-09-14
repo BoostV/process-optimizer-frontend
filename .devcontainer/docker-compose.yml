@@ -17,9 +17,8 @@ services:
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
     network_mode: service:api
-
     # Uncomment the next line to use a non-root user for all processes.
-    # user: node
+    user: node
 
   api:
     image:  ghcr.io/boostv/process-optimizer-api:2.1.0
