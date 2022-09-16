@@ -8,6 +8,8 @@ import { isUIBig } from '@/utility/ui-util'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
 
+import { PngPlot } from './png-plot'
+
 export const Plots = () => {
   const {
     state: { experiment },
@@ -70,7 +72,9 @@ export const Plots = () => {
                       : []
                   }
                   maxWidth="100%"
-                />
+                >
+                  <PngPlot plot={plot.plot} />
+                </PlotItem>
               ))}
 
             {experiment.results.plots
@@ -89,7 +93,9 @@ export const Plots = () => {
                   }
                   width="100%"
                   maxWidth={800}
-                />
+                >
+                  <PngPlot plot={plot.plot} />
+                </PlotItem>
               ))}
             {experiment.results.plots
               .filter(plot => plot.id.includes('pareto'))
@@ -100,7 +106,9 @@ export const Plots = () => {
                   title="Pareto"
                   body={[]}
                   maxWidth={800}
-                />
+                >
+                  <PngPlot plot={plot.plot} />
+                </PlotItem>
               ))}
           </PlotList>
         ) : (
