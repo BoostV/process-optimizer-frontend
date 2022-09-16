@@ -75,7 +75,11 @@ export const Plots = () => {
                   }
                   maxWidth="100%"
                 >
-                  <PngPlot plot={plot.plot} />
+                  {isPNG(plot.plot) ? (
+                    <PngPlot plot={plot.plot} />
+                  ) : (
+                    <BokehPlot data={plot.plot} />
+                  )}
                 </PlotItem>
               ))}
 
@@ -96,7 +100,11 @@ export const Plots = () => {
                   width="100%"
                   maxWidth={800}
                 >
-                  <PngPlot plot={plot.plot} />
+                  {isPNG(plot.plot) ? (
+                    <PngPlot plot={plot.plot} />
+                  ) : (
+                    <BokehPlot data={plot.plot} />
+                  )}
                 </PlotItem>
               ))}
             {experiment.results.plots
