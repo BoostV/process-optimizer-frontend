@@ -8,7 +8,9 @@ import { isUIBig } from '@/utility/ui-util'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
 
+import { BokehPlot } from './bokeh-plot'
 import { PngPlot } from './png-plot'
+import { isPNG } from '@/utility/data-type-detectors'
 
 export const Plots = () => {
   const {
@@ -107,7 +109,11 @@ export const Plots = () => {
                   body={[]}
                   maxWidth={800}
                 >
-                  <PngPlot plot={plot.plot} />
+                  {isPNG(plot.plot) ? (
+                    <PngPlot plot={plot.plot} />
+                  ) : (
+                    <BokehPlot data={plot.plot} />
+                  )}
                 </PlotItem>
               ))}
           </PlotList>
