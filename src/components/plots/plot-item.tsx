@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { Typography } from '@mui/material'
 import { useExperiment } from '@/context/experiment'
 import useStyles from './plot-item.style'
@@ -9,6 +9,7 @@ interface PlotItemProps {
   body: string[]
   width?: number | string
   maxWidth?: number | string
+  children: React.ReactElement
 }
 
 export const PlotItem = ({
@@ -17,6 +18,7 @@ export const PlotItem = ({
   body,
   width,
   maxWidth,
+  children,
 }: PlotItemProps) => {
   const {
     state: { experiment },
@@ -40,14 +42,7 @@ export const PlotItem = ({
         .filter(plot => plot.id === id)
         .map(plot => (
           <li className={classes.listItem} key={plot.id}>
-            {
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                style={{ width: width || 'auto', maxWidth: maxWidth || 'none' }}
-                src={`data:image/png;base64, ${plot.plot}`}
-                alt={plot.id}
-              />
-            }
+            {React.cloneElement(children, { width, maxWidth })}
           </li>
         ))}
     </>
