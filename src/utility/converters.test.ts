@@ -437,6 +437,40 @@ describe('converters', () => {
       expect(actual).toEqual(expected)
     })
 
+    it('should interpret enabled field as case insensitive', () => {
+      const inputWithLowerCase =
+        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n1;28;982;632;Mus;1;true\n2;15;986;5;Mus;2;false'
+      const inputWithUpperCase =
+        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n1;28;982;632;Mus;1;TRUE\n2;15;986;5;Mus;2;FALSE'
+      const inputWithMixedCase =
+        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n1;28;982;632;Mus;1;True\n2;15;986;5;Mus;2;False'
+      const expected = sampleDataPoints
+      expect(
+        csvToDataPoints(
+          inputWithLowerCase,
+          valueVariables,
+          categorialVariables,
+          scoreVariables
+        )
+      ).toEqual(expected)
+      expect(
+        csvToDataPoints(
+          inputWithUpperCase,
+          valueVariables,
+          categorialVariables,
+          scoreVariables
+        )
+      ).toEqual(expected)
+      expect(
+        csvToDataPoints(
+          inputWithMixedCase,
+          valueVariables,
+          categorialVariables,
+          scoreVariables
+        )
+      ).toEqual(expected)
+    })
+
     it('should use ID column from CSV', () => {
       const input =
         'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n42;28;982;632;Mus;1;true\n16;15;986;5;Mus;2;false'
