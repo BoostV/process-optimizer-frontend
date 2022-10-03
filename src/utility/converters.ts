@@ -230,7 +230,10 @@ const convertToMetaData = (
   )
   const result: DataEntry['meta'] = {
     ...parsedMeta,
-    enabled: 'enabled' in parsedMeta ? parsedMeta['enabled'] === 'true' : true,
+    enabled:
+      'enabled' in parsedMeta
+        ? parsedMeta['enabled']?.toLowerCase() === 'true'
+        : true,
     id: 'id' in parsedMeta ? Number(parsedMeta['id'] ?? idx + 1) : idx + 1,
   }
   return result
