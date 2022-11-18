@@ -10,6 +10,7 @@ import {
   OptimizerConfig,
   ValueVariableType,
 } from '@/types/common'
+import { versionInfo } from '@/components/version-info'
 
 describe('experiment reducer', () => {
   const initState: State = {
@@ -67,7 +68,7 @@ describe('experiment reducer', () => {
         id: '5678',
         changedSinceLastEvaluation: false,
         info: {
-          swVersion: '',
+          swVersion: versionInfo.version,
           name: 'Not cake',
           description: 'Not yummy',
           dataFormatVersion: currentVersion,
@@ -115,7 +116,8 @@ describe('experiment reducer', () => {
         payload,
       }
 
-      expect(rootReducer(initState, action)).toEqual({
+      const actual = rootReducer(initState, action)
+      expect(actual).toEqual({
         experiment: payload,
       })
     })
