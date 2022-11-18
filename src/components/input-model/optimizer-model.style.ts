@@ -1,7 +1,7 @@
-import { makeStyles } from '@mui/styles'
+import { makeStyles } from 'tss-react/mui'
 import { grey } from '@mui/material/colors'
 
-export const useStyles = makeStyles(() => ({
+export const useStyles = makeStyles()(() => ({
   editBox: {
     background: grey[200],
   },

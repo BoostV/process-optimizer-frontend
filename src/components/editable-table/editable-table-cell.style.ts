@@ -1,7 +1,7 @@
-import { makeStyles } from '@mui/styles'
+import { makeStyles } from 'tss-react/mui'
 import { tableBorder } from '@/theme/theme'
 
-export const useStyles = makeStyles(() => ({
+export const useStyles = makeStyles()(() => ({
   editCell: {
     minWidth: 48,
   },

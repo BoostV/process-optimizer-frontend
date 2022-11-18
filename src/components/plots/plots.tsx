@@ -20,7 +20,7 @@ export const Plots = () => {
     state: { uiSizes },
     dispatch,
   } = useGlobal()
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   return (
     <>

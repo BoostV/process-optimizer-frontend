@@ -9,7 +9,7 @@ import useStyles from './loading-experiment.style'
 import Layout from '@/components/layout/layout'
 
 export default function LoadingExperiment() {
-  const classes = useStyles()
+  const { classes } = useStyles()
   return (
     <Layout>
       <Card className={classes.loadingContainer}>

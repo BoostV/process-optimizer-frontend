@@ -46,7 +46,7 @@ type SnackbarMessage = {
 }
 
 const LegacyExperiment = () => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const {
     state: { experiment },
     dispatch,

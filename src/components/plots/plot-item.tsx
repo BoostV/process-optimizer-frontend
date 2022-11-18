@@ -23,7 +23,7 @@ export const PlotItem = ({
   const {
     state: { experiment },
   } = useExperiment()
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   return (
     <>

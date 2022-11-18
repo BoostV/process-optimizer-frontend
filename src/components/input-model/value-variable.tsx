@@ -14,7 +14,7 @@ type ValueVariableProps = {
 
 export default function ValueVariable(props: ValueVariableProps) {
   const { isDisabled, onAdded } = props
-  const classes = useStyles()
+  const { classes } = useStyles()
   const defaultValues: ValueVariableInputType = useMemo(() => {
     return { name: '', min: '', max: '', description: '', type: 'continuous' }
   }, [])

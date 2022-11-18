@@ -32,7 +32,7 @@ type UploadMessage = {
 }
 
 export default function Home() {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const router: NextRouter = useRouter()
   const { state, dispatch } = useGlobal()
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)

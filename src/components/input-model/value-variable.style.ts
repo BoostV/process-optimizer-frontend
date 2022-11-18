@@ -1,6 +1,6 @@
-import { makeStyles } from '@mui/styles'
+import { makeStyles } from 'tss-react/mui'
 
-export const useStyles = makeStyles(() => ({
+export const useStyles = makeStyles()(() => ({
   narrowInput: {
     float: 'left',
     width: '50%',

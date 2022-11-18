@@ -19,7 +19,7 @@ interface Props {
 
 export default function Layout({ children }: Props) {
   const [showDebug, setShowDebug] = useState(false)
-  const classes = useStyles()
+  const { classes } = useStyles()
   const { state, dispatch } = useGlobal()
 
   const handleSwitch =

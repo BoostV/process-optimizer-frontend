@@ -31,7 +31,7 @@ type SnackbarMessage = {
 }
 
 const TabbedExperiment = () => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const {
     state: { experiment },
     dispatch,

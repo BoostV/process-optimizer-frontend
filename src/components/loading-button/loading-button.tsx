@@ -12,7 +12,7 @@ type LoadingButtonProps = {
 }
 
 export default function LoadingButton(props: LoadingButtonProps) {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const {
     isLoading,
     label,

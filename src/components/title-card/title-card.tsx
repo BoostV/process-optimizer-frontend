@@ -10,7 +10,7 @@ type TitleCardProps = {
 
 export const TitleCard = (props: TitleCardProps) => {
   const { title, padding, children } = props
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   return (
     <Card>

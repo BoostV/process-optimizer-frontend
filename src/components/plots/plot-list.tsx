@@ -6,7 +6,7 @@ interface PlotListProps {
 }
 
 export const PlotList = ({ children }: PlotListProps) => {
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   return <ul className={classes.list}>{children}</ul>
 }

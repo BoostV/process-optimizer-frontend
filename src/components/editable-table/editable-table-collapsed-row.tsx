@@ -21,7 +21,7 @@ export const EditableTableCollapsedRow = ({
   setExpanded,
   onDelete,
 }: EditableTableCollapsedRowProps) => {
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   return (
     <TableRow className={classes.row}>

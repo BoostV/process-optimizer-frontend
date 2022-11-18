@@ -20,7 +20,7 @@ export const SingleDataPoint = ({
   headers,
   dataPoint,
 }: SingleDataPointProps) => {
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   return (
     <Box className={classes.tableContainer} pb={2}>
