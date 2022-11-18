@@ -32,6 +32,7 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.1",
     "react-hook-form": "^7.33.0",
+    "react-router-dom": "^6.4.3",
     "recharts": "^2.1.12",
     "tss-react": "^4.4.4",
     "uuid": "^8.3.2"

@@ -23,6 +23,7 @@ import { useGlobal } from '@/context/global'
 import { v4 as uuid } from 'uuid'
 import { reducer } from './home-reducer'
 import { CreateOrOverwriteDialog } from '@/components/create-or-overwrite-dialog/create-or-overwrite-dialog'
+import { useNavigate } from 'react-router-dom'
 
 type UploadMessage = {
   message: string
@@ -30,6 +31,7 @@ type UploadMessage = {
 }
 
 export default function Home() {
+  const navigate = useNavigate()
   const { classes } = useStyles()
   const { state, dispatch } = useGlobal()
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
@@ -44,7 +46,7 @@ export default function Home() {
 
   const saveExperimentLocally = useCallback((experiment: ExperimentType) => {
     localStorage.setItem(experiment.id, JSON.stringify({ experiment }))
-    // router.push(buildPath(paths.experiment, experiment.id))
+    navigate('/experiment/' + experiment.id)
   }, [])
 
   const onDrop = useCallback(
@@ -100,13 +102,13 @@ export default function Home() {
 
   const createNewExperiment = () => {
     deleteExperiments()
-    // router.push(buildPath(paths.experiment, uuid()))
+    navigate('/experiment/' + uuid())
   }
 
   const openSavedExperiment = (key: string) => {
     deleteExperiments()
     console.log('TODO route to ' + key)
-    // router.push(buildPath(paths.experiment, key))
+    navigate('/experiment/' + key)
   }
 
   const getExperimentName = (key: string) => {

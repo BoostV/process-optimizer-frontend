@@ -11,6 +11,7 @@ import useStyles from './layout.style'
 import { useGlobal } from '@/context/global'
 import { VersionInfo } from '@/components/version-info'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 interface Props {
   children: React.ReactNode
@@ -103,9 +104,11 @@ export default function Layout({ children }: Props) {
           <Typography variant="h6" className={classes.title}>
             Brownie Bee
           </Typography>
-          <div className={classes.links}>
-            <Button className={classes.link}>Home</Button>
-          </div>
+          <Link className={classes.links} to={'/'}>
+            <div className={classes.links}>
+              <Button className={classes.link}>Home</Button>
+            </div>
+          </Link>
           <div
             onClick={() => {
               setShowDebug(!showDebug)
