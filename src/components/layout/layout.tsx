@@ -94,7 +94,6 @@ export default function Layout({ children }: Props) {
             />
           )}
           {
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               className={classes.logo}
               alt=""

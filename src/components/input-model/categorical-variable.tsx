@@ -35,7 +35,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
   }
 
   const deleteOption = (index: number) => {
-    let newOptions = options.slice()
+    const newOptions = options.slice()
     newOptions.splice(index, 1)
     setOptions(newOptions)
   }

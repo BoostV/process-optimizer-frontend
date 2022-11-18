@@ -1,4 +1,3 @@
-import * as React from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { GlobalStateProvider } from '@/context/global'
 import ExperimentContainer from './experiment-container'

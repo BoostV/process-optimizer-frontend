@@ -1,11 +1,10 @@
 import { useLocalStorageReducer } from './useLocalStorageReducer'
 import { renderHook } from '@testing-library/react'
 import { initialState, State } from '@/context/experiment/store'
-import { Action } from '@/context/experiment'
 
 describe('useLocalStorageReducer', () => {
   it('can be called once', () => {
-    const reducer = (state: State, _action: Action) => state
+    const reducer = (state: State) => state
     const { result } = renderHook(() =>
       useLocalStorageReducer(reducer, initialState)
     )
@@ -14,7 +13,7 @@ describe('useLocalStorageReducer', () => {
 
   it('can be called twice', () => {
     localStorage.removeItem('321')
-    const reducer = (state: State, _action: Action) => state
+    const reducer = (state: State) => state
     const { result: result1 } = renderHook(() =>
       useLocalStorageReducer(reducer, initialState)
     )

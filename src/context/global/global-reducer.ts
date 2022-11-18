@@ -81,7 +81,7 @@ export const reducer = produce((state: State, action: Action) => {
     case 'debug':
       state.debug = action.payload
       break
-    case 'storeExperimentId':
+    case 'storeExperimentId': {
       const id: string = action.payload
       if (state.experimentsInLocalStorage.indexOf(id) === -1) {
         state.experimentsInLocalStorage.splice(
@@ -91,12 +91,14 @@ export const reducer = produce((state: State, action: Action) => {
         )
       }
       break
-    case 'deleteExperimentId':
-      let indexOfDelete = state.experimentsInLocalStorage.indexOf(
+    }
+    case 'deleteExperimentId': {
+      const indexOfDelete = state.experimentsInLocalStorage.indexOf(
         action.payload
       )
       state.experimentsInLocalStorage.splice(indexOfDelete, 1)
       break
+    }
     case 'setTheme':
       state.theme = action.payload
       break
@@ -106,7 +108,7 @@ export const reducer = produce((state: State, action: Action) => {
     case 'setShowJsonEditor':
       state.showJsonEditor = action.payload
       break
-    case 'toggleUISize':
+    case 'toggleUISize': {
       const indexSize = state.uiSizes.findIndex(u => u.key === action.payload)
       if (indexSize === -1) {
         state.uiSizes.splice(state.uiSizes.length, 0, {
@@ -128,6 +130,7 @@ export const reducer = produce((state: State, action: Action) => {
         })
       }
       break
+    }
     case 'global/setFocus':
       state.focus = action.payload
       break

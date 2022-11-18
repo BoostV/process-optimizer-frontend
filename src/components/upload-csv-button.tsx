@@ -6,7 +6,7 @@ import PublishIcon from '@mui/icons-material/Publish'
 import { ChangeEvent } from 'react'
 
 const readFile = (file: Blob, dataHandler: (s: string) => void) => {
-  var result = ''
+  const result = ''
   if (file) {
     const reader = new FileReader()
     reader.onload = e => dataHandler(e.target?.result as string)

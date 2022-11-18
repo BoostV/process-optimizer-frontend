@@ -45,7 +45,7 @@ export type DataPointsAction =
 export const dataPointsReducer = produce(
   (state: DataPointsState, action: DataPointsAction) => {
     switch (action.type) {
-      case 'setInitialState':
+      case 'setInitialState': {
         const { valueVariables, categoricalVariables, scoreNames, data } =
           action.payload
         state.rows = buildRows(
@@ -57,6 +57,7 @@ export const dataPointsReducer = produce(
         state.meta = data.map(dp => dp.meta)
         state.changed = false
         break
+      }
       case 'rowAdded':
         state.rows.push({ ...action.payload, isNew: false })
         state.meta.push({
