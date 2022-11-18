@@ -1,13 +1,12 @@
 import {
   AppBar,
   Box,
-  Button,
   Switch,
   Toolbar,
   Typography,
   FormControlLabel,
+  Button,
 } from '@mui/material'
-import Link from 'next/link'
 import useStyles from './layout.style'
 import { useGlobal } from '@/context/global'
 import { VersionInfo } from '@/components/version-info'
@@ -106,9 +105,7 @@ export default function Layout({ children }: Props) {
             Brownie Bee
           </Typography>
           <div className={classes.links}>
-            <Link href="/" passHref>
-              <Button className={classes.link}>Home</Button>
-            </Link>
+            <Button className={classes.link}>Home</Button>
           </div>
           <div
             onClick={() => {

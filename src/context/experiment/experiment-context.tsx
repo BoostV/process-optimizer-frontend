@@ -82,7 +82,7 @@ export const useSelector = <T,>(selector: (state: State) => T) => {
 const fetchExperimentResult = async (
   experiment: ExperimentType
 ): Promise<ExperimentResultType> => {
-  const API_SERVER = process.env.NEXT_PUBLIC_API_SERVER
+  const API_SERVER = import.meta.env.VITE_PUBLIC_API_SERVER
   const api = new DefaultApi(new Configuration({ basePath: API_SERVER }))
   const cfg = experiment.optimizerConfig
   const extras = experiment.extras || {}

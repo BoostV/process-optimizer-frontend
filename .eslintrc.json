@@ -1,4 +1,4 @@
 {
   "plugins": ["react", "prettier"],
-  "extends": ["next/core-web-vitals", "prettier"]
+  "extends": ["prettier"]
 }

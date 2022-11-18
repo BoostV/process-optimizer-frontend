@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -22,9 +22,12 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "strictNullChecks": true,
+    "types": ["vitest/globals"],
     "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"], "@openapi": ["./openapi"] }
+    "paths": {
+      "@/*": ["./src/*"],
+      "@openapi": ["./openapi"]
+    }
   },
-  "include": ["next-env.d.ts", "global-fetch.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": ["./src"]
 }

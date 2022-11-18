@@ -40,3 +40,4 @@ db
 /specification.yml
 .vscode
 tsconfig.tsbuildinfo
+dist

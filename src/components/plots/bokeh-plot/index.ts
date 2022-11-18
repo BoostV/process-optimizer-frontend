@@ -1,6 +1,3 @@
-import dynamic from 'next/dynamic'
+import React from 'react'
 
-// This is a workaround for Next.js to work with BokehJS
-export const BokehPlot = dynamic(() => import('./bokeh-plot'), {
-  ssr: false,
-})
+export const BokehPlot = React.lazy(() => import('./bokeh-plot'))

@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import { ExperimentProvider } from '@/context/experiment'
 import TabbedExperiment from '@/components/experiment/tabbed-experiment'
 import Experiment from '@/components/experiment/experiment'
@@ -7,21 +6,21 @@ import { useGlobal } from '@/context/global'
 import LoadingExperiment from '@/components/experiment/loading-experiment'
 import JsonEditor from '@/components/json-editor/json-editor'
 
-export default function ExperimentContainer() {
-  const router = useRouter()
-  const { experimentid } = router.query
+export default function ExperimentContainer(props: { experimentId: string }) {
   const {
     state: { debug, showJsonEditor, focus },
   } = useGlobal()
 
-  if (!experimentid) {
+  if (!props.experimentId) {
     return <LoadingExperiment />
   }
   return (
     <>
       <ExperimentProvider
         experimentId={
-          Array.isArray(experimentid) ? experimentid[0] ?? '' : experimentid
+          Array.isArray(props.experimentId)
+            ? props.experimentId[0] ?? ''
+            : props.experimentId
         }
       >
         {focus === 'legacy' ? <Experiment /> : <TabbedExperiment />}

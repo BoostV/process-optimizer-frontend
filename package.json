@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "build-static": "next build && next export",
-    "start": "next start",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build-static": "tsc && vite build --outDir out",
+    "start": "vite preview",
     "lint": "eslint .",
     "formatAll": "prettier --write .",
-    "test": "jest",
+    "prettier": "prettier --check .",
+    "test": "vitest",
     "prepare": "husky install",
     "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v2.1.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi"
   },
@@ -30,7 +31,6 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.1.0",
     "immer": "^9.0.15",
-    "next": "^12.1.6",
     "prettier": "2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -43,7 +43,6 @@
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "2.5.1",
-    "@swc/jest": "^0.2.21",
     "@testing-library/dom": "^8.13.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -57,13 +56,15 @@
     "git-revision-webpack-plugin": "^5.0.0",
     "husky": "^8.0.1",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^28.1.1",
     "jest-dom": "^4.0.0",
     "jest-environment-jsdom": "^28.1.1",
     "lint-staged": "^13.0.3",
     "node-mocks-http": "^1.10.1",
     "react-devtools": "^4.24.7",
     "rimraf": "^3.0.2",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "vite": "^3.2.4",
+    "@vitejs/plugin-react": "^2.2.0",
+    "vitest": "^0.25.2"
   }
 }

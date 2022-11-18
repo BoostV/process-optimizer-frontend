@@ -9,9 +9,9 @@ describe('save-to-local-file', () => {
     it('Saves file to local disk', () => {
       const payload = 'hello'
       const link: any = {
-        click: jest.fn(),
+        click: vi.fn(),
       }
-      jest.spyOn(document, 'createElement').mockImplementation(() => link)
+      vi.spyOn(document, 'createElement').mockImplementation(() => link)
 
       saveToLocalFile(payload, 'the-file-name', 'application/json')
 
@@ -26,9 +26,9 @@ describe('save-to-local-file', () => {
     it('Saves CSV', () => {
       const payload = 'hello,world'
       const link: any = {
-        click: jest.fn(),
+        click: vi.fn(),
       }
-      jest.spyOn(document, 'createElement').mockImplementation(() => link)
+      vi.spyOn(document, 'createElement').mockImplementation(() => link)
       saveCSVToLocalFile(payload, 'file.csv')
       expect(link.download).toEqual('file.csv')
       expect(link.href).toEqual('data:text/csv;charset=utf-8;,hello%2Cworld')
@@ -42,9 +42,9 @@ describe('save-to-local-file', () => {
         name: 'test',
       }
       const link: any = {
-        click: jest.fn(),
+        click: vi.fn(),
       }
-      jest.spyOn(document, 'createElement').mockImplementation(() => link)
+      vi.spyOn(document, 'createElement').mockImplementation(() => link)
       saveObjectToLocalFile(payload, 'file.json')
       expect(link.download).toEqual('file.json')
       expect(link.href).toEqual(
