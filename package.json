@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build-static": "tsc && vite build --outDir out",
     "start": "vite preview",
     "lint": "eslint .",
     "formatAll": "prettier --write .",

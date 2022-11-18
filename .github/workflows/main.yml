@@ -44,7 +44,7 @@ jobs:
         run: yarn prettier --check .
       
       - name: Build distribution
-        run: yarn build-static
+        run: yarn build
       
       -
         name: Docker meta
