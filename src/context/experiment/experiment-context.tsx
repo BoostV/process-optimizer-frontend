@@ -41,16 +41,14 @@ export function ExperimentProvider({
   const { dispatch: globalDispatch } = useGlobal()
 
   React.useEffect(() => {
-    ;(async () => {
-      if (state?.experiment?.info?.swVersion !== versionInfo.version) {
-        dispatch({ type: 'setSwVersion', payload: versionInfo.version })
-      }
-      globalDispatch({
-        type: 'storeExperimentId',
-        payload: experimentId,
-      })
-      setLoading(false)
-    })()
+    if (state?.experiment?.info?.swVersion !== versionInfo.version) {
+      dispatch({ type: 'setSwVersion', payload: versionInfo.version })
+    }
+    globalDispatch({
+      type: 'storeExperimentId',
+      payload: experimentId,
+    })
+    setLoading(false)
   }, [dispatch, experimentId, state, globalDispatch])
 
   const getValue = (callback: (state: State) => any) => callback(state)
