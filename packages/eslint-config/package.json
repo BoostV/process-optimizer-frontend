@@ -9,7 +9,7 @@
   ],
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
-  "license": "UNLICENSED",
+  "license": "BSD-3-Clause",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
