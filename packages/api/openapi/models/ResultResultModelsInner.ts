@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -17,31 +16,42 @@ import { exists, mapValues } from '../runtime'
 /**
  *
  * @export
- * @interface ResultResultModels
+ * @interface ResultResultModelsInner
  */
-export interface ResultResultModels {
+export interface ResultResultModelsInner {
   /**
    *
    * @type {Array<Array<number>>}
-   * @memberof ResultResultModels
+   * @memberof ResultResultModelsInner
    */
   expectedMinimum?: Array<Array<number>>
   /**
    *
    * @type {object}
-   * @memberof ResultResultModels
+   * @memberof ResultResultModelsInner
    */
   extras?: object
 }
 
-export function ResultResultModelsFromJSON(json: any): ResultResultModels {
-  return ResultResultModelsFromJSONTyped(json, false)
+/**
+ * Check if a given object implements the ResultResultModelsInner interface.
+ */
+export function instanceOfResultResultModelsInner(value: object): boolean {
+  let isInstance = true
+
+  return isInstance
 }
 
-export function ResultResultModelsFromJSONTyped(
+export function ResultResultModelsInnerFromJSON(
+  json: any
+): ResultResultModelsInner {
+  return ResultResultModelsInnerFromJSONTyped(json, false)
+}
+
+export function ResultResultModelsInnerFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): ResultResultModels {
+): ResultResultModelsInner {
   if (json === undefined || json === null) {
     return json
   }
@@ -53,8 +63,8 @@ export function ResultResultModelsFromJSONTyped(
   }
 }
 
-export function ResultResultModelsToJSON(
-  value?: ResultResultModels | null
+export function ResultResultModelsInnerToJSON(
+  value?: ResultResultModelsInner | null
 ): any {
   if (value === undefined) {
     return undefined

@@ -1,0 +1,43 @@
+{
+  "name": "@process-optimizer-frontend/api",
+  "private": false,
+  "version": "1.0.0",
+  "description": "API for process optimizer backend",
+  "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
+  "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
+  "license": "BSD-3-Clause",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BoostV/process-optimizer-frontend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BoostV/process-optimizer-frontend/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "types": "./dist/index.d.ts",
+  "main": "./dist/api.umd.js",
+  "module": "./dist/api.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/api.mjs",
+      "require": "./dist/api.umd.js"
+    }
+  },
+  "scripts": {
+    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v2.1.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi",
+    "build": "vite build && tsc --emitDeclarationOnly --noEmit false --outDir dist",
+    "prepack": "npm run build",
+    "preinstall": "npm run build"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "2.5.1",
+    "vite": "^3.2.3",
+    "prettier": "^2.7.1",
+    "typescript": "^4.7.4"
+  }
+}

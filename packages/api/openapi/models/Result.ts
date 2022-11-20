@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -14,14 +13,14 @@
  */
 
 import { exists, mapValues } from '../runtime'
+import type { ResultPlotsInner } from './ResultPlotsInner'
 import {
-  ResultPlots,
-  ResultPlotsFromJSON,
-  ResultPlotsFromJSONTyped,
-  ResultPlotsToJSON,
-} from './ResultPlots'
+  ResultPlotsInnerFromJSON,
+  ResultPlotsInnerFromJSONTyped,
+  ResultPlotsInnerToJSON,
+} from './ResultPlotsInner'
+import type { ResultResult } from './ResultResult'
 import {
-  ResultResult,
   ResultResultFromJSON,
   ResultResultFromJSONTyped,
   ResultResultToJSON,
@@ -35,16 +34,25 @@ import {
 export interface Result {
   /**
    *
-   * @type {Array<ResultPlots>}
+   * @type {Array<ResultPlotsInner>}
    * @memberof Result
    */
-  plots?: Array<ResultPlots>
+  plots?: Array<ResultPlotsInner>
   /**
    *
    * @type {ResultResult}
    * @memberof Result
    */
   result?: ResultResult
+}
+
+/**
+ * Check if a given object implements the Result interface.
+ */
+export function instanceOfResult(value: object): boolean {
+  let isInstance = true
+
+  return isInstance
 }
 
 export function ResultFromJSON(json: any): Result {
@@ -61,7 +69,7 @@ export function ResultFromJSONTyped(
   return {
     plots: !exists(json, 'plots')
       ? undefined
-      : (json['plots'] as Array<any>).map(ResultPlotsFromJSON),
+      : (json['plots'] as Array<any>).map(ResultPlotsInnerFromJSON),
     result: !exists(json, 'result')
       ? undefined
       : ResultResultFromJSON(json['result']),
@@ -79,7 +87,7 @@ export function ResultToJSON(value?: Result | null): any {
     plots:
       value.plots === undefined
         ? undefined
-        : (value.plots as Array<any>).map(ResultPlotsToJSON),
+        : (value.plots as Array<any>).map(ResultPlotsInnerToJSON),
     result: ResultResultToJSON(value.result),
   }
 }

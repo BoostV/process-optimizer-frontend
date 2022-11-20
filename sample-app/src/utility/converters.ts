@@ -1,4 +1,4 @@
-import { ExperimentData } from '@openapi'
+import { ExperimentDataInner as ExperimentData } from '@process-optimizer-frontend/api'
 import {
   CategoricalVariableType,
   DataEntry,

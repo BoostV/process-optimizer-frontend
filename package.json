@@ -15,6 +15,7 @@
     "build": "yarn --cwd sample-app build",
     "test": "yarn --cwd sample-app test",
     "start": "yarn --cwd sample-app start",
+    "openapi": "yarn --cwd packages/api openapi",
     "prepare": "husky install",
     "formatAll": "prettier --write .",
     "prettier": "prettier --check ."
@@ -22,7 +23,7 @@
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },
-  "dependencies": {
+  "devDependencies": {
     "typescript": "^4.7.4",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",

@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -14,14 +13,14 @@
  */
 
 import { exists, mapValues } from '../runtime'
+import type { ExperimentDataInner } from './ExperimentDataInner'
 import {
-  ExperimentData,
-  ExperimentDataFromJSON,
-  ExperimentDataFromJSONTyped,
-  ExperimentDataToJSON,
-} from './ExperimentData'
+  ExperimentDataInnerFromJSON,
+  ExperimentDataInnerFromJSONTyped,
+  ExperimentDataInnerToJSON,
+} from './ExperimentDataInner'
+import type { ExperimentOptimizerConfig } from './ExperimentOptimizerConfig'
 import {
-  ExperimentOptimizerConfig,
   ExperimentOptimizerConfigFromJSON,
   ExperimentOptimizerConfigFromJSONTyped,
   ExperimentOptimizerConfigToJSON,
@@ -41,16 +40,27 @@ export interface Experiment {
   extras?: object
   /**
    *
-   * @type {Array<ExperimentData>}
+   * @type {Array<ExperimentDataInner>}
    * @memberof Experiment
    */
-  data: Array<ExperimentData>
+  data: Array<ExperimentDataInner>
   /**
    *
    * @type {ExperimentOptimizerConfig}
    * @memberof Experiment
    */
   optimizerConfig: ExperimentOptimizerConfig
+}
+
+/**
+ * Check if a given object implements the Experiment interface.
+ */
+export function instanceOfExperiment(value: object): boolean {
+  let isInstance = true
+  isInstance = isInstance && 'data' in value
+  isInstance = isInstance && 'optimizerConfig' in value
+
+  return isInstance
 }
 
 export function ExperimentFromJSON(json: any): Experiment {
@@ -66,7 +76,7 @@ export function ExperimentFromJSONTyped(
   }
   return {
     extras: !exists(json, 'extras') ? undefined : json['extras'],
-    data: (json['data'] as Array<any>).map(ExperimentDataFromJSON),
+    data: (json['data'] as Array<any>).map(ExperimentDataInnerFromJSON),
     optimizerConfig: ExperimentOptimizerConfigFromJSON(json['optimizerConfig']),
   }
 }
@@ -80,7 +90,7 @@ export function ExperimentToJSON(value?: Experiment | null): any {
   }
   return {
     extras: value.extras,
-    data: (value.data as Array<any>).map(ExperimentDataToJSON),
+    data: (value.data as Array<any>).map(ExperimentDataInnerToJSON),
     optimizerConfig: ExperimentOptimizerConfigToJSON(value.optimizerConfig),
   }
 }

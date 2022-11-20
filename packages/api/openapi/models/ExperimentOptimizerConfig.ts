@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -14,12 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime'
+import type { ExperimentOptimizerConfigSpaceInner } from './ExperimentOptimizerConfigSpaceInner'
 import {
-  ExperimentOptimizerConfigSpace,
-  ExperimentOptimizerConfigSpaceFromJSON,
-  ExperimentOptimizerConfigSpaceFromJSONTyped,
-  ExperimentOptimizerConfigSpaceToJSON,
-} from './ExperimentOptimizerConfigSpace'
+  ExperimentOptimizerConfigSpaceInnerFromJSON,
+  ExperimentOptimizerConfigSpaceInnerFromJSONTyped,
+  ExperimentOptimizerConfigSpaceInnerToJSON,
+} from './ExperimentOptimizerConfigSpaceInner'
 
 /**
  *
@@ -59,10 +58,19 @@ export interface ExperimentOptimizerConfig {
   xi?: number
   /**
    *
-   * @type {Array<ExperimentOptimizerConfigSpace>}
+   * @type {Array<ExperimentOptimizerConfigSpaceInner>}
    * @memberof ExperimentOptimizerConfig
    */
-  space?: Array<ExperimentOptimizerConfigSpace>
+  space?: Array<ExperimentOptimizerConfigSpaceInner>
+}
+
+/**
+ * Check if a given object implements the ExperimentOptimizerConfig interface.
+ */
+export function instanceOfExperimentOptimizerConfig(value: object): boolean {
+  let isInstance = true
+
+  return isInstance
 }
 
 export function ExperimentOptimizerConfigFromJSON(
@@ -91,7 +99,7 @@ export function ExperimentOptimizerConfigFromJSONTyped(
     space: !exists(json, 'space')
       ? undefined
       : (json['space'] as Array<any>).map(
-          ExperimentOptimizerConfigSpaceFromJSON
+          ExperimentOptimizerConfigSpaceInnerFromJSON
         ),
   }
 }
@@ -114,6 +122,8 @@ export function ExperimentOptimizerConfigToJSON(
     space:
       value.space === undefined
         ? undefined
-        : (value.space as Array<any>).map(ExperimentOptimizerConfigSpaceToJSON),
+        : (value.space as Array<any>).map(
+            ExperimentOptimizerConfigSpaceInnerToJSON
+          ),
   }
 }

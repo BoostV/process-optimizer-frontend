@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -17,51 +16,64 @@ import { exists, mapValues } from '../runtime'
 /**
  *
  * @export
- * @interface ExperimentOptimizerConfigSpace
+ * @interface ExperimentOptimizerConfigSpaceInner
  */
-export interface ExperimentOptimizerConfigSpace {
+export interface ExperimentOptimizerConfigSpaceInner {
   /**
    * Type of the dimension. Can be category, discrete or continuous
    * @type {string}
-   * @memberof ExperimentOptimizerConfigSpace
+   * @memberof ExperimentOptimizerConfigSpaceInner
    */
   type: string
   /**
    *
    * @type {string}
-   * @memberof ExperimentOptimizerConfigSpace
+   * @memberof ExperimentOptimizerConfigSpaceInner
    */
   name: string
   /**
    *
    * @type {number}
-   * @memberof ExperimentOptimizerConfigSpace
+   * @memberof ExperimentOptimizerConfigSpaceInner
    */
   from?: number
   /**
    *
    * @type {number}
-   * @memberof ExperimentOptimizerConfigSpace
+   * @memberof ExperimentOptimizerConfigSpaceInner
    */
   to?: number
   /**
    *
    * @type {Array<string>}
-   * @memberof ExperimentOptimizerConfigSpace
+   * @memberof ExperimentOptimizerConfigSpaceInner
    */
   categories?: Array<string>
 }
 
-export function ExperimentOptimizerConfigSpaceFromJSON(
-  json: any
-): ExperimentOptimizerConfigSpace {
-  return ExperimentOptimizerConfigSpaceFromJSONTyped(json, false)
+/**
+ * Check if a given object implements the ExperimentOptimizerConfigSpaceInner interface.
+ */
+export function instanceOfExperimentOptimizerConfigSpaceInner(
+  value: object
+): boolean {
+  let isInstance = true
+  isInstance = isInstance && 'type' in value
+  isInstance = isInstance && 'name' in value
+
+  return isInstance
 }
 
-export function ExperimentOptimizerConfigSpaceFromJSONTyped(
+export function ExperimentOptimizerConfigSpaceInnerFromJSON(
+  json: any
+): ExperimentOptimizerConfigSpaceInner {
+  return ExperimentOptimizerConfigSpaceInnerFromJSONTyped(json, false)
+}
+
+export function ExperimentOptimizerConfigSpaceInnerFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): ExperimentOptimizerConfigSpace {
+): ExperimentOptimizerConfigSpaceInner {
   if (json === undefined || json === null) {
     return json
   }
@@ -74,8 +86,8 @@ export function ExperimentOptimizerConfigSpaceFromJSONTyped(
   }
 }
 
-export function ExperimentOptimizerConfigSpaceToJSON(
-  value?: ExperimentOptimizerConfigSpace | null
+export function ExperimentOptimizerConfigSpaceInnerToJSON(
+  value?: ExperimentOptimizerConfigSpaceInner | null
 ): any {
   if (value === undefined) {
     return undefined

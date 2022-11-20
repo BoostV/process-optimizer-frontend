@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -14,14 +13,12 @@
  */
 
 import * as runtime from '../runtime'
+import type { Experiment, ModelError, Result } from '../models'
 import {
-  Experiment,
   ExperimentFromJSON,
   ExperimentToJSON,
-  ModelError,
   ModelErrorFromJSON,
   ModelErrorToJSON,
-  Result,
   ResultFromJSON,
   ResultToJSON,
 } from '../models'
@@ -39,7 +36,7 @@ export class DefaultApi extends runtime.BaseAPI {
    */
   async optimizerapiOptimizerRunRaw(
     requestParameters: OptimizerapiOptimizerRunRequest,
-    initOverrides?: RequestInit
+    initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<runtime.ApiResponse<Result>> {
     if (
       requestParameters.experiment === null ||
@@ -78,7 +75,7 @@ export class DefaultApi extends runtime.BaseAPI {
    */
   async optimizerapiOptimizerRun(
     requestParameters: OptimizerapiOptimizerRunRequest,
-    initOverrides?: RequestInit
+    initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<Result> {
     const response = await this.optimizerapiOptimizerRunRaw(
       requestParameters,

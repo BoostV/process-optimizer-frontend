@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -17,31 +16,40 @@ import { exists, mapValues } from '../runtime'
 /**
  *
  * @export
- * @interface ResultPlots
+ * @interface ResultPlotsInner
  */
-export interface ResultPlots {
+export interface ResultPlotsInner {
   /**
    *
    * @type {string}
-   * @memberof ResultPlots
+   * @memberof ResultPlotsInner
    */
   id?: string
   /**
    * A base64 encoded png representation of the plot
    * @type {string}
-   * @memberof ResultPlots
+   * @memberof ResultPlotsInner
    */
   plot?: string
 }
 
-export function ResultPlotsFromJSON(json: any): ResultPlots {
-  return ResultPlotsFromJSONTyped(json, false)
+/**
+ * Check if a given object implements the ResultPlotsInner interface.
+ */
+export function instanceOfResultPlotsInner(value: object): boolean {
+  let isInstance = true
+
+  return isInstance
 }
 
-export function ResultPlotsFromJSONTyped(
+export function ResultPlotsInnerFromJSON(json: any): ResultPlotsInner {
+  return ResultPlotsInnerFromJSONTyped(json, false)
+}
+
+export function ResultPlotsInnerFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): ResultPlots {
+): ResultPlotsInner {
   if (json === undefined || json === null) {
     return json
   }
@@ -51,7 +59,7 @@ export function ResultPlotsFromJSONTyped(
   }
 }
 
-export function ResultPlotsToJSON(value?: ResultPlots | null): any {
+export function ResultPlotsInnerToJSON(value?: ResultPlotsInner | null): any {
   if (value === undefined) {
     return undefined
   }

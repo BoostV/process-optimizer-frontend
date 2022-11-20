@@ -8,10 +8,10 @@
     "build": "tsc && vite build",
     "start": "vite preview",
     "lint": "eslint src",
-    "test": "vitest",
-    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v2.1.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi"
+    "test": "vitest"
   },
   "dependencies": {
+    "@process-optimizer-frontend/api": "1.0.0",
     "@babel/core": "^7.0.0",
     "@bokeh/bokehjs": "^2.4.3",
     "@emotion/cache": "^11.9.3",
@@ -50,9 +50,7 @@
     "react-devtools": "^4.24.7",
     "rimraf": "^3.0.2",
     "vite": "^3.2.4",
-    "vitest": "^0.25.2"
-  },
-  "peerDependencies": {
+    "vitest": "^0.25.2",
     "typescript": "^4.7.4"
   }
 }

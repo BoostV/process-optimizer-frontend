@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* tslint:disable */
 /* eslint-disable */
 /**
@@ -32,6 +31,15 @@ export interface ModelError {
    * @memberof ModelError
    */
   error?: string
+}
+
+/**
+ * Check if a given object implements the ModelError interface.
+ */
+export function instanceOfModelError(value: object): boolean {
+  let isInstance = true
+
+  return isInstance
 }
 
 export function ModelErrorFromJSON(json: any): ModelError {

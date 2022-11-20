@@ -32,10 +32,7 @@ export default defineConfig({
   },
   base: '/',
   resolve: {
-    alias: [
-      { find: '@', replacement: path.resolve(__dirname, './src') },
-      { find: '@openapi', replacement: path.resolve(__dirname, './openapi') },
-    ],
+    alias: [{ find: '@', replacement: path.resolve(__dirname, './src') }],
   },
   test: {
     coverage: {
