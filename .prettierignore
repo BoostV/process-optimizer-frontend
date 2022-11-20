@@ -1,0 +1,9 @@
+**/.git
+**/node_modules
+.devcontainer
+.github
+**/dist
+**/public
+**/tmp
+**/openapi
+CHANGELOG.md
