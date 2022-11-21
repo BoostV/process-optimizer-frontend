@@ -9,7 +9,6 @@ import JsonEditor from '@/components/json-editor/json-editor'
 
 export default function ExperimentContainer() {
   const { experimentId } = useParams()
-  console.log(experimentId)
   const {
     state: { debug, showJsonEditor, focus },
   } = useGlobal()
