@@ -37,6 +37,9 @@ jobs:
 
       - name: Install modules
         run: yarn install
+      
+      - name: Bootstrap test environment
+        run: yarn bootstrap
 
       - name: Run tests
         run: yarn test

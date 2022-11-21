@@ -11,6 +11,7 @@
     "packages/*"
   ],
   "scripts": {
+    "bootstrap": "yarn --cwd packages/core build",
     "dev": "yarn --cwd sample-app dev",
     "build": "yarn --cwd packages/core build && yarn --cwd sample-app build",
     "test": "yarn --cwd packages/core test --run && yarn --cwd sample-app test --run",
