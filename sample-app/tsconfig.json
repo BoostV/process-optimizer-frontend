@@ -32,7 +32,13 @@
   "include": ["./src", "./src/**/*.json", "./sample-data/**/*.json"],
   "references": [
     {
+      "path": "../packages/api"
+    },
+    {
       "path": "../packages/core"
+    },
+    {
+      "path": "../packages/plots"
     }
   ]
 }
