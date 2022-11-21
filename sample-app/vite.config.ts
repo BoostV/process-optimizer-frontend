@@ -36,14 +36,4 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/testing/setupTests.ts',
   },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          jquery: ['src/jquery-shim.ts'],
-          bokeh: ['@bokeh/bokehjs'],
-        },
-      },
-    },
-  },
 })

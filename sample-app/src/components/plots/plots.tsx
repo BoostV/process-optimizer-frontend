@@ -8,8 +8,8 @@ import { isUIBig } from '@/utility/ui-util'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
 
-import { BokehPlot } from './bokeh-plot'
-import { PngPlot } from './png-plot'
+import { BokehPlot } from '@process-optimizer-frontend/plots'
+import { PNGPlot } from '@process-optimizer-frontend/plots'
 import { isPNG } from '@/utility/data-type-detectors'
 
 export const Plots = () => {
@@ -76,7 +76,7 @@ export const Plots = () => {
                   maxWidth="100%"
                 >
                   {isPNG(plot.plot) ? (
-                    <PngPlot plot={plot.plot} />
+                    <PNGPlot plot={plot.plot} />
                   ) : (
                     <BokehPlot data={plot.plot} />
                   )}
@@ -101,7 +101,7 @@ export const Plots = () => {
                   maxWidth={800}
                 >
                   {isPNG(plot.plot) ? (
-                    <PngPlot plot={plot.plot} />
+                    <PNGPlot plot={plot.plot} />
                   ) : (
                     <BokehPlot data={plot.plot} />
                   )}
@@ -118,7 +118,7 @@ export const Plots = () => {
                   maxWidth={800}
                 >
                   {isPNG(plot.plot) ? (
-                    <PngPlot plot={plot.plot} />
+                    <PNGPlot plot={plot.plot} />
                   ) : (
                     <BokehPlot data={plot.plot} />
                   )}

@@ -7,7 +7,7 @@ type Props = {
   altText?: string
 }
 
-export const PngPlot: React.FC<Props> = ({
+export const PNGPlot: React.FC<Props> = ({
   plot,
   width,
   maxWidth,

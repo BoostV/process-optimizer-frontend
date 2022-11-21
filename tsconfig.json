@@ -7,6 +7,9 @@
       "path": "packages/core"
     },
     {
+      "path": "packages/plots"
+    },
+    {
       "path": "sample-app"
     }
   ]
