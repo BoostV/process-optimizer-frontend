@@ -16,7 +16,7 @@ const ExperimentWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
 
 describe('useExperiment', () => {
   it('fails if called outside provider', async () => {
-    console.error = jest.fn()
+    console.error = vi.fn()
     expect(() => renderHook(() => useExperiment())).toThrow(
       'useExperiment must be used within an ExperimentProvider'
     )

@@ -27,7 +27,7 @@ export function EditableTableCell({
   tooltip,
   style,
 }: EditableTableCellProps) {
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   const textField = (
     <TextField

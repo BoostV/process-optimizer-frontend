@@ -39,7 +39,7 @@ export default function OptimizerModel(props: OptimizerModelProps) {
     addValueVariable,
     addCategoricalVariable,
   } = props
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   return (
     <TitleCard title="Input model" padding={0}>

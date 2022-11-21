@@ -5,10 +5,6 @@ import { useLocalStorageReducer } from '@/hooks/useLocalStorageReducer'
 import { State, Dispatch, initialState, reducer } from './global-reducer'
 import { theme, themes, CustomTheme } from '@/theme/theme'
 
-declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
-}
-
 const GlobalContext = React.createContext<
   { state: State; dispatch: Dispatch } | undefined
 >(undefined)

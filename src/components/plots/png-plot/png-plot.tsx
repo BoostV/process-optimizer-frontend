@@ -13,7 +13,6 @@ export const PngPlot: React.FC<Props> = ({
   maxWidth,
   altText,
 }) => (
-  // eslint-disable-next-line @next/next/no-img-element
   <img
     style={{ width: width || 'auto', maxWidth: maxWidth || 'none' }}
     src={`data:image/png;base64, ${plot}`}

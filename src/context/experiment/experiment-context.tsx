@@ -41,16 +41,14 @@ export function ExperimentProvider({
   const { dispatch: globalDispatch } = useGlobal()
 
   React.useEffect(() => {
-    ;(async () => {
-      if (state?.experiment?.info?.swVersion !== versionInfo.version) {
-        dispatch({ type: 'setSwVersion', payload: versionInfo.version })
-      }
-      globalDispatch({
-        type: 'storeExperimentId',
-        payload: experimentId,
-      })
-      setLoading(false)
-    })()
+    if (state?.experiment?.info?.swVersion !== versionInfo.version) {
+      dispatch({ type: 'setSwVersion', payload: versionInfo.version })
+    }
+    globalDispatch({
+      type: 'storeExperimentId',
+      payload: experimentId,
+    })
+    setLoading(false)
   }, [dispatch, experimentId, state, globalDispatch])
 
   const getValue = (callback: (state: State) => any) => callback(state)
@@ -82,7 +80,7 @@ export const useSelector = <T,>(selector: (state: State) => T) => {
 const fetchExperimentResult = async (
   experiment: ExperimentType
 ): Promise<ExperimentResultType> => {
-  const API_SERVER = process.env.NEXT_PUBLIC_API_SERVER
+  const API_SERVER = import.meta.env.VITE_PUBLIC_API_SERVER
   const api = new DefaultApi(new Configuration({ basePath: API_SERVER }))
   const cfg = experiment.optimizerConfig
   const extras = experiment.extras || {}

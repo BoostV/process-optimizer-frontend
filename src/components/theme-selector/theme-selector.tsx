@@ -4,7 +4,7 @@ import useStyles from './theme-selector.style'
 import { themes } from '@/theme/theme'
 
 export default function ThemeSelector() {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const { dispatch } = useGlobal()
 
   return (

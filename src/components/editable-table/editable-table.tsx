@@ -26,7 +26,7 @@ export const EditableTable = ({
   onRowDeleted,
   onRowEdited,
 }: EditableTableProps) => {
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   return (
     <>

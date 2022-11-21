@@ -177,7 +177,7 @@ export const csvToDataPoints = (
     const header = lines[0]?.split(separator) ?? []
     if (
       header.length >= expectedHeader.length &&
-      expectedHeader.every((value, _) => header.includes(value))
+      expectedHeader.every(value => header.includes(value))
     ) {
       const data = lines.slice(1)
       const dataAsKeyValue = data.map(line =>

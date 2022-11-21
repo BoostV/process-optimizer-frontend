@@ -14,7 +14,7 @@ import { Alert } from '@mui/material'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { useStyles } from './experiment.style'
 import { useExperiment, runExperiment, useSelector } from '@/context/experiment'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import LoadingExperiment from './loading-experiment'
 import LoadingButton from '@/components/loading-button/loading-button'
 import { Plots } from '@/components/plots/plots'
@@ -31,7 +31,7 @@ type SnackbarMessage = {
 }
 
 const TabbedExperiment = () => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const {
     state: { experiment },
     dispatch,

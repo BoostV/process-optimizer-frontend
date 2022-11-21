@@ -23,7 +23,7 @@ type DisplayedResults = {
 }
 
 const JsonEditor = () => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const [errorMsg, setErrorMsg] = useState('')
   const [displayedExperiment, setDisplayedExperiment] = useState('')
   const {

@@ -22,7 +22,7 @@ import {
   useSelector,
   selectDataPoints,
 } from '@/context/experiment'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   ValueVariableType,
   CategoricalVariableType,
@@ -46,7 +46,7 @@ type SnackbarMessage = {
 }
 
 const LegacyExperiment = () => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const {
     state: { experiment },
     dispatch,

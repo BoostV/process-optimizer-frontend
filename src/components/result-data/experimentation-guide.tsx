@@ -27,7 +27,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     onMouseEnterExpand,
     onMouseLeaveExpand,
   } = props
-  const classes = useStyles()
+  const { classes } = useStyles()
   const {
     state: { uiSizes },
     dispatch,

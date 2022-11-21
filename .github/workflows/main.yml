@@ -18,6 +18,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  BRANCH: ${{ github.ref_name }}
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -44,7 +45,7 @@ jobs:
         run: yarn prettier --check .
       
       - name: Build distribution
-        run: yarn build-static
+        run: yarn build
       
       -
         name: Docker meta

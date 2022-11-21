@@ -30,7 +30,7 @@ export const EditableTableExpandedRow = ({
   onAdd,
   onSave,
 }: EditableTableExpandedRowProps) => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const [editedRow, setEditedRow] = useState<TableDataRow>({ ...tableRow })
 
   return (

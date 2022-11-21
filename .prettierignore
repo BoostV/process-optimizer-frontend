@@ -3,6 +3,7 @@
 .github
 node_modules
 out
+dist
 public
 tmp
 openapi

@@ -25,7 +25,7 @@ export const SummaryConfiguration = () => {
     state: { experiment },
   } = useExperiment()
   const { dispatch } = useGlobal()
-  const classes = useStyles()
+  const { classes } = useStyles()
   return (
     <Card
       onClick={() =>

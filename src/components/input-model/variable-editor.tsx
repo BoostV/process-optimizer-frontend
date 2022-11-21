@@ -16,9 +16,9 @@ export default function VariableEditor(props: VariableEditorProps) {
     props
 
   const [tabIndex, setTabIndex] = useState(0)
-  const classes = useStyles()
+  const { classes } = useStyles()
 
-  const handleTabChange = (_event: ChangeEvent<{}>, newValue: number) => {
+  const handleTabChange = (_event: ChangeEvent<unknown>, newValue: number) => {
     setTabIndex(newValue)
   }
 

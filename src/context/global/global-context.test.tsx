@@ -9,7 +9,7 @@ const GlobalWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
 
 describe('useGlobal', () => {
   it('fails if called outside provider', async () => {
-    console.error = jest.fn()
+    console.error = vi.fn()
     expect(() => renderHook(() => useGlobal())).toThrow(
       'useGlobal must be used within a GlobalStateProvider'
     )

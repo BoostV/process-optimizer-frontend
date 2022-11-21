@@ -15,16 +15,15 @@ import { MouseEvent, useCallback, useReducer, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import Layout from '@/components/layout/layout'
 import useStyles from './home.style'
-import { NextRouter, useRouter } from 'next/router'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { buildPath, paths } from '../../../paths'
 import { ExperimentType } from '@/types/common'
 import { useGlobal } from '@/context/global'
 import { v4 as uuid } from 'uuid'
 import { reducer } from './home-reducer'
 import { CreateOrOverwriteDialog } from '@/components/create-or-overwrite-dialog/create-or-overwrite-dialog'
+import { useNavigate } from 'react-router-dom'
 
 type UploadMessage = {
   message: string
@@ -32,8 +31,8 @@ type UploadMessage = {
 }
 
 export default function Home() {
-  const classes = useStyles()
-  const router: NextRouter = useRouter()
+  const navigate = useNavigate()
+  const { classes } = useStyles()
   const { state, dispatch } = useGlobal()
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [deletionState, dispatchDeletion] = useReducer(reducer, {
@@ -45,13 +44,10 @@ export default function Home() {
   })
   const [tempExperiment, setTempExperiment] = useState<ExperimentType>()
 
-  const saveExperimentLocally = useCallback(
-    (experiment: ExperimentType) => {
-      localStorage.setItem(experiment.id, JSON.stringify({ experiment }))
-      router.push(buildPath(paths.experiment, experiment.id))
-    },
-    [router]
-  )
+  const saveExperimentLocally = useCallback((experiment: ExperimentType) => {
+    localStorage.setItem(experiment.id, JSON.stringify({ experiment }))
+    navigate('/experiment/' + experiment.id)
+  }, [])
 
   const onDrop = useCallback(
     (acceptedFiles: Blob[]) => {
@@ -106,12 +102,13 @@ export default function Home() {
 
   const createNewExperiment = () => {
     deleteExperiments()
-    router.push(buildPath(paths.experiment, uuid()))
+    navigate('/experiment/' + uuid())
   }
 
   const openSavedExperiment = (key: string) => {
     deleteExperiments()
-    router.push(buildPath(paths.experiment, key))
+    console.log('TODO route to ' + key)
+    navigate('/experiment/' + key)
   }
 
   const getExperimentName = (key: string) => {

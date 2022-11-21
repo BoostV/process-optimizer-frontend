@@ -101,14 +101,15 @@ export const experimentReducer = produce(
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
-      case 'deleteValueVariable':
+      case 'deleteValueVariable': {
         state.changedSinceLastEvaluation = true
-        let indexOfDelete = state.valueVariables.indexOf(action.payload)
+        const indexOfDelete = state.valueVariables.indexOf(action.payload)
         state.valueVariables.splice(indexOfDelete, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
+      }
       case 'addCategorialVariable':
         state.changedSinceLastEvaluation = true
         state.categoricalVariables.splice(
@@ -120,9 +121,9 @@ export const experimentReducer = produce(
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
-      case 'deleteCategorialVariable':
+      case 'deleteCategorialVariable': {
         state.changedSinceLastEvaluation = true
-        let indexOfCatDelete = state.categoricalVariables.indexOf(
+        const indexOfCatDelete = state.categoricalVariables.indexOf(
           action.payload
         )
         state.categoricalVariables.splice(indexOfCatDelete, 1)
@@ -130,6 +131,7 @@ export const experimentReducer = produce(
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
+      }
       case 'updateConfiguration':
         state.changedSinceLastEvaluation = true
         if (

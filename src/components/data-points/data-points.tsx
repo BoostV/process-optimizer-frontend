@@ -33,7 +33,7 @@ export default function DataPoints(props: DataPointProps) {
     dataPoints,
     onUpdateDataPoints,
   } = props
-  const classes = useStyles()
+  const { classes } = useStyles()
   const [state, dispatch] = useReducer(dataPointsReducer, {
     meta: [],
     rows: [],

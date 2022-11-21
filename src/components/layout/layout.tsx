@@ -1,17 +1,17 @@
 import {
   AppBar,
   Box,
-  Button,
   Switch,
   Toolbar,
   Typography,
   FormControlLabel,
+  Button,
 } from '@mui/material'
-import Link from 'next/link'
 import useStyles from './layout.style'
 import { useGlobal } from '@/context/global'
 import { VersionInfo } from '@/components/version-info'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 interface Props {
   children: React.ReactNode
@@ -19,7 +19,7 @@ interface Props {
 
 export default function Layout({ children }: Props) {
   const [showDebug, setShowDebug] = useState(false)
-  const classes = useStyles()
+  const { classes } = useStyles()
   const { state, dispatch } = useGlobal()
 
   const handleSwitch =
@@ -95,7 +95,6 @@ export default function Layout({ children }: Props) {
             />
           )}
           {
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               className={classes.logo}
               alt=""
@@ -105,11 +104,11 @@ export default function Layout({ children }: Props) {
           <Typography variant="h6" className={classes.title}>
             Brownie Bee
           </Typography>
-          <div className={classes.links}>
-            <Link href="/" passHref>
+          <Link className={classes.links} to={'/'}>
+            <div className={classes.links}>
               <Button className={classes.link}>Home</Button>
-            </Link>
-          </div>
+            </div>
+          </Link>
           <div
             onClick={() => {
               setShowDebug(!showDebug)

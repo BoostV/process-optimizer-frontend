@@ -1,5 +1,5 @@
 FROM nginx
-COPY ./out /usr/share/nginx/html
+COPY ./dist /usr/share/nginx/html
 COPY ./docker-entrypoint.sh /docker-entrypoint.d
 COPY ./nginx-spa.conf /etc/nginx/conf.d/default.conf
 

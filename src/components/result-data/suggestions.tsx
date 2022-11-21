@@ -13,7 +13,7 @@ interface SuggestionsProps {
 }
 
 export const Suggestions = ({ values, headers }: SuggestionsProps) => {
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   return (
     <>

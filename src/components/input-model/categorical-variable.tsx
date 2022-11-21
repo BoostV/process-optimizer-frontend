@@ -13,7 +13,7 @@ type CategoricalVariableProps = {
 }
 
 export default function CategoricalVariable(props: CategoricalVariableProps) {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const { isDisabled, onAdded } = props
   const [options, setOptions] = useState<string[]>([])
   const { register, handleSubmit, reset, formState, setError, clearErrors } =
@@ -35,7 +35,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
   }
 
   const deleteOption = (index: number) => {
-    let newOptions = options.slice()
+    const newOptions = options.slice()
     newOptions.splice(index, 1)
     setOptions(newOptions)
   }
