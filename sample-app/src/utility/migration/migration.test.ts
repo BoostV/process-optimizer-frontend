@@ -1,12 +1,12 @@
 import { migrate, _migrate, MIGRATIONS } from './migration'
-import version6 from './data-formats/6.json'
-import version5 from './data-formats/5.json'
-import version4 from './data-formats/4.json'
-import version3 from './data-formats/3.json'
-import version2 from './data-formats/2.json'
-import version1 from './data-formats/1.json'
-import catapult from '../../../sample-data/catapult.json'
-import large from '../../../sample-data/large.json'
+import version6 from './data-formats/6.json' assert { type: 'json' }
+import version5 from './data-formats/5.json' assert { type: 'json' }
+import version4 from './data-formats/4.json' assert { type: 'json' }
+import version3 from './data-formats/3.json' assert { type: 'json' }
+import version2 from './data-formats/2.json' assert { type: 'json' }
+import version1 from './data-formats/1.json' assert { type: 'json' }
+import catapult from '../../../sample-data/catapult.json' assert { type: 'json' }
+import large from '../../../sample-data/large.json' assert { type: 'json' }
 import { emptyExperiment } from '@/context/experiment/store'
 import { ExperimentType } from '@/types/common'
 import fs from 'fs'
