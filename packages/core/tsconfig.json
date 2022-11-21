@@ -23,16 +23,10 @@
     "noUncheckedIndexedAccess": true,
     "strictNullChecks": true,
     "outDir": "dist",
-    "types": ["vitest/globals"],
-    "baseUrl": ".",
+    "declaration": true,
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["./src", "./src/**/*.json", "./sample-data/**/*.json"],
-  "references": [
-    {
-      "path": "../packages/core"
-    }
-  ]
+  "include": ["src"]
 }

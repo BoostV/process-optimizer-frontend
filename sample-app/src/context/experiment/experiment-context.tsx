@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { versionInfo } from '@/components/version-info'
-import { useLocalStorageReducer } from '@/hooks/useLocalStorageReducer'
+import { useLocalStorageReducer } from '@process-optimizer-frontend/core'
 import {
   Configuration,
   DefaultApi,

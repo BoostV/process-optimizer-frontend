@@ -12,8 +12,8 @@
   ],
   "scripts": {
     "dev": "yarn --cwd sample-app dev",
-    "build": "yarn --cwd sample-app build",
-    "test": "yarn --cwd sample-app test",
+    "build": "yarn --cwd packages/core build && yarn --cwd sample-app build",
+    "test": "yarn --cwd packages/core test --run && yarn --cwd sample-app test --run",
     "start": "yarn --cwd sample-app start",
     "openapi": "yarn --cwd packages/api openapi",
     "prepare": "husky install",

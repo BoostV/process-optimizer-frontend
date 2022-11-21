@@ -1,7 +1,7 @@
 import { Theme, ThemeProvider } from '@mui/material'
 import * as React from 'react'
 import ThemeSelector from '@/components/theme-selector/theme-selector'
-import { useLocalStorageReducer } from '@/hooks/useLocalStorageReducer'
+import { useLocalStorageReducer } from '@process-optimizer-frontend/core'
 import { State, Dispatch, initialState, reducer } from './global-reducer'
 import { theme, themes, CustomTheme } from '@/theme/theme'
 
