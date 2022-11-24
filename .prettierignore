@@ -1,10 +1,9 @@
-.next
+**/.git
+**/node_modules
 .devcontainer
 .github
-node_modules
-out
-dist
-public
-tmp
-openapi
+**/dist
+**/public
+**/tmp
+**/openapi
 CHANGELOG.md

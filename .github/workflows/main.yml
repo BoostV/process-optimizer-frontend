@@ -30,6 +30,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
@@ -37,6 +39,9 @@ jobs:
 
       - name: Install modules
         run: yarn install
+      
+      - name: Bootstrap test environment
+        run: yarn bootstrap
 
       - name: Run tests
         run: yarn test
