@@ -1,6 +1,5 @@
 import { useExperiment } from '@/context/experiment'
 import useStyles from './plots.style'
-import { TitleCard } from '@/components/title-card/title-card'
 import { Tooltip, IconButton, Hidden } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import { useGlobal } from '@/context/global'
@@ -11,6 +10,7 @@ import { PlotItem } from './plot-item'
 import { BokehPlot } from '@process-optimizer-frontend/plots'
 import { PNGPlot } from '@process-optimizer-frontend/plots'
 import { isPNG } from '@/utility/data-type-detectors'
+import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
 
 export const Plots = () => {
   const {

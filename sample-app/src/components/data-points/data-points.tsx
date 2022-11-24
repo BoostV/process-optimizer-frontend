@@ -10,7 +10,7 @@ import {
 } from '@/types/common'
 import { EditableTable } from '@/components/editable-table/editable-table'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
-import { TitleCard } from '@/components/title-card/title-card'
+import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
 import useStyles from './data-points.style'
 import DownloadCSVButton from '@/components/download-csv-button'
 import UploadCSVButton from '@/components/upload-csv-button'

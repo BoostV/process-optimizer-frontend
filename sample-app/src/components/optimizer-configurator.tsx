@@ -1,5 +1,5 @@
 import { OptimizerConfig } from '@/types/common'
-import { TitleCard } from './title-card/title-card'
+import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
 import { TextField } from '@mui/material'
 import { useGlobal } from '@/context/global'
 

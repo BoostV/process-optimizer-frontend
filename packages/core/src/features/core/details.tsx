@@ -1,6 +1,13 @@
+import { currentVersion } from '@/common/types/common'
 import { TextField } from '@mui/material'
-import { Info } from '@/types/common'
 import { TitleCard } from './title-card/title-card'
+
+export type Info = {
+  name: string
+  description: string
+  swVersion: string
+  dataFormatVersion: typeof currentVersion
+}
 
 type DetailsProps = {
   info: Info

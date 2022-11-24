@@ -1,7 +1,11 @@
+import { currentVersion as importedCurrentVersion } from '@process-optimizer-frontend/core/src/common/types/common'
+
 // IMPORTANT!
 // Change the current version when doing structural
-// changes to any types beloning to ExperimentType
-export const currentVersion = '8'
+// changes to any types belonging to ExperimentType
+
+// TODO: move
+export const currentVersion = importedCurrentVersion
 
 export type ExperimentType = {
   id: string

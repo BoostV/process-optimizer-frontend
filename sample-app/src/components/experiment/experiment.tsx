@@ -13,7 +13,7 @@ import Layout from '@/components/layout/layout'
 import OptimizerModel from '@/components/input-model/optimizer-model'
 import OptimizerConfigurator from '@/components/optimizer-configurator'
 import { Alert } from '@mui/material'
-import Details from '@/components/details'
+import Details from '@process-optimizer-frontend/core/src/features/core/details'
 import DataPoints from '@/components/data-points/data-points'
 import { useStyles } from './experiment.style'
 import {

@@ -6,7 +6,7 @@ import {
   CategoricalVariableType,
   OptimizerConfig,
 } from '@/types/common'
-import Details from '@/components/details'
+import Details from '@process-optimizer-frontend/core/src/features/core/details'
 import OptimizerModel from '@/components/input-model/optimizer-model'
 import OptimizerConfigurator from '@/components/optimizer-configurator'
 import { selectAdvancedConfiguration } from '@/context/global/global-selectors'

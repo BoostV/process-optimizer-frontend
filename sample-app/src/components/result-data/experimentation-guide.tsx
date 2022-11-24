@@ -1,6 +1,6 @@
 import { useSelector } from '@/context/experiment'
 import { Suggestions } from './suggestions'
-import { TitleCard } from '@/components/title-card/title-card'
+import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import { useGlobal } from '@/context/global'
