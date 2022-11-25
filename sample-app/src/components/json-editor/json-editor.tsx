@@ -10,10 +10,10 @@ import {
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useExperiment } from '@/context/experiment'
 import useStyles from './json-editor.style'
-import { ExperimentType } from '@/types/common'
 import CloseIcon from '@mui/icons-material/Close'
 import { useGlobal } from '@/context/global'
 import { errorMessage } from '@/utility'
+import { ExperimentType } from '@process-optimizer-frontend/core/src/common/types/common'
 
 type DisplayedResults = {
   id: string

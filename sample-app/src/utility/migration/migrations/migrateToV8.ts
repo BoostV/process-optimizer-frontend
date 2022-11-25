@@ -7,8 +7,8 @@ import {
   OptimizerConfig,
   ScoreVariableType,
   ValueVariableType,
-} from '@/types/common'
-import { Info } from '@process-optimizer-frontend/core/src/common/types/common'
+  Info,
+} from '@process-optimizer-frontend/core/src/common/types/common'
 
 type ExperimentTypeV7 = {
   id: string

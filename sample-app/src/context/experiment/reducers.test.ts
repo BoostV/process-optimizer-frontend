@@ -1,6 +1,5 @@
 import { ExperimentAction } from './experiment-reducers'
 import { rootReducer } from './reducers'
-import { State, emptyExperiment } from '@/context/experiment/store'
 import {
   CategoricalVariableType,
   currentVersion,
@@ -9,8 +8,12 @@ import {
   ExperimentType,
   OptimizerConfig,
   ValueVariableType,
-} from '@/types/common'
-import { versionInfo } from '@/components/version-info'
+} from '@process-optimizer-frontend/core/src/common/types/common'
+import {
+  emptyExperiment,
+  State,
+} from '@process-optimizer-frontend/core/src/context/experiment/store'
+import { versionInfo } from '@process-optimizer-frontend/core/src/features/core/version-info'
 
 describe('experiment reducer', () => {
   const initState: State = {

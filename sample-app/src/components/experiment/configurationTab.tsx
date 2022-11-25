@@ -1,15 +1,15 @@
 import { Grid } from '@mui/material'
 import { useExperiment } from '@/context/experiment'
 import { useSelector } from '@/context/global'
-import {
-  ValueVariableType,
-  CategoricalVariableType,
-  OptimizerConfig,
-} from '@/types/common'
 import Details from '@process-optimizer-frontend/core/src/features/core/details'
 import OptimizerModel from '@/components/input-model/optimizer-model'
 import OptimizerConfigurator from '@/components/optimizer-configurator'
 import { selectAdvancedConfiguration } from '@/context/global/global-selectors'
+import {
+  CategoricalVariableType,
+  OptimizerConfig,
+  ValueVariableType,
+} from '@process-optimizer-frontend/core/src/common/types/common'
 
 export const ConfigurationTab = () => {
   const {

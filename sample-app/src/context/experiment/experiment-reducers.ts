@@ -1,4 +1,3 @@
-import { versionInfo } from '@/components/version-info'
 import {
   CategoricalVariableType,
   DataEntry,
@@ -6,9 +5,10 @@ import {
   ExperimentType,
   OptimizerConfig,
   ValueVariableType,
-} from '@/types/common'
+} from '@process-optimizer-frontend/core/src/common/types/common'
 import { assertUnreachable } from '@/utility'
 import produce from 'immer'
+import { versionInfo } from '@process-optimizer-frontend/core/src/features/core/version-info'
 
 const calculateInitialPoints = (state: ExperimentType) =>
   Math.max(

@@ -1,9 +1,9 @@
 import { IconButton, Input, Tooltip } from '@mui/material'
 import { useExperiment } from '@/context/experiment'
-import { DataEntry } from '@/types/common'
 import { csvToDataPoints } from '@/utility/converters'
 import PublishIcon from '@mui/icons-material/Publish'
 import { ChangeEvent } from 'react'
+import { DataEntry } from '@process-optimizer-frontend/core/src/common/types/common'
 
 const readFile = (file: Blob, dataHandler: (s: string) => void) => {
   const result = ''

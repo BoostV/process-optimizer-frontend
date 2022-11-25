@@ -9,9 +9,9 @@ import {
 } from '@mui/material'
 import useStyles from './layout.style'
 import { useGlobal } from '@/context/global'
-import { VersionInfo } from '@/components/version-info'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { VersionInfo } from '@process-optimizer-frontend/core/src/features/core/version-info'
 
 interface Props {
   children: React.ReactNode

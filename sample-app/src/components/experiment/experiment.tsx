@@ -24,12 +24,6 @@ import {
   selectDataPoints,
 } from '@/context/experiment'
 import { useState } from 'react'
-import {
-  ValueVariableType,
-  CategoricalVariableType,
-  OptimizerConfig,
-  DataEntry,
-} from '@/types/common'
 import LoadingExperiment from './loading-experiment'
 import { ExperimentationGuide } from '@/components/result-data/experimentation-guide'
 import LoadingButton from '@/components/loading-button/loading-button'
@@ -39,6 +33,12 @@ import { UISizeValue } from '@/context/global'
 import { getSize, isUIBig } from '@/utility/ui-util'
 import { AlertColor } from '@mui/material'
 import { selectIsInitializing } from '@/context/experiment'
+import {
+  CategoricalVariableType,
+  DataEntry,
+  OptimizerConfig,
+  ValueVariableType,
+} from '@process-optimizer-frontend/core/src/common/types/common'
 
 type SnackbarMessage = {
   message: string
@@ -107,8 +107,8 @@ const LegacyExperiment = () => {
   const categoricalVariables = experiment.categoricalVariables
 
   const headers = valueVariables
-    .map(it => it.name)
-    .concat(categoricalVariables.map(it => it.name))
+    .map((it: any) => it.name)
+    .concat(categoricalVariables.map((it: any) => it.name))
 
   const nextValues: any[][] =
     experiment.results.next && Array.isArray(experiment.results.next[0])
@@ -152,8 +152,9 @@ const LegacyExperiment = () => {
                     {debug && (
                       <Switch
                         checked={
-                          experiment.scoreVariables.filter(it => it.enabled)
-                            .length > 1
+                          experiment.scoreVariables.filter(
+                            (it: any) => it.enabled
+                          ).length > 1
                         }
                         onChange={() =>
                           dispatch({ type: 'experiment/toggleMultiObjective' })

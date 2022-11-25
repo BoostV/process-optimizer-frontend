@@ -8,7 +8,7 @@ import { BokehPlot } from '@process-optimizer-frontend/plots'
 import { PNGPlot } from '@process-optimizer-frontend/plots'
 import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
 import { FC } from 'react'
-import { ExperimentType } from '@/types/common'
+import { ExperimentType } from '@process-optimizer-frontend/core/src/common/types/common'
 
 type Props = {
   isUIBig: boolean
@@ -45,8 +45,8 @@ export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
         {experiment.results.plots.length > 0 ? (
           <PlotList>
             {experiment.results.plots
-              .filter(plot => plot.id.includes('objective'))
-              .map((plot, idx) => (
+              .filter((plot: any) => plot.id.includes('objective'))
+              .map((plot: any, idx: number) => (
                 <PlotItem
                   id={plot.id}
                   key={plot.id}
@@ -74,8 +74,8 @@ export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
               ))}
 
             {experiment.results.plots
-              .filter(plot => plot.id.includes('convergence'))
-              .map((plot, idx) => (
+              .filter((plot: any) => plot.id.includes('convergence'))
+              .map((plot: any, idx: number) => (
                 <PlotItem
                   id={plot.id}
                   key={plot.id}
@@ -98,8 +98,8 @@ export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
                 </PlotItem>
               ))}
             {experiment.results.plots
-              .filter(plot => plot.id.includes('pareto'))
-              .map(plot => (
+              .filter((plot: any) => plot.id.includes('pareto'))
+              .map((plot: any) => (
                 <PlotItem
                   key={plot.id}
                   id={plot.id}

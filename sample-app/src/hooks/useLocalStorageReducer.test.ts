@@ -1,6 +1,9 @@
 import { useLocalStorageReducer } from '@process-optimizer-frontend/core'
+import {
+  initialState,
+  State,
+} from '@process-optimizer-frontend/core/src/context/experiment/store'
 import { renderHook } from '@testing-library/react'
-import { initialState, State } from '@/context/experiment/store'
 
 describe('useLocalStorageReducer', () => {
   it('can be called once', () => {

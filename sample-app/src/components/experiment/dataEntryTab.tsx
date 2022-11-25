@@ -4,9 +4,9 @@ import {
   useExperiment,
   useSelector,
 } from '@/context/experiment'
-import { DataEntry } from '@/types/common'
 import DataPoints from '@/components/data-points/data-points'
 import { ExperimentationGuide } from '@/components/result-data/experimentation-guide'
+import { DataEntry } from '@process-optimizer-frontend/core/src/common/types/common'
 
 export const DataEntryTab = () => {
   const {
@@ -20,8 +20,8 @@ export const DataEntryTab = () => {
   const categoricalVariables = experiment.categoricalVariables
 
   const headers = valueVariables
-    .map(it => it.name)
-    .concat(categoricalVariables.map(it => it.name))
+    .map((it: any) => it.name)
+    .concat(categoricalVariables.map((it: any) => it.name))
 
   const nextValues: any[][] =
     experiment.results.next && Array.isArray(experiment.results.next[0])

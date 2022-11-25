@@ -1,11 +1,11 @@
-import { initialState } from '@/context/experiment/store'
 import {
   CategoricalVariableType,
   DataEntry,
   ExperimentType,
   ScoreVariableType,
   ValueVariableType,
-} from '@/types/common'
+} from '@process-optimizer-frontend/core/src/common/types/common'
+import { initialState } from '@process-optimizer-frontend/core/src/context/experiment/store'
 import {
   calculateSpace,
   calculateData,

@@ -1,5 +1,5 @@
-import { State } from '@/context/experiment/store'
 import { assertUnreachable } from '@/utility'
+import { State } from '@process-optimizer-frontend/core/src/context/experiment/store'
 import { ExperimentAction, experimentReducer } from './experiment-reducers'
 
 export type Action = ExperimentAction

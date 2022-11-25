@@ -1,13 +1,6 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useEffect, useMemo, useReducer } from 'react'
 import { useGlobal } from '@/context/global'
-import {
-  ValueVariableType,
-  CategoricalVariableType,
-  DataPointTypeValue,
-  ScoreVariableType,
-  DataEntry,
-} from '@/types/common'
 import { EditableTable } from '@/components/editable-table/editable-table'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
 import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
@@ -16,6 +9,13 @@ import DownloadCSVButton from '@/components/download-csv-button'
 import UploadCSVButton from '@/components/upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
 import { TableDataRow } from '@/components/editable-table'
+import {
+  CategoricalVariableType,
+  DataEntry,
+  DataPointTypeValue,
+  ScoreVariableType,
+  ValueVariableType,
+} from '@process-optimizer-frontend/core/src/common/types/common'
 
 type DataPointProps = {
   valueVariables: ValueVariableType[]

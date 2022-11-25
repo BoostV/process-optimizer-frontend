@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { versionInfo } from '@/components/version-info'
 import { useLocalStorageReducer } from '@process-optimizer-frontend/core'
 import {
   Configuration,
@@ -7,11 +6,18 @@ import {
   OptimizerapiOptimizerRunRequest,
 } from '@process-optimizer-frontend/api'
 import { Dispatch, rootReducer } from './reducers'
-import { initialState, State } from '@/context/experiment/store'
-import { ExperimentResultType, ExperimentType } from '@/types/common'
 import { calculateData, calculateSpace } from '@/utility/converters'
 import { migrate } from '@/utility/migration/migration'
 import { useGlobal } from '@/context/global/'
+import {
+  initialState,
+  State,
+} from '@process-optimizer-frontend/core/src/context/experiment/store'
+import {
+  ExperimentResultType,
+  ExperimentType,
+} from '@process-optimizer-frontend/core/src/common/types/common'
+import { versionInfo } from '@process-optimizer-frontend/core/src/features/core/version-info'
 
 const ExperimentContext = React.createContext<
   { state: State; dispatch: Dispatch; loading: boolean } | undefined

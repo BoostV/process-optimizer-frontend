@@ -39,8 +39,8 @@ export const PlotItem = ({
         ))}
       </Typography>
       {experiment.results.plots
-        .filter(plot => plot.id === id)
-        .map(plot => (
+        .filter((plot: any) => plot.id === id)
+        .map((plot: any) => (
           <li className={classes.listItem} key={plot.id}>
             {React.cloneElement(children, { width, maxWidth })}
           </li>

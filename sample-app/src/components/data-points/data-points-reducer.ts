@@ -1,11 +1,12 @@
 import { TableDataPoint, TableDataRow } from '@/components/editable-table'
+
+import { assertUnreachable } from '@/utility'
 import {
-  ValueVariableType,
   CategoricalVariableType,
   CombinedVariableType,
   DataEntry,
-} from '@/types/common'
-import { assertUnreachable } from '@/utility'
+  ValueVariableType,
+} from '@process-optimizer-frontend/core/src/common/types/common'
 import produce from 'immer'
 
 interface EditRow {

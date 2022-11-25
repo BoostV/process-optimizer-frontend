@@ -18,12 +18,12 @@ import useStyles from './home.style'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { ExperimentType } from '@/types/common'
 import { useGlobal } from '@/context/global'
 import { v4 as uuid } from 'uuid'
 import { reducer } from './home-reducer'
 import { CreateOrOverwriteDialog } from '@/components/create-or-overwrite-dialog/create-or-overwrite-dialog'
 import { useNavigate } from 'react-router-dom'
+import { ExperimentType } from '@process-optimizer-frontend/core/src/common/types/common'
 
 type UploadMessage = {
   message: string
