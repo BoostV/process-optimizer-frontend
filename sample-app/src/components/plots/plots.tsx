@@ -6,10 +6,9 @@ import { useGlobal } from '@/context/global'
 import { isUIBig } from '@/utility/ui-util'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
-
+import { isPNG } from '@process-optimizer-frontend/core/src/common/util/data-type-detectors'
 import { BokehPlot } from '@process-optimizer-frontend/plots'
 import { PNGPlot } from '@process-optimizer-frontend/plots'
-import { isPNG } from '@/utility/data-type-detectors'
 import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
 
 export const Plots = () => {

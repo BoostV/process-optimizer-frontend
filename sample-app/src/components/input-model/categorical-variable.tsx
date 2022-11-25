@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import CategoricalVariableOptions from './categorical-variable-options'
 import { useStyles } from './categorical-variable.style'
 import { CategoricalVariableType } from '@/types/common'
-import { validation } from '@/utility/forms/validation'
+import { validation } from '@process-optimizer-frontend/core/src/common/util/forms/validation'
 
 type CategoricalVariableProps = {
   isDisabled: boolean
