@@ -36,7 +36,7 @@ import LoadingButton from '@/components/loading-button/loading-button'
 import { Plots } from '@/components/plots/plots'
 import { useGlobal } from '@/context/global'
 import { UISizeValue } from '@/context/global'
-import { getSize } from '@/utility/ui-util'
+import { getSize, isUIBig } from '@/utility/ui-util'
 import { AlertColor } from '@mui/material'
 import { selectIsInitializing } from '@/context/experiment'
 
@@ -58,6 +58,7 @@ const LegacyExperiment = () => {
       uiSizes,
       flags: { advancedConfiguration },
     },
+    dispatch: globalDispatch,
   } = useGlobal()
 
   const isInitializing = useSelector(selectIsInitializing)
@@ -305,7 +306,16 @@ const LegacyExperiment = () => {
                     xs={UISizeValue.Big}
                     xl={getSize(uiSizes, 'plots')}
                   >
-                    <Plots />
+                    <Plots
+                      isUIBig={isUIBig(uiSizes, 'plots')}
+                      experiment={experiment}
+                      onSizeToggle={() =>
+                        globalDispatch({
+                          type: 'toggleUISize',
+                          payload: 'plots',
+                        })
+                      }
+                    />
                   </Grid>
                 </Grid>
               </Grid>

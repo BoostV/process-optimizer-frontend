@@ -1,4 +1,7 @@
-import { currentVersion as importedCurrentVersion } from '@process-optimizer-frontend/core/src/common/types/common'
+import {
+  currentVersion as importedCurrentVersion,
+  Info,
+} from '@process-optimizer-frontend/core/src/common/types/common'
 
 // IMPORTANT!
 // Change the current version when doing structural
@@ -27,13 +30,6 @@ export type ExperimentResultType = {
   pickled: string
   expectedMinimum: Array<Array<number>>
   extras: object
-}
-
-export type Info = {
-  name: string
-  description: string
-  swVersion: string
-  dataFormatVersion: typeof currentVersion
 }
 
 export type CategoricalVariableType = {

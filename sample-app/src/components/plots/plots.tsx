@@ -1,24 +1,22 @@
-import { useExperiment } from '@/context/experiment'
 import useStyles from './plots.style'
 import { Tooltip, IconButton, Hidden } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
-import { useGlobal } from '@/context/global'
-import { isUIBig } from '@/utility/ui-util'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
 import { isPNG } from '@process-optimizer-frontend/core/src/common/util/data-type-detectors'
 import { BokehPlot } from '@process-optimizer-frontend/plots'
 import { PNGPlot } from '@process-optimizer-frontend/plots'
 import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
+import { FC } from 'react'
+import { ExperimentType } from '@/types/common'
 
-export const Plots = () => {
-  const {
-    state: { experiment },
-  } = useExperiment()
-  const {
-    state: { uiSizes },
-    dispatch,
-  } = useGlobal()
+type Props = {
+  isUIBig: boolean
+  onSizeToggle: () => void
+  experiment: ExperimentType
+}
+
+export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
   const { classes } = useStyles()
 
   return (
@@ -28,18 +26,11 @@ export const Plots = () => {
           <>
             Plots
             <Hidden xlDown>
-              <Tooltip
-                title={
-                  (isUIBig(uiSizes, 'plots') ? 'Collapse' : 'Expand') +
-                  " 'Plots'"
-                }
-              >
+              <Tooltip title={(isUIBig ? 'Collapse' : 'Expand') + " 'Plots'"}>
                 <IconButton
                   size="small"
                   className={classes.titleButton}
-                  onClick={() =>
-                    dispatch({ type: 'toggleUISize', payload: 'plots' })
-                  }
+                  onClick={onSizeToggle}
                 >
                   <ZoomOutMapIcon
                     fontSize="small"

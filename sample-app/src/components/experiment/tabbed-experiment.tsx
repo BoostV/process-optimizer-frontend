@@ -24,6 +24,7 @@ import { ConfigurationTab } from './configurationTab'
 import { DataEntryTab } from './dataEntryTab'
 import { State } from '@/context/global'
 import { selectIsInitializing } from '@/context/experiment'
+import { isUIBig } from '@/utility/ui-util'
 
 type SnackbarMessage = {
   message: string
@@ -38,7 +39,7 @@ const TabbedExperiment = () => {
     loading,
   } = useExperiment()
   const {
-    state: { focus, debug },
+    state: { focus, debug, uiSizes },
     dispatch: globalDispatch,
   } = useGlobal()
 
@@ -168,7 +169,16 @@ const TabbedExperiment = () => {
             <DataEntryTab />
           </TabPanel>
           <TabPanel value="results">
-            <Plots />
+            <Plots
+              isUIBig={isUIBig(uiSizes, 'plots')}
+              experiment={experiment}
+              onSizeToggle={() =>
+                globalDispatch({
+                  type: 'toggleUISize',
+                  payload: 'plots',
+                })
+              }
+            />
           </TabPanel>
         </Box>
       </TabContext>
