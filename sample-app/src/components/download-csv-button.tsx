@@ -5,7 +5,7 @@ import {
   useSelector,
 } from '@/context/experiment'
 import { dataPointsToCSV } from '@/utility/converters'
-import { saveCSVToLocalFile } from '@/utility/save-to-local-file'
+import { saveCSVToLocalFile } from '@process-optimizer-frontend/core/src/common/util/save-to-local-file'
 import GetAppIcon from '@mui/icons-material/GetApp'
 
 interface DownloadCSVButtonProps {
