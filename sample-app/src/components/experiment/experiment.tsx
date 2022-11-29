@@ -27,7 +27,6 @@ import {
 import { useState } from 'react'
 import LoadingExperiment from './loading-experiment'
 import { ExperimentationGuide } from '@/components/result-data/experimentation-guide'
-import LoadingButton from '@/components/loading-button/loading-button'
 import { useGlobal } from '@/context/global'
 import { UISizeValue } from '@/context/global'
 import { getSize, isUIBig } from '@/utility/ui-util'
@@ -39,6 +38,7 @@ import {
   OptimizerConfig,
   ValueVariableType,
 } from '@process-optimizer-frontend/core/src/common/types/common'
+import LoadingButton from '@process-optimizer-frontend/core/src/features/core/loading-button/loading-button'
 
 type SnackbarMessage = {
   message: string
