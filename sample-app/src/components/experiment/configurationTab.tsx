@@ -2,7 +2,7 @@ import { Grid } from '@mui/material'
 import { useExperiment } from '@/context/experiment'
 import { useSelector } from '@/context/global'
 import Details from '@process-optimizer-frontend/core/src/features/core/details'
-import OptimizerModel from '@/components/input-model/optimizer-model'
+import OptimizerModel from '@process-optimizer-frontend/core/src/features/input-model/optimizer-model'
 import OptimizerConfigurator from '@/components/optimizer-configurator'
 import { selectAdvancedConfiguration } from '@/context/global/global-selectors'
 import {
