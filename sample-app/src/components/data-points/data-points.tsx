@@ -132,6 +132,9 @@ export default function DataPoints(props: DataPointProps) {
                 onUpload={(dataPoints: DataEntry[]) =>
                   onUpdateDataPoints(dataPoints)
                 }
+                categoricalVariables={categoricalVariables}
+                valueVariables={valueVariables}
+                scoreVariables={scoreVariables}
               />
               <Tooltip title="Reverse order">
                 <IconButton

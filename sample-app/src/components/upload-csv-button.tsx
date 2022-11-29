@@ -1,9 +1,13 @@
 import { IconButton, Input, Tooltip } from '@mui/material'
-import { useExperiment } from '@/context/experiment'
 import { csvToDataPoints } from '@/utility/converters'
 import PublishIcon from '@mui/icons-material/Publish'
 import { ChangeEvent } from 'react'
-import { DataEntry } from '@process-optimizer-frontend/core/src/common/types/common'
+import {
+  CategoricalVariableType,
+  DataEntry,
+  ScoreVariableType,
+  ValueVariableType,
+} from '@process-optimizer-frontend/core/src/common/types/common'
 
 const readFile = (file: Blob, dataHandler: (s: string) => void) => {
   const result = ''
@@ -17,14 +21,18 @@ const readFile = (file: Blob, dataHandler: (s: string) => void) => {
 interface UploadCSVButtonProps {
   light?: boolean
   onUpload: (dataPoints: DataEntry[]) => void
+  valueVariables: ValueVariableType[]
+  categoricalVariables: CategoricalVariableType[]
+  scoreVariables: ScoreVariableType[]
 }
 
-const UploadCSVButton = ({ onUpload, light }: UploadCSVButtonProps) => {
-  const {
-    state: {
-      experiment: { valueVariables, categoricalVariables, scoreVariables },
-    },
-  } = useExperiment()
+const UploadCSVButton = ({
+  onUpload,
+  light,
+  valueVariables,
+  categoricalVariables,
+  scoreVariables,
+}: UploadCSVButtonProps) => {
   const handleFileUpload = (files: string | any[] | FileList) => {
     if (files && files.length > 0) {
       readFile(files[0], data =>
