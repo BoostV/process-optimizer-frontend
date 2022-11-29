@@ -1,5 +1,5 @@
 import { dataPointsReducer, DataPointsState } from './data-points-reducer'
-import { TableDataRow } from '@/components/editable-table'
+import { TableDataRow } from '@process-optimizer-frontend/core/src/features/core/editable-table'
 
 describe('data points reducer', () => {
   const initialState: DataPointsState = {

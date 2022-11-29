@@ -1,14 +1,14 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useEffect, useMemo, useReducer } from 'react'
 import { useGlobal } from '@/context/global'
-import { EditableTable } from '@/components/editable-table/editable-table'
+import { EditableTable } from '@process-optimizer-frontend/core/src/features/core/editable-table/editable-table'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
 import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
 import useStyles from './data-points.style'
 import DownloadCSVButton from '@/components/download-csv-button'
 import UploadCSVButton from '@/components/upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
-import { TableDataRow } from '@/components/editable-table'
+import { TableDataRow } from '@process-optimizer-frontend/core/src/features/core/editable-table'
 import {
   CategoricalVariableType,
   DataEntry,

@@ -1,4 +1,7 @@
-import { TableDataPoint, TableDataRow } from '@/components/editable-table'
+import {
+  TableDataPoint,
+  TableDataRow,
+} from '@process-optimizer-frontend/core/src/features/core/editable-table'
 
 import { assertUnreachable } from '@/utility'
 import {
