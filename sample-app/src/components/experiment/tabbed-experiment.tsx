@@ -133,8 +133,7 @@ const TabbedExperiment = () => {
             {debug && (
               <Switch
                 checked={
-                  experiment.scoreVariables.filter((it: any) => it.enabled)
-                    .length > 1
+                  experiment.scoreVariables.filter(it => it.enabled).length > 1
                 }
                 onChange={() =>
                   dispatch({

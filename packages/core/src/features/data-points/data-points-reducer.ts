@@ -2,8 +2,6 @@ import {
   TableDataPoint,
   TableDataRow,
 } from '@process-optimizer-frontend/core/src/features/core/editable-table'
-
-import { assertUnreachable } from '@/utility'
 import {
   CategoricalVariableType,
   CombinedVariableType,
@@ -11,6 +9,7 @@ import {
   ValueVariableType,
 } from '@process-optimizer-frontend/core/src/common/types/common'
 import produce from 'immer'
+import { assertUnreachable } from '@process-optimizer-frontend/core/src/common/util'
 
 interface EditRow {
   row: TableDataRow

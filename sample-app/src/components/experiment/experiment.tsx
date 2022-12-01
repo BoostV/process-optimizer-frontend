@@ -108,8 +108,8 @@ const LegacyExperiment = () => {
   const categoricalVariables = experiment.categoricalVariables
 
   const headers = valueVariables
-    .map((it: any) => it.name)
-    .concat(categoricalVariables.map((it: any) => it.name))
+    .map(it => it.name)
+    .concat(categoricalVariables.map(it => it.name))
 
   const nextValues: any[][] =
     experiment.results.next && Array.isArray(experiment.results.next[0])
@@ -153,9 +153,8 @@ const LegacyExperiment = () => {
                     {debug && (
                       <Switch
                         checked={
-                          experiment.scoreVariables.filter(
-                            (it: any) => it.enabled
-                          ).length > 1
+                          experiment.scoreVariables.filter(it => it.enabled)
+                            .length > 1
                         }
                         onChange={() =>
                           dispatch({ type: 'experiment/toggleMultiObjective' })

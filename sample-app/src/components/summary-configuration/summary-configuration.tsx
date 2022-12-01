@@ -39,7 +39,7 @@ export const SummaryConfiguration = () => {
           <Box>
             <Table size="small">
               <TableBody>
-                {experiment.valueVariables.map((variable: any, idx: number) => (
+                {experiment.valueVariables.map((variable, idx) => (
                   <TableRow key={idx}>
                     <TableCell>
                       {variable.type === 'discrete' ? (
@@ -62,17 +62,15 @@ export const SummaryConfiguration = () => {
                     </TableCell>
                   </TableRow>
                 ))}
-                {experiment.categoricalVariables.map(
-                  (variable: any, idx: number) => (
-                    <TableRow key={idx}>
-                      <TableCell></TableCell>
-                      <TableCell component="th" scope="row">
-                        {variable.name}
-                      </TableCell>
-                      <TableCell>{variable.options.join('/')}</TableCell>
-                    </TableRow>
-                  )
-                )}
+                {experiment.categoricalVariables.map((variable, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell></TableCell>
+                    <TableCell component="th" scope="row">
+                      {variable.name}
+                    </TableCell>
+                    <TableCell>{variable.options.join('/')}</TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </Box>

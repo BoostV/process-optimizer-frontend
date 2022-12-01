@@ -1,4 +1,4 @@
-import { assertUnreachable } from '@/utility'
+import { assertUnreachable } from '@process-optimizer-frontend/core/src/common/util'
 import { State } from '@process-optimizer-frontend/core/src/context/experiment/store'
 import { ExperimentAction, experimentReducer } from './experiment-reducers'
 

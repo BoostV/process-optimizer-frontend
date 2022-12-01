@@ -26,7 +26,7 @@ export const DataEntryTab = () => {
 
   const headers = valueVariables
     .map((it: any) => it.name)
-    .concat(categoricalVariables.map((it: any) => it.name))
+    .concat(categoricalVariables.map(it => it.name))
 
   const nextValues: any[][] =
     experiment.results.next && Array.isArray(experiment.results.next[0])

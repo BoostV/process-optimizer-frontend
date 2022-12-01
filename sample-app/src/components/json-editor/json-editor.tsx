@@ -12,8 +12,8 @@ import { useExperiment } from '@/context/experiment'
 import useStyles from './json-editor.style'
 import CloseIcon from '@mui/icons-material/Close'
 import { useGlobal } from '@/context/global'
-import { errorMessage } from '@/utility'
 import { ExperimentType } from '@process-optimizer-frontend/core/src/common/types/common'
+import { errorMessage } from '@process-optimizer-frontend/core/src/common/util'
 
 type DisplayedResults = {
   id: string

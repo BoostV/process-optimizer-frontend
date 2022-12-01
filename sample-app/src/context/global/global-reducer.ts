@@ -1,6 +1,6 @@
 import { ThemeName } from '@/theme/theme'
+import { assertUnreachable } from '@process-optimizer-frontend/core/src/common/util'
 import produce from 'immer'
-import { assertUnreachable } from '@/utility'
 
 export type State = {
   debug: boolean

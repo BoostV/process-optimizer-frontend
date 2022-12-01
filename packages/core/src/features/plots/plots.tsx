@@ -45,8 +45,8 @@ export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
         {experiment.results.plots.length > 0 ? (
           <PlotList>
             {experiment.results.plots
-              .filter((plot: any) => plot.id.includes('objective'))
-              .map((plot: any, idx: number) => (
+              .filter(plot => plot.id.includes('objective'))
+              .map((plot, idx) => (
                 <PlotItem
                   id={plot.id}
                   key={plot.id}
@@ -75,8 +75,8 @@ export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
               ))}
 
             {experiment.results.plots
-              .filter((plot: any) => plot.id.includes('convergence'))
-              .map((plot: any, idx: number) => (
+              .filter(plot => plot.id.includes('convergence'))
+              .map((plot, idx) => (
                 <PlotItem
                   id={plot.id}
                   key={plot.id}
@@ -100,8 +100,8 @@ export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
                 </PlotItem>
               ))}
             {experiment.results.plots
-              .filter((plot: any) => plot.id.includes('pareto'))
-              .map((plot: any) => (
+              .filter(plot => plot.id.includes('pareto'))
+              .map(plot => (
                 <PlotItem
                   key={plot.id}
                   id={plot.id}
