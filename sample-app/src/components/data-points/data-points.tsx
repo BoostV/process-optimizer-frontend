@@ -4,13 +4,13 @@ import { useGlobal } from '@/context/global'
 import { EditableTable } from '@process-optimizer-frontend/core/src/features/core/editable-table/editable-table'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
 import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
-import DownloadCSVButton from '@process-optimizer-frontend/core/src/features/experiment/download-csv-button'
+import DownloadCSVButton from '@process-optimizer-frontend/core/src/features/data-points/download-csv-button'
 import useStyles from './data-points.style'
-import UploadCSVButton from '@/components/upload-csv-button'
+import UploadCSVButton from '@process-optimizer-frontend/core/src/features/data-points/upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
 import { TableDataRow } from '@process-optimizer-frontend/core/src/features/core/editable-table'
 import { saveCSVToLocalFile } from '@process-optimizer-frontend/core/src/common/util/save-to-local-file'
-import { dataPointsToCSV } from '@/utility/converters'
+import { dataPointsToCSV } from '@process-optimizer-frontend/core/src/common/util/converters/converters'
 import {
   CategoricalVariableType,
   DataEntry,

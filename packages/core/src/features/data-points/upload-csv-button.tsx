@@ -1,5 +1,4 @@
 import { IconButton, Input, Tooltip } from '@mui/material'
-import { csvToDataPoints } from '@/utility/converters'
 import PublishIcon from '@mui/icons-material/Publish'
 import { ChangeEvent } from 'react'
 import {
@@ -8,6 +7,7 @@ import {
   ScoreVariableType,
   ValueVariableType,
 } from '@process-optimizer-frontend/core/src/common/types/common'
+import { csvToDataPoints } from '@process-optimizer-frontend/core/src/common/util/converters/converters'
 
 const readFile = (file: Blob, dataHandler: (s: string) => void) => {
   const result = ''

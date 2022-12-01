@@ -64,6 +64,7 @@ export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
                       : []
                   }
                   maxWidth="100%"
+                  plots={experiment.results.plots}
                 >
                   {isPNG(plot.plot) ? (
                     <PNGPlot plot={plot.plot} />
@@ -89,6 +90,7 @@ export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
                   }
                   width="100%"
                   maxWidth={800}
+                  plots={experiment.results.plots}
                 >
                   {isPNG(plot.plot) ? (
                     <PNGPlot plot={plot.plot} />
@@ -106,6 +108,7 @@ export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
                   title="Pareto"
                   body={[]}
                   maxWidth={800}
+                  plots={experiment.results.plots}
                 >
                   {isPNG(plot.plot) ? (
                     <PNGPlot plot={plot.plot} />

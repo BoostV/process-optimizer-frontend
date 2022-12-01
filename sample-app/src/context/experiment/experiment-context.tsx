@@ -6,7 +6,10 @@ import {
   OptimizerapiOptimizerRunRequest,
 } from '@process-optimizer-frontend/api'
 import { Dispatch, rootReducer } from './reducers'
-import { calculateData, calculateSpace } from '@/utility/converters'
+import {
+  calculateData,
+  calculateSpace,
+} from '@process-optimizer-frontend/core/src/common/util/converters/converters'
 import { migrate } from '@/utility/migration/migration'
 import { useGlobal } from '@/context/global/'
 import {

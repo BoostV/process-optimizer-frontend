@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import { Typography } from '@mui/material'
-import { useExperiment } from '@/context/experiment'
 import useStyles from './plot-item.style'
 
 interface PlotItemProps {
@@ -9,6 +8,7 @@ interface PlotItemProps {
   body: string[]
   width?: number | string
   maxWidth?: number | string
+  plots: { id: string; plot: string }[]
   children: React.ReactElement
 }
 
@@ -18,11 +18,9 @@ export const PlotItem = ({
   body,
   width,
   maxWidth,
+  plots,
   children,
 }: PlotItemProps) => {
-  const {
-    state: { experiment },
-  } = useExperiment()
   const { classes } = useStyles()
 
   return (
@@ -38,7 +36,7 @@ export const PlotItem = ({
           </Fragment>
         ))}
       </Typography>
-      {experiment.results.plots
+      {plots
         .filter((plot: any) => plot.id === id)
         .map((plot: any) => (
           <li className={classes.listItem} key={plot.id}>
