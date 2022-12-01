@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import { colors } from '@/theme/theme'
+import { colors } from './styles'
 
 export const useStyles = makeStyles()(() => ({
   row: {

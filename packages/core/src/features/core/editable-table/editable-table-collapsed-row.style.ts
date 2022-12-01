@@ -1,5 +1,5 @@
 import { makeStyles } from 'tss-react/mui'
-import { colors, tableBorder } from '@/theme/theme'
+import { colors, tableBorder } from './styles'
 
 export const useStyles = makeStyles()(() => ({
   buttonContainer: {
