@@ -1,21 +1,19 @@
 import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
 import { TextField } from '@mui/material'
-import { useGlobal } from '@/context/global'
 import { OptimizerConfig } from '@process-optimizer-frontend/core/src/common/types/common'
+import { FC } from 'react'
 
-type OptimizerConfiguratorProps = {
+type Props = {
   config: OptimizerConfig
+  debug: boolean
   onConfigUpdated: (config: OptimizerConfig) => void
 }
 
-export default function OptimizerConfigurator(
-  props: OptimizerConfiguratorProps
-) {
-  const { config, onConfigUpdated } = props
-  const {
-    state: { debug },
-  } = useGlobal()
-
+export const OptimizerConfigurator: FC<Props> = ({
+  config,
+  debug,
+  onConfigUpdated,
+}) => {
   return (
     <TitleCard title="Configuration">
       <TextField

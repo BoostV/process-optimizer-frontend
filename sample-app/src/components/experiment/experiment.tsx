@@ -11,7 +11,6 @@ import {
 } from '@mui/material'
 import Layout from '@/components/layout/layout'
 import OptimizerModel from '@process-optimizer-frontend/core/src/features/input-model/optimizer-model'
-import OptimizerConfigurator from '@/components/optimizer-configurator'
 import { Alert } from '@mui/material'
 import Details from '@process-optimizer-frontend/core/src/features/core/details'
 import { Plots } from '@process-optimizer-frontend/core/src/features/plots/plots'
@@ -39,6 +38,7 @@ import {
   ValueVariableType,
 } from '@process-optimizer-frontend/core/src/common/types/common'
 import LoadingButton from '@process-optimizer-frontend/core/src/features/core/loading-button/loading-button'
+import { OptimizerConfigurator } from '@process-optimizer-frontend/core/src/features/experiment/optimizer-configurator'
 
 type SnackbarMessage = {
   message: string
@@ -247,6 +247,7 @@ const LegacyExperiment = () => {
                     <Grid item xs={12}>
                       <OptimizerConfigurator
                         config={experiment.optimizerConfig}
+                        debug={debug}
                         onConfigUpdated={(config: OptimizerConfig) =>
                           dispatch({
                             type: 'updateConfiguration',

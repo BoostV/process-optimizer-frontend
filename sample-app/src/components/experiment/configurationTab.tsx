@@ -1,21 +1,24 @@
 import { Grid } from '@mui/material'
 import { useExperiment } from '@/context/experiment'
-import { useSelector } from '@/context/global'
+import { useGlobal, useSelector } from '@/context/global'
 import Details from '@process-optimizer-frontend/core/src/features/core/details'
 import OptimizerModel from '@process-optimizer-frontend/core/src/features/input-model/optimizer-model'
-import OptimizerConfigurator from '@/components/optimizer-configurator'
 import { selectAdvancedConfiguration } from '@/context/global/global-selectors'
 import {
   CategoricalVariableType,
   OptimizerConfig,
   ValueVariableType,
 } from '@process-optimizer-frontend/core/src/common/types/common'
+import { OptimizerConfigurator } from '@process-optimizer-frontend/core/src/features/experiment/optimizer-configurator'
 
 export const ConfigurationTab = () => {
   const {
     state: { experiment },
     dispatch,
   } = useExperiment()
+  const {
+    state: { debug },
+  } = useGlobal()
 
   const advancedConfiguration = useSelector(selectAdvancedConfiguration)
 
@@ -81,6 +84,7 @@ export const ConfigurationTab = () => {
         <Grid item xs>
           <OptimizerConfigurator
             config={experiment.optimizerConfig}
+            debug={debug}
             onConfigUpdated={(config: OptimizerConfig) =>
               dispatch({
                 type: 'updateConfiguration',
