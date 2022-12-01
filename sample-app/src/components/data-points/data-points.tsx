@@ -4,11 +4,13 @@ import { useGlobal } from '@/context/global'
 import { EditableTable } from '@process-optimizer-frontend/core/src/features/core/editable-table/editable-table'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
 import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
+import DownloadCSVButton from '@process-optimizer-frontend/core/src/features/experiment/download-csv-button'
 import useStyles from './data-points.style'
-import DownloadCSVButton from '@/components/download-csv-button'
 import UploadCSVButton from '@/components/upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
 import { TableDataRow } from '@process-optimizer-frontend/core/src/features/core/editable-table'
+import { saveCSVToLocalFile } from '@process-optimizer-frontend/core/src/common/util/save-to-local-file'
+import { dataPointsToCSV } from '@/utility/converters'
 import {
   CategoricalVariableType,
   DataEntry,
@@ -18,6 +20,7 @@ import {
 } from '@process-optimizer-frontend/core/src/common/types/common'
 
 type DataPointProps = {
+  experimentId: string
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   scoreVariables: ScoreVariableType[]
@@ -27,6 +30,7 @@ type DataPointProps = {
 
 export default function DataPoints(props: DataPointProps) {
   const {
+    experimentId,
     valueVariables,
     categoricalVariables,
     scoreVariables,
@@ -126,7 +130,15 @@ export default function DataPoints(props: DataPointProps) {
           <Box display="flex" justifyContent="space-between">
             Data points
             <Box>
-              <DownloadCSVButton light />
+              <DownloadCSVButton
+                light
+                onClick={() =>
+                  saveCSVToLocalFile(
+                    dataPointsToCSV(dataPoints),
+                    experimentId + '.csv'
+                  )
+                }
+              />
               <UploadCSVButton
                 light
                 onUpload={(dataPoints: DataEntry[]) =>
