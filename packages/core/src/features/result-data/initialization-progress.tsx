@@ -6,16 +6,19 @@ import {
   Typography,
 } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
-import { useExperiment } from '@/context/experiment'
-import { useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
+import { ExperimentType } from '@process-optimizer-frontend/core/src/common/types/common'
 
-export const InitializationProgress = () => {
-  const {
-    state: {
-      experiment: { optimizerConfig, dataPoints },
-    },
-    dispatch,
-  } = useExperiment()
+type Props = {
+  experiment: ExperimentType
+  onInitialPointsChange: (initialPoints: number) => void
+}
+
+export const InitializationProgress: FC<Props> = ({
+  experiment,
+  onInitialPointsChange,
+}) => {
+  const { optimizerConfig, dataPoints } = experiment
   const [editActive, setEditActive] = useState(false)
   const [initialPoints, setInitialPoints] = useState(
     optimizerConfig.initialPoints
@@ -26,10 +29,8 @@ export const InitializationProgress = () => {
   )
   const progress = (dataPoints.length / optimizerConfig.initialPoints) * 100.0
   const handleInitialPointsChanged = (newValue: number) =>
-    dispatch({
-      type: 'updateConfiguration',
-      payload: { ...optimizerConfig, initialPoints: newValue },
-    })
+    onInitialPointsChange(newValue)
+
   if (editActive) {
     return (
       <>

@@ -8,7 +8,7 @@ import { useGlobal } from '@/context/global'
 import { isUIBig } from '@/utility/ui-util'
 import useStyles from './experimentation-guide.style'
 import { NextExperiments } from '@process-optimizer-frontend/core/src/features/result-data/next-experiments'
-import { InitializationProgress } from './initialization-progress'
+import { InitializationProgress } from '@process-optimizer-frontend/core/src/features/result-data/initialization-progress'
 import { selectIsInitializing } from '@/context/experiment'
 
 interface ResultDataProps {
@@ -39,7 +39,15 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
 
   const isInitializing = useSelector(selectIsInitializing)
   const summary = isInitializing ? (
-    <InitializationProgress />
+    <InitializationProgress
+      experiment={experiment}
+      onInitialPointsChange={initialPoints =>
+        dispatchExperiment({
+          type: 'updateConfiguration',
+          payload: { ...experiment.optimizerConfig, initialPoints },
+        })
+      }
+    />
   ) : expectedMinimum && expectedMinimum.length > 0 ? (
     <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
       <SingleDataPoint
