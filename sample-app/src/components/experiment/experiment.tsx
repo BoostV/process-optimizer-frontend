@@ -15,7 +15,6 @@ import { Alert } from '@mui/material'
 import Details from '@process-optimizer-frontend/core/src/features/core/details'
 import { Plots } from '@process-optimizer-frontend/core/src/features/plots/plots'
 import { saveObjectToLocalFile } from '@process-optimizer-frontend/core/src/common/util/save-to-local-file'
-import DataPoints from '@/components/data-points/data-points'
 import { useStyles } from './experiment.style'
 import {
   useExperiment,
@@ -39,6 +38,7 @@ import {
 } from '@process-optimizer-frontend/core/src/common/types/common'
 import LoadingButton from '@process-optimizer-frontend/core/src/features/core/loading-button/loading-button'
 import { OptimizerConfigurator } from '@process-optimizer-frontend/core/src/features/experiment/optimizer-configurator'
+import DataPoints from '@process-optimizer-frontend/core/src/features/data-points/data-points'
 
 type SnackbarMessage = {
   message: string
@@ -57,6 +57,7 @@ const LegacyExperiment = () => {
       debug,
       uiSizes,
       flags: { advancedConfiguration },
+      dataPointsNewestFirst,
     },
     dispatch: globalDispatch,
   } = useGlobal()
@@ -294,6 +295,13 @@ const LegacyExperiment = () => {
                           categoricalVariables={experiment.categoricalVariables}
                           scoreVariables={experiment.scoreVariables}
                           dataPoints={dataPoints}
+                          newestFirst={dataPointsNewestFirst}
+                          onToggleNewestFirst={() =>
+                            globalDispatch({
+                              type: 'setDataPointsNewestFirst',
+                              payload: !dataPointsNewestFirst,
+                            })
+                          }
                           onUpdateDataPoints={(dataPoints: DataEntry[]) =>
                             dispatch({
                               type: 'updateDataPoints',

@@ -1,6 +1,5 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useEffect, useMemo, useReducer } from 'react'
-import { useGlobal } from '@/context/global'
 import { EditableTable } from '@process-optimizer-frontend/core/src/features/core/editable-table/editable-table'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
 import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
@@ -25,6 +24,8 @@ type DataPointProps = {
   categoricalVariables: CategoricalVariableType[]
   scoreVariables: ScoreVariableType[]
   dataPoints: DataEntry[]
+  newestFirst: boolean
+  onToggleNewestFirst: () => void
   onUpdateDataPoints: (dataPoints: DataEntry[]) => void
 }
 
@@ -35,6 +36,8 @@ export default function DataPoints(props: DataPointProps) {
     categoricalVariables,
     scoreVariables,
     dataPoints,
+    newestFirst,
+    onToggleNewestFirst,
     onUpdateDataPoints,
   } = props
   const { classes } = useStyles()
@@ -44,8 +47,6 @@ export default function DataPoints(props: DataPointProps) {
     changed: false,
   })
   const isLoadingState = state.rows.length === 0
-  const global = useGlobal()
-  const newestFirst = global.state.dataPointsNewestFirst
 
   const scoreNames = useMemo(
     () => scoreVariables.filter(it => it.enabled).map(it => it.name),
@@ -152,12 +153,7 @@ export default function DataPoints(props: DataPointProps) {
                 <IconButton
                   size="small"
                   className={classes.titleButton}
-                  onClick={() =>
-                    global.dispatch({
-                      type: 'setDataPointsNewestFirst',
-                      payload: !global.state.dataPointsNewestFirst,
-                    })
-                  }
+                  onClick={onToggleNewestFirst}
                 >
                   <SwapVertIcon
                     fontSize="small"
@@ -178,7 +174,7 @@ export default function DataPoints(props: DataPointProps) {
         !isLoadingState && (
           <Box className={classes.tableContainer}>
             <EditableTable
-              newestFirst={global.state.dataPointsNewestFirst}
+              newestFirst={newestFirst}
               rows={
                 (newestFirst
                   ? [...state.rows].reverse()

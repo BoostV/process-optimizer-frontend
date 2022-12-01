@@ -4,15 +4,20 @@ import {
   useExperiment,
   useSelector,
 } from '@/context/experiment'
-import DataPoints from '@/components/data-points/data-points'
 import { ExperimentationGuide } from '@/components/result-data/experimentation-guide'
 import { DataEntry } from '@process-optimizer-frontend/core/src/common/types/common'
+import { useGlobal } from '@/context/global'
+import DataPoints from '@process-optimizer-frontend/core/src/features/data-points/data-points'
 
 export const DataEntryTab = () => {
   const {
     state: { experiment },
     dispatch,
   } = useExperiment()
+  const {
+    dispatch: globalDispatch,
+    state: { dataPointsNewestFirst },
+  } = useGlobal()
 
   const dataPoints: DataEntry[] = useSelector(selectDataPoints)
 
@@ -49,6 +54,13 @@ export const DataEntryTab = () => {
           categoricalVariables={experiment.categoricalVariables}
           scoreVariables={experiment.scoreVariables}
           dataPoints={dataPoints}
+          newestFirst={dataPointsNewestFirst}
+          onToggleNewestFirst={() =>
+            globalDispatch({
+              type: 'setDataPointsNewestFirst',
+              payload: !dataPointsNewestFirst,
+            })
+          }
           onUpdateDataPoints={dataPoints =>
             dispatch({
               type: 'updateDataPoints',
