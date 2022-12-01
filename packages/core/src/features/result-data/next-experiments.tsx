@@ -1,32 +1,28 @@
 import { Divider, Stack, TextField, Tooltip } from '@mui/material'
-import { ChangeEvent } from 'react'
-import { useExperiment } from '@/context/experiment'
+import { ChangeEvent, FC } from 'react'
+import { ExperimentType } from '@process-optimizer-frontend/core/src/common/types/common'
 
-export const NextExperiments = () => {
-  const {
-    state: { experiment },
-    dispatch,
-  } = useExperiment()
+type Props = {
+  experiment: ExperimentType
+  onSuggestionChange: (suggestionCount: string) => void
+  onXiChange: (xi: number) => void
+}
+
+export const NextExperiments: FC<Props> = ({
+  experiment,
+  onSuggestionChange,
+  onXiChange,
+}) => {
   const suggestionCount: number =
     (experiment.extras['experimentSuggestionCount'] as number) ?? 1
 
   const handleSuggestionChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    dispatch({ type: 'updateSuggestionCount', payload: e.target.value })
-  }
+  ) => onSuggestionChange(e.target.value)
 
   const handleXiChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    dispatch({
-      type: 'updateConfiguration',
-      payload: {
-        ...experiment.optimizerConfig,
-        xi: Number(e.target.value),
-      },
-    })
-  }
+  ) => onXiChange(Number(e.target.value))
 
   return (
     <Stack

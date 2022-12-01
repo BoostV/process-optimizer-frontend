@@ -1,4 +1,4 @@
-import { useSelector } from '@/context/experiment'
+import { useSelector, useExperiment } from '@/context/experiment'
 import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
 import { Suggestions } from '@process-optimizer-frontend/core/src/features/result-data/suggestions'
 import { SingleDataPoint } from '@process-optimizer-frontend/core/src/features/result-data/single-data-point'
@@ -7,7 +7,7 @@ import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import { useGlobal } from '@/context/global'
 import { isUIBig } from '@/utility/ui-util'
 import useStyles from './experimentation-guide.style'
-import { NextExperiments } from './next-experiments'
+import { NextExperiments } from '@process-optimizer-frontend/core/src/features/result-data/next-experiments'
 import { InitializationProgress } from './initialization-progress'
 import { selectIsInitializing } from '@/context/experiment'
 
@@ -32,6 +32,10 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     state: { uiSizes },
     dispatch,
   } = useGlobal()
+  const {
+    state: { experiment },
+    dispatch: dispatchExperiment,
+  } = useExperiment()
 
   const isInitializing = useSelector(selectIsInitializing)
   const summary = isInitializing ? (
@@ -83,7 +87,26 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       }
     >
       <Box p={2}>
-        {!isInitializing && <NextExperiments />}
+        {!isInitializing && (
+          <NextExperiments
+            experiment={experiment}
+            onSuggestionChange={suggestionCount =>
+              dispatchExperiment({
+                type: 'updateSuggestionCount',
+                payload: suggestionCount,
+              })
+            }
+            onXiChange={xi =>
+              dispatchExperiment({
+                type: 'updateConfiguration',
+                payload: {
+                  ...experiment.optimizerConfig,
+                  xi,
+                },
+              })
+            }
+          />
+        )}
         {!nextValues ||
           (nextValues.length === 0 && (
             <div>Please run experiment to calculate suggestions</div>
