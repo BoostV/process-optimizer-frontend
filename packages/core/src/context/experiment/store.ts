@@ -1,6 +1,8 @@
-//TODO: Why do @ imports not work here but do in e.g. details.tsx?
 import { versionInfo } from './../../features/core/version-info'
-import { currentVersion, ExperimentType } from './../../common/types/common'
+import { currentVersion } from './../../common/types/common'
+// TODO: Why doesn't this work?
+// import { currentVersion } from '@/common/types/common'
+import { ExperimentType } from '@/common/types/common'
 
 export const emptyExperiment: ExperimentType = {
   id: '',

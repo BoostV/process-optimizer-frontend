@@ -2,7 +2,6 @@
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-// TODO: move
 export const currentVersion = '8'
 
 export type Info = {
