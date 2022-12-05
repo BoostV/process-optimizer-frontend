@@ -1,4 +1,6 @@
-import { emptyExperiment } from '@/context/experiment/store'
+// TODO: Why doesn't this work?
+// import { emptyExperiment } from '@/context/experiment/store'
+import { emptyExperiment } from '../../context/experiment/store'
 import { currentVersion, ExperimentType, isExperiment } from './common'
 
 describe('Type guards', () => {
