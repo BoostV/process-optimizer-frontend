@@ -21,7 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { useGlobal } from '@/context/global'
 import { v4 as uuid } from 'uuid'
 import { reducer } from './home-reducer'
-import { CreateOrOverwriteDialog } from '@process-optimizer-frontend/core/src/features/experiment/create-or-overwrite-dialog'
+import { CreateOrOverwriteDialog } from './create-or-overwrite-dialog'
 import { useNavigate } from 'react-router-dom'
 import { ExperimentType } from '@process-optimizer-frontend/core/src/common/types/common'
 
