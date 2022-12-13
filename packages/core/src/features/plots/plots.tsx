@@ -3,12 +3,12 @@ import { Tooltip, IconButton, Hidden } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
-import { isPNG } from '@process-optimizer-frontend/core/src/common/util/data-type-detectors'
+import { isPNG } from '@/common/util/data-type-detectors'
 import { BokehPlot } from '@process-optimizer-frontend/plots'
 import { PNGPlot } from '@process-optimizer-frontend/plots'
-import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
+import { TitleCard } from '@/features/core/title-card/title-card'
 import { FC } from 'react'
-import { ExperimentType } from '@process-optimizer-frontend/core/src/common/types/common'
+import { ExperimentType } from '@/common/types'
 
 type Props = {
   isUIBig: boolean

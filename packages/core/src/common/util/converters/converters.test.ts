@@ -4,8 +4,8 @@ import {
   ExperimentType,
   ScoreVariableType,
   ValueVariableType,
-} from '@process-optimizer-frontend/core/src/common/types/common'
-import { initialState } from '@process-optimizer-frontend/core/src/context/experiment/store'
+} from '@/common/types'
+import { initialState } from '@/context/experiment/store'
 import {
   calculateSpace,
   calculateData,

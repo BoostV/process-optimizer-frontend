@@ -1,15 +1,12 @@
-import {
-  TableDataPoint,
-  TableDataRow,
-} from '@process-optimizer-frontend/core/src/features/core/editable-table'
+import { TableDataPoint, TableDataRow } from '@/features/core/editable-table'
 import {
   CategoricalVariableType,
   CombinedVariableType,
   DataEntry,
   ValueVariableType,
-} from '@process-optimizer-frontend/core/src/common/types/common'
+} from '@/common/types'
 import produce from 'immer'
-import { assertUnreachable } from '@process-optimizer-frontend/core/src/common/util'
+import { assertUnreachable } from '@/common/util'
 
 interface EditRow {
   row: TableDataRow

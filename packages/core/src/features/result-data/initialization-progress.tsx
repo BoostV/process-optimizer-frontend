@@ -7,7 +7,7 @@ import {
 } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
 import { FC, useEffect, useState } from 'react'
-import { ExperimentType } from '@process-optimizer-frontend/core/src/common/types/common'
+import { ExperimentType } from '@/common/types'
 
 type Props = {
   experiment: ExperimentType

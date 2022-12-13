@@ -1,8 +1,6 @@
 import { versionInfo } from './../../features/core/version-info'
-import { currentVersion } from './../../common/types/common'
-// TODO: Why doesn't this work?
-// import { currentVersion } from '@/common/types/common'
-import { ExperimentType } from '@/common/types/common'
+import { currentVersion } from '@/common/types'
+import { ExperimentType } from '@/common/types'
 
 export const emptyExperiment: ExperimentType = {
   id: '',

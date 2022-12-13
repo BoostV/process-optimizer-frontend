@@ -1,4 +1,4 @@
-import { currentVersion } from '@/common/types/common'
+import { currentVersion } from '@/common/types'
 import { TextField } from '@mui/material'
 import { TitleCard } from './title-card/title-card'
 

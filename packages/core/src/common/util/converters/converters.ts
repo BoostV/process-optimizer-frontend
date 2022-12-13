@@ -7,7 +7,7 @@ import {
   ScoreVariableType,
   SpaceType,
   ValueVariableType,
-} from '@process-optimizer-frontend/core/src/common/types/common'
+} from '@/common/types'
 /**
  * Calculate the "space" parameter to send to the API based on the
  * variables defined in the supplied experiment

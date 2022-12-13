@@ -1,22 +1,22 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useEffect, useMemo, useReducer } from 'react'
-import { EditableTable } from '@process-optimizer-frontend/core/src/features/core/editable-table/editable-table'
+import { EditableTable } from '@/features/core/editable-table/editable-table'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
-import { TitleCard } from '@process-optimizer-frontend/core/src/features/core/title-card/title-card'
-import DownloadCSVButton from '@process-optimizer-frontend/core/src/features/data-points/download-csv-button'
+import { TitleCard } from '@/features/core/title-card/title-card'
+import DownloadCSVButton from '@/features/data-points/download-csv-button'
 import useStyles from './data-points.style'
-import UploadCSVButton from '@process-optimizer-frontend/core/src/features/data-points/upload-csv-button'
+import UploadCSVButton from '@/features/data-points/upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
-import { TableDataRow } from '@process-optimizer-frontend/core/src/features/core/editable-table'
-import { saveCSVToLocalFile } from '@process-optimizer-frontend/core/src/common/util/save-to-local-file'
-import { dataPointsToCSV } from '@process-optimizer-frontend/core/src/common/util/converters/converters'
+import { TableDataRow } from '@/features/core/editable-table'
+import { saveCSVToLocalFile } from '@/common/util/save-to-local-file'
+import { dataPointsToCSV } from '@/common/util/converters/converters'
 import {
   CategoricalVariableType,
   DataEntry,
   DataPointTypeValue,
   ScoreVariableType,
   ValueVariableType,
-} from '@process-optimizer-frontend/core/src/common/types/common'
+} from '@/common/types'
 
 type DataPointProps = {
   experimentId: string

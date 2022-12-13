@@ -1,3 +1,3 @@
-import FormInputText from '@process-optimizer-frontend/core/src/common/util/forms/form-input'
+import FormInputText from '@/common/util/forms/form-input'
 
 export { FormInputText }
