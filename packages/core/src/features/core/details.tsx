@@ -1,13 +1,6 @@
-import { currentVersion } from '@/common/types'
+import { Info } from '@/common/types'
 import { TextField } from '@mui/material'
 import { TitleCard } from './title-card/title-card'
-
-export type Info = {
-  name: string
-  description: string
-  swVersion: string
-  dataFormatVersion: typeof currentVersion
-}
 
 type DetailsProps = {
   info: Info
@@ -15,7 +8,7 @@ type DetailsProps = {
   updateDescription: (description: string) => void
 }
 
-export default function Details(props: DetailsProps) {
+export function Details(props: DetailsProps) {
   const { info, updateName, updateDescription } = props
 
   return (

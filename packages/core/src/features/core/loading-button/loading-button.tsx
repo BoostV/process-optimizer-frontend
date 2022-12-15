@@ -11,7 +11,7 @@ type LoadingButtonProps = {
   disabled?: boolean
 }
 
-export default function LoadingButton(props: LoadingButtonProps) {
+export function LoadingButton(props: LoadingButtonProps) {
   const { classes } = useStyles()
   const {
     isLoading,

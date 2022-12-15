@@ -29,7 +29,7 @@ type DataPointProps = {
   onUpdateDataPoints: (dataPoints: DataEntry[]) => void
 }
 
-export default function DataPoints(props: DataPointProps) {
+export function DataPoints(props: DataPointProps) {
   const {
     experimentId,
     valueVariables,

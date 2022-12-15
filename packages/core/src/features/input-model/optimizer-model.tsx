@@ -29,7 +29,7 @@ type OptimizerModelProps = {
   addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
 }
 
-export default function OptimizerModel(props: OptimizerModelProps) {
+export function OptimizerModel(props: OptimizerModelProps) {
   const {
     valueVariables,
     categoricalVariables,
