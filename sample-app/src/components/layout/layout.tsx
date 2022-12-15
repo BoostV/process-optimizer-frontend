@@ -8,10 +8,10 @@ import {
   Button,
 } from '@mui/material'
 import useStyles from './layout.style'
-import { useGlobal } from '@/context/global'
+import { useGlobal } from '@sample/context/global'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { VersionInfo } from '@process-optimizer-frontend/core/src/features/core/version-info'
+import { VersionInfo } from '@process-optimizer-frontend/core'
 
 interface Props {
   children: React.ReactNode

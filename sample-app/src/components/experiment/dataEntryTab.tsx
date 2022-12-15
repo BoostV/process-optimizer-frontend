@@ -3,11 +3,11 @@ import {
   selectDataPoints,
   useExperiment,
   useSelector,
-} from '@/context/experiment'
-import { ExperimentationGuide } from '@/components/result-data/experimentation-guide'
-import { DataEntry } from '@process-optimizer-frontend/core/src/common/types/common'
-import { useGlobal } from '@/context/global'
-import DataPoints from '@process-optimizer-frontend/core/src/features/data-points/data-points'
+} from '@sample/context/experiment'
+import { ExperimentationGuide } from '@sample/components/result-data/experimentation-guide'
+import { DataEntry } from '@process-optimizer-frontend/core'
+import { useGlobal } from '@sample/context/global'
+import { DataPoints } from '@process-optimizer-frontend/core'
 
 export const DataEntryTab = () => {
   const {

@@ -9,36 +9,36 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import Layout from '@/components/layout/layout'
-import OptimizerModel from '@process-optimizer-frontend/core/src/features/input-model/optimizer-model'
+import Layout from '@sample/components/layout/layout'
+import { OptimizerModel } from '@process-optimizer-frontend/core'
 import { Alert } from '@mui/material'
-import Details from '@process-optimizer-frontend/core/src/features/core/details'
-import { Plots } from '@process-optimizer-frontend/core/src/features/plots/plots'
-import { saveObjectToLocalFile } from '@process-optimizer-frontend/core/src/common/util/save-to-local-file'
+import { Details } from '@process-optimizer-frontend/core'
+import { Plots } from '@process-optimizer-frontend/core'
+import { saveObjectToLocalFile } from '@process-optimizer-frontend/core'
 import { useStyles } from './experiment.style'
 import {
   useExperiment,
   runExperiment,
   useSelector,
   selectDataPoints,
-} from '@/context/experiment'
+} from '@sample/context/experiment'
 import { useState } from 'react'
-import LoadingExperiment from './loading-experiment'
-import { ExperimentationGuide } from '@/components/result-data/experimentation-guide'
-import { useGlobal } from '@/context/global'
-import { UISizeValue } from '@/context/global'
-import { getSize, isUIBig } from '@/utility/ui-util'
+import { LoadingExperiment } from './loading-experiment'
+import { ExperimentationGuide } from '@sample/components/result-data/experimentation-guide'
+import { useGlobal } from '@sample/context/global'
+import { UISizeValue } from '@sample/context/global'
+import { getSize, isUIBig } from '@sample/utility/ui-util'
 import { AlertColor } from '@mui/material'
-import { selectIsInitializing } from '@/context/experiment'
+import { selectIsInitializing } from '@sample/context/experiment'
 import {
   CategoricalVariableType,
   DataEntry,
   OptimizerConfig,
   ValueVariableType,
-} from '@process-optimizer-frontend/core/src/common/types/common'
-import LoadingButton from '@process-optimizer-frontend/core/src/features/core/loading-button/loading-button'
-import { OptimizerConfigurator } from '@process-optimizer-frontend/core/src/features/experiment/optimizer-configurator'
-import DataPoints from '@process-optimizer-frontend/core/src/features/data-points/data-points'
+} from '@process-optimizer-frontend/core'
+import { LoadingButton } from '@process-optimizer-frontend/core'
+import { OptimizerConfigurator } from '@process-optimizer-frontend/core'
+import { DataPoints } from '@process-optimizer-frontend/core'
 
 type SnackbarMessage = {
   message: string

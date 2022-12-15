@@ -1,4 +1,4 @@
-import { emptyExperiment } from '@/context/experiment/store'
+import { emptyExperiment } from '@/context'
 import { currentVersion, ExperimentType, isExperiment } from './common'
 
 describe('Type guards', () => {

@@ -5,7 +5,7 @@ import {
   ScoreVariableType,
   ValueVariableType,
 } from '@/common/types'
-import { initialState } from '@/context/experiment/store'
+import { initialState } from '@/context'
 import {
   calculateSpace,
   calculateData,

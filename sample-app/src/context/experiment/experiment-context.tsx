@@ -6,21 +6,15 @@ import {
   OptimizerapiOptimizerRunRequest,
 } from '@process-optimizer-frontend/api'
 import { Dispatch, rootReducer } from './reducers'
-import {
-  calculateData,
-  calculateSpace,
-} from '@process-optimizer-frontend/core/src/common/util/converters/converters'
-import { migrate } from '@/utility/migration/migration'
-import { useGlobal } from '@/context/global/'
-import {
-  initialState,
-  State,
-} from '@process-optimizer-frontend/core/src/context/experiment/store'
+import { calculateData, calculateSpace } from '@process-optimizer-frontend/core'
+import { migrate } from '@sample/utility/migration/migration'
+import { useGlobal } from '@sample/context/global/'
+import { initialState, State } from '@process-optimizer-frontend/core'
 import {
   ExperimentResultType,
   ExperimentType,
-} from '@process-optimizer-frontend/core/src/common/types/common'
-import { versionInfo } from '@process-optimizer-frontend/core/src/features/core/version-info'
+} from '@process-optimizer-frontend/core'
+import { versionInfo } from '@process-optimizer-frontend/core'
 
 const ExperimentContext = React.createContext<
   { state: State; dispatch: Dispatch; loading: boolean } | undefined

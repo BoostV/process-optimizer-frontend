@@ -1,8 +1,5 @@
 import { useLocalStorageReducer } from '@process-optimizer-frontend/core'
-import {
-  initialState,
-  State,
-} from '@process-optimizer-frontend/core/src/context/experiment/store'
+import { initialState, State } from '@process-optimizer-frontend/core'
 import { renderHook } from '@testing-library/react'
 
 describe('useLocalStorageReducer', () => {

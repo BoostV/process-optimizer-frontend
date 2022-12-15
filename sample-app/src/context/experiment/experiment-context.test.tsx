@@ -5,8 +5,8 @@ import {
   ExperimentProvider,
   useSelector,
 } from './experiment-context'
-import { GlobalStateProvider } from '@/context/global'
-import { State } from '@process-optimizer-frontend/core/src/context/experiment/store'
+import { GlobalStateProvider } from '@sample/context/global'
+import { State } from '@process-optimizer-frontend/core'
 
 const ExperimentWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
   <GlobalStateProvider>

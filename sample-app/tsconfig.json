@@ -26,7 +26,8 @@
     "types": ["vitest/globals"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@sample/*": ["./src/*"],
+      "@/*": ["../package/core/src/*"]
     }
   },
   "include": ["./src", "./src/**/*.json", "./sample-data/**/*.json"],

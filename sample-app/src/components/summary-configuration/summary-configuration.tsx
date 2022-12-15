@@ -16,9 +16,9 @@ import {
 import LensIcon from '@mui/icons-material/Lens'
 import Settings from '@mui/icons-material/Settings'
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
-import { useExperiment } from '@/context/experiment'
+import { useExperiment } from '@sample/context/experiment'
 import useStyles from './summary-configuration.style'
-import { useGlobal } from '@/context/global'
+import { useGlobal } from '@sample/context/global'
 
 export const SummaryConfiguration = () => {
   const {

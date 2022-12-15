@@ -1,7 +1,5 @@
-import {
-  ExperimentType,
-  isExperiment,
-} from '@process-optimizer-frontend/core/src/common/types/common'
+import { ExperimentType, isExperiment } from '@process-optimizer-frontend/core'
+
 import compareVersions from 'compare-versions'
 import {
   migrateToV3,

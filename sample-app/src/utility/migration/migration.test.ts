@@ -8,8 +8,8 @@ import version1 from './data-formats/1.json' assert { type: 'json' }
 import catapult from '../../../sample-data/catapult.json' assert { type: 'json' }
 import large from '../../../sample-data/large.json' assert { type: 'json' }
 import fs from 'fs'
-import { ExperimentType } from '@process-optimizer-frontend/core/src/common/types/common'
-import { emptyExperiment } from '@process-optimizer-frontend/core/src/context/experiment/store'
+import { ExperimentType } from '@process-optimizer-frontend/core'
+import { emptyExperiment } from '@process-optimizer-frontend/core'
 
 const loadLatestJson = () => {
   const fileVersions: number[] = fs

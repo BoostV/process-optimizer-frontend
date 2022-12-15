@@ -9,22 +9,26 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import Layout from '@/components/layout/layout'
+import Layout from '@sample/components/layout/layout'
 import { Alert } from '@mui/material'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { useStyles } from './experiment.style'
-import { useExperiment, runExperiment, useSelector } from '@/context/experiment'
+import {
+  useExperiment,
+  runExperiment,
+  useSelector,
+} from '@sample/context/experiment'
 import { useState } from 'react'
-import LoadingExperiment from './loading-experiment'
-import LoadingButton from '@process-optimizer-frontend/core/src/features/core/loading-button/loading-button'
-import { Plots } from '@process-optimizer-frontend/core/src/features/plots/plots'
-import { saveObjectToLocalFile } from '@process-optimizer-frontend/core/src/common/util/save-to-local-file'
-import { useGlobal } from '@/context/global'
+import { LoadingExperiment } from './loading-experiment'
+import { LoadingButton } from '@process-optimizer-frontend/core'
+import { Plots } from '@process-optimizer-frontend/core'
+import { saveObjectToLocalFile } from '@process-optimizer-frontend/core'
+import { useGlobal } from '@sample/context/global'
 import { ConfigurationTab } from './configurationTab'
 import { DataEntryTab } from './dataEntryTab'
-import { State } from '@/context/global'
-import { selectIsInitializing } from '@/context/experiment'
-import { isUIBig } from '@/utility/ui-util'
+import { State } from '@sample/context/global'
+import { selectIsInitializing } from '@sample/context/experiment'
+import { isUIBig } from '@sample/utility/ui-util'
 
 type SnackbarMessage = {
   message: string
