@@ -12,10 +12,10 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete'
 import VariableEditor from './variable-editor'
 import useStyles from './optimizer-model.style'
-import { TitleCard } from '@/features/core/title-card/title-card'
+import { TitleCard } from '@core/features/core/title-card/title-card'
 import LensIcon from '@mui/icons-material/Lens'
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
-import { CategoricalVariableType, ValueVariableType } from '@/common/types'
+import { CategoricalVariableType, ValueVariableType } from '@core/common/types'
 
 type OptimizerModelProps = {
   valueVariables: ValueVariableType[]

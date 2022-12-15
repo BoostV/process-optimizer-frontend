@@ -25,7 +25,7 @@
     "outDir": "dist",
     "declaration": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@plots/*": ["./src/*"]
     }
   },
   "include": ["src"]

@@ -1,6 +1,6 @@
 import { Divider, Stack, TextField, Tooltip } from '@mui/material'
 import { ChangeEvent, FC } from 'react'
-import { ExperimentType } from '@/common/types'
+import { ExperimentType } from '@core/common/types'
 
 type Props = {
   experiment: ExperimentType

@@ -1,12 +1,15 @@
-import { TableDataPoint, TableDataRow } from '@/features/core/editable-table'
+import {
+  TableDataPoint,
+  TableDataRow,
+} from '@core/features/core/editable-table'
 import {
   CategoricalVariableType,
   CombinedVariableType,
   DataEntry,
   ValueVariableType,
-} from '@/common/types'
+} from '@core/common/types'
 import produce from 'immer'
-import { assertUnreachable } from '@/common/util'
+import { assertUnreachable } from '@core/common/util'
 
 interface EditRow {
   row: TableDataRow

@@ -1,3 +1,3 @@
-import FormInputText from '@/common/util/forms/form-input'
+import FormInputText from '@core/common/util/forms/form-input'
 
 export { FormInputText }

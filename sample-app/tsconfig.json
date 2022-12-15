@@ -27,7 +27,7 @@
     "baseUrl": ".",
     "paths": {
       "@sample/*": ["./src/*"],
-      "@/*": ["../package/core/src/*"]
+      "@core/*": ["../package/core/src/*"]
     }
   },
   "include": ["./src", "./src/**/*.json", "./sample-data/**/*.json"],

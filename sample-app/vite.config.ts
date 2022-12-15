@@ -28,7 +28,10 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: '@sample', replacement: resolve(__dirname, './src') },
-      { find: '@', replacement: resolve(__dirname, '../packages/core/src') },
+      {
+        find: '@core',
+        replacement: resolve(__dirname, '../packages/core/src'),
+      },
     ],
   },
   test: {

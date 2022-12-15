@@ -1,22 +1,22 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useEffect, useMemo, useReducer } from 'react'
-import { EditableTable } from '@/features/core/editable-table/editable-table'
+import { EditableTable } from '@core/features/core/editable-table/editable-table'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
-import { TitleCard } from '@/features/core/title-card/title-card'
-import DownloadCSVButton from '@/features/data-points/download-csv-button'
+import { TitleCard } from '@core/features/core/title-card/title-card'
+import DownloadCSVButton from '@core/features/data-points/download-csv-button'
 import useStyles from './data-points.style'
-import UploadCSVButton from '@/features/data-points/upload-csv-button'
+import UploadCSVButton from '@core/features/data-points/upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
-import { TableDataRow } from '@/features/core/editable-table'
-import { saveCSVToLocalFile } from '@/common/util/save-to-local-file'
-import { dataPointsToCSV } from '@/common/util/converters/converters'
+import { TableDataRow } from '@core/features/core/editable-table'
+import { saveCSVToLocalFile } from '@core/common/util/save-to-local-file'
+import { dataPointsToCSV } from '@core/common/util/converters/converters'
 import {
   CategoricalVariableType,
   DataEntry,
   DataPointTypeValue,
   ScoreVariableType,
   ValueVariableType,
-} from '@/common/types'
+} from '@core/common/types'
 
 type DataPointProps = {
   experimentId: string

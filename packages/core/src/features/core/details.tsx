@@ -1,4 +1,4 @@
-import { Info } from '@/common/types'
+import { Info } from '@core/common/types'
 import { TextField } from '@mui/material'
 import { TitleCard } from './title-card/title-card'
 

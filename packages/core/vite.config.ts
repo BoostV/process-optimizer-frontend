@@ -4,7 +4,7 @@ import { resolve } from 'path'
 
 export default defineConfig({
   resolve: {
-    alias: [{ find: '@', replacement: resolve(__dirname, './src') }],
+    alias: [{ find: '@core', replacement: resolve(__dirname, './src') }],
   },
   test: {
     coverage: {

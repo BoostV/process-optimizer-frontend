@@ -7,7 +7,7 @@ import {
   ScoreVariableType,
   SpaceType,
   ValueVariableType,
-} from '@/common/types'
+} from '@core/common/types'
 /**
  * Calculate the "space" parameter to send to the API based on the
  * variables defined in the supplied experiment
