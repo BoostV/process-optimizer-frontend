@@ -5,10 +5,10 @@ import {
   ExperimentType,
   OptimizerConfig,
   ValueVariableType,
-} from '@process-optimizer-frontend/core'
+} from '@core/common/types'
 import produce from 'immer'
-import { versionInfo } from '@process-optimizer-frontend/core'
-import { assertUnreachable } from '@process-optimizer-frontend/core'
+import { versionInfo } from '@core/features/core'
+import { assertUnreachable } from '@core/common/util'
 
 const calculateInitialPoints = (state: ExperimentType) =>
   Math.max(

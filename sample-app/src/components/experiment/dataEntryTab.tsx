@@ -3,7 +3,7 @@ import {
   selectDataPoints,
   useExperiment,
   useSelector,
-} from '@sample/context/experiment'
+} from '@process-optimizer-frontend/core'
 import { ExperimentationGuide } from '@sample/components/result-data/experimentation-guide'
 import { DataEntry } from '@process-optimizer-frontend/core'
 import { useGlobal } from '@sample/context/global'

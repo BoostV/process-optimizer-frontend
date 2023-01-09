@@ -1,17 +1,15 @@
 import { renderHook } from '@testing-library/react'
 import { FC } from 'react'
+import { vi } from 'vitest'
 import {
   useExperiment,
   ExperimentProvider,
   useSelector,
 } from './experiment-context'
-import { GlobalStateProvider } from '@sample/context/global'
-import { State } from '@process-optimizer-frontend/core'
+import { State } from './store'
 
 const ExperimentWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
-  <GlobalStateProvider>
-    <ExperimentProvider experimentId="123">{children}</ExperimentProvider>
-  </GlobalStateProvider>
+  <ExperimentProvider experimentId="123">{children}</ExperimentProvider>
 )
 
 describe('useExperiment', () => {

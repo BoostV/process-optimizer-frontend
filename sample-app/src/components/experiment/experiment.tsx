@@ -21,7 +21,7 @@ import {
   runExperiment,
   useSelector,
   selectDataPoints,
-} from '@sample/context/experiment'
+} from '@process-optimizer-frontend/core'
 import { useState } from 'react'
 import { LoadingExperiment } from './loading-experiment'
 import { ExperimentationGuide } from '@sample/components/result-data/experimentation-guide'
@@ -29,7 +29,7 @@ import { useGlobal } from '@sample/context/global'
 import { UISizeValue } from '@sample/context/global'
 import { getSize, isUIBig } from '@sample/utility/ui-util'
 import { AlertColor } from '@mui/material'
-import { selectIsInitializing } from '@sample/context/experiment'
+import { selectIsInitializing } from '@process-optimizer-frontend/core'
 import {
   CategoricalVariableType,
   DataEntry,

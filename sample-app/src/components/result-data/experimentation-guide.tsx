@@ -1,4 +1,4 @@
-import { useSelector, useExperiment } from '@sample/context/experiment'
+import { useSelector, useExperiment } from '@process-optimizer-frontend/core'
 import { TitleCard } from '@process-optimizer-frontend/core'
 import { Suggestions } from '@process-optimizer-frontend/core'
 import { SingleDataPoint } from '@process-optimizer-frontend/core'
@@ -9,7 +9,7 @@ import { isUIBig } from '@sample/utility/ui-util'
 import useStyles from './experimentation-guide.style'
 import { NextExperiments } from '@process-optimizer-frontend/core'
 import { InitializationProgress } from '@process-optimizer-frontend/core'
-import { selectIsInitializing } from '@sample/context/experiment'
+import { selectIsInitializing } from '@process-optimizer-frontend/core'
 
 interface ResultDataProps {
   nextValues: string[][]

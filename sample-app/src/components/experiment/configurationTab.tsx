@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material'
-import { useExperiment } from '@sample/context/experiment'
+import { useExperiment } from '@process-optimizer-frontend/core'
 import { useGlobal, useSelector } from '@sample/context/global'
 import { Details } from '@process-optimizer-frontend/core'
 import { OptimizerModel } from '@process-optimizer-frontend/core'

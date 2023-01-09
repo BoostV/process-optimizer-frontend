@@ -1,4 +1,4 @@
-import { initialState, State } from '@process-optimizer-frontend/core'
+import { initialState, State } from '@core/context/experiment/store'
 import { selectId, selectIsInitializing } from './experiment-selectors'
 
 describe('Experiment selectors', () => {

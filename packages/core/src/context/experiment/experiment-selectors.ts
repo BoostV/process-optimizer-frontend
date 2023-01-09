@@ -1,4 +1,4 @@
-import { State } from '@process-optimizer-frontend/core'
+import { State } from './store'
 
 export const selectExperiment = (state: State) => state.experiment
 export const selectId = (state: State) => selectExperiment(state).id

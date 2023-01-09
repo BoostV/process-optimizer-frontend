@@ -17,7 +17,7 @@ import {
   useExperiment,
   runExperiment,
   useSelector,
-} from '@sample/context/experiment'
+} from '@process-optimizer-frontend/core'
 import { useState } from 'react'
 import { LoadingExperiment } from './loading-experiment'
 import { LoadingButton } from '@process-optimizer-frontend/core'
@@ -27,7 +27,7 @@ import { useGlobal } from '@sample/context/global'
 import { ConfigurationTab } from './configurationTab'
 import { DataEntryTab } from './dataEntryTab'
 import { State } from '@sample/context/global'
-import { selectIsInitializing } from '@sample/context/experiment'
+import { selectIsInitializing } from '@process-optimizer-frontend/core'
 import { isUIBig } from '@sample/utility/ui-util'
 
 type SnackbarMessage = {

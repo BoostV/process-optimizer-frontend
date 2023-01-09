@@ -1,20 +1,16 @@
 import * as React from 'react'
-import { useLocalStorageReducer } from '@process-optimizer-frontend/core'
+import { useLocalStorageReducer } from '@core/storage'
 import {
   Configuration,
   DefaultApi,
   OptimizerapiOptimizerRunRequest,
 } from '@process-optimizer-frontend/api'
 import { Dispatch, rootReducer } from './reducers'
-import { calculateData, calculateSpace } from '@process-optimizer-frontend/core'
-import { migrate } from '@process-optimizer-frontend/core'
-import { useGlobal } from '@sample/context/global/'
-import { initialState, State } from '@process-optimizer-frontend/core'
-import {
-  ExperimentResultType,
-  ExperimentType,
-} from '@process-optimizer-frontend/core'
-import { versionInfo } from '@process-optimizer-frontend/core'
+import { calculateData, calculateSpace } from '@core/common/'
+import { migrate } from '@core/common'
+import { initialState, State } from '@core/context/experiment'
+import { ExperimentResultType, ExperimentType } from '@core/common/types'
+import { versionInfo } from '@core/features/core'
 
 const ExperimentContext = React.createContext<
   { state: State; dispatch: Dispatch; loading: boolean } | undefined
@@ -41,18 +37,13 @@ export function ExperimentProvider({
     (a: State) => ({ ...a, experiment: migrate(a.experiment) })
   )
   const [loading, setLoading] = React.useState(true)
-  const { dispatch: globalDispatch } = useGlobal()
 
   React.useEffect(() => {
     if (state?.experiment?.info?.swVersion !== versionInfo.version) {
       dispatch({ type: 'setSwVersion', payload: versionInfo.version })
     }
-    globalDispatch({
-      type: 'storeExperimentId',
-      payload: experimentId,
-    })
     setLoading(false)
-  }, [dispatch, experimentId, state, globalDispatch])
+  }, [dispatch, experimentId, state])
 
   const getValue = (callback: (state: State) => any) => callback(state)
 

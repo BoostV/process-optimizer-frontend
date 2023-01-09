@@ -8,9 +8,9 @@ import {
   ExperimentType,
   OptimizerConfig,
   ValueVariableType,
-} from '@process-optimizer-frontend/core'
-import { emptyExperiment, State } from '@process-optimizer-frontend/core'
-import { versionInfo } from '@process-optimizer-frontend/core'
+} from '@core/common/types'
+import { emptyExperiment, State } from '@core/context/experiment'
+import { versionInfo } from '@core/features/core'
 
 describe('experiment reducer', () => {
   const initState: State = {
