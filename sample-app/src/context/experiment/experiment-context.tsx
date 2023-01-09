@@ -7,7 +7,7 @@ import {
 } from '@process-optimizer-frontend/api'
 import { Dispatch, rootReducer } from './reducers'
 import { calculateData, calculateSpace } from '@process-optimizer-frontend/core'
-import { migrate } from '@sample/utility/migration/migration'
+import { migrate } from '@process-optimizer-frontend/core'
 import { useGlobal } from '@sample/context/global/'
 import { initialState, State } from '@process-optimizer-frontend/core'
 import {

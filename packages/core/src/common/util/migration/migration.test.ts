@@ -5,20 +5,20 @@ import version4 from './data-formats/4.json' assert { type: 'json' }
 import version3 from './data-formats/3.json' assert { type: 'json' }
 import version2 from './data-formats/2.json' assert { type: 'json' }
 import version1 from './data-formats/1.json' assert { type: 'json' }
-import catapult from '../../../sample-data/catapult.json' assert { type: 'json' }
-import large from '../../../sample-data/large.json' assert { type: 'json' }
+import catapult from '../../../../sample-data/catapult.json' assert { type: 'json' }
+import large from '../../../../sample-data/large.json' assert { type: 'json' }
 import fs from 'fs'
-import { ExperimentType } from '@process-optimizer-frontend/core'
-import { emptyExperiment } from '@process-optimizer-frontend/core'
+import { ExperimentType } from '@core/common/types'
+import { emptyExperiment } from '@core/context/experiment'
 
 const loadLatestJson = () => {
   const fileVersions: number[] = fs
-    .readdirSync('./src/utility/migration/data-formats')
+    .readdirSync('./src/common/util/migration/data-formats')
     .map(f => parseInt(f.replace(/[^0-9]/, '')))
   const latestVersion = Math.max(...fileVersions)
   return JSON.parse(
     fs.readFileSync(
-      `src/utility/migration/data-formats/${latestVersion}.json`,
+      `src/common/util/migration/data-formats/${latestVersion}.json`,
       {
         encoding: 'utf8',
         flag: 'r',

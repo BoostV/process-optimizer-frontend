@@ -1,5 +1,0 @@
-// Vitest Snapshot v1
-
-exports[`converters > csvToDataPoints > should fail if duplicate ids are supplied 1`] = `"Duplicate or missing IDs detected in input data"`;
-
-exports[`converters > csvToDataPoints > should fail if header is missing 1`] = `"Headers does not match Sukker,Peber,Hvedemel,Kunde,score !== Sukker,Hvedemel,Kunde,score"`;

@@ -1,3 +1,4 @@
+export * from './migration'
 export * from './converters'
 export * from './forms'
 export * from './save-to-local-file'

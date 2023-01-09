@@ -1,14 +1,16 @@
 import {
   CategoricalVariableType,
+  DataEntry,
   DataPointType,
   ExperimentResultType,
+  ExperimentType,
   OptimizerConfig,
   ScoreVariableType,
   ValueVariableType,
   Info,
-} from '@process-optimizer-frontend/core'
+} from '@core/common/types'
 
-type ExperimentTypeV5 = {
+type ExperimentTypeV7 = {
   id: string
   changedSinceLastEvaluation: boolean
   info: Info
@@ -21,22 +23,16 @@ type ExperimentTypeV5 = {
   dataPoints: DataPointType[][]
 }
 
-export const migrateToV5 = (json: ExperimentTypeV5): ExperimentTypeV5 => {
+export const migrateToV8 = (json: ExperimentTypeV7): ExperimentType => {
   return {
     ...json,
-    scoreVariables: [
-      {
-        name: 'score',
-        description: 'score',
-        enabled: true,
-      },
-    ],
-    dataPoints: json.dataPoints.map(dps =>
-      dps.map(dp =>
-        dp.name === 'score' && Array.isArray(dp.value)
-          ? { ...dp, value: dp.value[0] ?? 0 }
-          : dp
-      )
-    ),
+    info: { ...json.info, dataFormatVersion: '8' },
+    dataPoints: migrateDataPoints(json.dataPoints),
   }
 }
+
+const migrateDataPoints = (dataPoints: DataPointType[][]): DataEntry[] =>
+  dataPoints.map((dp, idx) => ({
+    meta: { enabled: true, id: idx + 1 },
+    data: dp,
+  }))

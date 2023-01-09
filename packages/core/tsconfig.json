@@ -28,5 +28,5 @@
       "@core/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "./src/**/*.json", "./sample-data/**/*.json"]
 }

@@ -1,4 +1,4 @@
-import { ExperimentType, isExperiment } from '@process-optimizer-frontend/core'
+import { ExperimentType, isExperiment } from '@core/common/types'
 
 import compareVersions from 'compare-versions'
 import {
