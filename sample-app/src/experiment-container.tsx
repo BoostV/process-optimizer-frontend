@@ -6,16 +6,26 @@ import { useGlobal } from '@sample/context/global'
 import { useParams } from 'react-router-dom'
 import { LoadingExperiment } from '@sample/components/experiment/loading-experiment'
 import JsonEditor from '@sample/components/json-editor/json-editor'
+import { useEffect } from 'react'
 
 export default function ExperimentContainer() {
   const { experimentId } = useParams()
   const {
+    dispatch,
     state: { debug, showJsonEditor, focus },
   } = useGlobal()
 
   if (!experimentId) {
     return <LoadingExperiment />
   }
+  useEffect(() => {
+    if (experimentId) {
+      dispatch({
+        type: 'storeExperimentId',
+        payload: experimentId,
+      })
+    }
+  }, [experimentId, dispatch])
   return (
     <>
       <ExperimentProvider
