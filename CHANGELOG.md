@@ -1,6 +1,35 @@
 # Changelog
 
-## [1.6.2](https://github.com/BoostV/process-optimizer-frontend/tree/v1.6.2)
+## [v1.6.3](https://github.com/BoostV/process-optimizer-frontend/tree/v1.6.3)
+
+[Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.6.2...v1.6.3)
+
+**Implemented enhancements:**
+
+- Interactive visualizations [\#142](https://github.com/BoostV/process-optimizer-frontend/issues/142)
+
+**Fixed bugs:**
+
+- Categorical parameter missing in the model card [\#200](https://github.com/BoostV/process-optimizer-frontend/issues/200)
+- Case sensitivity on csv-import [\#199](https://github.com/BoostV/process-optimizer-frontend/issues/199)
+- Properly fix routing when hosting in nginx [\#188](https://github.com/BoostV/process-optimizer-frontend/issues/188)
+
+**Closed issues:**
+
+- Migrate to Vite.js [\#197](https://github.com/BoostV/process-optimizer-frontend/issues/197)
+- Update MUI inputs to outlined [\#184](https://github.com/BoostV/process-optimizer-frontend/issues/184)
+
+**Merged pull requests:**
+
+- Separate into application and library module [\#209](https://github.com/BoostV/process-optimizer-frontend/pull/209) ([langdal](https://github.com/langdal))
+- Migrate to Vite.js [\#207](https://github.com/BoostV/process-optimizer-frontend/pull/207) ([langdal](https://github.com/langdal))
+- Case insensitivity csv-import of meta data field "enabled" [\#203](https://github.com/BoostV/process-optimizer-frontend/pull/203) ([langdal](https://github.com/langdal))
+- fix: revert "Resolve lint issues" [\#202](https://github.com/BoostV/process-optimizer-frontend/pull/202) ([langdal](https://github.com/langdal))
+- fix: apply workaround for volume mounts [\#201](https://github.com/BoostV/process-optimizer-frontend/pull/201) ([langdal](https://github.com/langdal))
+- Embed-bokeh-plot [\#198](https://github.com/BoostV/process-optimizer-frontend/pull/198) ([langdal](https://github.com/langdal))
+- Add sample data [\#190](https://github.com/BoostV/process-optimizer-frontend/pull/190) ([langdal](https://github.com/langdal))
+
+## [v1.6.2](https://github.com/BoostV/process-optimizer-frontend/tree/v1.6.2) (2022-09-01)
 
 [Full Changelog](https://github.com/BoostV/process-optimizer-frontend/compare/v1.6.1...v1.6.2)
 
