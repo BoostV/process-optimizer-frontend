@@ -21,25 +21,28 @@
   ],
   "type": "module",
   "types": "./dist/index.d.ts",
-  "main": "./dist/ui.js",
   "module": "./dist/ui.js",
+  "exports": {
+    ".": {
+      "import": "./dist/ui.js"
+    }
+  },
   "scripts": {
-    "build": "tsc && vite build",
+    "clean": "rimraf ./dist",
+    "build": "tsc --noEmit && vite build",
     "test": "vitest",
-    "prepublishOnly": "tsc"
+    "prepublishOnly": "vite build"
   },
   "dependencies": {
-    "@process-optimizer-frontend/api": "*",
-    "@process-optimizer-frontend/plots": "*",
-    "@process-optimizer-frontend/core": "*"
+    "@process-optimizer-frontend/plots": "*"
   },
   "peerDependencies": {
+    "@process-optimizer-frontend/core": "*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.33.0"
   },
   "devDependencies": {
-    "@rollup/plugin-alias": "^4.0.3",
     "@testing-library/dom": "^8.13.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",

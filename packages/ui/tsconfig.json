@@ -23,10 +23,12 @@
     "noUncheckedIndexedAccess": true,
     "strictNullChecks": true,
     "outDir": "dist",
+    "noEmit": true,
     "declaration": true,
+    "baseUrl": "src",
     "paths": {
-      "@ui/*": ["./src/*"]
+      "@ui/*": ["./*"]
     }
   },
-  "include": ["src", "./src/**/*.json"]
+  "include": ["./src", "./src/**/*.json"]
 }
