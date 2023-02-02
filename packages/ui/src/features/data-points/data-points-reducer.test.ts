@@ -1,5 +1,5 @@
 import { dataPointsReducer, DataPointsState } from './data-points-reducer'
-import { TableDataRow } from '@core/features/core/editable-table'
+import { TableDataRow } from '@ui/features/core/editable-table'
 
 describe('data points reducer', () => {
   const initialState: DataPointsState = {

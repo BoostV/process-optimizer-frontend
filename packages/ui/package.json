@@ -20,18 +20,18 @@
     "dist"
   ],
   "type": "module",
-  "types": "./dist/src/index.d.ts",
-  "main": "./dist/src/index.js",
-  "module": "./dist/src/index.js",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/ui.js",
+  "module": "./dist/ui.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && vite build",
     "test": "vitest",
     "prepublishOnly": "tsc"
   },
   "dependencies": {
     "@process-optimizer-frontend/api": "1.0.0",
-    "@process-optimizer-frontend/ui": "1.0.0",
-    "@process-optimizer-frontend/plots": "1.0.0"
+    "@process-optimizer-frontend/plots": "1.0.0",
+    "@process-optimizer-frontend/ui": "1.0.0"
   },
   "peerDependencies": {
     "react": "^18.2.0",
@@ -39,8 +39,7 @@
     "react-hook-form": "^7.33.0"
   },
   "devDependencies": {
-    "vite": "^3.2.3",
-    "vitest": "^0.25.2",
+    "@rollup/plugin-alias": "^4.0.3",
     "@testing-library/dom": "^8.13.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
@@ -55,6 +54,8 @@
     "node-mocks-http": "^1.10.1",
     "react-devtools": "^4.24.7",
     "rimraf": "^3.0.2",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "vite": "^3.2.3",
+    "vitest": "^0.25.2"
   }
 }

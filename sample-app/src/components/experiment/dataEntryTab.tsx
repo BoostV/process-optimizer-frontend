@@ -7,7 +7,7 @@ import {
 import { ExperimentationGuide } from '@sample/components/result-data/experimentation-guide'
 import { DataEntry } from '@process-optimizer-frontend/core'
 import { useGlobal } from '@sample/context/global'
-import { DataPoints } from '@process-optimizer-frontend/core'
+import { DataPoints } from '@process-optimizer-frontend/ui'
 
 export const DataEntryTab = () => {
   const {

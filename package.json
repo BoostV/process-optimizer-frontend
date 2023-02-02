@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "bootstrap": "yarn --cwd packages/api build && yarn --cwd packages/plots build && yarn --cwd packages/core build && && yarn --cwd packages/ui build",
+    "bootstrap": "yarn --cwd packages/api build && yarn --cwd packages/plots build && yarn --cwd packages/core build && yarn --cwd packages/ui build",
     "dev": "yarn --cwd sample-app dev",
     "build": "yarn --cwd packages/api build && yarn --cwd packages/plots build && yarn --cwd packages/core build && yarn --cwd packages/ui build && yarn --cwd sample-app build",
     "test": "yarn --cwd packages/core test --run && yarn --cwd packages/ui test --run && yarn --cwd sample-app test --run",

@@ -10,10 +10,15 @@ import {
   Typography,
 } from '@mui/material'
 import Layout from '@sample/components/layout/layout'
-import { OptimizerModel } from '@process-optimizer-frontend/core'
+import {
+  Plots,
+  Details,
+  OptimizerModel,
+  LoadingButton,
+  OptimizerConfigurator,
+  DataPoints,
+} from '@process-optimizer-frontend/ui'
 import { Alert } from '@mui/material'
-import { Details } from '@process-optimizer-frontend/core'
-import { Plots } from '@process-optimizer-frontend/core'
 import { saveObjectToLocalFile } from '@process-optimizer-frontend/core'
 import { useStyles } from './experiment.style'
 import {
@@ -36,9 +41,6 @@ import {
   OptimizerConfig,
   ValueVariableType,
 } from '@process-optimizer-frontend/core'
-import { LoadingButton } from '@process-optimizer-frontend/core'
-import { OptimizerConfigurator } from '@process-optimizer-frontend/core'
-import { DataPoints } from '@process-optimizer-frontend/core'
 
 type SnackbarMessage = {
   message: string

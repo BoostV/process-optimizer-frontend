@@ -7,7 +7,7 @@ import {
   ValueVariableType,
 } from '@core/common/types'
 import produce from 'immer'
-import { versionInfo } from '@core/features/core'
+import { versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
 
 const calculateInitialPoints = (state: ExperimentType) =>

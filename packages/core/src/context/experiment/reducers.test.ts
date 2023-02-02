@@ -10,7 +10,7 @@ import {
   ValueVariableType,
 } from '@core/common/types'
 import { emptyExperiment, State } from '@core/context/experiment'
-import { versionInfo } from '@core/features/core'
+import { versionInfo } from '@core/common'
 
 describe('experiment reducer', () => {
   const initState: State = {

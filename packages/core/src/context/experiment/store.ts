@@ -1,4 +1,4 @@
-import { versionInfo } from '@core/features/core/version-info'
+import { versionInfo } from '@core/common'
 import { currentVersion } from '@core/common/types'
 import { ExperimentType } from '@core/common/types'
 

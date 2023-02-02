@@ -1,5 +1,5 @@
 import { useSelector, useExperiment } from '@process-optimizer-frontend/core'
-import { TitleCard } from '@process-optimizer-frontend/core'
+import { TitleCard } from '@process-optimizer-frontend/ui'
 import { Suggestions } from '@process-optimizer-frontend/ui'
 import { SingleDataPoint } from '@process-optimizer-frontend/ui'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'

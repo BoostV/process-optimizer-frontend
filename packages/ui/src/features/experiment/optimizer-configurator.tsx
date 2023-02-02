@@ -1,6 +1,6 @@
-import { TitleCard } from '@core/features/core/title-card/title-card'
+import { TitleCard } from '@ui/features/core/title-card/title-card'
 import { TextField } from '@mui/material'
-import { OptimizerConfig } from '@core/common/types'
+import { OptimizerConfig } from '@process-optimizer-frontend/core'
 import { FC } from 'react'
 
 type Props = {

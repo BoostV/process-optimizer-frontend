@@ -1,4 +1,4 @@
-import { Info } from '@core/common/types'
+import { Info } from '@process-optimizer-frontend/core'
 import { TextField } from '@mui/material'
 import { TitleCard } from './title-card/title-card'
 

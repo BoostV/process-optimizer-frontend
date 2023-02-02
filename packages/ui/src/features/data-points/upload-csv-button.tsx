@@ -6,8 +6,8 @@ import {
   DataEntry,
   ScoreVariableType,
   ValueVariableType,
-} from '@core/common/types'
-import { csvToDataPoints } from '@core/common/util/converters/converters'
+} from '@process-optimizer-frontend/core'
+import { csvToDataPoints } from '@process-optimizer-frontend/core'
 
 const readFile = (file: Blob, dataHandler: (s: string) => void) => {
   const result = ''

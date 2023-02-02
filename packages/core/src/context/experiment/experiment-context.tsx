@@ -10,7 +10,7 @@ import { calculateData, calculateSpace } from '@core/common/'
 import { migrate } from '@core/common'
 import { initialState, State } from '@core/context/experiment'
 import { ExperimentResultType, ExperimentType } from '@core/common/types'
-import { versionInfo } from '@core/features/core'
+import { versionInfo } from '@core/common'
 
 const ExperimentContext = React.createContext<
   { state: State; dispatch: Dispatch; loading: boolean } | undefined

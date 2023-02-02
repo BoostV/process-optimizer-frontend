@@ -2,10 +2,13 @@ import { Box, Button } from '@mui/material'
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import useStyles from './value-variable.style'
-import FormInputText from '@core/common/util/forms/form-input'
-import { FormRadioGroup } from '@core/common/util/forms/form-radio-group'
-import { validation } from '@core/common/util/forms/validation'
-import { ValueVariableInputType, ValueVariableType } from '@core/common/types'
+import { FormRadioGroup } from '@ui/common'
+import { validation } from '@ui/common/forms'
+import {
+  ValueVariableInputType,
+  ValueVariableType,
+} from '@process-optimizer-frontend/core'
+import FormInputText from '@ui/common/forms/form-input'
 
 type ValueVariableProps = {
   isDisabled: boolean

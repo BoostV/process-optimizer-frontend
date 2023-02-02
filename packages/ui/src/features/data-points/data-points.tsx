@@ -1,22 +1,22 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useEffect, useMemo, useReducer } from 'react'
-import { EditableTable } from '@core/features/core/editable-table/editable-table'
+import { EditableTable } from '../core'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
-import { TitleCard } from '@core/features/core/title-card/title-card'
-import DownloadCSVButton from '@core/features/data-points/download-csv-button'
+import { TitleCard } from '../core/title-card/title-card'
+import DownloadCSVButton from './download-csv-button'
 import useStyles from './data-points.style'
-import UploadCSVButton from '@core/features/data-points/upload-csv-button'
+import UploadCSVButton from './upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
-import { TableDataRow } from '@core/features/core/editable-table'
-import { saveCSVToLocalFile } from '@core/common/util/save-to-local-file'
-import { dataPointsToCSV } from '@core/common/util/converters/converters'
+import { TableDataRow } from '../core/editable-table'
+import { saveCSVToLocalFile } from '@process-optimizer-frontend/core'
+import { dataPointsToCSV } from '@process-optimizer-frontend/core'
 import {
   CategoricalVariableType,
   DataEntry,
   DataPointTypeValue,
   ScoreVariableType,
   ValueVariableType,
-} from '@core/common/types'
+} from '@process-optimizer-frontend/core'
 
 type DataPointProps = {
   experimentId: string
