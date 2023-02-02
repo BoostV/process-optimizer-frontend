@@ -21,12 +21,17 @@
   ],
   "type": "module",
   "types": "./dist/index.d.ts",
-  "main": "./dist/core.js",
   "module": "./dist/core.js",
+  "exports": {
+    ".": {
+      "import": "./dist/core.js"
+    }
+  },
   "scripts": {
-    "build": "tsc && vite build",
+    "clean": "rimraf ./dist",
+    "build": "tsc --noEmit && vite build",
     "test": "vitest",
-    "prepublishOnly": "tsc && vite build"
+    "prepublishOnly": "vite build"
   },
   "dependencies": {
     "@process-optimizer-frontend/api": "1.0.0",
@@ -38,7 +43,6 @@
     "react-hook-form": "^7.33.0"
   },
   "devDependencies": {
-    "@rollup/plugin-alias": "^4.0.3",
     "@testing-library/dom": "^8.13.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",

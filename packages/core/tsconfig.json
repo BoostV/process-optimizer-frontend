@@ -8,7 +8,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -22,11 +22,13 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "strictNullChecks": true,
-    "outDir": "dist",
     "declaration": true,
+    "noEmit": true,
+    "outDir": "dist",
+    "baseUrl": "src",
     "paths": {
-      "@core/*": ["./src/*"]
+      "@core/*": ["./*"]
     }
   },
-  "include": ["src", "./src/**/*.json", "./sample-data/**/*.json"]
+  "include": ["./src", "./src/**/*.json", "./sample-data/**/*.json"]
 }
