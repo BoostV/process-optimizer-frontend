@@ -26,20 +26,8 @@
     "types": ["vitest/globals"],
     "baseUrl": ".",
     "paths": {
-      "@sample/*": ["./src/*"],
-      "@core/*": ["../package/core/src/*"]
+      "@sample/*": ["./src/*"]
     }
   },
-  "include": ["./src", "./src/**/*.json", "./sample-data/**/*.json"],
-  "references": [
-    {
-      "path": "../packages/api"
-    },
-    {
-      "path": "../packages/core"
-    },
-    {
-      "path": "../packages/plots"
-    }
-  ]
+  "include": ["./src", "./src/**/*.json", "./sample-data/**/*.json"]
 }
