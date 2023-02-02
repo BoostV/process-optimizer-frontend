@@ -1,14 +1,14 @@
 import { useSelector, useExperiment } from '@process-optimizer-frontend/core'
 import { TitleCard } from '@process-optimizer-frontend/core'
-import { Suggestions } from '@process-optimizer-frontend/core'
-import { SingleDataPoint } from '@process-optimizer-frontend/core'
+import { Suggestions } from '@process-optimizer-frontend/ui'
+import { SingleDataPoint } from '@process-optimizer-frontend/ui'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import { useGlobal } from '@sample/context/global'
 import { isUIBig } from '@sample/utility/ui-util'
 import useStyles from './experimentation-guide.style'
-import { NextExperiments } from '@process-optimizer-frontend/core'
-import { InitializationProgress } from '@process-optimizer-frontend/core'
+import { NextExperiments } from '@process-optimizer-frontend/ui'
+import { InitializationProgress } from '@process-optimizer-frontend/ui'
 import { selectIsInitializing } from '@process-optimizer-frontend/core'
 
 interface ResultDataProps {

@@ -1,8 +1,8 @@
 {
-  "name": "@process-optimizer-frontend/core",
+  "name": "@process-optimizer-frontend/ui",
   "private": false,
   "version": "1.0.0",
-  "description": "Core library for process optimizer frontend",
+  "description": "UI library for process optimizer frontend",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
   "license": "BSD-3-Clause",
@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@process-optimizer-frontend/api": "1.0.0",
+    "@process-optimizer-frontend/ui": "1.0.0",
     "@process-optimizer-frontend/plots": "1.0.0"
   },
   "peerDependencies": {

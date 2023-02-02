@@ -13,6 +13,7 @@
   "dependencies": {
     "@process-optimizer-frontend/api": "1.0.0",
     "@process-optimizer-frontend/core": "1.0.0",
+    "@process-optimizer-frontend/ui": "1.0.0",
     "@process-optimizer-frontend/plots": "1.0.0",
     "@babel/core": "^7.0.0",
     "@emotion/cache": "^11.9.3",
