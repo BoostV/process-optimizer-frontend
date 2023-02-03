@@ -1,4 +1,4 @@
-import { createTheme, Theme } from '@mui/material'
+import { createTheme, Theme } from '@mui/material/styles'
 import { cyan, grey, teal } from '@mui/material/colors'
 
 declare module '@mui/material/styles/createPalette' {

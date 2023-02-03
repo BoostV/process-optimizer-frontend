@@ -1,4 +1,4 @@
-import { Theme, ThemeProvider } from '@mui/material'
+import { Theme, ThemeProvider } from '@mui/material/styles'
 import * as React from 'react'
 import ThemeSelector from '@sample/components/theme-selector/theme-selector'
 import { useLocalStorageReducer } from '@process-optimizer-frontend/core'

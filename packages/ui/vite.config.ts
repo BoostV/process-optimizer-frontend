@@ -24,7 +24,6 @@ export default defineConfig({
         'react-hook-form',
         '@process-optimizer-frontend/core',
         '@mui/material',
-        '@emotion/react',
       ],
     },
     outDir: 'dist',
