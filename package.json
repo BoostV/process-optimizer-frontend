@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "npm run build -ws --if-present",
-    "clean": "npx -y rimraf node_modules **/node_modules/ package-lock.json",
+    "clean": "npx -y rimraf node_modules **/node_modules/",
     "bootstrap": "yarn --cwd packages/api build && yarn --cwd packages/plots build && yarn --cwd packages/core build && yarn --cwd packages/ui build",
     "dev": "yarn --cwd sample-app dev",
     "test": "yarn --cwd packages/core test --run && yarn --cwd packages/ui test --run && yarn --cwd sample-app test --run",
