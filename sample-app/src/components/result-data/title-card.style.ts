@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 
 export const useStyles = makeStyles()(theme => {
-  console.log('UI Theme:', theme)
+  console.log('Client Theme:', theme)
   return {
     title: {
       background: theme.palette.primary.main,

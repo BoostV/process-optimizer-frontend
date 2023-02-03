@@ -23,7 +23,8 @@
     "noUncheckedIndexedAccess": true,
     "strictNullChecks": true,
     "outDir": "dist",
-    "noEmit": true,
+    "types": ["vitest/globals"],
+    "noEmit": false,
     "declaration": true,
     "baseUrl": "src",
     "paths": {

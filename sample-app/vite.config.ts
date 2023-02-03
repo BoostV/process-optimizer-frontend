@@ -26,13 +26,7 @@ export default defineConfig({
   },
   base: '/',
   resolve: {
-    alias: [
-      { find: '@sample', replacement: resolve(__dirname, './src') },
-      {
-        find: '@core',
-        replacement: resolve(__dirname, '../packages/core/src'),
-      },
-    ],
+    alias: [{ find: '@sample', replacement: resolve(__dirname, './src') }],
   },
   test: {
     coverage: {
