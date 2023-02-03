@@ -1,5 +1,5 @@
 {
-  "name": "process-optimizer-frontend",
+  "name": "@process-optimizer-frontend/monorepo",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/BoostV/process-optimizer-frontend.git",
@@ -7,13 +7,15 @@
   "license": "BSD-3-Clause",
   "private": true,
   "workspaces": [
-    "sample-app",
-    "packages/*"
+    "scaffold",
+    "packages/*",
+    "sample-app"
   ],
   "scripts": {
+    "build": "npm run build -ws --if-present",
+    "clean": "npx -y rimraf node_modules **/node_modules/ package-lock.json",
     "bootstrap": "yarn --cwd packages/api build && yarn --cwd packages/plots build && yarn --cwd packages/core build && yarn --cwd packages/ui build",
     "dev": "yarn --cwd sample-app dev",
-    "build": "yarn --cwd packages/api build && yarn --cwd packages/plots build && yarn --cwd packages/core build && yarn --cwd packages/ui build && yarn --cwd sample-app build",
     "test": "yarn --cwd packages/core test --run && yarn --cwd packages/ui test --run && yarn --cwd sample-app test --run",
     "start": "yarn --cwd sample-app start",
     "openapi": "yarn --cwd packages/api openapi && yarn --cwd packages/api build",
@@ -37,6 +39,12 @@
     "eslint-plugin-react": "^7.31.6",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-testing-library": "^5.6.1",
-    "prettier": "2.7.1"
+    "prettier": "2.7.1",
+    "rimraf": "^3.0.2"
+  },
+  "engineStrict": true,
+  "engines": {
+    "npm": ">=8.15.0",
+    "yarn": ">100.0.0"
   }
 }

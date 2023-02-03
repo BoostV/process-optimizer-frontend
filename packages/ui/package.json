@@ -1,6 +1,7 @@
 {
   "name": "@process-optimizer-frontend/ui",
-  "private": false,
+  "private": true,
+  "sideEffects": false,
   "version": "1.0.0",
   "description": "UI library for process optimizer frontend",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
