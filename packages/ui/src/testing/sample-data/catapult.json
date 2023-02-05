@@ -4,8 +4,8 @@
   "info": {
     "name": "Catapult example",
     "description": "Shoot as far as possible",
-    "swVersion": "40a3a85",
-    "dataFormatVersion": "7"
+    "swVersion": "",
+    "dataFormatVersion": "8"
   },
   "categoricalVariables": [],
   "valueVariables": [
@@ -171,270 +171,342 @@
     }
   },
   "dataPoints": [
-    [
-      {
-        "name": "Right pin",
-        "value": "108"
+    {
+      "meta": {
+        "enabled": true,
+        "id": 1
       },
-      {
-        "name": "Left pin",
-        "value": "192"
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "108"
+        },
+        {
+          "name": "Left pin",
+          "value": "192"
+        },
+        {
+          "name": "Cup",
+          "value": "208"
+        },
+        {
+          "name": "Firing angle",
+          "value": "111"
+        },
+        {
+          "name": "score",
+          "value": -217
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 2
       },
-      {
-        "name": "Cup",
-        "value": "208"
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "125"
+        },
+        {
+          "name": "Left pin",
+          "value": "142"
+        },
+        {
+          "name": "Cup",
+          "value": "242"
+        },
+        {
+          "name": "Firing angle",
+          "value": "102"
+        },
+        {
+          "name": "score",
+          "value": -214
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 3
       },
-      {
-        "name": "Firing angle",
-        "value": "111"
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "192"
+        },
+        {
+          "name": "Left pin",
+          "value": "125"
+        },
+        {
+          "name": "Cup",
+          "value": "292"
+        },
+        {
+          "name": "Firing angle",
+          "value": "128"
+        },
+        {
+          "name": "score",
+          "value": -392
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 4
       },
-      {
-        "name": "score",
-        "value": -217
-      }
-    ],
-    [
-      {
-        "name": "Right pin",
-        "value": "125"
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "142"
+        },
+        {
+          "name": "Left pin",
+          "value": "158"
+        },
+        {
+          "name": "Cup",
+          "value": "225"
+        },
+        {
+          "name": "Firing angle",
+          "value": "94"
+        },
+        {
+          "name": "score",
+          "value": -176
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 5
       },
-      {
-        "name": "Left pin",
-        "value": "142"
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "175"
+        },
+        {
+          "name": "Left pin",
+          "value": "108"
+        },
+        {
+          "name": "Cup",
+          "value": "258"
+        },
+        {
+          "name": "Firing angle",
+          "value": "136"
+        },
+        {
+          "name": "score",
+          "value": -216
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 6
       },
-      {
-        "name": "Cup",
-        "value": "242"
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "158"
+        },
+        {
+          "name": "Left pin",
+          "value": "175"
+        },
+        {
+          "name": "Cup",
+          "value": "275"
+        },
+        {
+          "name": "Firing angle",
+          "value": "119"
+        },
+        {
+          "name": "score",
+          "value": -420
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 7
       },
-      {
-        "name": "Firing angle",
-        "value": "102"
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "159"
+        },
+        {
+          "name": "Left pin",
+          "value": "199"
+        },
+        {
+          "name": "Cup",
+          "value": "296"
+        },
+        {
+          "name": "Firing angle",
+          "value": "113"
+        },
+        {
+          "name": "score",
+          "value": -494
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 8
       },
-      {
-        "name": "score",
-        "value": -214
-      }
-    ],
-    [
-      {
-        "name": "Right pin",
-        "value": "192"
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "100"
+        },
+        {
+          "name": "Left pin",
+          "value": "200"
+        },
+        {
+          "name": "Cup",
+          "value": "300"
+        },
+        {
+          "name": "Firing angle",
+          "value": "140"
+        },
+        {
+          "name": "score",
+          "value": -212
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 9
       },
-      {
-        "name": "Left pin",
-        "value": "125"
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "200"
+        },
+        {
+          "name": "Left pin",
+          "value": "146"
+        },
+        {
+          "name": "Cup",
+          "value": "300"
+        },
+        {
+          "name": "Firing angle",
+          "value": "109"
+        },
+        {
+          "name": "score",
+          "value": -476
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 10
       },
-      {
-        "name": "Cup",
-        "value": "292"
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "193"
+        },
+        {
+          "name": "Left pin",
+          "value": "200"
+        },
+        {
+          "name": "Cup",
+          "value": "300"
+        },
+        {
+          "name": "Firing angle",
+          "value": "90"
+        },
+        {
+          "name": "score",
+          "value": -272
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 11
       },
-      {
-        "name": "Firing angle",
-        "value": "128"
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "126"
+        },
+        {
+          "name": "Left pin",
+          "value": "124"
+        },
+        {
+          "name": "Cup",
+          "value": "300"
+        },
+        {
+          "name": "Firing angle",
+          "value": "114"
+        },
+        {
+          "name": "score",
+          "value": -298
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 12
       },
-      {
-        "name": "score",
-        "value": -392
-      }
-    ],
-    [
-      {
-        "name": "Right pin",
-        "value": "142"
-      },
-      {
-        "name": "Left pin",
-        "value": "158"
-      },
-      {
-        "name": "Cup",
-        "value": "225"
-      },
-      {
-        "name": "Firing angle",
-        "value": "94"
-      },
-      {
-        "name": "score",
-        "value": -176
-      }
-    ],
-    [
-      {
-        "name": "Right pin",
-        "value": "175"
-      },
-      {
-        "name": "Left pin",
-        "value": "108"
-      },
-      {
-        "name": "Cup",
-        "value": "258"
-      },
-      {
-        "name": "Firing angle",
-        "value": "136"
-      },
-      {
-        "name": "score",
-        "value": -216
-      }
-    ],
-    [
-      {
-        "name": "Right pin",
-        "value": "158"
-      },
-      {
-        "name": "Left pin",
-        "value": "175"
-      },
-      {
-        "name": "Cup",
-        "value": "275"
-      },
-      {
-        "name": "Firing angle",
-        "value": "119"
-      },
-      {
-        "name": "score",
-        "value": -420
-      }
-    ],
-    [
-      {
-        "name": "Right pin",
-        "value": "159"
-      },
-      {
-        "name": "Left pin",
-        "value": "199"
-      },
-      {
-        "name": "Cup",
-        "value": "296"
-      },
-      {
-        "name": "Firing angle",
-        "value": "113"
-      },
-      {
-        "name": "score",
-        "value": -494
-      }
-    ],
-    [
-      {
-        "name": "Right pin",
-        "value": "100"
-      },
-      {
-        "name": "Left pin",
-        "value": "200"
-      },
-      {
-        "name": "Cup",
-        "value": "300"
-      },
-      {
-        "name": "Firing angle",
-        "value": "140"
-      },
-      {
-        "name": "score",
-        "value": -212
-      }
-    ],
-    [
-      {
-        "name": "Right pin",
-        "value": "200"
-      },
-      {
-        "name": "Left pin",
-        "value": "146"
-      },
-      {
-        "name": "Cup",
-        "value": "300"
-      },
-      {
-        "name": "Firing angle",
-        "value": "109"
-      },
-      {
-        "name": "score",
-        "value": -476
-      }
-    ],
-    [
-      {
-        "name": "Right pin",
-        "value": "193"
-      },
-      {
-        "name": "Left pin",
-        "value": "200"
-      },
-      {
-        "name": "Cup",
-        "value": "300"
-      },
-      {
-        "name": "Firing angle",
-        "value": "90"
-      },
-      {
-        "name": "score",
-        "value": -272
-      }
-    ],
-    [
-      {
-        "name": "Right pin",
-        "value": "126"
-      },
-      {
-        "name": "Left pin",
-        "value": "124"
-      },
-      {
-        "name": "Cup",
-        "value": "300"
-      },
-      {
-        "name": "Firing angle",
-        "value": "114"
-      },
-      {
-        "name": "score",
-        "value": -298
-      }
-    ],
-    [
-      {
-        "name": "Right pin",
-        "value": "200"
-      },
-      {
-        "name": "Left pin",
-        "value": "200"
-      },
-      {
-        "name": "Cup",
-        "value": "300"
-      },
-      {
-        "name": "Firing angle",
-        "value": "118"
-      },
-      {
-        "name": "score",
-        "value": -645
-      }
-    ]
+      "data": [
+        {
+          "name": "Right pin",
+          "value": "200"
+        },
+        {
+          "name": "Left pin",
+          "value": "200"
+        },
+        {
+          "name": "Cup",
+          "value": "300"
+        },
+        {
+          "name": "Firing angle",
+          "value": "118"
+        },
+        {
+          "name": "score",
+          "value": -645
+        }
+      ]
+    }
   ],
   "extras": {
     "experimentSuggestionCount": 1

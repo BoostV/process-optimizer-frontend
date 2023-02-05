@@ -4,13 +4,16 @@ import {
   useExperiment,
 } from '@process-optimizer-frontend/core'
 
-import catapult from '@ui/testing/sample-data/catapult.json' assert { type: 'json' }
+import catapult from '@ui/testing/sample-data/catapult.json'
 
 const Experiment = () => {
   const { dispatch, state: experiment } = useExperiment()
 
   const loadSample = () => {
-    dispatch({ type: 'updateExperiment', payload: catapult as ExperimentType })
+    dispatch({
+      type: 'updateExperiment',
+      payload: catapult as ExperimentType,
+    })
   }
   return (
     <div>
