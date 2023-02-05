@@ -1,13 +1,20 @@
 import {
   ExperimentProvider,
   ExperimentType,
+  selectDataPoints,
   useExperiment,
+  useSelector,
 } from '@process-optimizer-frontend/core'
 
 import catapult from '@ui/testing/sample-data/catapult.json'
+import { DataPoints, Plots } from '..'
 
 const Experiment = () => {
-  const { dispatch, state: experiment } = useExperiment()
+  const {
+    dispatch,
+    state: { experiment },
+  } = useExperiment()
+  const dataPoints = useSelector(selectDataPoints)
 
   const loadSample = () => {
     dispatch({
@@ -18,7 +25,18 @@ const Experiment = () => {
   return (
     <div>
       <button onClick={() => loadSample()}>Load sample</button>
-      <pre>{JSON.stringify(experiment.experiment, undefined, 2)}</pre>
+      <DataPoints
+        experimentId={experiment.id}
+        valueVariables={experiment.valueVariables}
+        categoricalVariables={experiment.categoricalVariables}
+        scoreVariables={experiment.scoreVariables}
+        dataPoints={dataPoints}
+        newestFirst={true}
+        onToggleNewestFirst={() => {}}
+        onUpdateDataPoints={() => {}}
+      />
+      <Plots experiment={experiment} isUIBig={false} onSizeToggle={() => {}} />
+      <pre>{JSON.stringify(experiment, undefined, 2)}</pre>
     </div>
   )
 }
