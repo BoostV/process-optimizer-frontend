@@ -17,14 +17,14 @@ If you are using Visual Studio Code (VSCode) you can use the [development contai
 1. Initialize the project by installing dependencies
 
 ```bash
-yarn install
-yarn bootstrap
+npm install
+npm run build
 ```
 
 2. Start a development server that automatically monitors for changed files and reloads the application in your browser
 
 ```bash
-yarn dev
+npm start
 ```
 
 3. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -46,7 +46,7 @@ docker run -d -p3000:3000 --env API_URL=http://localhost:9090/v1.0 ghcr.io/boost
 
 When the process-optimizer-api changes, adjust the API version in the "openapi" script in package.json run the following command and commit the resulting changes. Please note that this step requires Java to be installed.
 
-    yarn openapi
+    npm run openapi
 
 ## Updating the change log
 
