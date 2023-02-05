@@ -35,22 +35,19 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
-          cache: 'yarn'
+          cache: 'npm'
 
       - name: Install modules
-        run: yarn install
-      
-      - name: Bootstrap test environment
-        run: yarn bootstrap
-
-      - name: Run tests
-        run: yarn test
-      
-      - name: Check style
-        run: yarn prettier --check .
+        run: npm install
       
       - name: Build distribution
         run: yarn build
+
+      - name: Run tests
+        run: npm test
+      
+      - name: Check style
+        run: npm run prettier
       
       -
         name: Docker meta
