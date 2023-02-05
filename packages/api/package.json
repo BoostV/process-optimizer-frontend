@@ -28,8 +28,8 @@
     "prepublishOnly": "tsc"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "2.5.1",
-    "prettier": "^2.7.1",
-    "typescript": "^4.7.4"
+    "@openapitools/openapi-generator-cli": "2.5.2",
+    "prettier": "^2.8.3",
+    "typescript": "^4.9.5"
   }
 }

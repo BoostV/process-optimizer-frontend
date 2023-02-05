@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@bokeh/bokehjs": "^2.4.3",
-    "jquery": "^3.6.1",
+    "jquery": "^3.6.3",
     "recharts": "^2.3.2"
   },
   "peerDependencies": {
