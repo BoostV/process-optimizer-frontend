@@ -24,7 +24,6 @@
   "module": "./dist/src/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "vitest",
     "prepublishOnly": "tsc"
   },
   "dependencies": {
