@@ -8,5 +8,5 @@
       "@ui/*": ["*"]
     }
   },
-  "include": ["./src", "./src/**/*.json"]
+  "include": ["./src", "./src/**/*.json", "../core/sample-data"]
 }
