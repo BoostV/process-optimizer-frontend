@@ -40,14 +40,17 @@ jobs:
       - name: Install modules
         run: npm install
       
-      - name: Build distribution
-        run: npm run build
+      - name: Bootstrap test environment
+        run: npm run bootstrap
 
       - name: Run tests
         run: npm test
       
       - name: Check style
         run: npm run prettier
+
+      - name: Build distribution
+        run: npm run build
       
       -
         name: Docker meta

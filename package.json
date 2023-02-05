@@ -12,6 +12,7 @@
     "sample-app"
   ],
   "scripts": {
+    "bootstrap": "npm run build --workspace packages --if-present",
     "build": "npm run build -ws --if-present",
     "test": "npm run test -ws --if-present -- --run",
     "clean": "npx -y rimraf node_modules **/node_modules/",

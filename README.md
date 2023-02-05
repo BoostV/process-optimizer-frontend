@@ -18,7 +18,7 @@ If you are using Visual Studio Code (VSCode) you can use the [development contai
 
 ```bash
 npm install
-npm run build
+npm run bootstrap
 ```
 
 2. Start a development server that automatically monitors for changed files and reloads the application in your browser
