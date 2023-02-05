@@ -43,13 +43,7 @@ const Experiment = () => {
           <OptimizerConfigurator
             debug={false}
             onConfigUpdated={() => {}}
-            config={{
-              acqFunc: '',
-              baseEstimator: '',
-              initialPoints: 2,
-              kappa: 42,
-              xi: 32,
-            }}
+            config={experiment.optimizerConfig}
           />
           <OptimizerModel
             disabled={false}
@@ -57,8 +51,8 @@ const Experiment = () => {
             onDeleteCategoricalVariable={() => {}}
             addCategoricalVariable={() => {}}
             addValueVariable={() => {}}
-            categoricalVariables={[]}
-            valueVariables={[]}
+            categoricalVariables={experiment.categoricalVariables}
+            valueVariables={experiment.valueVariables}
           />
         </Stack>
         <Stack spacing={2} direction="row">
