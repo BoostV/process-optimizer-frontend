@@ -41,7 +41,7 @@ jobs:
         run: npm install
       
       - name: Build distribution
-        run: yarn build
+        run: npm run build
 
       - name: Run tests
         run: npm test
