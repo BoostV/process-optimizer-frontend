@@ -17,6 +17,8 @@
     "test": "npm run test -ws --if-present -- --run",
     "clean": "npx -y rimraf node_modules **/node_modules/",
     "start": "npm run dev --workspace @process-optimizer-frontend/sample-app",
+    "dev:app": "npm run dev --workspace @process-optimizer-frontend/sample-app",
+    "dev:ui": "npm run dev --workspace @process-optimizer-frontend/ui",
     "openapi": "npm run openapi --workspace @process-optimizer-frontend/api",
     "update-deps": "npx npm-check-updates -ws --root -i",
     "prepare": "husky install",
