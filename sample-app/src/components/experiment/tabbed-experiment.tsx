@@ -17,16 +17,16 @@ import {
   useExperiment,
   runExperiment,
   useSelector,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 import { useState } from 'react'
 import { LoadingExperiment } from './loading-experiment'
-import { LoadingButton, Plots } from '@process-optimizer-frontend/ui'
-import { saveObjectToLocalFile } from '@process-optimizer-frontend/core'
+import { LoadingButton, Plots } from '@boostv/process-optimizer-frontend-ui'
+import { saveObjectToLocalFile } from '@boostv/process-optimizer-frontend-core'
 import { useGlobal } from '@sample/context/global'
 import { ConfigurationTab } from './configurationTab'
 import { DataEntryTab } from './dataEntryTab'
 import { State } from '@sample/context/global'
-import { selectIsInitializing } from '@process-optimizer-frontend/core'
+import { selectIsInitializing } from '@boostv/process-optimizer-frontend-core'
 import { isUIBig } from '@sample/utility/ui-util'
 
 type SnackbarMessage = {

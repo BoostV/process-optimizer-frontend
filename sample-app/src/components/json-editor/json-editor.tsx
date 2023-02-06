@@ -8,12 +8,12 @@ import {
   Typography,
 } from '@mui/material'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { useExperiment } from '@process-optimizer-frontend/core'
+import { useExperiment } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './json-editor.style'
 import CloseIcon from '@mui/icons-material/Close'
 import { useGlobal } from '@sample/context/global'
-import { ExperimentType } from '@process-optimizer-frontend/core'
-import { errorMessage } from '@process-optimizer-frontend/core'
+import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
+import { errorMessage } from '@boostv/process-optimizer-frontend-core'
 
 type DisplayedResults = {
   id: string

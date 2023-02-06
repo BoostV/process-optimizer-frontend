@@ -1,5 +1,5 @@
 {
-  "name": "@process-optimizer-frontend/monorepo",
+  "name": "@boostv/process-optimizer-frontend-monorepo",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/BoostV/process-optimizer-frontend.git",
@@ -16,20 +16,21 @@
     "build": "npm run build -ws --if-present",
     "test": "npm run test -ws --if-present -- --run",
     "clean": "npx -y rimraf node_modules **/node_modules/",
-    "start": "npm run dev --workspace @process-optimizer-frontend/sample-app",
-    "dev:app": "npm run dev --workspace @process-optimizer-frontend/sample-app",
-    "dev:ui": "npm run dev --workspace @process-optimizer-frontend/ui",
-    "openapi": "npm run openapi --workspace @process-optimizer-frontend/api",
+    "start": "npm run dev --workspace @boostv/process-optimizer-frontend-sample-app",
+    "dev:app": "npm run dev --workspace @boostv/process-optimizer-frontend-sample-app",
+    "dev:ui": "npm run dev --workspace @boostv/process-optimizer-frontend-ui",
+    "openapi": "npm run openapi --workspace @boostv/process-optimizer-frontend-api",
     "update-deps": "npx npm-check-updates -ws --root -i",
     "prepare": "husky install",
     "formatAll": "prettier --write .",
-    "prettier": "prettier --check ."
+    "prettier": "prettier --check .",
+    "release": "changeset publish"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
-    "@process-optimizer-frontend/eslint-config": "1.0.0",
+    "@boostv/process-optimizer-frontend-eslint-config": "1.0.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "eslint": "^8.33.0",

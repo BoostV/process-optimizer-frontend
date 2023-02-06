@@ -1,4 +1,4 @@
-# @process-optimizer-frontend/ui
+# @boostv/process-optimizer-frontend-ui
 
 ## 1.0.0
 
@@ -6,5 +6,5 @@
 
 - First monorepo release
 - Updated dependencies
-  - @process-optimizer-frontend/plots@1.0.0
-  - @process-optimizer-frontend/core@1.0.0
+  - @boostv/process-optimizer-frontend-plots@1.0.0
+  - @boostv/process-optimizer-frontend-core@1.0.0

@@ -22,7 +22,7 @@ export default defineConfig({
         'react',
         'react-dom',
         'react-hook-form',
-        '@process-optimizer-frontend/core',
+        '@boostv/process-optimizer-frontend-core',
         '@mui/material',
       ],
     },

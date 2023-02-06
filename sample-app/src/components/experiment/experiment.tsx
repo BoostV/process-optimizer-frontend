@@ -17,16 +17,16 @@ import {
   LoadingButton,
   OptimizerConfigurator,
   DataPoints,
-} from '@process-optimizer-frontend/ui'
+} from '@boostv/process-optimizer-frontend-ui'
 import { Alert } from '@mui/material'
-import { saveObjectToLocalFile } from '@process-optimizer-frontend/core'
+import { saveObjectToLocalFile } from '@boostv/process-optimizer-frontend-core'
 import { useStyles } from './experiment.style'
 import {
   useExperiment,
   runExperiment,
   useSelector,
   selectDataPoints,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 import { useState } from 'react'
 import { LoadingExperiment } from './loading-experiment'
 import { ExperimentationGuide } from '@sample/components/result-data/experimentation-guide'
@@ -34,13 +34,13 @@ import { useGlobal } from '@sample/context/global'
 import { UISizeValue } from '@sample/context/global'
 import { getSize, isUIBig } from '@sample/utility/ui-util'
 import { AlertColor } from '@mui/material'
-import { selectIsInitializing } from '@process-optimizer-frontend/core'
+import { selectIsInitializing } from '@boostv/process-optimizer-frontend-core'
 import {
   CategoricalVariableType,
   DataEntry,
   OptimizerConfig,
   ValueVariableType,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 
 type SnackbarMessage = {
   message: string

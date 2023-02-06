@@ -1,5 +1,5 @@
 {
-  "name": "@process-optimizer-frontend/plots",
+  "name": "@boostv/process-optimizer-frontend-plots",
   "private": false,
   "version": "1.0.0",
   "description": "Plot components for for process optimizer frontend",

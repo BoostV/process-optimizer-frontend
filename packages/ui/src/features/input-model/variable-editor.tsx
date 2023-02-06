@@ -6,7 +6,7 @@ import useStyles from './variable-editor.style'
 import {
   CategoricalVariableType,
   ValueVariableType,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 
 type VariableEditorProps = {
   isAddVariableDisabled: boolean

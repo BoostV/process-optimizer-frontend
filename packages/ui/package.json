@@ -1,5 +1,5 @@
 {
-  "name": "@process-optimizer-frontend/ui",
+  "name": "@boostv/process-optimizer-frontend-ui",
   "private": true,
   "sideEffects": false,
   "version": "1.0.0",
@@ -22,10 +22,10 @@
   ],
   "type": "module",
   "types": "./dist/index.d.ts",
-  "module": "./dist/ui.js",
+  "module": "./dist/process-optimizer-frontend-ui.js",
   "exports": {
     ".": {
-      "import": "./dist/ui.js"
+      "import": "./dist/process-optimizer-frontend-ui.js"
     }
   },
   "scripts": {
@@ -36,12 +36,12 @@
     "prepublishOnly": "vite build"
   },
   "dependencies": {
-    "@process-optimizer-frontend/plots": "*"
+    "@boostv/process-optimizer-frontend-plots": "*"
   },
   "peerDependencies": {
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.7",
-    "@process-optimizer-frontend/core": "*",
+    "@boostv/process-optimizer-frontend-core": "*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.33.0",

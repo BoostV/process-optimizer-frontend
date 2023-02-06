@@ -1,4 +1,4 @@
-import { ExperimentDataInner as ExperimentData } from '@process-optimizer-frontend/api'
+import { ExperimentDataInner as ExperimentData } from '@boostv/process-optimizer-frontend-api'
 import {
   CategoricalVariableType,
   DataEntry,
