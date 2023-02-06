@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@mui/material'
-import { useExperiment } from '@process-optimizer-frontend/core'
+import { useExperiment } from '@boostv/process-optimizer-frontend-core'
 
 export default function DebugExperiment() {
   const { state } = useExperiment()

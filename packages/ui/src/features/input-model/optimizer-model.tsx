@@ -18,7 +18,7 @@ import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
 import {
   CategoricalVariableType,
   ValueVariableType,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 
 type OptimizerModelProps = {
   valueVariables: ValueVariableType[]

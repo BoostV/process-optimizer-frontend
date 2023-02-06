@@ -1,6 +1,6 @@
 import { Divider, Stack, TextField, Tooltip } from '@mui/material'
 import { ChangeEvent, FC } from 'react'
-import { ExperimentType } from '@process-optimizer-frontend/core'
+import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
   experiment: ExperimentType

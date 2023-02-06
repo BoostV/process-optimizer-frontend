@@ -1,15 +1,18 @@
-import { useSelector, useExperiment } from '@process-optimizer-frontend/core'
-import { TitleCard } from '@process-optimizer-frontend/ui'
-import { Suggestions } from '@process-optimizer-frontend/ui'
-import { SingleDataPoint } from '@process-optimizer-frontend/ui'
+import {
+  useSelector,
+  useExperiment,
+} from '@boostv/process-optimizer-frontend-core'
+import { TitleCard } from '@boostv/process-optimizer-frontend-ui'
+import { Suggestions } from '@boostv/process-optimizer-frontend-ui'
+import { SingleDataPoint } from '@boostv/process-optimizer-frontend-ui'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import { useGlobal } from '@sample/context/global'
 import { isUIBig } from '@sample/utility/ui-util'
 import useStyles from './experimentation-guide.style'
-import { NextExperiments } from '@process-optimizer-frontend/ui'
-import { InitializationProgress } from '@process-optimizer-frontend/ui'
-import { selectIsInitializing } from '@process-optimizer-frontend/core'
+import { NextExperiments } from '@boostv/process-optimizer-frontend-ui'
+import { InitializationProgress } from '@boostv/process-optimizer-frontend-ui'
+import { selectIsInitializing } from '@boostv/process-optimizer-frontend-core'
 
 interface ResultDataProps {
   nextValues: string[][]

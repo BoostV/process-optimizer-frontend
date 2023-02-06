@@ -1,17 +1,17 @@
 import { Grid } from '@mui/material'
-import { useExperiment } from '@process-optimizer-frontend/core'
+import { useExperiment } from '@boostv/process-optimizer-frontend-core'
 import { useGlobal, useSelector } from '@sample/context/global'
 import {
   OptimizerConfigurator,
   OptimizerModel,
   Details,
-} from '@process-optimizer-frontend/ui'
+} from '@boostv/process-optimizer-frontend-ui'
 import { selectAdvancedConfiguration } from '@sample/context/global/global-selectors'
 import {
   CategoricalVariableType,
   OptimizerConfig,
   ValueVariableType,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 
 export const ConfigurationTab = () => {
   const {

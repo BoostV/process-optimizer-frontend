@@ -1,5 +1,5 @@
 {
-  "name": "@process-optimizer-frontend/eslint-config",
+  "name": "@boostv/process-optimizer-frontend-eslint-config",
   "private": false,
   "version": "1.0.0",
   "description": "Common eslint rules for process optimizer frontend",

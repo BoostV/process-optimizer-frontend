@@ -1,4 +1,4 @@
-import { Info } from '@process-optimizer-frontend/core'
+import { Info } from '@boostv/process-optimizer-frontend-core'
 import { TextField } from '@mui/material'
 import { TitleCard } from './title-card/title-card'
 

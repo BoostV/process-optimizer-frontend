@@ -8,15 +8,15 @@ import useStyles from './data-points.style'
 import UploadCSVButton from './upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
 import { TableDataRow } from '../core/editable-table'
-import { saveCSVToLocalFile } from '@process-optimizer-frontend/core'
-import { dataPointsToCSV } from '@process-optimizer-frontend/core'
+import { saveCSVToLocalFile } from '@boostv/process-optimizer-frontend-core'
+import { dataPointsToCSV } from '@boostv/process-optimizer-frontend-core'
 import {
   CategoricalVariableType,
   DataEntry,
   DataPointTypeValue,
   ScoreVariableType,
   ValueVariableType,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 
 type DataPointProps = {
   experimentId: string

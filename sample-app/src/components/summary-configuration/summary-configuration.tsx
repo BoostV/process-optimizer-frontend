@@ -16,7 +16,7 @@ import {
 import LensIcon from '@mui/icons-material/Lens'
 import Settings from '@mui/icons-material/Settings'
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
-import { useExperiment } from '@process-optimizer-frontend/core'
+import { useExperiment } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './summary-configuration.style'
 import { useGlobal } from '@sample/context/global'
 

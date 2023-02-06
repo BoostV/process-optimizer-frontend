@@ -1,4 +1,4 @@
-import { ExperimentProvider } from '@process-optimizer-frontend/core'
+import { ExperimentProvider } from '@boostv/process-optimizer-frontend-core'
 import TabbedExperiment from '@sample/components/experiment/tabbed-experiment'
 import Experiment from '@sample/components/experiment/experiment'
 import DebugExperiment from '@sample/components/experiment/debug-experiment'
