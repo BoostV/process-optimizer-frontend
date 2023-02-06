@@ -9,21 +9,25 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import Layout from '@/components/layout/layout'
+import Layout from '@sample/components/layout/layout'
 import { Alert } from '@mui/material'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { useStyles } from './experiment.style'
-import { useExperiment, runExperiment, useSelector } from '@/context/experiment'
+import {
+  useExperiment,
+  runExperiment,
+  useSelector,
+} from '@process-optimizer-frontend/core'
 import { useState } from 'react'
-import LoadingExperiment from './loading-experiment'
-import LoadingButton from '@/components/loading-button/loading-button'
-import { Plots } from '@/components/plots/plots'
-import { saveObjectToLocalFile } from '@/utility/save-to-local-file'
-import { useGlobal } from '@/context/global'
+import { LoadingExperiment } from './loading-experiment'
+import { LoadingButton, Plots } from '@process-optimizer-frontend/ui'
+import { saveObjectToLocalFile } from '@process-optimizer-frontend/core'
+import { useGlobal } from '@sample/context/global'
 import { ConfigurationTab } from './configurationTab'
 import { DataEntryTab } from './dataEntryTab'
-import { State } from '@/context/global'
-import { selectIsInitializing } from '@/context/experiment'
+import { State } from '@sample/context/global'
+import { selectIsInitializing } from '@process-optimizer-frontend/core'
+import { isUIBig } from '@sample/utility/ui-util'
 
 type SnackbarMessage = {
   message: string
@@ -38,7 +42,7 @@ const TabbedExperiment = () => {
     loading,
   } = useExperiment()
   const {
-    state: { focus, debug },
+    state: { focus, debug, uiSizes },
     dispatch: globalDispatch,
   } = useGlobal()
 
@@ -168,7 +172,16 @@ const TabbedExperiment = () => {
             <DataEntryTab />
           </TabPanel>
           <TabPanel value="results">
-            <Plots />
+            <Plots
+              isUIBig={isUIBig(uiSizes, 'plots')}
+              experiment={experiment}
+              onSizeToggle={() =>
+                globalDispatch({
+                  type: 'toggleUISize',
+                  payload: 'plots',
+                })
+              }
+            />
           </TabPanel>
         </Box>
       </TabContext>

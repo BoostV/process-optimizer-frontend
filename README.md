@@ -2,9 +2,9 @@
 
 [![CI](https://github.com/BoostV/process-optimizer-frontend/actions/workflows/main.yml/badge.svg?branch=)](https://github.com/BoostV/process-optimizer-frontend/actions/workflows/main.yml)
 [![CodeQL](https://github.com/BoostV/process-optimizer-frontend/actions/workflows/codeql-analysis.yml/badge.svg?branch=)](https://github.com/BoostV/process-optimizer-frontend/actions/workflows/codeql-analysis.yml)
-[![Build and publish Docker image](https://github.com/BoostV/process-optimizer-frontend/actions/workflows/github-actions-docker.yaml/badge.svg?branch=)](https://github.com/BoostV/process-optimizer-frontend/actions/workflows/github-actions-docker.yaml)
 
-This project implements a web based frontend for the statistical tool [ProcessOptimizer](https://github.com/novonordisk-research/ProcessOptimizer). It is meant to be used in conjunction with the REST base API for ProcessOptimizer realised in [process-optimizer-api](https://github.com/BoostV/process-optimizer-api).
+This project implements a web based frontend for the statistical tool [ProcessOptimizer](https://github.com/novonordisk-research/ProcessOptimizer).  
+It is meant to be used in conjunction with the REST base API for ProcessOptimizer realised in [process-optimizer-api](https://github.com/BoostV/process-optimizer-api).
 
 ## Getting Started
 
@@ -12,22 +12,24 @@ This project implements a web based frontend for the statistical tool [ProcessOp
 
 If you are using Visual Studio Code (VSCode) you can use the [development container](https://github.com/Microsoft/vscode-dev-containers) definition included here. Just check out the project and let VSCode automatically generate a development environment. The container will start an instance of the [process-optimizer-api](https://github.com/BoostV/process-optimizer-api) based on the main branch in a separate Docker container.
 
-### Manual setup
+### Prepare the development environment
+
+The repository is structured as a mono repo using the [workspaces](https://docs.npmjs.com/cli/v9/using-npm/workspaces) feature of NPM.
 
 1. Initialize the project by installing dependencies
 
 ```bash
-yarn install
-yarn bootstrap
+npm install
+npm run bootstrap
 ```
 
 2. Start a development server that automatically monitors for changed files and reloads the application in your browser
 
 ```bash
-yarn dev
+npm run dev:app
 ```
 
-3. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open [http://localhost:5173](http://localhost:5173) with your browser to see the result.
 
 ## Build and run production docker image
 
@@ -46,7 +48,7 @@ docker run -d -p3000:3000 --env API_URL=http://localhost:9090/v1.0 ghcr.io/boost
 
 When the process-optimizer-api changes, adjust the API version in the "openapi" script in package.json run the following command and commit the resulting changes. Please note that this step requires Java to be installed.
 
-    yarn openapi
+    npm run openapi
 
 ## Updating the change log
 

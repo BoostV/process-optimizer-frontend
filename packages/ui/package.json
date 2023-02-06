@@ -1,0 +1,69 @@
+{
+  "name": "@process-optimizer-frontend/ui",
+  "private": true,
+  "sideEffects": false,
+  "version": "1.0.0",
+  "description": "UI library for process optimizer frontend",
+  "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
+  "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
+  "license": "BSD-3-Clause",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BoostV/process-optimizer-frontend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BoostV/process-optimizer-frontend/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/ui.js",
+  "exports": {
+    ".": {
+      "import": "./dist/ui.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "clean": "rimraf ./dist",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest",
+    "prepublishOnly": "vite build"
+  },
+  "dependencies": {
+    "@process-optimizer-frontend/plots": "*"
+  },
+  "peerDependencies": {
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.7",
+    "@process-optimizer-frontend/core": "*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.33.0",
+    "tss-react": "^4.6.0"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^8.20.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/node": "^18.11.19",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@types/rimraf": "^3.0.2",
+    "@types/uuid": "^9.0.0",
+    "@vitejs/plugin-react": "^3.1.0",
+    "jsdom": "^21.1.0",
+    "node-mocks-http": "^1.12.1",
+    "react-devtools": "^4.27.1",
+    "rimraf": "^4.1.2",
+    "typescript": "^4.9.5",
+    "vite": "^4.1.1",
+    "vitest": "^0.28.4"
+  }
+}

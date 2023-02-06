@@ -9,36 +9,38 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import Layout from '@/components/layout/layout'
-import OptimizerModel from '@/components/input-model/optimizer-model'
-import OptimizerConfigurator from '@/components/optimizer-configurator'
+import Layout from '@sample/components/layout/layout'
+import {
+  Plots,
+  Details,
+  OptimizerModel,
+  LoadingButton,
+  OptimizerConfigurator,
+  DataPoints,
+} from '@process-optimizer-frontend/ui'
 import { Alert } from '@mui/material'
-import Details from '@/components/details'
-import DataPoints from '@/components/data-points/data-points'
+import { saveObjectToLocalFile } from '@process-optimizer-frontend/core'
 import { useStyles } from './experiment.style'
 import {
   useExperiment,
   runExperiment,
   useSelector,
   selectDataPoints,
-} from '@/context/experiment'
+} from '@process-optimizer-frontend/core'
 import { useState } from 'react'
-import {
-  ValueVariableType,
-  CategoricalVariableType,
-  OptimizerConfig,
-  DataEntry,
-} from '@/types/common'
-import LoadingExperiment from './loading-experiment'
-import { ExperimentationGuide } from '@/components/result-data/experimentation-guide'
-import LoadingButton from '@/components/loading-button/loading-button'
-import { Plots } from '@/components/plots/plots'
-import { saveObjectToLocalFile } from '@/utility/save-to-local-file'
-import { useGlobal } from '@/context/global'
-import { UISizeValue } from '@/context/global'
-import { getSize } from '@/utility/ui-util'
+import { LoadingExperiment } from './loading-experiment'
+import { ExperimentationGuide } from '@sample/components/result-data/experimentation-guide'
+import { useGlobal } from '@sample/context/global'
+import { UISizeValue } from '@sample/context/global'
+import { getSize, isUIBig } from '@sample/utility/ui-util'
 import { AlertColor } from '@mui/material'
-import { selectIsInitializing } from '@/context/experiment'
+import { selectIsInitializing } from '@process-optimizer-frontend/core'
+import {
+  CategoricalVariableType,
+  DataEntry,
+  OptimizerConfig,
+  ValueVariableType,
+} from '@process-optimizer-frontend/core'
 
 type SnackbarMessage = {
   message: string
@@ -57,7 +59,9 @@ const LegacyExperiment = () => {
       debug,
       uiSizes,
       flags: { advancedConfiguration },
+      dataPointsNewestFirst,
     },
+    dispatch: globalDispatch,
   } = useGlobal()
 
   const isInitializing = useSelector(selectIsInitializing)
@@ -245,6 +249,7 @@ const LegacyExperiment = () => {
                     <Grid item xs={12}>
                       <OptimizerConfigurator
                         config={experiment.optimizerConfig}
+                        debug={debug}
                         onConfigUpdated={(config: OptimizerConfig) =>
                           dispatch({
                             type: 'updateConfiguration',
@@ -286,10 +291,18 @@ const LegacyExperiment = () => {
                       </Grid>
                       <Grid item xs={12}>
                         <DataPoints
+                          experimentId={experiment.id}
                           valueVariables={experiment.valueVariables}
                           categoricalVariables={experiment.categoricalVariables}
                           scoreVariables={experiment.scoreVariables}
                           dataPoints={dataPoints}
+                          newestFirst={dataPointsNewestFirst}
+                          onToggleNewestFirst={() =>
+                            globalDispatch({
+                              type: 'setDataPointsNewestFirst',
+                              payload: !dataPointsNewestFirst,
+                            })
+                          }
                           onUpdateDataPoints={(dataPoints: DataEntry[]) =>
                             dispatch({
                               type: 'updateDataPoints',
@@ -305,7 +318,16 @@ const LegacyExperiment = () => {
                     xs={UISizeValue.Big}
                     xl={getSize(uiSizes, 'plots')}
                   >
-                    <Plots />
+                    <Plots
+                      isUIBig={isUIBig(uiSizes, 'plots')}
+                      experiment={experiment}
+                      onSizeToggle={() =>
+                        globalDispatch({
+                          type: 'toggleUISize',
+                          payload: 'plots',
+                        })
+                      }
+                    />
                   </Grid>
                 </Grid>
               </Grid>

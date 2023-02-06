@@ -1,9 +1,10 @@
-import { Theme, ThemeProvider } from '@mui/material'
+import { Theme, ThemeProvider } from '@mui/material/styles'
 import * as React from 'react'
-import ThemeSelector from '@/components/theme-selector/theme-selector'
+import ThemeSelector from '@sample/components/theme-selector/theme-selector'
 import { useLocalStorageReducer } from '@process-optimizer-frontend/core'
 import { State, Dispatch, initialState, reducer } from './global-reducer'
-import { theme, themes, CustomTheme } from '@/theme/theme'
+import { theme, themes, CustomTheme } from '@sample/theme/theme'
+import { ProcessOptimizerThemeProvider } from '@process-optimizer-frontend/ui'
 
 const GlobalContext = React.createContext<
   { state: State; dispatch: Dispatch } | undefined
@@ -44,7 +45,9 @@ export function GlobalStateProvider({ children }: GlobalStateProviderProps) {
   return (
     <GlobalContext.Provider value={{ state, dispatch }}>
       <ThemeProvider theme={loadTheme()}>
-        {children}
+        <ProcessOptimizerThemeProvider theme={loadTheme()}>
+          {children}
+        </ProcessOptimizerThemeProvider>
         <ThemeSelector />
       </ThemeProvider>
     </GlobalContext.Provider>

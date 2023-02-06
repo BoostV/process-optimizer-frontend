@@ -1,10 +1,10 @@
 import CssBaseline from '@mui/material/CssBaseline'
-import { GlobalStateProvider } from '@/context/global'
+import { GlobalStateProvider } from '@sample/context/global'
 import ExperimentContainer from './experiment-container'
 import createEmotionCache from './createEmotionCache'
 import { CacheProvider } from '@emotion/react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from '@/components/home/home'
+import Home from '@sample/components/home/home'
 
 const router = createBrowserRouter(
   [

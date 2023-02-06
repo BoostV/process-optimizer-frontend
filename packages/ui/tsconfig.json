@@ -1,0 +1,12 @@
+{
+  "extends": "../../scaffold/tsconfig.ui-lib.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": "src",
+    "paths": {
+      "@ui/*": ["*"]
+    }
+  },
+  "include": ["./src", "./src/**/*.json", "../core/sample-data"]
+}

@@ -1,15 +1,15 @@
-import { useSelector } from '@/context/experiment'
-import { Suggestions } from './suggestions'
-import { TitleCard } from '@/components/title-card/title-card'
+import { useSelector, useExperiment } from '@process-optimizer-frontend/core'
+import { TitleCard } from '@process-optimizer-frontend/ui'
+import { Suggestions } from '@process-optimizer-frontend/ui'
+import { SingleDataPoint } from '@process-optimizer-frontend/ui'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
-import { useGlobal } from '@/context/global'
-import { isUIBig } from '@/utility/ui-util'
+import { useGlobal } from '@sample/context/global'
+import { isUIBig } from '@sample/utility/ui-util'
 import useStyles from './experimentation-guide.style'
-import { SingleDataPoint } from './single-data-point'
-import { NextExperiments } from './next-experiments'
-import { InitializationProgress } from './initialization-progress'
-import { selectIsInitializing } from '@/context/experiment'
+import { NextExperiments } from '@process-optimizer-frontend/ui'
+import { InitializationProgress } from '@process-optimizer-frontend/ui'
+import { selectIsInitializing } from '@process-optimizer-frontend/core'
 
 interface ResultDataProps {
   nextValues: string[][]
@@ -32,10 +32,22 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     state: { uiSizes },
     dispatch,
   } = useGlobal()
+  const {
+    state: { experiment },
+    dispatch: dispatchExperiment,
+  } = useExperiment()
 
   const isInitializing = useSelector(selectIsInitializing)
   const summary = isInitializing ? (
-    <InitializationProgress />
+    <InitializationProgress
+      experiment={experiment}
+      onInitialPointsChange={initialPoints =>
+        dispatchExperiment({
+          type: 'updateConfiguration',
+          payload: { ...experiment.optimizerConfig, initialPoints },
+        })
+      }
+    />
   ) : expectedMinimum && expectedMinimum.length > 0 ? (
     <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
       <SingleDataPoint
@@ -83,7 +95,26 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       }
     >
       <Box p={2}>
-        {!isInitializing && <NextExperiments />}
+        {!isInitializing && (
+          <NextExperiments
+            experiment={experiment}
+            onSuggestionChange={suggestionCount =>
+              dispatchExperiment({
+                type: 'updateSuggestionCount',
+                payload: suggestionCount,
+              })
+            }
+            onXiChange={xi =>
+              dispatchExperiment({
+                type: 'updateConfiguration',
+                payload: {
+                  ...experiment.optimizerConfig,
+                  xi,
+                },
+              })
+            }
+          />
+        )}
         {!nextValues ||
           (nextValues.length === 0 && (
             <div>Please run experiment to calculate suggestions</div>

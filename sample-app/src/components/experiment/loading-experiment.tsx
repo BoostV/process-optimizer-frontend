@@ -6,9 +6,9 @@ import {
   Typography,
 } from '@mui/material'
 import useStyles from './loading-experiment.style'
-import Layout from '@/components/layout/layout'
+import Layout from '@sample/components/layout/layout'
 
-export default function LoadingExperiment() {
+export function LoadingExperiment() {
   const { classes } = useStyles()
   return (
     <Layout>

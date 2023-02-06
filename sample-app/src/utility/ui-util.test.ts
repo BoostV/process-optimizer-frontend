@@ -1,4 +1,4 @@
-import { UISize, UISizeValue } from '@/context/global'
+import { UISize, UISizeValue } from '@sample/context/global'
 import { getSize, isUIBig, isUISmall } from './ui-util'
 
 const uiSizes: UISize[] = [

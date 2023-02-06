@@ -1,4 +1,4 @@
-import { initialState, State } from '@/context/global'
+import { initialState, State } from '@sample/context/global'
 import { selectDebug, selectAdvancedConfiguration } from './global-selectors'
 
 describe('Experiment selectors', () => {

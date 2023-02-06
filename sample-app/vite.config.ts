@@ -26,7 +26,7 @@ export default defineConfig({
   },
   base: '/',
   resolve: {
-    alias: [{ find: '@', replacement: resolve(__dirname, './src') }],
+    alias: [{ find: '@sample', replacement: resolve(__dirname, './src') }],
   },
   test: {
     coverage: {

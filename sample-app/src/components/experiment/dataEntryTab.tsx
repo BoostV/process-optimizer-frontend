@@ -3,16 +3,21 @@ import {
   selectDataPoints,
   useExperiment,
   useSelector,
-} from '@/context/experiment'
-import { DataEntry } from '@/types/common'
-import DataPoints from '@/components/data-points/data-points'
-import { ExperimentationGuide } from '@/components/result-data/experimentation-guide'
+} from '@process-optimizer-frontend/core'
+import { ExperimentationGuide } from '@sample/components/result-data/experimentation-guide'
+import { DataEntry } from '@process-optimizer-frontend/core'
+import { useGlobal } from '@sample/context/global'
+import { DataPoints } from '@process-optimizer-frontend/ui'
 
 export const DataEntryTab = () => {
   const {
     state: { experiment },
     dispatch,
   } = useExperiment()
+  const {
+    dispatch: globalDispatch,
+    state: { dataPointsNewestFirst },
+  } = useGlobal()
 
   const dataPoints: DataEntry[] = useSelector(selectDataPoints)
 
@@ -20,7 +25,7 @@ export const DataEntryTab = () => {
   const categoricalVariables = experiment.categoricalVariables
 
   const headers = valueVariables
-    .map(it => it.name)
+    .map((it: any) => it.name)
     .concat(categoricalVariables.map(it => it.name))
 
   const nextValues: any[][] =
@@ -44,10 +49,18 @@ export const DataEntryTab = () => {
 
       <Grid item xs={12}>
         <DataPoints
+          experimentId={experiment.id}
           valueVariables={experiment.valueVariables}
           categoricalVariables={experiment.categoricalVariables}
           scoreVariables={experiment.scoreVariables}
           dataPoints={dataPoints}
+          newestFirst={dataPointsNewestFirst}
+          onToggleNewestFirst={() =>
+            globalDispatch({
+              type: 'setDataPointsNewestFirst',
+              payload: !dataPointsNewestFirst,
+            })
+          }
           onUpdateDataPoints={dataPoints =>
             dispatch({
               type: 'updateDataPoints',

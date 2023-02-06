@@ -1,4 +1,4 @@
-import { createTheme, Theme } from '@mui/material'
+import { createTheme, Theme } from '@mui/material/styles'
 import { cyan, grey, teal } from '@mui/material/colors'
 
 declare module '@mui/material/styles/createPalette' {
@@ -74,11 +74,6 @@ type CustomColours = {
   backSecondary: string
   textInsideBox: string
   transparentBox: string
-}
-
-export const tableBorder = '1px solid rgba(224, 224, 224, 1)'
-export const colors = {
-  silver: '#898989',
 }
 
 const createCustomTheme = (custom: CustomColours): Theme => {

@@ -1,4 +1,4 @@
-import { State } from '@/context/global'
+import { State } from '@sample/context/global'
 
 export const selectDebug = (state: State) => state.debug
 

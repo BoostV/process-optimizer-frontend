@@ -23,9 +23,10 @@
     "noUncheckedIndexedAccess": true,
     "strictNullChecks": true,
     "outDir": "dist",
+    "types": ["vitest/globals"],
     "declaration": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@plots/*": ["./src/*"]
     }
   },
   "include": ["src"]

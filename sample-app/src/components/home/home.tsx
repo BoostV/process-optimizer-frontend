@@ -13,17 +13,17 @@ import {
 } from '@mui/material'
 import { MouseEvent, useCallback, useReducer, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import Layout from '@/components/layout/layout'
+import Layout from '@sample/components/layout/layout'
 import useStyles from './home.style'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { ExperimentType } from '@/types/common'
-import { useGlobal } from '@/context/global'
+import { useGlobal } from '@sample/context/global'
 import { v4 as uuid } from 'uuid'
 import { reducer } from './home-reducer'
-import { CreateOrOverwriteDialog } from '@/components/create-or-overwrite-dialog/create-or-overwrite-dialog'
+import { CreateOrOverwriteDialog } from './create-or-overwrite-dialog'
 import { useNavigate } from 'react-router-dom'
+import { ExperimentType } from '@process-optimizer-frontend/core'
 
 type UploadMessage = {
   message: string
