@@ -1,6 +1,6 @@
 {
   "name": "@boostv/process-optimizer-frontend-ui",
-  "private": true,
+  "private": false,
   "sideEffects": false,
   "version": "1.0.0",
   "description": "UI library for process optimizer frontend",

@@ -1,6 +1,6 @@
 {
   "name": "@boostv/process-optimizer-frontend-core",
-  "private": true,
+  "private": false,
   "sideEffects": false,
   "version": "1.0.0",
   "description": "Core library for process optimizer frontend",
