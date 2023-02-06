@@ -17,6 +17,7 @@ import {
   LoadingButton,
   OptimizerConfigurator,
   DataPoints,
+  ExperimentationGuide,
 } from '@process-optimizer-frontend/ui'
 import { Alert } from '@mui/material'
 import { saveObjectToLocalFile } from '@process-optimizer-frontend/core'
@@ -29,7 +30,6 @@ import {
 } from '@process-optimizer-frontend/core'
 import { useState } from 'react'
 import { LoadingExperiment } from './loading-experiment'
-import { ExperimentationGuide } from '@sample/components/result-data/experimentation-guide'
 import { useGlobal } from '@sample/context/global'
 import { UISizeValue } from '@sample/context/global'
 import { getSize, isUIBig } from '@sample/utility/ui-util'
@@ -108,19 +108,6 @@ const LegacyExperiment = () => {
 
   const valueVariables = experiment.valueVariables
   const categoricalVariables = experiment.categoricalVariables
-
-  const headers = valueVariables
-    .map(it => it.name)
-    .concat(categoricalVariables.map(it => it.name))
-
-  const nextValues: any[][] =
-    experiment.results.next && Array.isArray(experiment.results.next[0])
-      ? (experiment.results.next as unknown as any[][])
-      : experiment.results.next
-      ? [experiment.results.next]
-      : []
-
-  const expectedMinimum: any[][] = experiment.results.expectedMinimum
 
   if (loading) {
     return <LoadingExperiment />
@@ -278,9 +265,13 @@ const LegacyExperiment = () => {
                     >
                       <Grid item xs={12}>
                         <ExperimentationGuide
-                          nextValues={nextValues}
-                          headers={headers}
-                          expectedMinimum={expectedMinimum}
+                          isUIBig={isUIBig(uiSizes, 'result-data')}
+                          toggleUISize={() =>
+                            globalDispatch({
+                              type: 'toggleUISize',
+                              payload: 'result-data',
+                            })
+                          }
                           onMouseEnterExpand={() =>
                             setHighlightNextExperiments(true)
                           }

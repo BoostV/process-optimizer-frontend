@@ -1,43 +1,47 @@
-import { useSelector, useExperiment } from '@process-optimizer-frontend/core'
-import { TitleCard } from '@process-optimizer-frontend/ui'
-import { Suggestions } from '@process-optimizer-frontend/ui'
-import { SingleDataPoint } from '@process-optimizer-frontend/ui'
+import {
+  useSelector,
+  useExperiment,
+  selectExpectedMinimum,
+  selectVariableNames,
+  selectNextExperimentValues,
+} from '@process-optimizer-frontend/core'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
-import { useGlobal } from '@sample/context/global'
-import { isUIBig } from '@sample/utility/ui-util'
 import useStyles from './experimentation-guide.style'
-import { NextExperiments } from '@process-optimizer-frontend/ui'
-import { InitializationProgress } from '@process-optimizer-frontend/ui'
 import { selectIsInitializing } from '@process-optimizer-frontend/core'
+import {
+  InitializationProgress,
+  NextExperiments,
+  SingleDataPoint,
+  Suggestions,
+  TitleCard,
+} from '@ui/features'
 
 interface ResultDataProps {
-  nextValues: string[][]
-  headers: string[]
-  expectedMinimum?: any[][]
+  isUIBig?: boolean
+  toggleUISize?: () => void
   onMouseEnterExpand?: () => void
   onMouseLeaveExpand?: () => void
 }
 
 export const ExperimentationGuide = (props: ResultDataProps) => {
   const {
-    nextValues,
-    headers,
-    expectedMinimum,
+    isUIBig = false,
+    toggleUISize = () => {},
     onMouseEnterExpand,
     onMouseLeaveExpand,
   } = props
   const { classes } = useStyles()
   const {
-    state: { uiSizes },
-    dispatch,
-  } = useGlobal()
-  const {
     state: { experiment },
     dispatch: dispatchExperiment,
   } = useExperiment()
 
+  const nextValues = useSelector(selectNextExperimentValues)
+  const headers = useSelector(selectVariableNames)
+  const expectedMinimum = useSelector(selectExpectedMinimum)
   const isInitializing = useSelector(selectIsInitializing)
+
   const summary = isInitializing ? (
     <InitializationProgress
       experiment={experiment}
@@ -68,19 +72,14 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           <Hidden xlDown>
             <Tooltip
               title={
-                (isUIBig(uiSizes, 'result-data') ? 'Collapse' : 'Expand') +
+                (isUIBig ? 'Collapse' : 'Expand') +
                 " 'Result data' and 'Data points'"
               }
             >
               <IconButton
                 size="small"
                 className={classes.titleButton}
-                onClick={() =>
-                  dispatch({
-                    type: 'toggleUISize',
-                    payload: 'result-data',
-                  })
-                }
+                onClick={toggleUISize}
                 onMouseEnter={() => onMouseEnterExpand?.()}
                 onMouseLeave={() => onMouseLeaveExpand?.()}
               >

@@ -10,3 +10,22 @@ export const selectIsInitializing = (state: State) =>
 
 export const selectDataPoints = (state: State) =>
   selectExperiment(state).dataPoints
+
+export const selectExpectedMinimum = (state: State) =>
+  selectExperiment(state).results.expectedMinimum
+
+export const selectNextExperimentValues = (state: State) => {
+  const experiment = selectExperiment(state)
+  return experiment.results.next && Array.isArray(experiment.results.next[0])
+    ? (experiment.results.next as unknown as any[][])
+    : experiment.results.next
+    ? [experiment.results.next]
+    : []
+}
+
+export const selectVariableNames = (state: State): string[] => {
+  const experiment = selectExperiment(state)
+  return experiment.valueVariables
+    .map(v => v.name)
+    .concat(experiment.categoricalVariables.map(c => c.name))
+}

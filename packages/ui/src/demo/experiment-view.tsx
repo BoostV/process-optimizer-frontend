@@ -6,9 +6,8 @@ import {
   useExperiment,
   useSelector,
 } from '@process-optimizer-frontend/core'
-
 import catapult from '@ui/testing/sample-data/catapult.json'
-import { DataPoints, Plots } from '..'
+import { DataPoints, ExperimentationGuide, Plots } from '..'
 import { OptimizerConfigurator } from '../features/experiment'
 import { OptimizerModel } from '../features/input-model'
 
@@ -54,6 +53,9 @@ const Experiment = () => {
             categoricalVariables={experiment.categoricalVariables}
             valueVariables={experiment.valueVariables}
           />
+        </Stack>
+        <Stack spacing={2} direction="row">
+          <ExperimentationGuide />
         </Stack>
         <Stack spacing={2} direction="row">
           <Plots
