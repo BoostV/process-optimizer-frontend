@@ -1,6 +1,6 @@
 # @process-optimizer-frontend/sample-app
 
-## 1.0.0
+## 1.7.0
 
 ### Major Changes
 
