@@ -52,12 +52,11 @@ When the process-optimizer-api changes, adjust the API version in the "openapi" 
 
 ## Updating the change log
 
-In order to keep the overhead of maintaining the change log as low as possible this project use a tool to automatically generate
-as much of the change log as possible.
+When you create significant changes that need to be noted in the changelog please run the command
 
-Before creating a new release please run the following command inside a clean working directory and adjust the resulting CHANGELOG.md file to reflect the current state of the repository.
-
-    docker run -it --rm -v "$(pwd)":/usr/local/src/your-app githubchangeloggenerator/github-changelog-generator --user BoostV --project process-optimizer-frontend
+```bash
+npx changeset
+```
 
 ## Contributing
 
