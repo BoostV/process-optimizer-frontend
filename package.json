@@ -24,7 +24,7 @@
     "prepare": "husky install",
     "formatAll": "prettier --write .",
     "prettier": "prettier --check .",
-    "release": "changeset publish"
+    "release": "npm run build && changeset publish"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
