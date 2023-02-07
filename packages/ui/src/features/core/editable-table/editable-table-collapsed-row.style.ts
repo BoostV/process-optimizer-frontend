@@ -17,9 +17,6 @@ export const useStyles = makeStyles()(() => ({
     border: 'none',
     borderTop: tableBorder,
   },
-  rowDisabled: {
-    opacity: 0.25,
-  },
   row: {
     '&:hover': {
       background: '#fdfdfd',

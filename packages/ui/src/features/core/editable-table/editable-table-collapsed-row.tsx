@@ -26,9 +26,7 @@ export const EditableTableCollapsedRow = ({
   const { classes } = useStyles()
 
   return (
-    <TableRow
-      className={[classes.row, disabled && classes.rowDisabled].join(' ')}
-    >
+    <TableRow className={classes.row}>
       {tableRow.isNew ? (
         <>
           <TableCell className={classes.emptyCell} />
@@ -48,7 +46,14 @@ export const EditableTableCollapsedRow = ({
       ) : (
         <>
           <TableCell className={classes.emptyCell} />
-          <TableCell className={classes.cell}>{rowId}</TableCell>
+          <TableCell
+            className={classes.cell}
+            style={{
+              opacity: disabled ? 0.25 : 1,
+            }}
+          >
+            {rowId}
+          </TableCell>
           {tableRow.dataPoints.map((item, itemIndex) => (
             <EditableTableCell
               key={'editablecell' + itemIndex}
@@ -56,6 +61,9 @@ export const EditableTableCollapsedRow = ({
               isEditMode={false}
               options={item.options}
               tooltip={item.tooltip}
+              style={{
+                opacity: disabled ? 0.25 : 1,
+              }}
             />
           ))}
           <TableCell className={classes.editCell}>
