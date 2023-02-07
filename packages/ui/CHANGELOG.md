@@ -1,5 +1,11 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 1.0.2
+
+### Patch Changes
+
+- 4966eef: Add remaining theme libraries
+
 ## 1.0.1
 
 ### Patch Changes
