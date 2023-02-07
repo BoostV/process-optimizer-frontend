@@ -7,7 +7,7 @@ import { validation } from '@ui/common/forms'
 import {
   ValueVariableInputType,
   ValueVariableType,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 import FormInputText from '@ui/common/forms/form-input'
 
 type ValueVariableProps = {

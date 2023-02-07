@@ -23,7 +23,7 @@ import { v4 as uuid } from 'uuid'
 import { reducer } from './home-reducer'
 import { CreateOrOverwriteDialog } from './create-or-overwrite-dialog'
 import { useNavigate } from 'react-router-dom'
-import { ExperimentType } from '@process-optimizer-frontend/core'
+import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
 
 type UploadMessage = {
   message: string

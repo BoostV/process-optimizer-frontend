@@ -3,13 +3,13 @@ import {
   selectDataPoints,
   useExperiment,
   useSelector,
-} from '@process-optimizer-frontend/core'
-import { DataEntry } from '@process-optimizer-frontend/core'
+  DataEntry,
+} from '@boostv/process-optimizer-frontend-core'
 import { useGlobal } from '@sample/context/global'
 import {
   DataPoints,
   ExperimentationGuide,
-} from '@process-optimizer-frontend/ui'
+} from '@boostv/process-optimizer-frontend-ui'
 
 export const DataEntryTab = () => {
   const {

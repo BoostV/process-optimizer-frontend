@@ -4,9 +4,9 @@ import {
   CombinedVariableType,
   DataEntry,
   ValueVariableType,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 import produce from 'immer'
-import { assertUnreachable } from '@process-optimizer-frontend/core'
+import { assertUnreachable } from '@boostv/process-optimizer-frontend-core'
 
 interface EditRow {
   row: TableDataRow

@@ -6,7 +6,8 @@ import {
   useExperiment,
   useSelector,
   DataEntry,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
+
 import catapult from '@ui/testing/sample-data/catapult.json'
 import { DataPoints, ExperimentationGuide, Plots } from '..'
 import { OptimizerConfigurator } from '../features/experiment'

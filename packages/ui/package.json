@@ -1,8 +1,8 @@
 {
-  "name": "@process-optimizer-frontend/ui",
-  "private": true,
+  "name": "@boostv/process-optimizer-frontend-ui",
+  "private": false,
   "sideEffects": false,
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "UI library for process optimizer frontend",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
@@ -22,10 +22,10 @@
   ],
   "type": "module",
   "types": "./dist/index.d.ts",
-  "module": "./dist/ui.js",
+  "module": "./dist/process-optimizer-frontend-ui.js",
   "exports": {
     ".": {
-      "import": "./dist/ui.js"
+      "import": "./dist/process-optimizer-frontend-ui.js"
     }
   },
   "scripts": {
@@ -36,16 +36,18 @@
     "prepublishOnly": "vite build"
   },
   "dependencies": {
-    "@process-optimizer-frontend/plots": "*"
-  },
-  "peerDependencies": {
+    "@boostv/process-optimizer-frontend-core": "*",
+    "@boostv/process-optimizer-frontend-plots": "*",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.7",
-    "@process-optimizer-frontend/core": "*",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "tss-react": "^4.6.0",
+    "react-hook-form": "^7.33.0"
+  },
+  "peerDependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-hook-form": "^7.33.0",
-    "tss-react": "^4.6.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^8.20.0",

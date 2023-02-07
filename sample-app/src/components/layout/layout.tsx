@@ -11,7 +11,7 @@ import useStyles from './layout.style'
 import { useGlobal } from '@sample/context/global'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { VersionInfo } from '@process-optimizer-frontend/core'
+import { VersionInfo } from '@boostv/process-optimizer-frontend-core'
 
 interface Props {
   children: React.ReactNode

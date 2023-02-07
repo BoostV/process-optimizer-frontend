@@ -18,29 +18,27 @@ import {
   OptimizerConfigurator,
   DataPoints,
   ExperimentationGuide,
-} from '@process-optimizer-frontend/ui'
+} from '@boostv/process-optimizer-frontend-ui'
 import { Alert } from '@mui/material'
-import { saveObjectToLocalFile } from '@process-optimizer-frontend/core'
 import { useStyles } from './experiment.style'
-import {
-  useExperiment,
-  runExperiment,
-  useSelector,
-  selectDataPoints,
-} from '@process-optimizer-frontend/core'
 import { useState } from 'react'
 import { LoadingExperiment } from './loading-experiment'
 import { useGlobal } from '@sample/context/global'
 import { UISizeValue } from '@sample/context/global'
 import { getSize, isUIBig } from '@sample/utility/ui-util'
 import { AlertColor } from '@mui/material'
-import { selectIsInitializing } from '@process-optimizer-frontend/core'
 import {
+  selectIsInitializing,
   CategoricalVariableType,
+  useExperiment,
+  saveObjectToLocalFile,
+  runExperiment,
+  useSelector,
+  selectDataPoints,
   DataEntry,
   OptimizerConfig,
   ValueVariableType,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 
 type SnackbarMessage = {
   message: string
@@ -83,7 +81,10 @@ const LegacyExperiment = () => {
       if (isInitializing) {
         await runExperiment(dispatch, { ...experiment, dataPoints: [] })
       } else {
-        await runExperiment(dispatch, experiment)
+        await runExperiment(dispatch, {
+          ...experiment,
+          extras: { objectivePars: 'expected_minimum', ...experiment.extras },
+        })
       }
       runCompleted({ message: 'Experiment run completed', severity: 'success' })
     } catch (error) {

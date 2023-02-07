@@ -1,5 +1,5 @@
 import { ThemeName } from '@sample/theme/theme'
-import { assertUnreachable } from '@process-optimizer-frontend/core'
+import { assertUnreachable } from '@boostv/process-optimizer-frontend-core'
 import produce from 'immer'
 
 export type State = {

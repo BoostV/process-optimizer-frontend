@@ -11,14 +11,12 @@ import { TableDataRow } from '../core/editable-table'
 import {
   DataPointType,
   saveCSVToLocalFile,
-} from '@process-optimizer-frontend/core'
-import { dataPointsToCSV } from '@process-optimizer-frontend/core'
-import {
+  dataPointsToCSV,
   CategoricalVariableType,
   DataEntry,
   ScoreVariableType,
   ValueVariableType,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 
 type DataPointProps = {
   experimentId: string

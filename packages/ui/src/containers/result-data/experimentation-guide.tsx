@@ -5,7 +5,7 @@ import {
   selectVariableNames,
   selectNextExperimentValues,
   selectIsInitializing,
-} from '@process-optimizer-frontend/core'
+} from '@boostv/process-optimizer-frontend-core'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import useStyles from './experimentation-guide.style'
