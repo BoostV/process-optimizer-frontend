@@ -83,7 +83,10 @@ const LegacyExperiment = () => {
       if (isInitializing) {
         await runExperiment(dispatch, { ...experiment, dataPoints: [] })
       } else {
-        await runExperiment(dispatch, experiment)
+        await runExperiment(dispatch, {
+          ...experiment,
+          extras: { objectivePars: 'expected_minimum', ...experiment.extras },
+        })
       }
       runCompleted({ message: 'Experiment run completed', severity: 'success' })
     } catch (error) {
