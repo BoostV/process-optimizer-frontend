@@ -4,6 +4,7 @@ index.ts
 models/Experiment.ts
 models/ExperimentDataInner.ts
 models/ExperimentDataInnerXiInner.ts
+models/ExperimentExtras.ts
 models/ExperimentOptimizerConfig.ts
 models/ExperimentOptimizerConfigSpaceInner.ts
 models/ModelError.ts
