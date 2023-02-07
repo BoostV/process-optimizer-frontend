@@ -36,16 +36,16 @@
     "prepublishOnly": "vite build"
   },
   "dependencies": {
-    "@boostv/process-optimizer-frontend-plots": "*"
-  },
-  "peerDependencies": {
+    "@boostv/process-optimizer-frontend-core": "*",
+    "@boostv/process-optimizer-frontend-plots": "*",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.7",
-    "@boostv/process-optimizer-frontend-core": "*",
+    "tss-react": "^4.6.0",
+    "react-hook-form": "^7.33.0"
+  },
+  "peerDependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-hook-form": "^7.33.0",
-    "tss-react": "^4.6.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^8.20.0",
