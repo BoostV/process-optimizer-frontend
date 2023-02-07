@@ -108,10 +108,10 @@ export const experimentReducer = produce(
         // TODO: meta values?
         const newEntries: DataEntry[] = next
           .filter((_, i) => action.payload.includes(i))
-          .map((n, _) => ({
+          .map((n, k) => ({
             meta: {
               enabled: true,
-              id: Math.floor(Math.random() * 100000),
+              id: Math.max(...state.dataPoints.map(d => d.meta.id)) + k + 1,
             },
             data: n
               .map((v, i) => ({

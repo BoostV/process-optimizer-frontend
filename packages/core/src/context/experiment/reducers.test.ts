@@ -527,6 +527,7 @@ describe('experiment reducer', () => {
       const dp = rootReducer(initState, action).experiment.dataPoints
       expect(dp.length).toBe(2)
       expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
+      expect(dp[dp.length - 1]?.meta.id).toBe(2)
       expect(dp[dp.length - 1]?.data).toEqual([
         {
           name: 'Water',
@@ -548,25 +549,11 @@ describe('experiment reducer', () => {
         payload: [0, 1],
       }
       const dp = rootReducer(initState, action).experiment.dataPoints
+      console.log('dp', dp)
       expect(dp.length).toBe(3)
-      //Check last item
-      expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
-      expect(dp[dp.length - 1]?.data).toEqual([
-        {
-          name: 'Water',
-          value: 150,
-        },
-        {
-          name: 'Icing',
-          value: 'Chocolate',
-        },
-        {
-          name: 'score',
-          value: 0,
-        },
-      ])
       //Check second-to-last item
       expect(dp[dp.length - 2]?.meta.enabled).toBeTruthy()
+      expect(dp[dp.length - 2]?.meta.id).toBe(2)
       expect(dp[dp.length - 2]?.data).toEqual([
         {
           name: 'Water',
@@ -575,6 +562,23 @@ describe('experiment reducer', () => {
         {
           name: 'Icing',
           value: 'Vanilla',
+        },
+        {
+          name: 'score',
+          value: 0,
+        },
+      ])
+      //Check last item
+      expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
+      expect(dp[dp.length - 1]?.meta.id).toBe(3)
+      expect(dp[dp.length - 1]?.data).toEqual([
+        {
+          name: 'Water',
+          value: 150,
+        },
+        {
+          name: 'Icing',
+          value: 'Chocolate',
         },
         {
           name: 'score',
