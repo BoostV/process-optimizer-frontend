@@ -3,6 +3,7 @@
 export * from './Experiment'
 export * from './ExperimentDataInner'
 export * from './ExperimentDataInnerXiInner'
+export * from './ExperimentExtras'
 export * from './ExperimentOptimizerConfig'
 export * from './ExperimentOptimizerConfigSpaceInner'
 export * from './ModelError'

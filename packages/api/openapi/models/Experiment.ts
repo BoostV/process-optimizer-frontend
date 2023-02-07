@@ -19,6 +19,12 @@ import {
   ExperimentDataInnerFromJSONTyped,
   ExperimentDataInnerToJSON,
 } from './ExperimentDataInner'
+import type { ExperimentExtras } from './ExperimentExtras'
+import {
+  ExperimentExtrasFromJSON,
+  ExperimentExtrasFromJSONTyped,
+  ExperimentExtrasToJSON,
+} from './ExperimentExtras'
 import type { ExperimentOptimizerConfig } from './ExperimentOptimizerConfig'
 import {
   ExperimentOptimizerConfigFromJSON,
@@ -33,11 +39,11 @@ import {
  */
 export interface Experiment {
   /**
-   * A plain JSON object that can contain arbitrary values
-   * @type {object}
+   *
+   * @type {ExperimentExtras}
    * @memberof Experiment
    */
-  extras?: object
+  extras?: ExperimentExtras
   /**
    *
    * @type {Array<ExperimentDataInner>}
@@ -75,7 +81,9 @@ export function ExperimentFromJSONTyped(
     return json
   }
   return {
-    extras: !exists(json, 'extras') ? undefined : json['extras'],
+    extras: !exists(json, 'extras')
+      ? undefined
+      : ExperimentExtrasFromJSON(json['extras']),
     data: (json['data'] as Array<any>).map(ExperimentDataInnerFromJSON),
     optimizerConfig: ExperimentOptimizerConfigFromJSON(json['optimizerConfig']),
   }
@@ -89,7 +97,7 @@ export function ExperimentToJSON(value?: Experiment | null): any {
     return null
   }
   return {
-    extras: value.extras,
+    extras: ExperimentExtrasToJSON(value.extras),
     data: (value.data as Array<any>).map(ExperimentDataInnerToJSON),
     optimizerConfig: ExperimentOptimizerConfigToJSON(value.optimizerConfig),
   }
