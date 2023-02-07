@@ -108,7 +108,7 @@ export const experimentReducer = produce(
           .filter((_, i) => action.payload.includes(i))
           .map((n, k) => ({
             meta: {
-              enabled: true,
+              enabled: false,
               id: Math.max(...state.dataPoints.map(d => d.meta.id)) + k + 1,
             },
             data: n
@@ -119,7 +119,7 @@ export const experimentReducer = produce(
               .concat([
                 ...state.scoreVariables.map(s => ({
                   name: s.name,
-                  value: 0,
+                  value: undefined,
                 })),
               ]),
           }))

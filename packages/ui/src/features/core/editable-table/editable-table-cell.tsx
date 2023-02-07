@@ -11,7 +11,7 @@ import { ChangeEvent, CSSProperties } from 'react'
 import useStyles from './editable-table-cell.style'
 
 type EditableTableCellProps = {
-  value: string
+  value?: string
   isEditMode: boolean
   options?: string[]
   onChange?: (value: string) => void
@@ -32,7 +32,7 @@ export function EditableTableCell({
   const textField = (
     <TextField
       size="small"
-      value={value}
+      value={value || ''}
       onChange={(e: ChangeEvent<HTMLInputElement>) =>
         onChange?.('' + e.target.value)
       }

@@ -8,12 +8,14 @@ import useStyles from './data-points.style'
 import UploadCSVButton from './upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
 import { TableDataRow } from '../core/editable-table'
-import { saveCSVToLocalFile } from '@process-optimizer-frontend/core'
+import {
+  DataPointType,
+  saveCSVToLocalFile,
+} from '@process-optimizer-frontend/core'
 import { dataPointsToCSV } from '@process-optimizer-frontend/core'
 import {
   CategoricalVariableType,
   DataEntry,
-  DataPointTypeValue,
   ScoreVariableType,
   ValueVariableType,
 } from '@process-optimizer-frontend/core'
@@ -98,13 +100,16 @@ export function DataPoints(props: DataPointProps) {
         .filter(dp => scoreNames.includes(dp.name))
         .map(s => ({
           name: s.name,
-          value: parseFloat(s.value),
+          value: (s.value && parseFloat(s.value)) || s.value,
         }))
       return vars
-        .map(dp => ({
-          name: dp.name,
-          value: dp.value as DataPointTypeValue,
-        }))
+        .map(
+          dp =>
+            ({
+              name: dp.name,
+              value: dp.value,
+            } as DataPointType)
+        )
         .concat(scores) as DataEntry['data']
     }
     const updateDataPoints = (

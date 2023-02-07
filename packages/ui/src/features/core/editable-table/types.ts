@@ -1,6 +1,6 @@
 export type TableDataPoint = {
   name: string
-  value: string
+  value?: string
   tooltip?: string
   options?: string[] | undefined
 }
@@ -8,4 +8,5 @@ export type TableDataPoint = {
 export type TableDataRow = {
   dataPoints: TableDataPoint[]
   isNew: boolean
+  disabled?: boolean
 }

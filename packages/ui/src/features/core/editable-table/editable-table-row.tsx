@@ -40,6 +40,7 @@ export const EditableTableRow = ({
           tableRow={tableRow}
           onDelete={() => onDelete()}
           setExpanded={expanded => setExpanded(expanded)}
+          disabled={tableRow.disabled}
         />
       )}
     </>

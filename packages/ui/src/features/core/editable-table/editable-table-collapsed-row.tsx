@@ -10,6 +10,7 @@ interface EditableTableCollapsedRowProps {
   colSpan: number
   rowId: number
   tableRow: TableDataRow
+  disabled?: boolean
   setExpanded: (expanded: boolean) => void
   onDelete: () => void
 }
@@ -18,13 +19,16 @@ export const EditableTableCollapsedRow = ({
   colSpan,
   rowId,
   tableRow,
+  disabled = false,
   setExpanded,
   onDelete,
 }: EditableTableCollapsedRowProps) => {
   const { classes } = useStyles()
 
   return (
-    <TableRow className={classes.row}>
+    <TableRow
+      className={[classes.row, disabled && classes.rowDisabled].join(' ')}
+    >
       {tableRow.isNew ? (
         <>
           <TableCell className={classes.emptyCell} />

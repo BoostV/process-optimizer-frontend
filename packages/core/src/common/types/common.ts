@@ -116,7 +116,7 @@ export type ValueDataPointType = {
 }
 export type ScoreDataPointType = {
   name: string
-  value: DataPointTypeValue
+  value: DataPointTypeValue | undefined
 }
 
 export type SpaceType = {
