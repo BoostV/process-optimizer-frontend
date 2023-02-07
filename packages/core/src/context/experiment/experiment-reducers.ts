@@ -66,6 +66,10 @@ export type ExperimentAction =
       payload: string
     }
   | {
+      type: 'copySuggestedToDataPoints'
+      payload: number[]
+    }
+  | {
       type: 'experiment/toggleMultiObjective'
     }
 
@@ -89,6 +93,38 @@ export const experimentReducer = produce(
       case 'updateSuggestionCount':
         state.changedSinceLastEvaluation = true
         state.extras.experimentSuggestionCount = Number(action.payload)
+        break
+      case 'copySuggestedToDataPoints':
+        const next =
+          state.results.next && Array.isArray(state.results.next[0])
+            ? (state.results.next as unknown as any[][])
+            : state.results.next
+            ? [state.results.next]
+            : []
+        const variableNames = state.valueVariables
+          .map(v => v.name)
+          .concat(state.categoricalVariables.map(c => c.name))
+        // TODO: multiobjective score?
+        // TODO: meta values?
+        const newEntries: DataEntry[] = next
+          .filter((_, i) => action.payload.includes(i))
+          .map((n, _) => ({
+            meta: {
+              enabled: true,
+              id: Math.floor(Math.random() * 100000),
+            },
+            data: n
+              .map((v, i) => ({
+                name: variableNames[i] || '',
+                value: v,
+              }))
+              .concat({
+                name: 'score',
+                value: 0,
+              }),
+          }))
+        state.dataPoints.push(...newEntries)
+        state.changedSinceLastEvaluation = true
         break
       case 'addValueVariable':
         state.changedSinceLastEvaluation = true

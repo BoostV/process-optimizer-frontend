@@ -5,6 +5,7 @@ import {
   selectDataPoints,
   useExperiment,
   useSelector,
+  DataEntry,
 } from '@process-optimizer-frontend/core'
 import catapult from '@ui/testing/sample-data/catapult.json'
 import { DataPoints, ExperimentationGuide, Plots } from '..'
@@ -37,7 +38,12 @@ const Experiment = () => {
             dataPoints={dataPoints}
             newestFirst={true}
             onToggleNewestFirst={() => {}}
-            onUpdateDataPoints={() => {}}
+            onUpdateDataPoints={(dataPoints: DataEntry[]) =>
+              dispatch({
+                type: 'updateDataPoints',
+                payload: dataPoints,
+              })
+            }
           />
           <OptimizerConfigurator
             debug={false}

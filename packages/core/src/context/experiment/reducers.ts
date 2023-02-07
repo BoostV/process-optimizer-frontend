@@ -20,6 +20,7 @@ export const rootReducer = (state: State, action: Action) => {
     case 'updateConfiguration':
     case 'registerResult':
     case 'updateDataPoints':
+    case 'copySuggestedToDataPoints':
     case 'experiment/toggleMultiObjective':
       return {
         ...state,

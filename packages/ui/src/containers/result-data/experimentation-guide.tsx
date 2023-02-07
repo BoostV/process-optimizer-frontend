@@ -4,11 +4,11 @@ import {
   selectExpectedMinimum,
   selectVariableNames,
   selectNextExperimentValues,
+  selectIsInitializing,
 } from '@process-optimizer-frontend/core'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
 import useStyles from './experimentation-guide.style'
-import { selectIsInitializing } from '@process-optimizer-frontend/core'
 import {
   InitializationProgress,
   NextExperiments,
@@ -16,6 +16,7 @@ import {
   Suggestions,
   TitleCard,
 } from '@ui/features'
+import { CopySuggested } from '@ui/features/result-data/copy-suggested'
 
 interface ResultDataProps {
   isUIBig?: boolean
@@ -118,8 +119,25 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           (nextValues.length === 0 && (
             <div>Please run experiment to calculate suggestions</div>
           ))}
-        <Suggestions values={nextValues} headers={headers} />
+        <Suggestions
+          values={nextValues}
+          headers={headers}
+          onCopyToDataPoints={index =>
+            dispatchExperiment({
+              type: 'copySuggestedToDataPoints',
+              payload: [index],
+            })
+          }
+        />
       </Box>
+      <CopySuggested
+        onClick={() =>
+          dispatchExperiment({
+            type: 'copySuggestedToDataPoints',
+            payload: [...Array(nextValues.length)].map((_, i) => i),
+          })
+        }
+      />
       {summary}
     </TitleCard>
   )

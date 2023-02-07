@@ -27,7 +27,7 @@ describe('experiment reducer', () => {
         {
           name: 'Icing',
           description: 'Sugary',
-          options: [],
+          options: ['Vanilla', 'Chocolate'],
         },
       ],
       valueVariables: [
@@ -49,13 +49,37 @@ describe('experiment reducer', () => {
       },
       results: {
         id: '',
-        next: [],
+        next: [
+          [100, 'Vanilla'],
+          [150, 'Chocolate'],
+        ],
         plots: [],
         pickled: '',
         expectedMinimum: [],
         extras: {},
       },
-      dataPoints: [],
+      dataPoints: [
+        {
+          meta: {
+            enabled: true,
+            id: 1,
+          },
+          data: [
+            {
+              name: 'Water',
+              value: 100,
+            },
+            {
+              name: 'Icing',
+              value: 'Vanilla',
+            },
+            {
+              name: 'score',
+              value: 10,
+            },
+          ],
+        },
+      ],
       extras: {
         experimentSuggestionCount: 1,
       },
@@ -281,7 +305,7 @@ describe('experiment reducer', () => {
           {
             name: 'Icing',
             description: 'Sugary',
-            options: [],
+            options: ['Vanilla', 'Chocolate'],
           },
           payload,
         ])
@@ -491,6 +515,72 @@ describe('experiment reducer', () => {
         rootReducer(testState, action).experiment.extras
           .experimentSuggestionCount
       ).toEqual(3)
+    })
+  })
+
+  describe('copySuggestedToDataPoints', () => {
+    it('should copy one row from suggested to data points', () => {
+      const action: ExperimentAction = {
+        type: 'copySuggestedToDataPoints',
+        payload: [0],
+      }
+      const dp = rootReducer(initState, action).experiment.dataPoints
+      expect(dp.length).toBe(2)
+      expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
+      expect(dp[dp.length - 1]?.data).toEqual([
+        {
+          name: 'Water',
+          value: 100,
+        },
+        {
+          name: 'Icing',
+          value: 'Vanilla',
+        },
+        {
+          name: 'score',
+          value: 0,
+        },
+      ])
+    })
+    it('should copy multiple rows from suggested to data points', () => {
+      const action: ExperimentAction = {
+        type: 'copySuggestedToDataPoints',
+        payload: [0, 1],
+      }
+      const dp = rootReducer(initState, action).experiment.dataPoints
+      expect(dp.length).toBe(3)
+      //Check last item
+      expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
+      expect(dp[dp.length - 1]?.data).toEqual([
+        {
+          name: 'Water',
+          value: 150,
+        },
+        {
+          name: 'Icing',
+          value: 'Chocolate',
+        },
+        {
+          name: 'score',
+          value: 0,
+        },
+      ])
+      //Check second-to-last item
+      expect(dp[dp.length - 2]?.meta.enabled).toBeTruthy()
+      expect(dp[dp.length - 2]?.data).toEqual([
+        {
+          name: 'Water',
+          value: 100,
+        },
+        {
+          name: 'Icing',
+          value: 'Vanilla',
+        },
+        {
+          name: 'score',
+          value: 0,
+        },
+      ])
     })
   })
 })
