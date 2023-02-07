@@ -24,6 +24,9 @@ export const EditableTableCollapsedRow = ({
   onDelete,
 }: EditableTableCollapsedRowProps) => {
   const { classes } = useStyles()
+  const disabledStyle = {
+    color: 'rgba(0,0,0,0.2)',
+  }
 
   return (
     <TableRow className={classes.row}>
@@ -48,9 +51,7 @@ export const EditableTableCollapsedRow = ({
           <TableCell className={classes.emptyCell} />
           <TableCell
             className={classes.cell}
-            style={{
-              opacity: disabled ? 0.25 : 1,
-            }}
+            style={disabled ? disabledStyle : {}}
           >
             {rowId}
           </TableCell>
@@ -61,9 +62,7 @@ export const EditableTableCollapsedRow = ({
               isEditMode={false}
               options={item.options}
               tooltip={item.tooltip}
-              style={{
-                opacity: disabled ? 0.25 : 1,
-              }}
+              style={disabled ? disabledStyle : {}}
             />
           ))}
           <TableCell className={classes.editCell}>
