@@ -39,7 +39,13 @@ describe('experiment reducer', () => {
           max: 200,
         },
       ],
-      scoreVariables: [],
+      scoreVariables: [
+        {
+          name: 'score',
+          description: 'score',
+          enabled: true,
+        },
+      ],
       optimizerConfig: {
         baseEstimator: 'GP',
         acqFunc: 'gp_hedge',
@@ -549,7 +555,6 @@ describe('experiment reducer', () => {
         payload: [0, 1],
       }
       const dp = rootReducer(initState, action).experiment.dataPoints
-      console.log('dp', dp)
       expect(dp.length).toBe(3)
       //Check second-to-last item
       expect(dp[dp.length - 2]?.meta.enabled).toBeTruthy()
@@ -586,6 +591,49 @@ describe('experiment reducer', () => {
         },
       ])
     })
+  })
+  it('should add two scores to new data point for multi-objective', () => {
+    const testState = {
+      ...initState,
+      experiment: {
+        ...initState.experiment,
+        scoreVariables: [
+          {
+            name: 'score',
+            description: 'score',
+            enabled: true,
+          },
+          {
+            name: 'score2',
+            description: 'score 2',
+            enabled: true,
+          },
+        ],
+      },
+    }
+    const action: ExperimentAction = {
+      type: 'copySuggestedToDataPoints',
+      payload: [0],
+    }
+    const dp = rootReducer(testState, action).experiment.dataPoints
+    expect(dp[dp.length - 1]?.data).toEqual([
+      {
+        name: 'Water',
+        value: 100,
+      },
+      {
+        name: 'Icing',
+        value: 'Vanilla',
+      },
+      {
+        name: 'score',
+        value: 0,
+      },
+      {
+        name: 'score2',
+        value: 0,
+      },
+    ])
   })
 })
 

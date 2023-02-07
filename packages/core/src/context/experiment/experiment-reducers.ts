@@ -104,8 +104,6 @@ export const experimentReducer = produce(
         const variableNames = state.valueVariables
           .map(v => v.name)
           .concat(state.categoricalVariables.map(c => c.name))
-        // TODO: multiobjective score?
-        // TODO: meta values?
         const newEntries: DataEntry[] = next
           .filter((_, i) => action.payload.includes(i))
           .map((n, k) => ({
@@ -118,10 +116,12 @@ export const experimentReducer = produce(
                 name: variableNames[i] || '',
                 value: v,
               }))
-              .concat({
-                name: 'score',
-                value: 0,
-              }),
+              .concat([
+                ...state.scoreVariables.map(s => ({
+                  name: s.name,
+                  value: 0,
+                })),
+              ]),
           }))
         state.dataPoints.push(...newEntries)
         state.changedSinceLastEvaluation = true

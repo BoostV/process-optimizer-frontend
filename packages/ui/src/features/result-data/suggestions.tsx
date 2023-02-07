@@ -34,7 +34,7 @@ export const Suggestions = ({
                 {headers.map((h, i) => (
                   <TableCell key={i}>{h}</TableCell>
                 ))}
-                {onCopyToDataPoints && <TableCell>Copy</TableCell>}
+                {onCopyToDataPoints && <TableCell />}
               </TableRow>
             </TableHead>
             <TableBody>
