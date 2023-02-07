@@ -2,7 +2,7 @@
   "name": "@boostv/process-optimizer-frontend-ui",
   "private": false,
   "sideEffects": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "UI library for process optimizer frontend",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
