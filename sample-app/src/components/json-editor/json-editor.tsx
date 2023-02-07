@@ -17,7 +17,7 @@ import { errorMessage } from '@process-optimizer-frontend/core'
 
 type DisplayedResults = {
   id: string
-  next: (number | string)[]
+  next: (number | string)[] | (number | string)[][]
   expectedMinimum: Array<Array<number>>
   extras: object
 }
