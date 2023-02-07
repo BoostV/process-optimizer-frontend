@@ -1,5 +1,11 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 1.0.1
+
+### Patch Changes
+
+- ae4b2bc: Convert some peer dependencies into actual dependencies
+
 ## 1.0.0
 
 ### Patch Changes
