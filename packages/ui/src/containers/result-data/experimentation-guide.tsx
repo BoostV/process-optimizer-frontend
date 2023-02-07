@@ -62,7 +62,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       />
     </Box>
   ) : (
-    <div>Please run experiment</div>
+    <Box p={2}>Please run experiment</Box>
   )
   return (
     <TitleCard
@@ -117,7 +117,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         )}
         {!nextValues ||
           (nextValues.length === 0 && (
-            <div>Please run experiment to calculate suggestions</div>
+            <Box p={2}>Please run experiment to calculate suggestions</Box>
           ))}
         <Suggestions
           values={nextValues}
@@ -130,14 +130,18 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           }
         />
       </Box>
-      <CopySuggested
-        onClick={() =>
-          dispatchExperiment({
-            type: 'copySuggestedToDataPoints',
-            payload: [...Array(nextValues.length)].map((_, i) => i),
-          })
-        }
-      />
+      {nextValues.length > 0 &&
+        nextValues[0] !== undefined &&
+        nextValues[0].length > 0 && (
+          <CopySuggested
+            onClick={() =>
+              dispatchExperiment({
+                type: 'copySuggestedToDataPoints',
+                payload: [...Array(nextValues.length)].map((_, i) => i),
+              })
+            }
+          />
+        )}
       {summary}
     </TitleCard>
   )
