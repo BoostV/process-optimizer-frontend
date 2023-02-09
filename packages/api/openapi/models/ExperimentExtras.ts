@@ -19,12 +19,19 @@ import { exists, mapValues } from '../runtime'
  * @interface ExperimentExtras
  */
 export interface ExperimentExtras {
+  [key: string]: string | any
   /**
    *
    * @type {string}
    * @memberof ExperimentExtras
    */
   objectivePars?: ExperimentExtrasObjectiveParsEnum
+  /**
+   *
+   * @type {string}
+   * @memberof ExperimentExtras
+   */
+  graphFormat?: string
 }
 
 /**
@@ -58,9 +65,11 @@ export function ExperimentExtrasFromJSONTyped(
     return json
   }
   return {
+    ...json,
     objectivePars: !exists(json, 'objectivePars')
       ? undefined
       : json['objectivePars'],
+    graphFormat: !exists(json, 'graphFormat') ? undefined : json['graphFormat'],
   }
 }
 
@@ -72,6 +81,8 @@ export function ExperimentExtrasToJSON(value?: ExperimentExtras | null): any {
     return null
   }
   return {
+    ...value,
     objectivePars: value.objectivePars,
+    graphFormat: value.graphFormat,
   }
 }
