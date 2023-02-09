@@ -32,7 +32,7 @@ export function EditableTableCell({
   const textField = (
     <TextField
       size="small"
-      value={value || ''}
+      value={value ?? ''}
       onChange={(e: ChangeEvent<HTMLInputElement>) =>
         onChange?.('' + e.target.value)
       }

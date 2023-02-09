@@ -1,3 +1,4 @@
+import { ExperimentType } from '@core/common'
 import { State } from './store'
 
 export const selectExperiment = (state: State) => state.experiment
@@ -14,13 +15,17 @@ export const selectDataPoints = (state: State) =>
 export const selectExpectedMinimum = (state: State) =>
   selectExperiment(state).results.expectedMinimum
 
-export const selectNextExperimentValues = (state: State) => {
-  const experiment = selectExperiment(state)
+export const selectNextValues = (experiment: ExperimentType) => {
   return experiment.results.next && Array.isArray(experiment.results.next[0])
     ? (experiment.results.next as unknown as any[][])
     : experiment.results.next
     ? [experiment.results.next]
     : []
+}
+
+export const selectNextExperimentValues = (state: State) => {
+  const experiment = selectExperiment(state)
+  return selectNextValues(experiment)
 }
 
 export const selectVariableNames = (state: State): string[] => {

@@ -43,4 +43,8 @@ export const useStyles = makeStyles()(() => ({
   },
 }))
 
+export const disabledCell = {
+  color: 'rgba(0,0,0,0.2)',
+}
+
 export default useStyles

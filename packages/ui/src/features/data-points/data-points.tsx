@@ -98,7 +98,7 @@ export function DataPoints(props: DataPointProps) {
         .filter(dp => scoreNames.includes(dp.name))
         .map(s => ({
           name: s.name,
-          value: (s.value && parseFloat(s.value)) || s.value,
+          value: (s.value && parseFloat(s.value)) ?? s.value,
         }))
       return vars
         .map(

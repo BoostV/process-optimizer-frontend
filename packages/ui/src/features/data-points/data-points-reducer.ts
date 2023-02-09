@@ -146,7 +146,7 @@ const buildRows = (
     categoricalVariables
   )
   const dataPointRows: TableDataRow[] = dataPoints
-    .map(item => {
+    .map((item): TableDataRow => {
       const rowData: DataEntry['data'] = item.data.filter(
         dp => !scoreNames.includes(dp.name)
       )
@@ -169,9 +169,8 @@ const buildRows = (
         disabled: !item.meta.enabled,
         // Uncomment the following line to display a meta data property in the table
         // .concat([{ name: 'id', value: `${item.meta.id}` }]),
-      } as TableDataRow
+      }
     })
     .concat(buildEmptyRow(valueVariables, categoricalVariables, scoreNames))
-
   return dataPointRows
 }
