@@ -26,7 +26,6 @@ type ExperimentTypeV7 = {
 export const migrateToV8 = (json: ExperimentTypeV7): ExperimentType => {
   return {
     ...json,
-    info: { ...json.info, dataFormatVersion: '8' },
     dataPoints: migrateDataPoints(json.dataPoints),
   }
 }
