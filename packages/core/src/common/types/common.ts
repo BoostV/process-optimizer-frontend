@@ -27,7 +27,7 @@ export type ExperimentType = {
 export type ExperimentResultType = {
   id: string
   plots: { id: string; plot: string }[]
-  next: (number | string)[] | (number | string)[][]
+  next: (number | string)[][]
   pickled: string
   expectedMinimum: Array<Array<number>>
   extras: object

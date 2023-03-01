@@ -106,7 +106,8 @@ const fetchExperimentResult = async (
     id: experiment.id,
     plots:
       result.plots?.map(p => ({ id: p.id ?? '', plot: p.plot ?? '' })) ?? [],
-    next: result.result?.next ?? [],
+    // TODO: Remove cast, use zod
+    next: (result.result?.next ?? []) as (string | number)[][],
     pickled: result.result?.pickled ?? '',
     expectedMinimum:
       result.result?.models?.find(() => true)?.expectedMinimum ?? [],

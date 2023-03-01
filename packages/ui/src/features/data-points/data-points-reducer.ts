@@ -42,6 +42,7 @@ export type DataPointsAction =
       payload: EditRow
     }
 
+// TODO: Move to general validation?
 const isRowValid = (row: TableDataRow) =>
   row.dataPoints.every(dp => dp.value !== undefined && dp.value !== '')
 

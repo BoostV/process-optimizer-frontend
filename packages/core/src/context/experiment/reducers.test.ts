@@ -444,7 +444,7 @@ describe('experiment reducer', () => {
     it('should update result', async () => {
       const payload: ExperimentResultType = {
         id: 'myExperiment',
-        next: [1, 2, 3, 'Red'],
+        next: [[1, 2, 3, 'Red']],
         pickled: 'pickled',
         expectedMinimum: [],
         extras: {},
@@ -589,7 +589,7 @@ describe('experiment reducer', () => {
       ])
     })
   })
-  it('should add two scores to new data point for multi-objective', () => {
+  it('should add scores to new data point for multi-objective - two scores enabled', () => {
     const testState = {
       ...initState,
       experiment: {
@@ -604,6 +604,47 @@ describe('experiment reducer', () => {
             name: 'score2',
             description: 'score 2',
             enabled: true,
+          },
+        ],
+      },
+    }
+    const action: ExperimentAction = {
+      type: 'copySuggestedToDataPoints',
+      payload: [0],
+    }
+    const dp = rootReducer(testState, action).experiment.dataPoints
+    expect(dp[dp.length - 1]?.data).toEqual([
+      {
+        name: 'Water',
+        value: 100,
+      },
+      {
+        name: 'Icing',
+        value: 'Vanilla',
+      },
+      {
+        name: 'score',
+      },
+      {
+        name: 'score2',
+      },
+    ])
+  })
+  it('should add scores to new data point for multi-objective - one score enabled', () => {
+    const testState = {
+      ...initState,
+      experiment: {
+        ...initState.experiment,
+        scoreVariables: [
+          {
+            name: 'score',
+            description: 'score',
+            enabled: true,
+          },
+          {
+            name: 'score2',
+            description: 'score 2',
+            enabled: false,
           },
         ],
       },
