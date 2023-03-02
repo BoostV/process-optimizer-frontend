@@ -10,6 +10,7 @@ import large from '../../../../sample-data/large.json' assert { type: 'json' }
 import fs from 'fs'
 import { ExperimentType } from '@core/common/types'
 import { emptyExperiment } from '@core/context/experiment'
+import { formatNext } from './migrations/migrateToV9'
 
 const loadLatestJson = () => {
   const fileVersions: number[] = fs
@@ -94,6 +95,19 @@ describe('migration', () => {
       expect(actual.info.dataFormatVersion).toEqual(
         MIGRATIONS.slice(-1)[0]?.version
       )
+    })
+  })
+
+  describe('migrateToV9 formatNext', () => {
+    it('should return nested array - input is not nested', () => {
+      expect(formatNext([1, 2, 3])).toEqual([[1, 2, 3]])
+    })
+    it('should return nested array - input is nested', () => {
+      expect(formatNext([[1, 2, 3]])).toEqual([[1, 2, 3]])
+    })
+    it('should return empty nested array - input is empty array', () => {
+      expect(formatNext([])).toEqual([[]])
+      expect(formatNext([[]])).toEqual([[]])
     })
   })
 

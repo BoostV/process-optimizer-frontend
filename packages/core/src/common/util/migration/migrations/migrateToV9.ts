@@ -12,7 +12,7 @@ export const migrateToV9 = (json: ExperimentTypeV8): ExperimentType => {
   }
 }
 
-const formatNext = (
+export const formatNext = (
   next: (string | number)[] | (string | number)[][]
 ): (string | number)[][] => {
   const isNestedArray =
