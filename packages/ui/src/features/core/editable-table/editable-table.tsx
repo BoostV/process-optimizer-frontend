@@ -62,24 +62,26 @@ export const EditableTable = ({
             />
           ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell className={classes.emptyCell} />
-            <TableCell className={classes.emptyFooterCell} />
-            {rows[0]?.dataPoints.map((item, index) => (
-              <TableCell
-                key={'footercell' + index}
-                className={classes.footerCell}
-              >
-                {item.name}
+        {rows.length > 10 && (
+          <TableFooter>
+            <TableRow>
+              <TableCell className={classes.emptyCell} />
+              <TableCell className={classes.emptyFooterCell} />
+              {rows[0]?.dataPoints.map((item, index) => (
+                <TableCell
+                  key={'footercell' + index}
+                  className={classes.footerCell}
+                >
+                  {item.name}
+                </TableCell>
+              ))}
+              <TableCell align="right" className={classes.footerCell}>
+                Edit
               </TableCell>
-            ))}
-            <TableCell align="right" className={classes.footerCell}>
-              Edit
-            </TableCell>
-            <TableCell className={classes.emptyCell} />
-          </TableRow>
-        </TableFooter>
+              <TableCell className={classes.emptyCell} />
+            </TableRow>
+          </TableFooter>
+        )}
       </Table>
     </>
   )

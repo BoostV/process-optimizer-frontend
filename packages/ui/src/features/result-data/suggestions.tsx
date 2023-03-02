@@ -1,18 +1,27 @@
 import {
   Box,
+  IconButton,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  Tooltip,
 } from '@mui/material'
 import useStyles from './suggestions.style'
+import MoveDownIcon from '@mui/icons-material/MoveDown'
+
 interface SuggestionsProps {
   values: string[][]
   headers: string[]
+  onCopyToDataPoints?: (index: number) => void
 }
 
-export const Suggestions = ({ values, headers }: SuggestionsProps) => {
+export const Suggestions = ({
+  values,
+  headers,
+  onCopyToDataPoints,
+}: SuggestionsProps) => {
   const { classes } = useStyles()
 
   return (
@@ -25,6 +34,7 @@ export const Suggestions = ({ values, headers }: SuggestionsProps) => {
                 {headers.map((h, i) => (
                   <TableCell key={i}>{h}</TableCell>
                 ))}
+                {onCopyToDataPoints && <TableCell />}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -35,6 +45,18 @@ export const Suggestions = ({ values, headers }: SuggestionsProps) => {
                       {v}
                     </TableCell>
                   ))}
+                  {onCopyToDataPoints && (
+                    <TableCell>
+                      <Tooltip title="Transfer to data points">
+                        <IconButton
+                          size="small"
+                          onClick={() => onCopyToDataPoints(ir)}
+                        >
+                          <MoveDownIcon fontSize="small" color="primary" />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

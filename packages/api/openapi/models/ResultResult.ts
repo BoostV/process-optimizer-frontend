@@ -13,6 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime'
+import type { ExperimentDataInnerXiInner } from './ExperimentDataInnerXiInner'
+import {
+  ExperimentDataInnerXiInnerFromJSON,
+  ExperimentDataInnerXiInnerFromJSONTyped,
+  ExperimentDataInnerXiInnerToJSON,
+} from './ExperimentDataInnerXiInner'
 import type { ResultResultModelsInner } from './ResultResultModelsInner'
 import {
   ResultResultModelsInnerFromJSON,
@@ -34,10 +40,10 @@ export interface ResultResult {
   pickled?: string
   /**
    *
-   * @type {Array<number>}
+   * @type {Array<Array<ExperimentDataInnerXiInner>>}
    * @memberof ResultResult
    */
-  next?: Array<number>
+  next?: Array<Array<ExperimentDataInnerXiInner>>
   /**
    *
    * @type {Array<ResultResultModelsInner>}

@@ -9,6 +9,7 @@ import {
 import produce from 'immer'
 import { versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
+import { selectNextValues } from './experiment-selectors'
 
 const calculateInitialPoints = (state: ExperimentType) =>
   Math.max(
@@ -66,6 +67,10 @@ export type ExperimentAction =
       payload: string
     }
   | {
+      type: 'copySuggestedToDataPoints'
+      payload: number[]
+    }
+  | {
       type: 'experiment/toggleMultiObjective'
     }
 
@@ -89,6 +94,34 @@ export const experimentReducer = produce(
       case 'updateSuggestionCount':
         state.changedSinceLastEvaluation = true
         state.extras.experimentSuggestionCount = Number(action.payload)
+        break
+      case 'copySuggestedToDataPoints':
+        const nextValues = selectNextValues(state)
+        const variableNames = state.valueVariables
+          .map(v => v.name)
+          .concat(state.categoricalVariables.map(c => c.name))
+        const newEntries: DataEntry[] = nextValues
+          .filter((_, i) => action.payload.includes(i))
+          .map((n, k) => ({
+            meta: {
+              // TODO: Move to general validation?
+              enabled: false,
+              id: Math.max(...state.dataPoints.map(d => d.meta.id)) + k + 1,
+            },
+            data: n
+              .map((v, i) => ({
+                name: variableNames[i] || '',
+                value: v,
+              }))
+              .concat([
+                ...state.scoreVariables.map(s => ({
+                  name: s.name,
+                  value: undefined,
+                })),
+              ]),
+          }))
+        state.dataPoints.push(...newEntries)
+        state.changedSinceLastEvaluation = true
         break
       case 'addValueVariable':
         state.changedSinceLastEvaluation = true
@@ -185,7 +218,7 @@ export const experimentReducer = produce(
               .map(it => it.name)
             scoreNames.forEach(scoreName => {
               if (!containedScores.includes(scoreName))
-                dp.push({ name: scoreName, value: '0' })
+                dp.push({ name: scoreName, value: 0 })
             })
           })
         }

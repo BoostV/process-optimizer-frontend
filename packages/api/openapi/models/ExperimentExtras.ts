@@ -32,6 +32,12 @@ export interface ExperimentExtras {
    * @memberof ExperimentExtras
    */
   graphFormat?: string
+  /**
+   *
+   * @type {number}
+   * @memberof ExperimentExtras
+   */
+  experimentSuggestionCount?: number
 }
 
 /**
@@ -70,6 +76,9 @@ export function ExperimentExtrasFromJSONTyped(
       ? undefined
       : json['objectivePars'],
     graphFormat: !exists(json, 'graphFormat') ? undefined : json['graphFormat'],
+    experimentSuggestionCount: !exists(json, 'experimentSuggestionCount')
+      ? undefined
+      : json['experimentSuggestionCount'],
   }
 }
 
@@ -84,5 +93,6 @@ export function ExperimentExtrasToJSON(value?: ExperimentExtras | null): any {
     ...value,
     objectivePars: value.objectivePars,
     graphFormat: value.graphFormat,
+    experimentSuggestionCount: value.experimentSuggestionCount,
   }
 }

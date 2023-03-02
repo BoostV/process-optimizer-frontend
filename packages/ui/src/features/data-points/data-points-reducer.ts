@@ -42,6 +42,10 @@ export type DataPointsAction =
       payload: EditRow
     }
 
+// TODO: Move to general validation?
+const isRowValid = (row: TableDataRow) =>
+  row.dataPoints.every(dp => dp.value !== undefined && dp.value !== '')
+
 export const dataPointsReducer = produce(
   (state: DataPointsState, action: DataPointsAction) => {
     switch (action.type) {
@@ -61,7 +65,7 @@ export const dataPointsReducer = produce(
       case 'rowAdded':
         state.rows.push({ ...action.payload, isNew: false })
         state.meta.push({
-          enabled: true,
+          enabled: isRowValid(action.payload),
           id: Math.max(0, ...state.meta.map(m => m.id)) + 1,
         })
         state.changed = true
@@ -73,6 +77,13 @@ export const dataPointsReducer = produce(
         break
       case 'rowEdited':
         state.rows[action.payload.rowIndex] = action.payload.row
+        const meta = state.meta[action.payload.rowIndex]
+        if (meta !== undefined) {
+          state.meta[action.payload.rowIndex] = {
+            ...meta,
+            enabled: isRowValid(action.payload.row),
+          }
+        }
         state.changed = true
         break
       default:
@@ -136,7 +147,7 @@ const buildRows = (
     categoricalVariables
   )
   const dataPointRows: TableDataRow[] = dataPoints
-    .map(item => {
+    .map((item): TableDataRow => {
       const rowData: DataEntry['data'] = item.data.filter(
         dp => !scoreNames.includes(dp.name)
       )
@@ -145,7 +156,7 @@ const buildRows = (
         const idx = combinedVariables.findIndex(it => it.name === v.name)
         vars[idx] = {
           name: v.name,
-          value: v.value.toString(),
+          value: v.value?.toString(),
           options: combinedVariables[idx]?.options,
           tooltip: combinedVariables[idx]?.tooltip,
         }
@@ -156,11 +167,11 @@ const buildRows = (
       return {
         isNew: false,
         dataPoints: vars.concat(scores),
+        disabled: !item.meta.enabled,
         // Uncomment the following line to display a meta data property in the table
         // .concat([{ name: 'id', value: `${item.meta.id}` }]),
       }
     })
     .concat(buildEmptyRow(valueVariables, categoricalVariables, scoreNames))
-
   return dataPointRows
 }

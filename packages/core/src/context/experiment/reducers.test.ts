@@ -27,7 +27,7 @@ describe('experiment reducer', () => {
         {
           name: 'Icing',
           description: 'Sugary',
-          options: [],
+          options: ['Vanilla', 'Chocolate'],
         },
       ],
       valueVariables: [
@@ -39,7 +39,13 @@ describe('experiment reducer', () => {
           max: 200,
         },
       ],
-      scoreVariables: [],
+      scoreVariables: [
+        {
+          name: 'score',
+          description: 'score',
+          enabled: true,
+        },
+      ],
       optimizerConfig: {
         baseEstimator: 'GP',
         acqFunc: 'gp_hedge',
@@ -49,13 +55,37 @@ describe('experiment reducer', () => {
       },
       results: {
         id: '',
-        next: [],
+        next: [
+          [100, 'Vanilla'],
+          [150, 'Chocolate'],
+        ],
         plots: [],
         pickled: '',
         expectedMinimum: [],
         extras: {},
       },
-      dataPoints: [],
+      dataPoints: [
+        {
+          meta: {
+            enabled: true,
+            id: 1,
+          },
+          data: [
+            {
+              name: 'Water',
+              value: 100,
+            },
+            {
+              name: 'Icing',
+              value: 'Vanilla',
+            },
+            {
+              name: 'score',
+              value: 10,
+            },
+          ],
+        },
+      ],
       extras: {
         experimentSuggestionCount: 1,
       },
@@ -281,7 +311,7 @@ describe('experiment reducer', () => {
           {
             name: 'Icing',
             description: 'Sugary',
-            options: [],
+            options: ['Vanilla', 'Chocolate'],
           },
           payload,
         ])
@@ -414,7 +444,7 @@ describe('experiment reducer', () => {
     it('should update result', async () => {
       const payload: ExperimentResultType = {
         id: 'myExperiment',
-        next: [1, 2, 3, 'Red'],
+        next: [[1, 2, 3, 'Red']],
         pickled: 'pickled',
         expectedMinimum: [],
         extras: {},
@@ -492,6 +522,154 @@ describe('experiment reducer', () => {
           .experimentSuggestionCount
       ).toEqual(3)
     })
+  })
+
+  describe('copySuggestedToDataPoints', () => {
+    it('should copy one row from suggested to data points', () => {
+      const action: ExperimentAction = {
+        type: 'copySuggestedToDataPoints',
+        payload: [0],
+      }
+      const dp = rootReducer(initState, action).experiment.dataPoints
+      expect(dp.length).toBe(2)
+      expect(dp[dp.length - 1]?.meta.enabled).toBeFalsy()
+      expect(dp[dp.length - 1]?.meta.id).toBe(2)
+      expect(dp[dp.length - 1]?.data).toEqual([
+        {
+          name: 'Water',
+          value: 100,
+        },
+        {
+          name: 'Icing',
+          value: 'Vanilla',
+        },
+        {
+          name: 'score',
+        },
+      ])
+    })
+    it('should copy multiple rows from suggested to data points', () => {
+      const action: ExperimentAction = {
+        type: 'copySuggestedToDataPoints',
+        payload: [0, 1],
+      }
+      const dp = rootReducer(initState, action).experiment.dataPoints
+      expect(dp.length).toBe(3)
+      //Check second-to-last item
+      expect(dp[dp.length - 2]?.meta.enabled).toBeFalsy()
+      expect(dp[dp.length - 2]?.meta.id).toBe(2)
+      expect(dp[dp.length - 2]?.data).toEqual([
+        {
+          name: 'Water',
+          value: 100,
+        },
+        {
+          name: 'Icing',
+          value: 'Vanilla',
+        },
+        {
+          name: 'score',
+        },
+      ])
+      //Check last item
+      expect(dp[dp.length - 1]?.meta.enabled).toBeFalsy()
+      expect(dp[dp.length - 1]?.meta.id).toBe(3)
+      expect(dp[dp.length - 1]?.data).toEqual([
+        {
+          name: 'Water',
+          value: 150,
+        },
+        {
+          name: 'Icing',
+          value: 'Chocolate',
+        },
+        {
+          name: 'score',
+        },
+      ])
+    })
+  })
+  it('should add scores to new data point for multi-objective - two scores enabled', () => {
+    const testState = {
+      ...initState,
+      experiment: {
+        ...initState.experiment,
+        scoreVariables: [
+          {
+            name: 'score',
+            description: 'score',
+            enabled: true,
+          },
+          {
+            name: 'score2',
+            description: 'score 2',
+            enabled: true,
+          },
+        ],
+      },
+    }
+    const action: ExperimentAction = {
+      type: 'copySuggestedToDataPoints',
+      payload: [0],
+    }
+    const dp = rootReducer(testState, action).experiment.dataPoints
+    expect(dp[dp.length - 1]?.data).toEqual([
+      {
+        name: 'Water',
+        value: 100,
+      },
+      {
+        name: 'Icing',
+        value: 'Vanilla',
+      },
+      {
+        name: 'score',
+      },
+      {
+        name: 'score2',
+      },
+    ])
+  })
+  it('should add scores to new data point for multi-objective - one score enabled', () => {
+    const testState = {
+      ...initState,
+      experiment: {
+        ...initState.experiment,
+        scoreVariables: [
+          {
+            name: 'score',
+            description: 'score',
+            enabled: true,
+          },
+          {
+            name: 'score2',
+            description: 'score 2',
+            enabled: false,
+          },
+        ],
+      },
+    }
+    const action: ExperimentAction = {
+      type: 'copySuggestedToDataPoints',
+      payload: [0],
+    }
+    const dp = rootReducer(testState, action).experiment.dataPoints
+    expect(dp[dp.length - 1]?.data).toEqual([
+      {
+        name: 'Water',
+        value: 100,
+      },
+      {
+        name: 'Icing',
+        value: 'Vanilla',
+      },
+      {
+        name: 'score',
+      },
+      {
+        name: 'score2',
+      },
+    ])
   })
 })
 

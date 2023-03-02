@@ -2,7 +2,7 @@
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '8'
+export const currentVersion = '9'
 
 export type Info = {
   name: string
@@ -27,7 +27,7 @@ export type ExperimentType = {
 export type ExperimentResultType = {
   id: string
   plots: { id: string; plot: string }[]
-  next: (number | string)[]
+  next: (number | string)[][]
   pickled: string
   expectedMinimum: Array<Array<number>>
   extras: object
@@ -116,7 +116,7 @@ export type ValueDataPointType = {
 }
 export type ScoreDataPointType = {
   name: string
-  value: DataPointTypeValue
+  value: DataPointTypeValue | undefined
 }
 
 export type SpaceType = {

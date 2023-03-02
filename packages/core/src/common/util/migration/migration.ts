@@ -8,6 +8,7 @@ import {
   migrateToV7,
   migrateToV5,
   migrateToV8,
+  migrateToV9,
 } from './migrations'
 
 export const migrate = (json: any): ExperimentType => {
@@ -78,4 +79,5 @@ export const MIGRATIONS: Migration[] = [
   { version: '6', converter: migrateToV6 },
   { version: '7', converter: migrateToV7 },
   { version: '8', converter: migrateToV8 },
+  { version: '9', converter: migrateToV9 },
 ]

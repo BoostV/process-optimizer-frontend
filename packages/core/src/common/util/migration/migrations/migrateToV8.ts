@@ -3,7 +3,6 @@ import {
   DataEntry,
   DataPointType,
   ExperimentResultType,
-  ExperimentType,
   OptimizerConfig,
   ScoreVariableType,
   ValueVariableType,
@@ -23,7 +22,32 @@ type ExperimentTypeV7 = {
   dataPoints: DataPointType[][]
 }
 
-export const migrateToV8 = (json: ExperimentTypeV7): ExperimentType => {
+export type ExperimentTypeV8 = {
+  id: string
+  changedSinceLastEvaluation: boolean
+  info: {
+    name: string
+    description: string
+    swVersion: string
+    dataFormatVersion: '8'
+  }
+  extras: Record<string, unknown>
+  categoricalVariables: CategoricalVariableType[]
+  valueVariables: ValueVariableType[]
+  scoreVariables: ScoreVariableType[]
+  optimizerConfig: OptimizerConfig
+  results: {
+    id: string
+    plots: { id: string; plot: string }[]
+    next: (string | number)[] | (number | string)[][]
+    pickled: string
+    expectedMinimum: Array<Array<number>>
+    extras: object
+  }
+  dataPoints: DataEntry[]
+}
+
+export const migrateToV8 = (json: ExperimentTypeV7): ExperimentTypeV8 => {
   return {
     ...json,
     info: { ...json.info, dataFormatVersion: '8' },

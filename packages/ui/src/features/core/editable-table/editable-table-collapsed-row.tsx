@@ -1,4 +1,4 @@
-import useStyles from './editable-table-collapsed-row.style'
+import useStyles, { disabledCell } from './editable-table-collapsed-row.style'
 import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material'
 import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
@@ -10,6 +10,7 @@ interface EditableTableCollapsedRowProps {
   colSpan: number
   rowId: number
   tableRow: TableDataRow
+  disabled?: boolean
   setExpanded: (expanded: boolean) => void
   onDelete: () => void
 }
@@ -18,6 +19,7 @@ export const EditableTableCollapsedRow = ({
   colSpan,
   rowId,
   tableRow,
+  disabled = false,
   setExpanded,
   onDelete,
 }: EditableTableCollapsedRowProps) => {
@@ -44,7 +46,12 @@ export const EditableTableCollapsedRow = ({
       ) : (
         <>
           <TableCell className={classes.emptyCell} />
-          <TableCell className={classes.cell}>{rowId}</TableCell>
+          <TableCell
+            className={classes.cell}
+            style={disabled ? disabledCell : {}}
+          >
+            {rowId}
+          </TableCell>
           {tableRow.dataPoints.map((item, itemIndex) => (
             <EditableTableCell
               key={'editablecell' + itemIndex}
@@ -52,6 +59,7 @@ export const EditableTableCollapsedRow = ({
               isEditMode={false}
               options={item.options}
               tooltip={item.tooltip}
+              style={disabled ? disabledCell : {}}
             />
           ))}
           <TableCell className={classes.editCell}>

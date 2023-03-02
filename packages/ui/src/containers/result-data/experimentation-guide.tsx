@@ -1,46 +1,48 @@
 import {
   useSelector,
   useExperiment,
+  selectExpectedMinimum,
+  selectVariableNames,
+  selectNextExperimentValues,
+  selectIsInitializing,
 } from '@boostv/process-optimizer-frontend-core'
-import { TitleCard } from '@boostv/process-optimizer-frontend-ui'
-import { Suggestions } from '@boostv/process-optimizer-frontend-ui'
-import { SingleDataPoint } from '@boostv/process-optimizer-frontend-ui'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
-import { useGlobal } from '@sample/context/global'
-import { isUIBig } from '@sample/utility/ui-util'
 import useStyles from './experimentation-guide.style'
-import { NextExperiments } from '@boostv/process-optimizer-frontend-ui'
-import { InitializationProgress } from '@boostv/process-optimizer-frontend-ui'
-import { selectIsInitializing } from '@boostv/process-optimizer-frontend-core'
+import {
+  InitializationProgress,
+  NextExperiments,
+  SingleDataPoint,
+  Suggestions,
+  TitleCard,
+} from '@ui/features'
+import { CopySuggested } from '@ui/features/result-data/copy-suggested'
 
 interface ResultDataProps {
-  nextValues: string[][]
-  headers: string[]
-  expectedMinimum?: any[][]
+  isUIBig?: boolean
+  toggleUISize?: () => void
   onMouseEnterExpand?: () => void
   onMouseLeaveExpand?: () => void
 }
 
 export const ExperimentationGuide = (props: ResultDataProps) => {
   const {
-    nextValues,
-    headers,
-    expectedMinimum,
+    isUIBig = false,
+    toggleUISize = () => {},
     onMouseEnterExpand,
     onMouseLeaveExpand,
   } = props
   const { classes } = useStyles()
   const {
-    state: { uiSizes },
-    dispatch,
-  } = useGlobal()
-  const {
     state: { experiment },
     dispatch: dispatchExperiment,
   } = useExperiment()
 
+  const nextValues = useSelector(selectNextExperimentValues)
+  const headers = useSelector(selectVariableNames)
+  const expectedMinimum = useSelector(selectExpectedMinimum)
   const isInitializing = useSelector(selectIsInitializing)
+
   const summary = isInitializing ? (
     <InitializationProgress
       experiment={experiment}
@@ -60,7 +62,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       />
     </Box>
   ) : (
-    <div>Please run experiment</div>
+    <Box p={2}>Please run experiment</Box>
   )
   return (
     <TitleCard
@@ -71,19 +73,14 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           <Hidden xlDown>
             <Tooltip
               title={
-                (isUIBig(uiSizes, 'result-data') ? 'Collapse' : 'Expand') +
+                (isUIBig ? 'Collapse' : 'Expand') +
                 " 'Result data' and 'Data points'"
               }
             >
               <IconButton
                 size="small"
                 className={classes.titleButton}
-                onClick={() =>
-                  dispatch({
-                    type: 'toggleUISize',
-                    payload: 'result-data',
-                  })
-                }
+                onClick={toggleUISize}
                 onMouseEnter={() => onMouseEnterExpand?.()}
                 onMouseLeave={() => onMouseLeaveExpand?.()}
               >
@@ -120,10 +117,31 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         )}
         {!nextValues ||
           (nextValues.length === 0 && (
-            <div>Please run experiment to calculate suggestions</div>
+            <Box p={2}>Please run experiment to calculate suggestions</Box>
           ))}
-        <Suggestions values={nextValues} headers={headers} />
+        <Suggestions
+          values={nextValues}
+          headers={headers}
+          onCopyToDataPoints={index =>
+            dispatchExperiment({
+              type: 'copySuggestedToDataPoints',
+              payload: [index],
+            })
+          }
+        />
       </Box>
+      {nextValues.length > 0 &&
+        nextValues[0] !== undefined &&
+        nextValues[0].length > 0 && (
+          <CopySuggested
+            onClick={() =>
+              dispatchExperiment({
+                type: 'copySuggestedToDataPoints',
+                payload: [...Array(nextValues.length)].map((_, i) => i),
+              })
+            }
+          />
+        )}
       {summary}
     </TitleCard>
   )
