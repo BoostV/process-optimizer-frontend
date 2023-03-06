@@ -180,7 +180,6 @@ export const experimentReducer = produce(
         state.results = action.payload
         break
       case 'updateDataPoints':
-        console.log('updateDataPoints', action.payload)
         if (
           action.payload.length < state.dataPoints.length &&
           state.dataPoints.length === state.optimizerConfig.initialPoints

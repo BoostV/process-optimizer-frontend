@@ -22,15 +22,14 @@ export const useStyles = makeStyles()(theme => ({
     fontSize: 14,
     borderRadius: '4px',
   },
-  // TODO: Move to theme
   info: {
-    backgroundColor: '#edf7ff',
+    backgroundColor: theme.palette.info.main,
   },
   warning: {
-    backgroundColor: '#fff2c6',
+    backgroundColor: theme.palette.warning.main,
   },
   error: {
-    backgroundColor: '#ffc6c6',
+    backgroundColor: theme.palette.error.main,
   },
 }))
 

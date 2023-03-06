@@ -111,6 +111,15 @@ const createCustomTheme = (custom: CustomColours): Theme => {
           main: custom.transparentBox,
         },
       },
+      info: {
+        main: '#edf7ff',
+      },
+      warning: {
+        main: '#fff2c6',
+      },
+      error: {
+        main: '#ffc6c6',
+      },
     },
   })
 }

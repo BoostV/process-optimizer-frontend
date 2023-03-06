@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import { colors } from './styles'
 
-export const useStyles = makeStyles()(() => ({
+export const useStyles = makeStyles()(theme => ({
   row: {
     '& + tr': {
       '& td': {
@@ -45,8 +45,7 @@ export const useStyles = makeStyles()(() => ({
     display: 'flex',
     alignItems: 'center',
     borderRadius: '4px',
-    // TODO: Move to theme
-    backgroundColor: '#fff2c6',
+    backgroundColor: theme.palette.warning.main,
     fontSize: 14,
     '& ul': {
       margin: 0,
