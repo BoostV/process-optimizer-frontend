@@ -2,12 +2,12 @@ import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useEffect, useMemo, useReducer } from 'react'
 import { EditableTable } from '../core'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
-import { TitleCard } from '../core/title-card/title-card'
+import { InfoBox, TitleCard } from '../core/title-card/title-card'
 import DownloadCSVButton from './download-csv-button'
 import useStyles from './data-points.style'
 import UploadCSVButton from './upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
-import { TableDataRow } from '../core/editable-table'
+import { EditableTableViolation, TableDataRow } from '../core/editable-table'
 import {
   DataPointType,
   saveCSVToLocalFile,
@@ -16,7 +16,9 @@ import {
   DataEntry,
   ScoreVariableType,
   ValueVariableType,
+  ValidationViolations,
 } from '@boostv/process-optimizer-frontend-core'
+import { findDataPointViolations } from './util'
 
 type DataPointProps = {
   experimentId: string
@@ -27,6 +29,7 @@ type DataPointProps = {
   newestFirst: boolean
   onToggleNewestFirst: () => void
   onUpdateDataPoints: (dataPoints: DataEntry[]) => void
+  violations?: ValidationViolations
 }
 
 export function DataPoints(props: DataPointProps) {
@@ -39,6 +42,7 @@ export function DataPoints(props: DataPointProps) {
     newestFirst,
     onToggleNewestFirst,
     onUpdateDataPoints,
+    violations,
   } = props
   const { classes } = useStyles()
   const [state, dispatch] = useReducer(dataPointsReducer, {
@@ -47,6 +51,39 @@ export function DataPoints(props: DataPointProps) {
     changed: false,
   })
   const isLoadingState = state.rows.length === 0
+
+  const getGeneralViolations = (): InfoBox[] => {
+    const infoBoxes: InfoBox[] = []
+    if (violations !== undefined) {
+      if (violations?.duplicateVariableNames.length > 0) {
+        infoBoxes.push({
+          text: `All data points disabled because of duplicate variable names: ${violations.duplicateVariableNames.join(
+            ', '
+          )}.`,
+          type: 'error',
+        })
+      }
+      if (violations?.duplicateDataPointIds.length > 0) {
+        infoBoxes.push({
+          text: `Data points with duplicate meta-ids have been disabled: ${violations.duplicateDataPointIds.join(
+            ', '
+          )}.`,
+          type: 'warning',
+        })
+      }
+    }
+    return infoBoxes
+  }
+
+  // TODO: Violations are wrong if order is reversed while row is open
+  const violationsInTable: EditableTableViolation[] | undefined = useMemo(
+    () => findDataPointViolations(violations),
+    [
+      violations?.dataPointsUndefined,
+      violations?.upperBoundary,
+      violations?.lowerBoundary,
+    ]
+  )
 
   const scoreNames = useMemo(
     () => scoreVariables.filter(it => it.enabled).map(it => it.name),
@@ -168,6 +205,7 @@ export function DataPoints(props: DataPointProps) {
           </Box>
         </>
       }
+      infoBoxes={getGeneralViolations()}
     >
       {valueVariables.length + categoricalVariables.length === 0 &&
         'Data points will appear here'}
@@ -188,6 +226,7 @@ export function DataPoints(props: DataPointProps) {
               onRowEdited={(rowIndex: number, row: TableDataRow) =>
                 rowEdited(rowIndex, row)
               }
+              violations={violationsInTable}
             />
           </Box>
         )}

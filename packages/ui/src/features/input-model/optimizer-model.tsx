@@ -17,6 +17,7 @@ import LensIcon from '@mui/icons-material/Lens'
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
 import {
   CategoricalVariableType,
+  ValidationViolations,
   ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
 
@@ -30,6 +31,7 @@ type OptimizerModelProps = {
   ) => void
   addValueVariable: (valueVariable: ValueVariableType) => void
   addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
+  violations?: ValidationViolations
 }
 
 export function OptimizerModel(props: OptimizerModelProps) {
@@ -41,11 +43,28 @@ export function OptimizerModel(props: OptimizerModelProps) {
     onDeleteCategoricalVariable,
     addValueVariable,
     addCategoricalVariable,
+    violations,
   } = props
   const { classes } = useStyles()
 
   return (
-    <TitleCard title="Input model" padding={0}>
+    <TitleCard
+      title="Input model"
+      padding={0}
+      infoBoxes={
+        violations !== undefined &&
+        violations?.duplicateVariableNames.length > 0
+          ? [
+              {
+                text: `Please remove duplicate variable names: ${violations.duplicateVariableNames.join(
+                  ', '
+                )}.`,
+                type: 'error',
+              },
+            ]
+          : undefined
+      }
+    >
       {(valueVariables.length > 0 || categoricalVariables.length > 0) && (
         <Box p={2}>
           {valueVariables.length > 0 && (

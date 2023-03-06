@@ -41,6 +41,18 @@ export const useStyles = makeStyles()(() => ({
     border: 'none',
     paddingRight: 16,
   },
+  violations: {
+    display: 'flex',
+    alignItems: 'center',
+    borderRadius: '4px',
+    // TODO: Move to theme
+    backgroundColor: '#fff2c6',
+    fontSize: 14,
+    '& ul': {
+      margin: 0,
+      padding: '0 0 0 24px',
+    },
+  },
 }))
 
 export default useStyles

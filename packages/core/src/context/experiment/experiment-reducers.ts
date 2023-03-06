@@ -104,7 +104,6 @@ export const experimentReducer = produce(
           .filter((_, i) => action.payload.includes(i))
           .map((n, k) => ({
             meta: {
-              // TODO: Move to general validation?
               enabled: false,
               id: Math.max(...state.dataPoints.map(d => d.meta.id)) + k + 1,
             },
@@ -181,6 +180,7 @@ export const experimentReducer = produce(
         state.results = action.payload
         break
       case 'updateDataPoints':
+        console.log('updateDataPoints', action.payload)
         if (
           action.payload.length < state.dataPoints.length &&
           state.dataPoints.length === state.optimizerConfig.initialPoints

@@ -12,6 +12,7 @@ import {
 import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
 import { useState } from 'react'
+import WarningIcon from '@mui/icons-material/Warning'
 
 interface EditableTableExpandedRowProps {
   colSpan: number
@@ -20,6 +21,7 @@ interface EditableTableExpandedRowProps {
   setExpanded: (expanded: boolean) => void
   onAdd: (row: TableDataRow) => void
   onSave: (row: TableDataRow) => void
+  violations?: string[]
 }
 
 export const EditableTableExpandedRow = ({
@@ -29,6 +31,7 @@ export const EditableTableExpandedRow = ({
   setExpanded,
   onAdd,
   onSave,
+  violations,
 }: EditableTableExpandedRowProps) => {
   const { classes } = useStyles()
   const [editedRow, setEditedRow] = useState<TableDataRow>({ ...tableRow })
@@ -99,6 +102,18 @@ export const EditableTableExpandedRow = ({
               </Table>
             </Box>
           </Box>
+
+          {violations !== undefined && violations.length > 0 && (
+            <Box p={1} mt={1} className={classes.violations}>
+              <WarningIcon fontSize="small" />
+              <ul>
+                {violations?.map((v, i) => (
+                  <li key={i}>{v}</li>
+                ))}
+              </ul>
+            </Box>
+          )}
+
           <Box display="flex" justifyContent="end" mt={2}>
             <Button
               variant="outlined"

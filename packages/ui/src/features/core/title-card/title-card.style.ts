@@ -16,6 +16,22 @@ export const useStyles = makeStyles()(theme => ({
       paddingBottom: 0,
     },
   },
+  infoBox: {
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: 14,
+    borderRadius: '4px',
+  },
+  // TODO: Move to theme
+  info: {
+    backgroundColor: '#edf7ff',
+  },
+  warning: {
+    backgroundColor: '#fff2c6',
+  },
+  error: {
+    backgroundColor: '#ffc6c6',
+  },
 }))
 
 export default useStyles

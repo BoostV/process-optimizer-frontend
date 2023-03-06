@@ -21,7 +21,7 @@ import {
 } from '@boostv/process-optimizer-frontend-ui'
 import { Alert } from '@mui/material'
 import { useStyles } from './experiment.style'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { LoadingExperiment } from './loading-experiment'
 import { useGlobal } from '@sample/context/global'
 import { UISizeValue } from '@sample/context/global'
@@ -38,6 +38,8 @@ import {
   DataEntry,
   OptimizerConfig,
   ValueVariableType,
+  ValidationViolations,
+  validateExperiment,
 } from '@boostv/process-optimizer-frontend-core'
 
 type SnackbarMessage = {
@@ -61,6 +63,11 @@ const LegacyExperiment = () => {
     },
     dispatch: globalDispatch,
   } = useGlobal()
+
+  const validationViolations: ValidationViolations = useMemo(
+    () => validateExperiment(experiment),
+    [experiment]
+  )
 
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
@@ -230,6 +237,7 @@ const LegacyExperiment = () => {
                           payload: categoricalVariable,
                         })
                       }
+                      violations={validationViolations}
                     />
                   </Grid>
 
@@ -301,6 +309,7 @@ const LegacyExperiment = () => {
                               payload: dataPoints,
                             })
                           }
+                          violations={validationViolations}
                         />
                       </Grid>
                     </Grid>

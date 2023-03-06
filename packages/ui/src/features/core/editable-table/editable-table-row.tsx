@@ -10,6 +10,7 @@ interface EditableTableRowProps {
   onSave: (row: TableDataRow) => void
   onDelete: () => void
   onAdd: (row: TableDataRow) => void
+  violations?: string[]
 }
 
 export const EditableTableRow = ({
@@ -19,6 +20,7 @@ export const EditableTableRow = ({
   onSave,
   onDelete,
   onAdd,
+  violations,
 }: EditableTableRowProps) => {
   const [expanded, setExpanded] = useState(false)
 
@@ -32,6 +34,7 @@ export const EditableTableRow = ({
           onAdd={row => onAdd(row)}
           onSave={row => onSave(row)}
           setExpanded={expanded => setExpanded(expanded)}
+          violations={violations}
         />
       ) : (
         <EditableTableCollapsedRow

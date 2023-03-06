@@ -42,10 +42,6 @@ export type DataPointsAction =
       payload: EditRow
     }
 
-// TODO: Move to general validation?
-const isRowValid = (row: TableDataRow) =>
-  row.dataPoints.every(dp => dp.value !== undefined && dp.value !== '')
-
 export const dataPointsReducer = produce(
   (state: DataPointsState, action: DataPointsAction) => {
     switch (action.type) {
@@ -63,10 +59,11 @@ export const dataPointsReducer = produce(
         break
       }
       case 'rowAdded':
-        state.rows.push({ ...action.payload, isNew: false })
+        const metaId = Math.max(0, ...state.meta.map(m => m.id)) + 1
+        state.rows.push({ ...action.payload, isNew: false, metaId })
         state.meta.push({
-          enabled: isRowValid(action.payload),
-          id: Math.max(0, ...state.meta.map(m => m.id)) + 1,
+          enabled: true,
+          id: metaId,
         })
         state.changed = true
         break
@@ -77,13 +74,6 @@ export const dataPointsReducer = produce(
         break
       case 'rowEdited':
         state.rows[action.payload.rowIndex] = action.payload.row
-        const meta = state.meta[action.payload.rowIndex]
-        if (meta !== undefined) {
-          state.meta[action.payload.rowIndex] = {
-            ...meta,
-            enabled: isRowValid(action.payload.row),
-          }
-        }
         state.changed = true
         break
       default:
@@ -168,6 +158,7 @@ const buildRows = (
         isNew: false,
         dataPoints: vars.concat(scores),
         disabled: !item.meta.enabled,
+        metaId: item?.meta.id,
         // Uncomment the following line to display a meta data property in the table
         // .concat([{ name: 'id', value: `${item.meta.id}` }]),
       }
