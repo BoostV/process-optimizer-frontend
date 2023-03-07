@@ -29,7 +29,7 @@ export const useStyles = makeStyles()(theme => ({
     backgroundColor: theme.palette.warning.main,
   },
   error: {
-    backgroundColor: theme.palette.error.main,
+    backgroundColor: theme.palette.error.light,
   },
 }))
 

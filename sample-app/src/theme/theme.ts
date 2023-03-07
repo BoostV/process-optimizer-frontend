@@ -118,7 +118,8 @@ const createCustomTheme = (custom: CustomColours): Theme => {
         main: '#fff2c6',
       },
       error: {
-        main: '#ffc6c6',
+        main: '#ff5a5a',
+        light: '#ffc6c6',
       },
     },
   })
