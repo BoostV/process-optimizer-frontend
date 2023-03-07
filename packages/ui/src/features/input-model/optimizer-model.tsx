@@ -179,6 +179,7 @@ export function OptimizerModel(props: OptimizerModelProps) {
             addValueVariable={(valueVariable: ValueVariableType) =>
               addValueVariable(valueVariable)
             }
+            valueVariables={valueVariables}
           />
         )}
 

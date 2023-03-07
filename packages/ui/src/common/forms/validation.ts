@@ -1,3 +1,5 @@
+import { ValueVariableType } from '@ui/../../core/dist'
+
 export const validation = {
   required: { required: 'Required' },
   mustBeNumber: {
@@ -7,3 +9,10 @@ export const validation = {
     },
   },
 }
+
+export const isValidValueVariableName = (
+  valueVariables: ValueVariableType[],
+  newName: string
+) =>
+  !valueVariables.map(v => v.name).includes(newName.trim()) ||
+  'Duplicate names not allowed'

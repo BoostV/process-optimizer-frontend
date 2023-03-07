@@ -12,11 +12,16 @@ type VariableEditorProps = {
   isAddVariableDisabled: boolean
   addValueVariable: (valueVariable: ValueVariableType) => void
   addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
+  valueVariables: ValueVariableType[]
 }
 
 export default function VariableEditor(props: VariableEditorProps) {
-  const { isAddVariableDisabled, addValueVariable, addCategoricalVariable } =
-    props
+  const {
+    isAddVariableDisabled,
+    addValueVariable,
+    addCategoricalVariable,
+    valueVariables,
+  } = props
 
   const [tabIndex, setTabIndex] = useState(0)
   const { classes } = useStyles()
@@ -39,6 +44,7 @@ export default function VariableEditor(props: VariableEditorProps) {
       <Box ml={2} mr={2}>
         {tabIndex === 0 && (
           <ValueVariable
+            valueVariables={valueVariables}
             isDisabled={isAddVariableDisabled}
             onAdded={(valueVariable: ValueVariableType) =>
               addValueVariable(valueVariable)

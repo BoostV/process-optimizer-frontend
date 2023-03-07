@@ -1,4 +1,4 @@
-import { validation } from './validation'
+import { isValidValueVariableName, validation } from './validation'
 
 describe('validation', () => {
   describe('mustBeNumber', () => {
@@ -13,6 +13,40 @@ describe('validation', () => {
       expect(regex.test('-')).toBeFalsy()
       expect(regex.test('.')).toBeFalsy()
       expect(regex.test('.8')).toBeFalsy()
+    })
+  })
+  describe('isValidValueVariableName', () => {
+    it('should return false when name is in value variables', async () => {
+      expect(
+        isValidValueVariableName(
+          [
+            {
+              name: 'Duplicate',
+              description: '',
+              max: 1,
+              min: 1,
+              type: 'continuous',
+            },
+          ],
+          'Duplicate'
+        )
+      ).toEqual('Duplicate names not allowed')
+    })
+    it('should return true when name is not in value variables', async () => {
+      expect(
+        isValidValueVariableName(
+          [
+            {
+              name: 'Duplicate',
+              description: '',
+              max: 1,
+              min: 1,
+              type: 'continuous',
+            },
+          ],
+          'Not duplicate'
+        )
+      ).toBeTruthy()
     })
   })
 })

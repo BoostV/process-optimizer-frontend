@@ -1,9 +1,9 @@
 import { Box, Button } from '@mui/material'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import useStyles from './value-variable.style'
 import { FormRadioGroup } from '@ui/common'
-import { validation } from '@ui/common/forms'
+import { isValidValueVariableName, validation } from '@ui/common/forms'
 import {
   ValueVariableInputType,
   ValueVariableType,
@@ -12,18 +12,24 @@ import FormInputText from '@ui/common/forms/form-input'
 
 type ValueVariableProps = {
   isDisabled: boolean
+  valueVariables: ValueVariableType[]
   onAdded: (data: ValueVariableType) => void
 }
 
 export default function ValueVariable(props: ValueVariableProps) {
-  const { isDisabled, onAdded } = props
+  const { isDisabled, valueVariables, onAdded } = props
   const { classes } = useStyles()
-  const defaultValues: ValueVariableInputType = useMemo(() => {
-    return { name: '', min: '', max: '', description: '', type: 'continuous' }
-  }, [])
-  const { handleSubmit, reset, control, formState, getValues } = useForm({
-    defaultValues,
-  })
+  const defaultValues: ValueVariableInputType = {
+    name: '',
+    min: '',
+    max: '',
+    description: '',
+    type: 'continuous',
+  }
+  const { handleSubmit, reset, control, formState, getValues } =
+    useForm<ValueVariableInputType>({
+      defaultValues,
+    })
 
   const onSubmit = (data: ValueVariableInputType) => {
     onAdded({
@@ -54,7 +60,11 @@ export default function ValueVariable(props: ValueVariableProps) {
           fullWidth
           margin="dense"
           label="Name"
-          rules={validation.required}
+          rules={{
+            ...validation.required,
+            validate: (name: string, _: ValueVariableInputType) =>
+              isValidValueVariableName(valueVariables, name),
+          }}
         />
         <FormInputText
           name="description"
