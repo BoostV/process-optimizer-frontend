@@ -16,6 +16,8 @@ export type EditableTableViolation = {
   messages: string[]
 }
 
+export type TableOrder = 'ascending' | 'descending'
+
 type EditableTableProps = {
   rows: TableDataRow[]
   newestFirst: boolean
@@ -23,6 +25,7 @@ type EditableTableProps = {
   onRowDeleted: (rowIndex: number) => void
   onRowEdited: (rowIndex: number, row: TableDataRow) => void
   violations?: EditableTableViolation[]
+  order: TableOrder
 }
 
 export const EditableTable = ({
@@ -32,6 +35,7 @@ export const EditableTable = ({
   onRowDeleted,
   onRowEdited,
   violations,
+  order,
 }: EditableTableProps) => {
   const { classes } = useStyles()
 
@@ -69,6 +73,7 @@ export const EditableTable = ({
               violations={
                 violations?.find(v => v.rowMetaId === row.metaId)?.messages
               }
+              order={order}
             />
           ))}
         </TableBody>

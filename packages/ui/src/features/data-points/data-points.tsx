@@ -75,7 +75,6 @@ export function DataPoints(props: DataPointProps) {
     return infoBoxes
   }
 
-  // TODO: Violations are wrong if order is reversed while row is open
   const violationsInTable: EditableTableViolation[] | undefined = useMemo(
     () => findDataPointViolations(violations),
     [
@@ -227,6 +226,7 @@ export function DataPoints(props: DataPointProps) {
                 rowEdited(rowIndex, row)
               }
               violations={violationsInTable}
+              order={newestFirst ? 'ascending' : 'descending'}
             />
           </Box>
         )}

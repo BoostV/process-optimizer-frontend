@@ -1,7 +1,8 @@
 import { TableDataRow } from './types'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { EditableTableExpandedRow } from './editable-table-expanded-row'
 import { EditableTableCollapsedRow } from './editable-table-collapsed-row'
+import { TableOrder } from './editable-table'
 
 interface EditableTableRowProps {
   tableRow: TableDataRow
@@ -11,6 +12,7 @@ interface EditableTableRowProps {
   onDelete: () => void
   onAdd: (row: TableDataRow) => void
   violations?: string[]
+  order: TableOrder
 }
 
 export const EditableTableRow = ({
@@ -21,8 +23,13 @@ export const EditableTableRow = ({
   onDelete,
   onAdd,
   violations,
+  order,
 }: EditableTableRowProps) => {
   const [expanded, setExpanded] = useState(false)
+
+  useEffect(() => {
+    setExpanded(false)
+  }, [order, setExpanded])
 
   return (
     <>
