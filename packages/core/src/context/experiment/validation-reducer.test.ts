@@ -40,6 +40,7 @@ describe('validationReducer', () => {
       lowerBoundary: [],
       upperBoundary: [],
       duplicateDataPointIds: [],
+      dataPointsNotNumber: [],
     })
     expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeTruthy()
     expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeTruthy()
@@ -52,6 +53,7 @@ describe('validationReducer', () => {
       lowerBoundary: [],
       upperBoundary: [],
       duplicateDataPointIds: [],
+      dataPointsNotNumber: [],
     })
     expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
     expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeTruthy()
@@ -64,6 +66,7 @@ describe('validationReducer', () => {
       lowerBoundary: [1],
       upperBoundary: [],
       duplicateDataPointIds: [],
+      dataPointsNotNumber: [],
     })
     expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
     expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeTruthy()
@@ -76,6 +79,7 @@ describe('validationReducer', () => {
       lowerBoundary: [],
       upperBoundary: [1],
       duplicateDataPointIds: [],
+      dataPointsNotNumber: [],
     })
     expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
     expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeTruthy()
@@ -118,6 +122,7 @@ describe('validationReducer', () => {
         lowerBoundary: [],
         upperBoundary: [],
         duplicateDataPointIds: [1],
+        dataPointsNotNumber: [],
       }
     )
     expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
@@ -131,8 +136,22 @@ describe('validationReducer', () => {
       lowerBoundary: [],
       upperBoundary: [],
       duplicateDataPointIds: [1, 2],
+      dataPointsNotNumber: [],
     })
     expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
     expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeFalsy()
+  })
+
+  it('should disable data points with non-numeric value variables', () => {
+    const validatedExperiment = validationReducer(exp, {
+      dataPointsUndefined: [],
+      duplicateVariableNames: [],
+      lowerBoundary: [],
+      upperBoundary: [],
+      duplicateDataPointIds: [],
+      dataPointsNotNumber: [1],
+    })
+    expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
+    expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeTruthy()
   })
 })

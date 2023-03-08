@@ -6,6 +6,7 @@ export type ValidationViolations = {
   duplicateVariableNames: string[]
   dataPointsUndefined: number[]
   duplicateDataPointIds: number[]
+  dataPointsNotNumber: number[]
 }
 
 export const validateExperiment = (
@@ -17,6 +18,7 @@ export const validateExperiment = (
     duplicateVariableNames: validateDuplicateVariableNames(experiment),
     dataPointsUndefined: validateDataPointsUndefined(experiment),
     duplicateDataPointIds: validateDuplicateDataPointIds(experiment),
+    dataPointsNotNumber: validateDataPointsNotNumber(experiment),
   }
 }
 
@@ -96,3 +98,22 @@ export const findUniqueDuplicates = <T extends number[] | string[]>(
     // @ts-ignore - https://github.com/microsoft/TypeScript/issues/44373
     .filter((val: T, i: number, arr: T[]) => arr.indexOf(val) !== i)
     .filter((val: T, i: number, arr: T[]) => arr.indexOf(val) === i)
+
+// TODO: "," vs "."
+export const validateDataPointsNotNumber = (
+  experiment: ExperimentType
+): number[] => {
+  let violations: number[] = []
+  experiment.dataPoints.forEach(dp => {
+    dp.data.forEach(d => {
+      const valueVar = experiment.valueVariables.find(v => v.name === d.name)
+      if (
+        valueVar !== undefined &&
+        (Array.isArray(d.value) || isNaN(Number(d.value)))
+      ) {
+        violations.push(dp.meta.id)
+      }
+    })
+  })
+  return violations
+}

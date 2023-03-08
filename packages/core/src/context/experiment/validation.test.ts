@@ -1,6 +1,7 @@
-import { ExperimentType } from '@core/common'
+import { ExperimentType, ValueVariableType } from '@core/common'
 import { emptyExperiment } from './store'
 import {
+  validateDataPointsNotNumber,
   validateDataPointsUndefined,
   validateDuplicateDataPointIds,
   validateDuplicateVariableNames,
@@ -429,7 +430,7 @@ describe('validateDataPointsUndefined', () => {
     expect(validateDataPointsUndefined(exp)).toEqual([1, 2])
   })
 
-  it('sohuld return empty array if score is undefined but also disabled', () => {
+  it('should return empty array if score is undefined but also disabled', () => {
     const exp: ExperimentType = {
       ...emptyExperiment,
       scoreVariables: [
@@ -522,6 +523,7 @@ describe('validateDuplicateDataPointIds', () => {
     }
     expect(validateDuplicateDataPointIds(exp)).toEqual([1, 2])
   })
+
   it('should return empty array when no duplicates exist', () => {
     const exp: ExperimentType = {
       ...emptyExperiment,
@@ -543,5 +545,130 @@ describe('validateDuplicateDataPointIds', () => {
       ],
     }
     expect(validateDuplicateDataPointIds(exp)).toEqual([])
+  })
+})
+
+describe('validateDataPointsNotNumber', () => {
+  const valueVariables: ValueVariableType[] = [
+    {
+      name: 'Water',
+      min: 10,
+      max: 100,
+      type: 'discrete',
+      description: '',
+    },
+  ]
+
+  it('should return violation when value variable is not a number - string', () => {
+    expect(
+      validateDataPointsNotNumber({
+        ...emptyExperiment,
+        valueVariables,
+        dataPoints: [
+          {
+            meta: {
+              enabled: true,
+              id: 1,
+            },
+            data: [
+              {
+                name: 'Water',
+                value: 'notANumber',
+              },
+            ],
+          },
+        ],
+      })
+    ).toEqual([1])
+  })
+
+  it('should return violation when value variable is not a number - empty array', () => {
+    expect(
+      validateDataPointsNotNumber({
+        ...emptyExperiment,
+        valueVariables,
+        dataPoints: [
+          {
+            meta: {
+              enabled: true,
+              id: 1,
+            },
+            data: [
+              {
+                name: 'Water',
+                value: [],
+              },
+            ],
+          },
+        ],
+      })
+    ).toEqual([1])
+  })
+  it('should return violation when value variable is a number array', () => {
+    expect(
+      validateDataPointsNotNumber({
+        ...emptyExperiment,
+        valueVariables,
+        dataPoints: [
+          {
+            meta: {
+              enabled: true,
+              id: 1,
+            },
+            data: [
+              {
+                name: 'Water',
+                value: [1],
+              },
+            ],
+          },
+        ],
+      })
+    ).toEqual([1])
+  })
+
+  it('should return empty array when value variable is a number - number', () => {
+    expect(
+      validateDataPointsNotNumber({
+        ...emptyExperiment,
+        valueVariables,
+        dataPoints: [
+          {
+            meta: {
+              enabled: true,
+              id: 1,
+            },
+            data: [
+              {
+                name: 'Water',
+                value: 1,
+              },
+            ],
+          },
+        ],
+      })
+    ).toEqual([])
+  })
+  it('should return empty array when value variable is a number - string', () => {
+    expect(
+      validateDataPointsNotNumber({
+        ...emptyExperiment,
+        valueVariables,
+        dataPoints: [
+          {
+            meta: {
+              enabled: true,
+              id: 1,
+            },
+            data: [
+              {
+                name: 'Water',
+                value: '1',
+              },
+            ],
+          },
+        ],
+      })
+    ).toEqual([])
   })
 })

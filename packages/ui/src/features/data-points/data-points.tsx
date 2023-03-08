@@ -86,6 +86,7 @@ export function DataPoints(props: DataPointProps) {
       violations?.dataPointsUndefined,
       violations?.upperBoundary,
       violations?.lowerBoundary,
+      violations?.dataPointsNotNumber,
     ]
   )
 

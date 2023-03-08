@@ -89,7 +89,7 @@ const buildCombinedVariables = (
   return (
     valueVariables.map(v => ({
       ...v,
-      tooltip: `[${v.min}, ${v.max}]`,
+      tooltip: `[${v.min}, ${v.max}] ${v.type === 'discrete' ? '●' : '○'}`,
     })) as CombinedVariableType[]
   ).concat(
     categoricalVariables.map(v => ({

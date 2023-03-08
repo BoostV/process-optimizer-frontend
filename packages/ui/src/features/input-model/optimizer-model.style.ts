@@ -5,7 +5,7 @@ export const useStyles = makeStyles()(() => ({
   editBox: {
     background: grey[200],
   },
-  iconDiscrete: {
+  iconValueType: {
     fontSize: 10,
   },
 }))

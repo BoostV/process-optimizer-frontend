@@ -85,12 +85,12 @@ export function OptimizerModel(props: OptimizerModelProps) {
                     <TableCell>
                       {valueVar.type === 'discrete' ? (
                         <Tooltip title="Discrete">
-                          <LensIcon className={classes.iconDiscrete} />
+                          <LensIcon className={classes.iconValueType} />
                         </Tooltip>
                       ) : (
                         <Tooltip title="Continuous">
                           <PanoramaFishEyeIcon
-                            className={classes.iconDiscrete}
+                            className={classes.iconValueType}
                           />
                         </Tooltip>
                       )}

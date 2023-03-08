@@ -1,5 +1,12 @@
 import useStyles, { disabledCell } from './editable-table-collapsed-row.style'
-import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material'
+import {
+  Button,
+  IconButton,
+  TableCell,
+  TableRow,
+  Tooltip,
+  Box,
+} from '@mui/material'
 import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
 import AddIcon from '@mui/icons-material/Add'
@@ -28,24 +35,27 @@ export const EditableTableCollapsedRow = ({
   const { classes } = useStyles()
 
   return (
-    <TableRow className={classes.row}>
+    <TableRow className={tableRow.isNew ? classes.rowNew : classes.row}>
       {tableRow.isNew ? (
         <>
           <TableCell className={classes.emptyCell} />
-          <TableCell align="right" colSpan={colSpan} className={classes.newRow}>
-            <Tooltip title="Add data point">
-              <IconButton
+          <TableCell
+            align="right"
+            colSpan={colSpan}
+            className={classes.newRowCell}
+          >
+            <Box m={1}>
+              <Button
                 size="small"
-                aria-label="expand"
+                aria-label="add data point"
                 onClick={() => setExpanded(true)}
                 disabled={isEditingDisabled}
+                startIcon={<AddIcon fontSize="small" />}
+                variant="outlined"
               >
-                <AddIcon
-                  fontSize="small"
-                  color={isEditingDisabled ? 'disabled' : 'primary'}
-                />
-              </IconButton>
-            </Tooltip>
+                Add data point
+              </Button>
+            </Box>
           </TableCell>
           <TableCell className={classes.emptyCell} />
         </>
