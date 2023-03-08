@@ -26,6 +26,7 @@ type EditableTableProps = {
   onRowEdited: (rowIndex: number, row: TableDataRow) => void
   violations?: EditableTableViolation[]
   order: TableOrder
+  isEditingDisabled?: boolean
 }
 
 export const EditableTable = ({
@@ -36,6 +37,7 @@ export const EditableTable = ({
   onRowEdited,
   violations,
   order,
+  isEditingDisabled,
 }: EditableTableProps) => {
   const { classes } = useStyles()
 
@@ -74,6 +76,7 @@ export const EditableTable = ({
                 violations?.find(v => v.rowMetaId === row.metaId)?.messages
               }
               order={order}
+              isEditingDisabled={isEditingDisabled}
             />
           ))}
         </TableBody>

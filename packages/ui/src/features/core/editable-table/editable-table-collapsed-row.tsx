@@ -13,6 +13,7 @@ interface EditableTableCollapsedRowProps {
   disabled?: boolean
   setExpanded: (expanded: boolean) => void
   onDelete: () => void
+  isEditingDisabled?: boolean
 }
 
 export const EditableTableCollapsedRow = ({
@@ -22,6 +23,7 @@ export const EditableTableCollapsedRow = ({
   disabled = false,
   setExpanded,
   onDelete,
+  isEditingDisabled,
 }: EditableTableCollapsedRowProps) => {
   const { classes } = useStyles()
 
@@ -36,8 +38,12 @@ export const EditableTableCollapsedRow = ({
                 size="small"
                 aria-label="expand"
                 onClick={() => setExpanded(true)}
+                disabled={isEditingDisabled}
               >
-                <AddIcon fontSize="small" color="primary" />
+                <AddIcon
+                  fontSize="small"
+                  color={isEditingDisabled ? 'disabled' : 'primary'}
+                />
               </IconButton>
             </Tooltip>
           </TableCell>
@@ -69,8 +75,12 @@ export const EditableTableCollapsedRow = ({
                   size="small"
                   aria-label="expand"
                   onClick={() => setExpanded(true)}
+                  disabled={isEditingDisabled}
                 >
-                  <EditIcon fontSize="small" color="primary" />
+                  <EditIcon
+                    fontSize="small"
+                    color={isEditingDisabled ? 'disabled' : 'primary'}
+                  />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Delete">

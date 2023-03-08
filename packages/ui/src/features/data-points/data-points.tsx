@@ -51,11 +51,16 @@ export function DataPoints(props: DataPointProps) {
     changed: false,
   })
   const isLoadingState = state.rows.length === 0
+  const isDuplicateVariableNames = useMemo(
+    () =>
+      violations !== undefined && violations?.duplicateVariableNames.length > 0,
+    [violations?.duplicateVariableNames]
+  )
 
   const getGeneralViolations = (): InfoBox[] => {
     const infoBoxes: InfoBox[] = []
     if (violations !== undefined) {
-      if (violations?.duplicateVariableNames.length > 0) {
+      if (isDuplicateVariableNames) {
         infoBoxes.push({
           text: `All data points disabled because of duplicate variable names: ${violations.duplicateVariableNames.join(
             ', '
@@ -227,6 +232,7 @@ export function DataPoints(props: DataPointProps) {
               }
               violations={violationsInTable}
               order={newestFirst ? 'ascending' : 'descending'}
+              isEditingDisabled={isDuplicateVariableNames}
             />
           </Box>
         )}
