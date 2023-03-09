@@ -1,5 +1,4 @@
 import { dataPointsReducer, DataPointsState } from './data-points-reducer'
-import { TableDataRow } from '@ui/features/core/editable-table'
 
 describe('data points reducer', () => {
   const initialState: DataPointsState = {
@@ -38,14 +37,18 @@ describe('data points reducer', () => {
   })
   describe('dataPointsReducer - rowAdded', () => {
     it('should add a row and set changed to true', async () => {
-      const payload: TableDataRow = {
-        isNew: false,
-        dataPoints: [
-          {
-            name: 'test',
-            value: '100',
-          },
-        ],
+      const payload = {
+        row: {
+          isNew: false,
+          dataPoints: [
+            {
+              name: 'test',
+              value: '100',
+            },
+          ],
+          metaId: 1,
+        },
+        categoricalVariables: [],
       }
       expect(
         dataPointsReducer(
@@ -58,7 +61,7 @@ describe('data points reducer', () => {
       ).toEqual({
         ...initialState,
         meta: [{ enabled: true, id: 1 }],
-        rows: [...initialState.rows, payload],
+        rows: [...initialState.rows, payload.row],
         changed: true,
       })
     })
@@ -115,16 +118,19 @@ describe('data points reducer', () => {
   describe('dataPointsReducer - rowEdited', () => {
     it('should edit a row and set changed to true', async () => {
       const payload = {
-        row: {
-          isNew: false,
-          dataPoints: [
-            {
-              name: 'testNew',
-              value: '999',
-            },
-          ],
+        editRow: {
+          row: {
+            isNew: false,
+            dataPoints: [
+              {
+                name: 'testNew',
+                value: '999',
+              },
+            ],
+          },
+          rowIndex: 0,
         },
-        rowIndex: 0,
+        categoricalVariables: [],
       }
       expect(
         dataPointsReducer(
@@ -154,14 +160,80 @@ describe('data points reducer', () => {
             isNew: false,
             dataPoints: [
               {
-                name: payload.row.dataPoints[0]?.name,
-                value: payload.row.dataPoints[0]?.value,
+                name: payload.editRow.row.dataPoints[0]?.name,
+                value: payload.editRow.row.dataPoints[0]?.value,
               },
             ],
           },
         ],
         changed: true,
       })
+    })
+  })
+  it('should change "," to "." for non-categorical values', async () => {
+    const payload = {
+      editRow: {
+        row: {
+          isNew: false,
+          dataPoints: [
+            {
+              name: 'testNew',
+              value: '9,99',
+            },
+            {
+              name: 'cat',
+              value: 'A,1',
+            },
+          ],
+        },
+        rowIndex: 0,
+      },
+      categoricalVariables: [
+        {
+          name: 'cat',
+          description: '',
+          options: ['A,1', 'B'],
+        },
+      ],
+    }
+    expect(
+      dataPointsReducer(
+        {
+          ...initialState,
+          rows: [
+            {
+              isNew: false,
+              dataPoints: [
+                {
+                  name: 'test1',
+                  value: '100',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'rowEdited',
+          payload,
+        }
+      )
+    ).toEqual({
+      ...initialState,
+      rows: [
+        {
+          isNew: false,
+          dataPoints: [
+            {
+              name: payload.editRow.row.dataPoints[0]?.name,
+              value: '9.99',
+            },
+            {
+              ...payload.editRow.row.dataPoints[1],
+            },
+          ],
+        },
+      ],
+      changed: true,
     })
   })
 })

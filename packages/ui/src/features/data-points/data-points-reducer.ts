@@ -31,7 +31,10 @@ export type DataPointsAction =
     }
   | {
       type: 'rowAdded'
-      payload: TableDataRow
+      payload: {
+        row: TableDataRow
+        categoricalVariables: CategoricalVariableType[]
+      }
     }
   | {
       type: 'rowDeleted'
@@ -39,7 +42,10 @@ export type DataPointsAction =
     }
   | {
       type: 'rowEdited'
-      payload: EditRow
+      payload: {
+        editRow: EditRow
+        categoricalVariables: CategoricalVariableType[]
+      }
     }
 
 export const dataPointsReducer = produce(
@@ -60,7 +66,13 @@ export const dataPointsReducer = produce(
       }
       case 'rowAdded':
         const metaId = Math.max(0, ...state.meta.map(m => m.id)) + 1
-        state.rows.push({ ...action.payload, isNew: false, metaId })
+        state.rows.push(
+          mapRowNumericValues(action.payload.categoricalVariables, {
+            ...action.payload.row,
+            isNew: false,
+            metaId,
+          })
+        )
         state.meta.push({
           enabled: true,
           id: metaId,
@@ -73,7 +85,10 @@ export const dataPointsReducer = produce(
         state.changed = true
         break
       case 'rowEdited':
-        state.rows[action.payload.rowIndex] = action.payload.row
+        state.rows[action.payload.editRow.rowIndex] = mapRowNumericValues(
+          action.payload.categoricalVariables,
+          action.payload.editRow.row
+        )
         state.changed = true
         break
       default:
@@ -81,6 +96,21 @@ export const dataPointsReducer = produce(
     }
   }
 )
+
+const mapRowNumericValues = (
+  categoricalVariables: CategoricalVariableType[],
+  row: TableDataRow
+): TableDataRow => ({
+  ...row,
+  dataPoints: row.dataPoints.map(r =>
+    categoricalVariables.map(c => c.name).includes(r.name)
+      ? r
+      : {
+          ...r,
+          value: r.value?.replace(',', '.'),
+        }
+  ),
+})
 
 const buildCombinedVariables = (
   valueVariables: ValueVariableType[],

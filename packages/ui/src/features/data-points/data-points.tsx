@@ -97,7 +97,10 @@ export function DataPoints(props: DataPointProps) {
   const rowAdded = (row: TableDataRow) =>
     dispatch({
       type: 'rowAdded',
-      payload: row,
+      payload: {
+        row,
+        categoricalVariables,
+      },
     })
 
   const rowDeleted = (rowIndex: number) =>
@@ -110,8 +113,11 @@ export function DataPoints(props: DataPointProps) {
     dispatch({
       type: 'rowEdited',
       payload: {
-        rowIndex,
-        row,
+        editRow: {
+          rowIndex,
+          row,
+        },
+        categoricalVariables,
       },
     })
 
