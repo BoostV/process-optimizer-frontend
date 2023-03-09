@@ -32,16 +32,18 @@ export default function ValueVariable(props: ValueVariableProps) {
     })
 
   const onSubmit = (data: ValueVariableInputType) => {
+    const noCommaMin = data.min.replace(',', '.')
+    const noCommaMax = data.max.replace(',', '.')
     onAdded({
       ...data,
       min:
         data.type === 'discrete'
-          ? Math.floor(parseFloat(data.min))
-          : parseFloat(data.min),
+          ? Math.floor(parseFloat(noCommaMin))
+          : parseFloat(noCommaMin),
       max:
         data.type === 'discrete'
-          ? Math.floor(parseFloat(data.max))
-          : parseFloat(data.max),
+          ? Math.floor(parseFloat(noCommaMax))
+          : parseFloat(noCommaMax),
     })
   }
 
