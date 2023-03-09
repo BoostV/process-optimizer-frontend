@@ -13,7 +13,7 @@ import Layout from '@sample/components/layout/layout'
 import {
   Plots,
   Details,
-  OptimizerModel,
+  InputModel,
   LoadingButton,
   OptimizerConfigurator,
   DataPoints,
@@ -203,7 +203,7 @@ const LegacyExperiment = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <OptimizerModel
+                    <InputModel
                       valueVariables={valueVariables}
                       categoricalVariables={categoricalVariables}
                       disabled={experiment.dataPoints.length > 0}

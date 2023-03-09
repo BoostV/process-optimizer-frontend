@@ -11,7 +11,7 @@ import {
 import catapult from '@ui/testing/sample-data/catapult.json'
 import { DataPoints, ExperimentationGuide, Plots } from '..'
 import { OptimizerConfigurator } from '../features/experiment'
-import { OptimizerModel } from '../features/input-model'
+import { InputModel } from '../features/input-model'
 
 const Experiment = () => {
   const {
@@ -51,7 +51,7 @@ const Experiment = () => {
             onConfigUpdated={() => {}}
             config={experiment.optimizerConfig}
           />
-          <OptimizerModel
+          <InputModel
             disabled={false}
             onDeleteValueVariable={() => {}}
             onDeleteCategoricalVariable={() => {}}

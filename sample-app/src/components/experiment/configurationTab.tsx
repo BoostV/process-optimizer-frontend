@@ -3,7 +3,7 @@ import { useExperiment } from '@boostv/process-optimizer-frontend-core'
 import { useGlobal, useSelector } from '@sample/context/global'
 import {
   OptimizerConfigurator,
-  OptimizerModel,
+  InputModel,
   Details,
 } from '@boostv/process-optimizer-frontend-ui'
 import { selectAdvancedConfiguration } from '@sample/context/global/global-selectors'
@@ -48,7 +48,7 @@ export const ConfigurationTab = () => {
       </Grid>
 
       <Grid item xs={10} sm={6}>
-        <OptimizerModel
+        <InputModel
           valueVariables={valueVariables}
           categoricalVariables={categoricalVariables}
           disabled={experiment.dataPoints.length > 0}

@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import VariableEditor from './variable-editor'
-import useStyles from './optimizer-model.style'
+import useStyles from './input-model.style'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
 import LensIcon from '@mui/icons-material/Lens'
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
@@ -21,7 +21,7 @@ import {
   ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
 
-type OptimizerModelProps = {
+type InputModelProps = {
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   disabled: boolean
@@ -34,7 +34,7 @@ type OptimizerModelProps = {
   violations?: ValidationViolations
 }
 
-export function OptimizerModel(props: OptimizerModelProps) {
+export function InputModel(props: InputModelProps) {
   const {
     valueVariables,
     categoricalVariables,

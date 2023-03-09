@@ -6,7 +6,7 @@ export {
   LoadingButton,
   NextExperiments,
   OptimizerConfigurator,
-  OptimizerModel,
+  InputModel,
   PlotItem,
   PlotList,
   Plots,
