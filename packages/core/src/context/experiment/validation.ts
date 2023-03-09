@@ -107,10 +107,15 @@ export const validateDataPointsNotNumber = (
   experiment.dataPoints.forEach(dp => {
     dp.data.forEach(d => {
       const valueVar = experiment.valueVariables.find(v => v.name === d.name)
-      if (
+      const isValueVarNotNumber =
         valueVar !== undefined &&
         (Array.isArray(d.value) || isNaN(Number(d.value)))
-      ) {
+      const scoreNames = experiment.scoreVariables
+        .filter(s => s.enabled)
+        .map(e => e.name)
+      const isScoreNotNumber =
+        scoreNames.includes(d.name) && isNaN(Number(d.value))
+      if (isValueVarNotNumber || isScoreNotNumber) {
         violations.push(dp.meta.id)
       }
     })

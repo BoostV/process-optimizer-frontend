@@ -604,6 +604,7 @@ describe('validateDataPointsNotNumber', () => {
       })
     ).toEqual([1])
   })
+
   it('should return violation when value variable is a number array', () => {
     expect(
       validateDataPointsNotNumber({
@@ -619,6 +620,36 @@ describe('validateDataPointsNotNumber', () => {
               {
                 name: 'Water',
                 value: [1],
+              },
+            ],
+          },
+        ],
+      })
+    ).toEqual([1])
+  })
+
+  it('should return violation when score is not a number', () => {
+    expect(
+      validateDataPointsNotNumber({
+        ...emptyExperiment,
+        valueVariables,
+        scoreVariables: [
+          {
+            name: 'score',
+            description: '',
+            enabled: true,
+          },
+        ],
+        dataPoints: [
+          {
+            meta: {
+              enabled: true,
+              id: 1,
+            },
+            data: [
+              {
+                name: 'score',
+                value: 'notANumber',
               },
             ],
           },
@@ -649,6 +680,7 @@ describe('validateDataPointsNotNumber', () => {
       })
     ).toEqual([])
   })
+
   it('should return empty array when value variable is a number - string', () => {
     expect(
       validateDataPointsNotNumber({

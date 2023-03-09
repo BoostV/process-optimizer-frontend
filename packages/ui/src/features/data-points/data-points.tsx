@@ -9,7 +9,6 @@ import UploadCSVButton from './upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
 import { EditableTableViolation, TableDataRow } from '../core/editable-table'
 import {
-  DataPointType,
   saveCSVToLocalFile,
   dataPointsToCSV,
   CategoricalVariableType,
@@ -140,16 +139,13 @@ export function DataPoints(props: DataPointProps) {
         .filter(dp => scoreNames.includes(dp.name))
         .map(s => ({
           name: s.name,
-          value: (s.value && parseFloat(s.value)) ?? s.value,
+          value: s.value,
         }))
       return vars
-        .map(
-          dp =>
-            ({
-              name: dp.name,
-              value: dp.value,
-            } as DataPointType)
-        )
+        .map(dp => ({
+          name: dp.name,
+          value: dp.value,
+        }))
         .concat(scores) as DataEntry['data']
     }
     const updateDataPoints = (

@@ -104,6 +104,7 @@ export type DataPointType =
   | CategorialDataPointType
   | ValueDataPointType
   | ScoreDataPointType
+// TODO: Is this ever number or number[]? Maybe in older json-versions
 export type DataPointTypeValue = string | number | number[]
 
 export type CategorialDataPointType = {
