@@ -14,8 +14,12 @@ import FormInputText from '@ui/common/forms/form-input'
 type ValueVariableProps = {
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
-  editingVariable?: ValueVariableType
-  onAdded: (data: ValueVariableType) => void
+  editingVariable?: {
+    index: number
+    variable: ValueVariableType
+  }
+  onAdd: (data: ValueVariableType) => void
+  onEdit: (data: ValueVariableType) => void
   onCancel: () => void
 }
 
@@ -24,7 +28,8 @@ export default function ValueVariable(props: ValueVariableProps) {
     valueVariables,
     categoricalVariables,
     editingVariable,
-    onAdded,
+    onAdd,
+    onEdit,
     onCancel,
   } = props
 
@@ -47,11 +52,11 @@ export default function ValueVariable(props: ValueVariableProps) {
     reset(
       editingVariable !== undefined
         ? {
-            name: editingVariable.name,
-            min: '' + editingVariable.min,
-            max: '' + editingVariable.max,
-            description: editingVariable.description,
-            type: editingVariable.type,
+            name: editingVariable.variable.name,
+            min: '' + editingVariable.variable.min,
+            max: '' + editingVariable.variable.max,
+            description: editingVariable.variable.description,
+            type: editingVariable.variable.type,
           }
         : emptyValues
     )
@@ -66,7 +71,7 @@ export default function ValueVariable(props: ValueVariableProps) {
   const onSubmit = (data: ValueVariableInputType) => {
     const noCommaMin = data.min.replace(',', '.')
     const noCommaMax = data.max.replace(',', '.')
-    onAdded({
+    const newVariable: ValueVariableType = {
       ...data,
       min:
         data.type === 'discrete'
@@ -76,7 +81,12 @@ export default function ValueVariable(props: ValueVariableProps) {
         data.type === 'discrete'
           ? Math.floor(parseFloat(noCommaMax))
           : parseFloat(noCommaMax),
-    })
+    }
+    if (editingVariable !== undefined) {
+      onEdit(newVariable)
+    } else {
+      onAdd(newVariable)
+    }
   }
 
   return (
@@ -91,7 +101,13 @@ export default function ValueVariable(props: ValueVariableProps) {
           rules={{
             ...validation.required,
             validate: (name: string, _: unknown) =>
-              isValidVariableName(valueVariables, categoricalVariables, name),
+              isValidVariableName(
+                valueVariables,
+                categoricalVariables,
+                name,
+                'value',
+                editingVariable?.index
+              ),
           }}
         />
         <FormInputText

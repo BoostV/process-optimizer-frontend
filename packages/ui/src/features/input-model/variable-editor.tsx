@@ -11,10 +11,22 @@ import {
 type VariableEditorProps = {
   categoricalVariables: CategoricalVariableType[]
   valueVariables: ValueVariableType[]
-  editingValueVariable: ValueVariableType | undefined
-  editingCategoricalVariable: CategoricalVariableType | undefined
+  editingValueVariable?: {
+    index: number
+    variable: ValueVariableType
+  }
+
+  editingCategoricalVariable?: {
+    index: number
+    variable: CategoricalVariableType
+  }
+
   addValueVariable: (valueVariable: ValueVariableType) => void
+  editValueVariable: (valueVariable: ValueVariableType) => void
   addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
+  editCategoricalVariable: (
+    categoricalVariable: CategoricalVariableType
+  ) => void
   onCancel: () => void
 }
 
@@ -25,7 +37,9 @@ export default function VariableEditor(props: VariableEditorProps) {
     editingValueVariable,
     editingCategoricalVariable,
     addValueVariable,
+    editValueVariable,
     addCategoricalVariable,
+    editCategoricalVariable,
     onCancel,
   } = props
 
@@ -74,8 +88,11 @@ export default function VariableEditor(props: VariableEditorProps) {
             categoricalVariables={categoricalVariables}
             valueVariables={valueVariables}
             editingVariable={editingValueVariable}
-            onAdded={(valueVariable: ValueVariableType) =>
+            onAdd={(valueVariable: ValueVariableType) =>
               addValueVariable(valueVariable)
+            }
+            onEdit={(valueVariable: ValueVariableType) =>
+              editValueVariable(valueVariable)
             }
             onCancel={onCancel}
           />
@@ -85,8 +102,11 @@ export default function VariableEditor(props: VariableEditorProps) {
             categoricalVariables={categoricalVariables}
             valueVariables={valueVariables}
             editingVariable={editingCategoricalVariable}
-            onAdded={(categoricalVariable: CategoricalVariableType) =>
+            onAdd={(categoricalVariable: CategoricalVariableType) =>
               addCategoricalVariable(categoricalVariable)
+            }
+            onEdit={(categoricalVariable: CategoricalVariableType) =>
+              editCategoricalVariable(categoricalVariable)
             }
             onCancel={onCancel}
           />

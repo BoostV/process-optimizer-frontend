@@ -14,8 +14,26 @@ export const validation = {
 export const isValidVariableName = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
-  newName: string
-) =>
-  (!categoricalVariables.map(c => c.name).includes(newName.trim()) &&
-    !valueVariables.map(v => v.name).includes(newName.trim())) ||
-  'Duplicate names not allowed'
+  newName: string,
+  type: 'value' | 'categorical',
+  index?: number
+) => {
+  // TODO: Simplify
+  let notInCat = false
+  let notInVal = false
+  if (type === 'value') {
+    notInCat = !categoricalVariables.map(c => c.name).includes(newName.trim())
+    notInVal = !valueVariables
+      .filter((_, i) => i !== index)
+      .map(v => v.name)
+      .includes(newName.trim())
+  }
+  if (type === 'categorical') {
+    notInCat = !categoricalVariables
+      .filter((_, i) => i !== index)
+      .map(c => c.name)
+      .includes(newName.trim())
+    notInVal = !valueVariables.map(v => v.name).includes(newName.trim())
+  }
+  return (notInCat && notInVal) || 'Duplicate names not allowed'
+}

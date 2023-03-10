@@ -52,10 +52,13 @@ const Experiment = () => {
             config={experiment.optimizerConfig}
           />
           <InputModel
+            isDisabled={false}
             onDeleteValueVariable={() => {}}
             onDeleteCategoricalVariable={() => {}}
             addCategoricalVariable={() => {}}
             addValueVariable={() => {}}
+            editValueVariable={() => {}}
+            editCategoricalVariable={() => {}}
             categoricalVariables={experiment.categoricalVariables}
             valueVariables={experiment.valueVariables}
           />

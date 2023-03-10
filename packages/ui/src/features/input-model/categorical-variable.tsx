@@ -13,8 +13,12 @@ import {
 type CategoricalVariableProps = {
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
-  editingVariable?: CategoricalVariableType
-  onAdded: (data: CategoricalVariableType) => void
+  editingVariable?: {
+    index: number
+    variable: CategoricalVariableType
+  }
+  onAdd: (data: CategoricalVariableType) => void
+  onEdit: (data: CategoricalVariableType) => void
   onCancel: () => void
 }
 
@@ -25,7 +29,8 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
     valueVariables,
     categoricalVariables,
     editingVariable,
-    onAdded,
+    onAdd,
+    onEdit,
     onCancel,
   } = props
 
@@ -40,7 +45,12 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
 
   const onSubmit = (data: CategoricalVariableType) => {
     if (isOptionsValid()) {
-      onAdded({ ...data, options })
+      const newVariable: CategoricalVariableType = { ...data, options }
+      if (editingVariable !== undefined) {
+        onEdit(newVariable)
+      } else {
+        onAdd(newVariable)
+      }
       clearErrors('options')
     } else {
       setError('options.0', {
@@ -65,14 +75,14 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
 
   useEffect(() => {
     if (editingVariable !== undefined) {
-      setOptions(editingVariable.options)
+      setOptions(editingVariable.variable.options)
     }
     reset(
       editingVariable !== undefined
         ? {
-            description: editingVariable.description,
-            name: editingVariable.name,
-            options: editingVariable.options,
+            description: editingVariable.variable.description,
+            name: editingVariable.variable.name,
+            options: editingVariable.variable.options,
           }
         : {
             description: '',
@@ -89,7 +99,13 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           {...register('name', {
             ...validation.required,
             validate: (name: string, _: unknown) =>
-              isValidVariableName(valueVariables, categoricalVariables, name),
+              isValidVariableName(
+                valueVariables,
+                categoricalVariables,
+                name,
+                'categorical',
+                editingVariable?.index
+              ),
           })}
           label="Name"
           fullWidth

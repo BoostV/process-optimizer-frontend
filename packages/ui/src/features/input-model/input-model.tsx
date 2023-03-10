@@ -26,37 +26,63 @@ import {
 import { useState } from 'react'
 
 type InputModelProps = {
+  isDisabled: boolean
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   onDeleteValueVariable: (index: number) => void
   onDeleteCategoricalVariable: (index: number) => void
   addValueVariable: (valueVariable: ValueVariableType) => void
+  editValueVariable: (editValueVariable: {
+    index: number
+    variable: ValueVariableType
+  }) => void
   addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
+  editCategoricalVariable: (editCategoricalVariable: {
+    index: number
+    variable: CategoricalVariableType
+  }) => void
   violations?: ValidationViolations
 }
 
 export function InputModel(props: InputModelProps) {
   const {
+    isDisabled,
     valueVariables,
     categoricalVariables,
     onDeleteValueVariable,
     onDeleteCategoricalVariable,
     addValueVariable,
+    editValueVariable,
     addCategoricalVariable,
+    editCategoricalVariable,
     violations,
   } = props
 
   const { classes } = useStyles()
 
   const [editingValueVariable, setEditingValueVariable] = useState<
-    ValueVariableType | undefined
+    | {
+        index: number
+        variable: ValueVariableType
+      }
+    | undefined
   >(undefined)
 
   const [editingCategoricalVariable, setEditingCategoricalVariable] = useState<
-    CategoricalVariableType | undefined
+    | {
+        index: number
+        variable: CategoricalVariableType
+      }
+    | undefined
   >(undefined)
 
   const [isEditorOpen, setEditorOpen] = useState<boolean>(false)
+
+  const resetEditor = () => {
+    setEditingValueVariable(undefined)
+    setEditingCategoricalVariable(undefined)
+    setEditorOpen(false)
+  }
 
   return (
     <TitleCard
@@ -116,24 +142,33 @@ export function InputModel(props: InputModelProps) {
                       <Box className={classes.editIconsContainer}>
                         <IconButton
                           size="small"
+                          disabled={isDisabled}
                           onClick={() => {
                             setEditingCategoricalVariable(undefined)
-                            setEditingValueVariable(valueVar)
+                            setEditingValueVariable({
+                              index: valueIndex,
+                              variable: valueVar,
+                            })
                             setEditorOpen(true)
                           }}
                         >
-                          <EditIcon color="primary" fontSize="small" />
+                          <EditIcon
+                            color={isDisabled ? 'disabled' : 'primary'}
+                            fontSize="small"
+                          />
                         </IconButton>
                         <IconButton
                           size="small"
+                          disabled={isDisabled}
                           onClick={() => {
                             onDeleteValueVariable(valueIndex)
-                            setEditingCategoricalVariable(undefined)
-                            setEditingValueVariable(undefined)
-                            setEditorOpen(false)
+                            resetEditor()
                           }}
                         >
-                          <DeleteIcon color="primary" fontSize="small" />
+                          <DeleteIcon
+                            color={isDisabled ? 'disabled' : 'primary'}
+                            fontSize="small"
+                          />
                         </IconButton>
                       </Box>
                     </TableCell>
@@ -172,24 +207,33 @@ export function InputModel(props: InputModelProps) {
                         <Box className={classes.editIconsContainer}>
                           <IconButton
                             size="small"
+                            disabled={isDisabled}
                             onClick={() => {
                               setEditingValueVariable(undefined)
-                              setEditingCategoricalVariable(catVar)
+                              setEditingCategoricalVariable({
+                                index: catIndex,
+                                variable: catVar,
+                              })
                               setEditorOpen(true)
                             }}
                           >
-                            <EditIcon color="primary" fontSize="small" />
+                            <EditIcon
+                              color={isDisabled ? 'disabled' : 'primary'}
+                              fontSize="small"
+                            />
                           </IconButton>
                           <IconButton
                             size="small"
+                            disabled={isDisabled}
                             onClick={() => {
                               onDeleteCategoricalVariable(catIndex)
-                              setEditingCategoricalVariable(undefined)
-                              setEditingValueVariable(undefined)
-                              setEditorOpen(false)
+                              resetEditor()
                             }}
                           >
-                            <DeleteIcon color="primary" fontSize="small" />
+                            <DeleteIcon
+                              color={isDisabled ? 'disabled' : 'primary'}
+                              fontSize="small"
+                            />
                           </IconButton>
                         </Box>
                       </TableCell>
@@ -210,14 +254,30 @@ export function InputModel(props: InputModelProps) {
             addCategoricalVariable={(
               categoricalVariable: CategoricalVariableType
             ) => addCategoricalVariable(categoricalVariable)}
+            editCategoricalVariable={(
+              categoricalVariable: CategoricalVariableType
+            ) => {
+              if (editingCategoricalVariable !== undefined) {
+                editCategoricalVariable({
+                  index: editingCategoricalVariable.index,
+                  variable: categoricalVariable,
+                })
+                resetEditor()
+              }
+            }}
             addValueVariable={(valueVariable: ValueVariableType) =>
               addValueVariable(valueVariable)
             }
-            onCancel={() => {
-              setEditingValueVariable(undefined)
-              setEditingCategoricalVariable(undefined)
-              setEditorOpen(false)
+            editValueVariable={(valueVariable: ValueVariableType) => {
+              if (editingValueVariable !== undefined) {
+                editValueVariable({
+                  index: editingValueVariable.index,
+                  variable: valueVariable,
+                })
+                resetEditor()
+              }
             }}
+            onCancel={() => resetEditor()}
             editingValueVariable={editingValueVariable}
             editingCategoricalVariable={editingCategoricalVariable}
           />
@@ -231,6 +291,7 @@ export function InputModel(props: InputModelProps) {
             color="primary"
             size="small"
             onClick={() => setEditorOpen(true)}
+            disabled={isDisabled}
             startIcon={<AddIcon fontSize="small" />}
           >
             Add variable

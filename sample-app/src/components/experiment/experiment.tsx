@@ -204,6 +204,7 @@ const LegacyExperiment = () => {
 
                   <Grid item xs={12}>
                     <InputModel
+                      isDisabled={dataPoints.length > 0}
                       valueVariables={valueVariables}
                       categoricalVariables={categoricalVariables}
                       onDeleteValueVariable={(index: number) => {
@@ -224,11 +225,29 @@ const LegacyExperiment = () => {
                           payload: valueVariable,
                         })
                       }
+                      editValueVariable={(valueVariable: {
+                        index: number
+                        variable: ValueVariableType
+                      }) =>
+                        dispatch({
+                          type: 'editValueVariable',
+                          payload: valueVariable,
+                        })
+                      }
                       addCategoricalVariable={(
                         categoricalVariable: CategoricalVariableType
                       ) =>
                         dispatch({
                           type: 'addCategorialVariable',
+                          payload: categoricalVariable,
+                        })
+                      }
+                      editCategoricalVariable={(categoricalVariable: {
+                        index: number
+                        variable: CategoricalVariableType
+                      }) =>
+                        dispatch({
+                          type: 'editCategoricalVariable',
                           payload: categoricalVariable,
                         })
                       }
