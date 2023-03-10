@@ -18,22 +18,22 @@ export const isValidVariableName = (
   type: 'value' | 'categorical',
   index?: number
 ) => {
-  // TODO: Simplify
-  let notInCat = false
-  let notInVal = false
-  if (type === 'value') {
-    notInCat = !categoricalVariables.map(c => c.name).includes(newName.trim())
-    notInVal = !valueVariables
-      .filter((_, i) => i !== index)
-      .map(v => v.name)
-      .includes(newName.trim())
-  }
-  if (type === 'categorical') {
-    notInCat = !categoricalVariables
-      .filter((_, i) => i !== index)
-      .map(c => c.name)
-      .includes(newName.trim())
-    notInVal = !valueVariables.map(v => v.name).includes(newName.trim())
-  }
-  return (notInCat && notInVal) || 'Duplicate names not allowed'
+  const filterSelf = (
+    _: ValueVariableType | CategoricalVariableType,
+    i: number
+  ) => i !== index
+  const valueFilter = type === 'value' ? filterSelf : () => true
+  const categoricalFilter = type === 'categorical' ? filterSelf : () => true
+
+  let notInCategorical = !categoricalVariables
+    .filter(categoricalFilter)
+    .map(c => c.name)
+    .includes(newName.trim())
+
+  let notInValue = !valueVariables
+    .filter(valueFilter)
+    .map(c => c.name)
+    .includes(newName.trim())
+
+  return (notInCategorical && notInValue) || 'Duplicate names not allowed'
 }
