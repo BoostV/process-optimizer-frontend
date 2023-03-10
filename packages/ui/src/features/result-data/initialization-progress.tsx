@@ -72,7 +72,8 @@ export const InitializationProgress: FC<Props> = ({
           sx={{ cursor: 'pointer' }}
           onClick={() => setEditActive(!editActive)}
         >
-          {dataPoints.length}/{optimizerConfig.initialPoints}
+          {dataPoints.filter(d => d.meta.enabled).length}/
+          {optimizerConfig.initialPoints}
         </Typography>
         <Typography variant="caption">data points added</Typography>
       </Box>

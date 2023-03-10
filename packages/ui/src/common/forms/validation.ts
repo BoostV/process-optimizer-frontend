@@ -1,3 +1,4 @@
+import { CategoricalVariableType } from '@ui/../../core/dist'
 import { ValueVariableType } from '@ui/../../core/dist'
 
 export const validation = {
@@ -10,9 +11,11 @@ export const validation = {
   },
 }
 
-export const isValidValueVariableName = (
+export const isValidVariableName = (
   valueVariables: ValueVariableType[],
+  categoricalVariables: CategoricalVariableType[],
   newName: string
 ) =>
-  !valueVariables.map(v => v.name).includes(newName.trim()) ||
+  (!categoricalVariables.map(c => c.name).includes(newName.trim()) &&
+    !valueVariables.map(v => v.name).includes(newName.trim())) ||
   'Duplicate names not allowed'

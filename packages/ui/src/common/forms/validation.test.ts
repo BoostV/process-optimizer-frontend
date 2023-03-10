@@ -1,4 +1,4 @@
-import { isValidValueVariableName, validation } from './validation'
+import { isValidVariableName, validation } from './validation'
 
 describe('validation', () => {
   describe('mustBeNumber', () => {
@@ -18,10 +18,10 @@ describe('validation', () => {
       expect(regex.test(',8')).toBeFalsy()
     })
   })
-  describe('isValidValueVariableName', () => {
+  describe('isValidVariableName', () => {
     it('should return false when name is in value variables', async () => {
       expect(
-        isValidValueVariableName(
+        isValidVariableName(
           [
             {
               name: 'Duplicate',
@@ -31,13 +31,29 @@ describe('validation', () => {
               type: 'continuous',
             },
           ],
+          [],
+          'Duplicate'
+        )
+      ).toEqual('Duplicate names not allowed')
+    })
+    it('should return false when name is in categorical variables', async () => {
+      expect(
+        isValidVariableName(
+          [],
+          [
+            {
+              name: 'Duplicate',
+              description: '',
+              options: ['A', 'B'],
+            },
+          ],
           'Duplicate'
         )
       ).toEqual('Duplicate names not allowed')
     })
     it('should return true when name is not in value variables', async () => {
       expect(
-        isValidValueVariableName(
+        isValidVariableName(
           [
             {
               name: 'Duplicate',
@@ -45,6 +61,13 @@ describe('validation', () => {
               max: 1,
               min: 1,
               type: 'continuous',
+            },
+          ],
+          [
+            {
+              name: 'Test',
+              description: '',
+              options: ['A', 'B'],
             },
           ],
           'Not duplicate'

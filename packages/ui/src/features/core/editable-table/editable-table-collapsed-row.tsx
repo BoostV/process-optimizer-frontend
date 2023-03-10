@@ -47,7 +47,6 @@ export const EditableTableCollapsedRow = ({
             <Box m={1}>
               <Button
                 size="small"
-                aria-label="add data point"
                 onClick={() => setExpanded(true)}
                 disabled={isEditingDisabled}
                 startIcon={<AddIcon fontSize="small" />}
@@ -81,17 +80,19 @@ export const EditableTableCollapsedRow = ({
           <TableCell className={classes.editCell}>
             <div className={classes.buttonContainer}>
               <Tooltip title="Edit">
-                <IconButton
-                  size="small"
-                  aria-label="expand"
-                  onClick={() => setExpanded(true)}
-                  disabled={isEditingDisabled}
-                >
-                  <EditIcon
-                    fontSize="small"
-                    color={isEditingDisabled ? 'disabled' : 'primary'}
-                  />
-                </IconButton>
+                <span>
+                  <IconButton
+                    size="small"
+                    aria-label="edit"
+                    onClick={() => setExpanded(true)}
+                    disabled={isEditingDisabled}
+                  >
+                    <EditIcon
+                      fontSize="small"
+                      color={isEditingDisabled ? 'disabled' : 'primary'}
+                    />
+                  </IconButton>
+                </span>
               </Tooltip>
               <Tooltip title="Delete">
                 <IconButton

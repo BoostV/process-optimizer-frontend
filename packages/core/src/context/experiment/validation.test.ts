@@ -279,7 +279,7 @@ describe('validateDuplicateVariableNames', () => {
     expect(validateDuplicateVariableNames(exp)).toEqual([])
   })
 
-  it('should return qunie duplicates when duplicates exist', () => {
+  it('should return unique duplicates when duplicate value variables exist', () => {
     const exp: ExperimentType = {
       ...emptyExperiment,
       valueVariables: [
@@ -309,6 +309,29 @@ describe('validateDuplicateVariableNames', () => {
           min: 10,
           max: 100,
           type: 'continuous',
+          description: '',
+        },
+      ],
+    }
+    expect(validateDuplicateVariableNames(exp)).toEqual(['Water'])
+  })
+
+  it('should return unique duplicates when duplicate categorical and value variables exist', () => {
+    const exp: ExperimentType = {
+      ...emptyExperiment,
+      valueVariables: [
+        {
+          name: 'Water',
+          min: 10,
+          max: 100,
+          type: 'continuous',
+          description: '',
+        },
+      ],
+      categoricalVariables: [
+        {
+          name: 'Water',
+          options: [],
           description: '',
         },
       ],

@@ -32,7 +32,7 @@ export type ExperimentAction =
     }
   | {
       type: 'deleteCategorialVariable'
-      payload: CategoricalVariableType
+      payload: number
     }
   | {
       type: 'addValueVariable'
@@ -40,7 +40,7 @@ export type ExperimentAction =
     }
   | {
       type: 'deleteValueVariable'
-      payload: ValueVariableType
+      payload: number
     }
   | {
       type: 'updateExperiment'
@@ -135,8 +135,7 @@ export const experimentReducer = produce(
         break
       case 'deleteValueVariable': {
         state.changedSinceLastEvaluation = true
-        const indexOfDelete = state.valueVariables.indexOf(action.payload)
-        state.valueVariables.splice(indexOfDelete, 1)
+        state.valueVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
@@ -155,10 +154,7 @@ export const experimentReducer = produce(
         break
       case 'deleteCategorialVariable': {
         state.changedSinceLastEvaluation = true
-        const indexOfCatDelete = state.categoricalVariables.indexOf(
-          action.payload
-        )
-        state.categoricalVariables.splice(indexOfCatDelete, 1)
+        state.categoricalVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints

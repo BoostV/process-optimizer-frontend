@@ -25,7 +25,12 @@ export const validateExperiment = (
 // Needed to ensure that e.g. boundary validation works
 export const validateDuplicateVariableNames = (
   experiment: ExperimentType
-): string[] => findUniqueDuplicates(experiment.valueVariables.map(v => v.name))
+): string[] =>
+  findUniqueDuplicates(
+    experiment.valueVariables
+      .map(v => v.name)
+      .concat(experiment.categoricalVariables.map(c => c.name))
+  )
 
 export const validateUpperBoundary = (experiment: ExperimentType): number[] => {
   let violations: number[] = []

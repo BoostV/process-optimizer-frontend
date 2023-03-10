@@ -8,27 +8,28 @@ import {
   TableRow,
   Typography,
   Tooltip,
+  Button,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
 import VariableEditor from './variable-editor'
 import useStyles from './input-model.style'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
 import LensIcon from '@mui/icons-material/Lens'
+import AddIcon from '@mui/icons-material/Add'
 import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
 import {
   CategoricalVariableType,
   ValidationViolations,
   ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
+import { useState } from 'react'
 
 type InputModelProps = {
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
-  disabled: boolean
-  onDeleteValueVariable: (valueVariable: ValueVariableType) => void
-  onDeleteCategoricalVariable: (
-    categoricalVariable: CategoricalVariableType
-  ) => void
+  onDeleteValueVariable: (index: number) => void
+  onDeleteCategoricalVariable: (index: number) => void
   addValueVariable: (valueVariable: ValueVariableType) => void
   addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
   violations?: ValidationViolations
@@ -38,14 +39,24 @@ export function InputModel(props: InputModelProps) {
   const {
     valueVariables,
     categoricalVariables,
-    disabled,
     onDeleteValueVariable,
     onDeleteCategoricalVariable,
     addValueVariable,
     addCategoricalVariable,
     violations,
   } = props
+
   const { classes } = useStyles()
+
+  const [editingValueVariable, setEditingValueVariable] = useState<
+    ValueVariableType | undefined
+  >(undefined)
+
+  const [editingCategoricalVariable, setEditingCategoricalVariable] = useState<
+    CategoricalVariableType | undefined
+  >(undefined)
+
+  const [isEditorOpen, setEditorOpen] = useState<boolean>(false)
 
   return (
     <TitleCard
@@ -102,18 +113,29 @@ export function InputModel(props: InputModelProps) {
                     <TableCell align="right">{valueVar.min}</TableCell>
                     <TableCell align="right">{valueVar.max}</TableCell>
                     <TableCell align="right">
-                      <IconButton
-                        disabled={disabled}
-                        size="small"
-                        onClick={() => {
-                          onDeleteValueVariable(valueVar)
-                        }}
-                      >
-                        <DeleteIcon
-                          color={disabled ? 'inherit' : 'primary'}
-                          fontSize="small"
-                        />
-                      </IconButton>
+                      <Box className={classes.editIconsContainer}>
+                        <IconButton
+                          size="small"
+                          onClick={() => {
+                            setEditingCategoricalVariable(undefined)
+                            setEditingValueVariable(valueVar)
+                            setEditorOpen(true)
+                          }}
+                        >
+                          <EditIcon color="primary" fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() => {
+                            onDeleteValueVariable(valueIndex)
+                            setEditingCategoricalVariable(undefined)
+                            setEditingValueVariable(undefined)
+                            setEditorOpen(false)
+                          }}
+                        >
+                          <DeleteIcon color="primary" fontSize="small" />
+                        </IconButton>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -147,18 +169,29 @@ export function InputModel(props: InputModelProps) {
                         ))}
                       </TableCell>
                       <TableCell align="right">
-                        <IconButton
-                          disabled={disabled}
-                          size="small"
-                          onClick={() => {
-                            onDeleteCategoricalVariable(catVar)
-                          }}
-                        >
-                          <DeleteIcon
-                            color={disabled ? 'inherit' : 'primary'}
-                            fontSize="small"
-                          />
-                        </IconButton>
+                        <Box className={classes.editIconsContainer}>
+                          <IconButton
+                            size="small"
+                            onClick={() => {
+                              setEditingValueVariable(undefined)
+                              setEditingCategoricalVariable(catVar)
+                              setEditorOpen(true)
+                            }}
+                          >
+                            <EditIcon color="primary" fontSize="small" />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => {
+                              onDeleteCategoricalVariable(catIndex)
+                              setEditingCategoricalVariable(undefined)
+                              setEditingValueVariable(undefined)
+                              setEditorOpen(false)
+                            }}
+                          >
+                            <DeleteIcon color="primary" fontSize="small" />
+                          </IconButton>
+                        </Box>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -169,28 +202,41 @@ export function InputModel(props: InputModelProps) {
         </Box>
       )}
 
-      <Box pb={2} className={classes.editBox}>
-        {!disabled && (
+      {isEditorOpen && (
+        <Box pb={2} className={classes.editBox}>
           <VariableEditor
-            isAddVariableDisabled={disabled}
+            valueVariables={valueVariables}
+            categoricalVariables={categoricalVariables}
             addCategoricalVariable={(
               categoricalVariable: CategoricalVariableType
             ) => addCategoricalVariable(categoricalVariable)}
             addValueVariable={(valueVariable: ValueVariableType) =>
               addValueVariable(valueVariable)
             }
-            valueVariables={valueVariables}
+            onCancel={() => {
+              setEditingValueVariable(undefined)
+              setEditingCategoricalVariable(undefined)
+              setEditorOpen(false)
+            }}
+            editingValueVariable={editingValueVariable}
+            editingCategoricalVariable={editingCategoricalVariable}
           />
-        )}
+        </Box>
+      )}
 
-        {disabled && (
-          <Box pt={2} pr={2} pl={2}>
-            <Typography variant="body2" color="textSecondary">
-              Model cannot be updated while there are data points.
-            </Typography>
-          </Box>
-        )}
-      </Box>
+      {!isEditorOpen && (
+        <Box m={1}>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="small"
+            onClick={() => setEditorOpen(true)}
+            startIcon={<AddIcon fontSize="small" />}
+          >
+            Add variable
+          </Button>
+        </Box>
+      )}
     </TitleCard>
   )
 }

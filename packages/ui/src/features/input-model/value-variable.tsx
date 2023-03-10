@@ -3,33 +3,65 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import useStyles from './value-variable.style'
 import { FormRadioGroup } from '@ui/common'
-import { isValidValueVariableName, validation } from '@ui/common/forms'
+import { isValidVariableName, validation } from '@ui/common/forms'
 import {
   ValueVariableInputType,
+  CategoricalVariableType,
   ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
 import FormInputText from '@ui/common/forms/form-input'
 
 type ValueVariableProps = {
-  isDisabled: boolean
   valueVariables: ValueVariableType[]
+  categoricalVariables: CategoricalVariableType[]
+  editingVariable?: ValueVariableType
   onAdded: (data: ValueVariableType) => void
+  onCancel: () => void
 }
 
 export default function ValueVariable(props: ValueVariableProps) {
-  const { isDisabled, valueVariables, onAdded } = props
+  const {
+    valueVariables,
+    categoricalVariables,
+    editingVariable,
+    onAdded,
+    onCancel,
+  } = props
+
   const { classes } = useStyles()
-  const defaultValues: ValueVariableInputType = {
+
+  const emptyValues: ValueVariableInputType = {
     name: '',
     min: '',
     max: '',
     description: '',
     type: 'continuous',
   }
+
   const { handleSubmit, reset, control, formState, getValues } =
     useForm<ValueVariableInputType>({
-      defaultValues,
+      defaultValues: emptyValues,
     })
+
+  useEffect(() => {
+    reset(
+      editingVariable !== undefined
+        ? {
+            name: editingVariable.name,
+            min: '' + editingVariable.min,
+            max: '' + editingVariable.max,
+            description: editingVariable.description,
+            type: editingVariable.type,
+          }
+        : emptyValues
+    )
+  }, [editingVariable, reset])
+
+  useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      reset({ ...emptyValues, type: getValues().type })
+    }
+  }, [emptyValues, formState.isSubmitSuccessful, reset, getValues])
 
   const onSubmit = (data: ValueVariableInputType) => {
     const noCommaMin = data.min.replace(',', '.')
@@ -47,12 +79,6 @@ export default function ValueVariable(props: ValueVariableProps) {
     })
   }
 
-  useEffect(() => {
-    if (formState.isSubmitSuccessful) {
-      reset({ ...defaultValues, type: getValues().type })
-    }
-  }, [defaultValues, formState, reset, getValues])
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -64,8 +90,8 @@ export default function ValueVariable(props: ValueVariableProps) {
           label="Name"
           rules={{
             ...validation.required,
-            validate: (name: string, _: ValueVariableInputType) =>
-              isValidValueVariableName(valueVariables, name),
+            validate: (name: string, _: unknown) =>
+              isValidVariableName(valueVariables, categoricalVariables, name),
           }}
         />
         <FormInputText
@@ -110,13 +136,13 @@ export default function ValueVariable(props: ValueVariableProps) {
             ariaLabel={'value-type'}
           />
         </Box>
-        <Button
-          size="small"
-          disabled={isDisabled}
-          variant="outlined"
-          type="submit"
-        >
-          Add variable
+        <Box mr={1} display="inline">
+          <Button size="small" variant="outlined" type="submit">
+            {editingVariable !== undefined ? 'Save' : 'Add'}
+          </Button>
+        </Box>
+        <Button size="small" variant="outlined" onClick={onCancel}>
+          Cancel
         </Button>
       </form>
     </>

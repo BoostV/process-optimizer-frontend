@@ -249,36 +249,19 @@ describe('experiment reducer', () => {
 
     describe('deleteValueVariable', () => {
       it('should delete value variable', async () => {
-        const payload: ValueVariableType = {
-          type: 'continuous',
-          name: 'Water',
-          description: 'Wet',
-          min: 100,
-          max: 200,
-        }
-
         const action: ExperimentAction = {
           type: 'deleteValueVariable',
-          payload,
+          payload: 0,
         }
-
         expect(
           rootReducer(initState, action).experiment.valueVariables
         ).toEqual([])
       })
 
       it('should reset initial points and suggestion', async () => {
-        const payload: ValueVariableType = {
-          type: 'continuous',
-          name: 'Water',
-          description: 'Wet',
-          min: 100,
-          max: 200,
-        }
-
         const action: ExperimentAction = {
           type: 'deleteValueVariable',
-          payload,
+          payload: 0,
         }
 
         expect(
@@ -342,15 +325,9 @@ describe('experiment reducer', () => {
 
     describe('deleteCategorialVariable', () => {
       it('should delete categorical variable', async () => {
-        const payload: CategoricalVariableType = {
-          name: 'Icing',
-          description: 'Sugary',
-          options: [],
-        }
-
         const action: ExperimentAction = {
           type: 'deleteCategorialVariable',
-          payload,
+          payload: 0,
         }
 
         expect(
@@ -359,15 +336,9 @@ describe('experiment reducer', () => {
       })
 
       it('should reset suggestion count and initial points', async () => {
-        const payload: CategoricalVariableType = {
-          name: 'Icing',
-          description: 'Sugary',
-          options: [],
-        }
-
         const action: ExperimentAction = {
           type: 'deleteCategorialVariable',
-          payload,
+          payload: 0,
         }
 
         expect(

@@ -51,19 +51,16 @@ export const ConfigurationTab = () => {
         <InputModel
           valueVariables={valueVariables}
           categoricalVariables={categoricalVariables}
-          disabled={experiment.dataPoints.length > 0}
-          onDeleteValueVariable={(valueVariable: ValueVariableType) => {
+          onDeleteValueVariable={(index: number) => {
             dispatch({
               type: 'deleteValueVariable',
-              payload: valueVariable,
+              payload: index,
             })
           }}
-          onDeleteCategoricalVariable={(
-            categoricalVariable: CategoricalVariableType
-          ) => {
+          onDeleteCategoricalVariable={(index: number) => {
             dispatch({
               type: 'deleteCategorialVariable',
-              payload: categoricalVariable,
+              payload: index,
             })
           }}
           addValueVariable={(valueVariable: ValueVariableType) =>

@@ -8,6 +8,10 @@ export const useStyles = makeStyles()(() => ({
   iconValueType: {
     fontSize: 10,
   },
+  editIconsContainer: {
+    whiteSpace: 'nowrap',
+    float: 'right',
+  },
 }))
 
 export default useStyles
