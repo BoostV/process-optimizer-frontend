@@ -16,7 +16,10 @@ export const findDataPointViolations = (
   const lowerBoundary = violations.lowerBoundary
   const notNumbers = violations.dataPointsNotNumber
   findUniqueEntries(
-    pointsUndefined.concat(upperBoundary, lowerBoundary, notNumbers)
+    pointsUndefined
+      .concat(upperBoundary)
+      .concat(lowerBoundary)
+      .concat(notNumbers)
   ).forEach(e => {
     const messages: string[] = []
     if (pointsUndefined.includes(e)) {
