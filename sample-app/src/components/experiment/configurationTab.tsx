@@ -26,6 +26,7 @@ export const ConfigurationTab = () => {
 
   const valueVariables = experiment.valueVariables
   const categoricalVariables = experiment.categoricalVariables
+  const dataPoints = experiment.dataPoints
 
   return (
     <Grid container spacing={3}>
@@ -49,6 +50,7 @@ export const ConfigurationTab = () => {
 
       <Grid item xs={10} sm={6}>
         <InputModel
+          isDisabled={dataPoints.length > 0}
           valueVariables={valueVariables}
           categoricalVariables={categoricalVariables}
           onDeleteValueVariable={(index: number) => {
@@ -69,11 +71,29 @@ export const ConfigurationTab = () => {
               payload: valueVariable,
             })
           }
+          editValueVariable={(valueVariable: {
+            index: number
+            variable: ValueVariableType
+          }) =>
+            dispatch({
+              type: 'editValueVariable',
+              payload: valueVariable,
+            })
+          }
           addCategoricalVariable={(
             categoricalVariable: CategoricalVariableType
           ) =>
             dispatch({
               type: 'addCategorialVariable',
+              payload: categoricalVariable,
+            })
+          }
+          editCategoricalVariable={(categoricalVariable: {
+            index: number
+            variable: CategoricalVariableType
+          }) =>
+            dispatch({
+              type: 'editCategoricalVariable',
               payload: categoricalVariable,
             })
           }

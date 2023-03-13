@@ -1,6 +1,5 @@
 import {
   Box,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -10,8 +9,6 @@ import {
   Tooltip,
   Button,
 } from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
 import VariableEditor from './variable-editor'
 import useStyles from './input-model.style'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
@@ -24,6 +21,7 @@ import {
   ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
 import { useState } from 'react'
+import { EditControls } from './edit-controls'
 
 type InputModelProps = {
   isDisabled: boolean
@@ -139,38 +137,21 @@ export function InputModel(props: InputModelProps) {
                     <TableCell align="right">{valueVar.min}</TableCell>
                     <TableCell align="right">{valueVar.max}</TableCell>
                     <TableCell align="right">
-                      <Box className={classes.editIconsContainer}>
-                        <IconButton
-                          size="small"
-                          disabled={isDisabled}
-                          onClick={() => {
-                            setEditingCategoricalVariable(undefined)
-                            setEditingValueVariable({
-                              index: valueIndex,
-                              variable: valueVar,
-                            })
-                            setEditorOpen(true)
-                          }}
-                        >
-                          <EditIcon
-                            color={isDisabled ? 'disabled' : 'primary'}
-                            fontSize="small"
-                          />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          disabled={isDisabled}
-                          onClick={() => {
-                            onDeleteValueVariable(valueIndex)
-                            resetEditor()
-                          }}
-                        >
-                          <DeleteIcon
-                            color={isDisabled ? 'disabled' : 'primary'}
-                            fontSize="small"
-                          />
-                        </IconButton>
-                      </Box>
+                      <EditControls
+                        isDisabled={isDisabled}
+                        onEdit={() => {
+                          setEditingCategoricalVariable(undefined)
+                          setEditingValueVariable({
+                            index: valueIndex,
+                            variable: valueVar,
+                          })
+                          setEditorOpen(true)
+                        }}
+                        onDelete={() => {
+                          onDeleteValueVariable(valueIndex)
+                          resetEditor()
+                        }}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -204,38 +185,21 @@ export function InputModel(props: InputModelProps) {
                         ))}
                       </TableCell>
                       <TableCell align="right">
-                        <Box className={classes.editIconsContainer}>
-                          <IconButton
-                            size="small"
-                            disabled={isDisabled}
-                            onClick={() => {
-                              setEditingValueVariable(undefined)
-                              setEditingCategoricalVariable({
-                                index: catIndex,
-                                variable: catVar,
-                              })
-                              setEditorOpen(true)
-                            }}
-                          >
-                            <EditIcon
-                              color={isDisabled ? 'disabled' : 'primary'}
-                              fontSize="small"
-                            />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            disabled={isDisabled}
-                            onClick={() => {
-                              onDeleteCategoricalVariable(catIndex)
-                              resetEditor()
-                            }}
-                          >
-                            <DeleteIcon
-                              color={isDisabled ? 'disabled' : 'primary'}
-                              fontSize="small"
-                            />
-                          </IconButton>
-                        </Box>
+                        <EditControls
+                          isDisabled={isDisabled}
+                          onEdit={() => {
+                            setEditingValueVariable(undefined)
+                            setEditingCategoricalVariable({
+                              index: catIndex,
+                              variable: catVar,
+                            })
+                            setEditorOpen(true)
+                          }}
+                          onDelete={() => {
+                            onDeleteCategoricalVariable(catIndex)
+                            resetEditor()
+                          }}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
