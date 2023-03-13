@@ -36,8 +36,8 @@
     "prepublishOnly": "vite build"
   },
   "dependencies": {
-    "@BoostV/process-optimizer-frontend-core": "*",
-    "@BoostV/process-optimizer-frontend-plots": "*",
+    "@boostv/process-optimizer-frontend-core": "*",
+    "@boostv/process-optimizer-frontend-plots": "*",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.7",
     "@emotion/react": "^11.10.5",
