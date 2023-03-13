@@ -11,10 +11,6 @@ export const useStyles = makeStyles()(theme => ({
   link: {
     color: 'white',
   },
-  logo: {
-    marginRight: theme.spacing(1),
-    height: 32,
-  },
 }))
 
 export default useStyles
