@@ -54,6 +54,18 @@ export class DefaultApi extends runtime.BaseAPI {
 
     headerParameters['Content-Type'] = 'application/json'
 
+    if (this.configuration && this.configuration.apiKey) {
+      queryParameters['apikey'] = this.configuration.apiKey('apikey') // apikey authentication
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      // oauth required
+      headerParameters['Authorization'] = await this.configuration.accessToken(
+        'oauth2',
+        []
+      )
+    }
+
     const response = await this.request(
       {
         path: `/optimizer`,

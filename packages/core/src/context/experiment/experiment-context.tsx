@@ -75,7 +75,9 @@ const fetchExperimentResult = async (
   experiment: ExperimentType
 ): Promise<ExperimentResultType> => {
   const API_SERVER = import.meta.env.VITE_PUBLIC_API_SERVER
-  const api = new DefaultApi(new Configuration({ basePath: API_SERVER }))
+  const api = new DefaultApi(
+    new Configuration({ basePath: API_SERVER, apiKey: 'none' })
+  )
   const cfg = experiment.optimizerConfig
   const extras = experiment.extras || {}
   const space = calculateSpace(experiment)
