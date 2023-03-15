@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Card,
   CardContent,
@@ -126,229 +125,221 @@ const LegacyExperiment = () => {
   return (
     <Layout>
       <Card className={classes.experimentContainer}>
-        <Box className={classes.cardContentWrapper}>
-          <CardContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Grid container>
-                  <Grid item xs={7}>
-                    <Tooltip
-                      placement="bottom-start"
-                      title={
-                        <span style={{ whiteSpace: 'pre-line' }}>
-                          {tooltipText}
-                        </span>
-                      }
-                    >
-                      <Typography variant="body2">{experiment.id}</Typography>
-                    </Tooltip>
-                    <Typography variant="h5" gutterBottom>
-                      {experiment.info.name}{' '}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={5} container justifyContent="flex-end">
-                    {debug && (
-                      <Switch
-                        checked={
-                          experiment.scoreVariables.filter(it => it.enabled)
-                            .length > 1
-                        }
-                        onChange={() =>
-                          dispatch({ type: 'experiment/toggleMultiObjective' })
-                        }
-                        name="multiobj"
-                        color="secondary"
-                      />
-                    )}
-                    <Button
-                      variant="contained"
-                      className={classes.actionButton}
-                      onClick={onDownload}
-                      color="primary"
-                    >
-                      Download
-                    </Button>
-                    <LoadingButton
-                      disabled={
-                        !experiment.changedSinceLastEvaluation && !debug
-                      }
-                      onClick={onRun}
-                      isLoading={isRunning}
-                      label="Run"
-                      marginLeft={2}
-                      height={42}
-                    />
-                  </Grid>
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Grid container>
+                <Grid item xs={7}>
+                  <Tooltip
+                    placement="bottom-start"
+                    title={
+                      <span style={{ whiteSpace: 'pre-line' }}>
+                        {tooltipText}
+                      </span>
+                    }
+                  >
+                    <Typography variant="body2">{experiment.id}</Typography>
+                  </Tooltip>
+                  <Typography variant="h5" gutterBottom>
+                    {experiment.info.name}{' '}
+                  </Typography>
                 </Grid>
-              </Grid>
-
-              <Grid item xs={3}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Details
-                      info={experiment.info}
-                      updateName={(name: string) =>
-                        dispatch({
-                          type: 'updateExperimentName',
-                          payload: name,
-                        })
+                <Grid item xs={5} container justifyContent="flex-end">
+                  {debug && (
+                    <Switch
+                      checked={
+                        experiment.scoreVariables.filter(it => it.enabled)
+                          .length > 1
                       }
-                      updateDescription={(description: string) =>
-                        dispatch({
-                          type: 'updateExperimentDescription',
-                          payload: description,
-                        })
+                      onChange={() =>
+                        dispatch({ type: 'experiment/toggleMultiObjective' })
                       }
+                      name="multiobj"
+                      color="secondary"
                     />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <InputModel
-                      isDisabled={dataPoints.length > 0}
-                      valueVariables={valueVariables}
-                      categoricalVariables={categoricalVariables}
-                      onDeleteValueVariable={(index: number) => {
-                        dispatch({
-                          type: 'deleteValueVariable',
-                          payload: index,
-                        })
-                      }}
-                      onDeleteCategoricalVariable={(index: number) => {
-                        dispatch({
-                          type: 'deleteCategorialVariable',
-                          payload: index,
-                        })
-                      }}
-                      addValueVariable={(valueVariable: ValueVariableType) =>
-                        dispatch({
-                          type: 'addValueVariable',
-                          payload: valueVariable,
-                        })
-                      }
-                      editValueVariable={(valueVariable: {
-                        index: number
-                        variable: ValueVariableType
-                      }) =>
-                        dispatch({
-                          type: 'editValueVariable',
-                          payload: valueVariable,
-                        })
-                      }
-                      addCategoricalVariable={(
-                        categoricalVariable: CategoricalVariableType
-                      ) =>
-                        dispatch({
-                          type: 'addCategorialVariable',
-                          payload: categoricalVariable,
-                        })
-                      }
-                      editCategoricalVariable={(categoricalVariable: {
-                        index: number
-                        variable: CategoricalVariableType
-                      }) =>
-                        dispatch({
-                          type: 'editCategoricalVariable',
-                          payload: categoricalVariable,
-                        })
-                      }
-                      violations={validationViolations}
-                    />
-                  </Grid>
-
-                  {advancedConfiguration && (
-                    <Grid item xs={12}>
-                      <OptimizerConfigurator
-                        config={experiment.optimizerConfig}
-                        debug={debug}
-                        onConfigUpdated={(config: OptimizerConfig) =>
-                          dispatch({
-                            type: 'updateConfiguration',
-                            payload: config,
-                          })
-                        }
-                      />
-                    </Grid>
                   )}
-                </Grid>
-              </Grid>
-
-              <Grid item xs={9}>
-                <Grid container spacing={2}>
-                  <Grid
-                    item
-                    xs={UISizeValue.Big}
-                    xl={getSize(uiSizes, 'result-data')}
+                  <Button
+                    variant="contained"
+                    className={classes.actionButton}
+                    onClick={onDownload}
+                    color="primary"
                   >
-                    <Grid
-                      container
-                      spacing={2}
-                      className={
-                        highlightNextExperiments ? classes.highlight : ''
-                      }
-                    >
-                      <Grid item xs={12}>
-                        <ExperimentationGuide
-                          isUIBig={isUIBig(uiSizes, 'result-data')}
-                          toggleUISize={() =>
-                            globalDispatch({
-                              type: 'toggleUISize',
-                              payload: 'result-data',
-                            })
-                          }
-                          onMouseEnterExpand={() =>
-                            setHighlightNextExperiments(true)
-                          }
-                          onMouseLeaveExpand={() =>
-                            setHighlightNextExperiments(false)
-                          }
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <DataPoints
-                          experimentId={experiment.id}
-                          valueVariables={experiment.valueVariables}
-                          categoricalVariables={experiment.categoricalVariables}
-                          scoreVariables={experiment.scoreVariables}
-                          dataPoints={dataPoints}
-                          newestFirst={dataPointsNewestFirst}
-                          onToggleNewestFirst={() =>
-                            globalDispatch({
-                              type: 'setDataPointsNewestFirst',
-                              payload: !dataPointsNewestFirst,
-                            })
-                          }
-                          onUpdateDataPoints={(dataPoints: DataEntry[]) =>
-                            dispatch({
-                              type: 'updateDataPoints',
-                              payload: dataPoints,
-                            })
-                          }
-                          violations={validationViolations}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={UISizeValue.Big}
-                    xl={getSize(uiSizes, 'plots')}
-                  >
-                    <Plots
-                      isUIBig={isUIBig(uiSizes, 'plots')}
-                      experiment={experiment}
-                      onSizeToggle={() =>
-                        globalDispatch({
-                          type: 'toggleUISize',
-                          payload: 'plots',
-                        })
-                      }
-                    />
-                  </Grid>
+                    Download
+                  </Button>
+                  <LoadingButton
+                    disabled={!experiment.changedSinceLastEvaluation && !debug}
+                    onClick={onRun}
+                    isLoading={isRunning}
+                    label="Run"
+                    marginLeft={2}
+                    height={42}
+                  />
                 </Grid>
               </Grid>
             </Grid>
-          </CardContent>
-        </Box>
+
+            <Grid item xs={3}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Details
+                    info={experiment.info}
+                    updateName={(name: string) =>
+                      dispatch({
+                        type: 'updateExperimentName',
+                        payload: name,
+                      })
+                    }
+                    updateDescription={(description: string) =>
+                      dispatch({
+                        type: 'updateExperimentDescription',
+                        payload: description,
+                      })
+                    }
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <InputModel
+                    isDisabled={dataPoints.length > 0}
+                    valueVariables={valueVariables}
+                    categoricalVariables={categoricalVariables}
+                    onDeleteValueVariable={(index: number) => {
+                      dispatch({
+                        type: 'deleteValueVariable',
+                        payload: index,
+                      })
+                    }}
+                    onDeleteCategoricalVariable={(index: number) => {
+                      dispatch({
+                        type: 'deleteCategorialVariable',
+                        payload: index,
+                      })
+                    }}
+                    addValueVariable={(valueVariable: ValueVariableType) =>
+                      dispatch({
+                        type: 'addValueVariable',
+                        payload: valueVariable,
+                      })
+                    }
+                    editValueVariable={(valueVariable: {
+                      index: number
+                      variable: ValueVariableType
+                    }) =>
+                      dispatch({
+                        type: 'editValueVariable',
+                        payload: valueVariable,
+                      })
+                    }
+                    addCategoricalVariable={(
+                      categoricalVariable: CategoricalVariableType
+                    ) =>
+                      dispatch({
+                        type: 'addCategorialVariable',
+                        payload: categoricalVariable,
+                      })
+                    }
+                    editCategoricalVariable={(categoricalVariable: {
+                      index: number
+                      variable: CategoricalVariableType
+                    }) =>
+                      dispatch({
+                        type: 'editCategoricalVariable',
+                        payload: categoricalVariable,
+                      })
+                    }
+                    violations={validationViolations}
+                  />
+                </Grid>
+
+                {advancedConfiguration && (
+                  <Grid item xs={12}>
+                    <OptimizerConfigurator
+                      config={experiment.optimizerConfig}
+                      debug={debug}
+                      onConfigUpdated={(config: OptimizerConfig) =>
+                        dispatch({
+                          type: 'updateConfiguration',
+                          payload: config,
+                        })
+                      }
+                    />
+                  </Grid>
+                )}
+              </Grid>
+            </Grid>
+
+            <Grid item xs={9}>
+              <Grid container spacing={2}>
+                <Grid
+                  item
+                  xs={UISizeValue.Big}
+                  xl={getSize(uiSizes, 'result-data')}
+                >
+                  <Grid
+                    container
+                    spacing={2}
+                    className={
+                      highlightNextExperiments ? classes.highlight : ''
+                    }
+                  >
+                    <Grid item xs={12}>
+                      <ExperimentationGuide
+                        isUIBig={isUIBig(uiSizes, 'result-data')}
+                        toggleUISize={() =>
+                          globalDispatch({
+                            type: 'toggleUISize',
+                            payload: 'result-data',
+                          })
+                        }
+                        onMouseEnterExpand={() =>
+                          setHighlightNextExperiments(true)
+                        }
+                        onMouseLeaveExpand={() =>
+                          setHighlightNextExperiments(false)
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <DataPoints
+                        experimentId={experiment.id}
+                        valueVariables={experiment.valueVariables}
+                        categoricalVariables={experiment.categoricalVariables}
+                        scoreVariables={experiment.scoreVariables}
+                        dataPoints={dataPoints}
+                        newestFirst={dataPointsNewestFirst}
+                        onToggleNewestFirst={() =>
+                          globalDispatch({
+                            type: 'setDataPointsNewestFirst',
+                            payload: !dataPointsNewestFirst,
+                          })
+                        }
+                        onUpdateDataPoints={(dataPoints: DataEntry[]) =>
+                          dispatch({
+                            type: 'updateDataPoints',
+                            payload: dataPoints,
+                          })
+                        }
+                        violations={validationViolations}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item xs={UISizeValue.Big} xl={getSize(uiSizes, 'plots')}>
+                  <Plots
+                    isUIBig={isUIBig(uiSizes, 'plots')}
+                    experiment={experiment}
+                    onSizeToggle={() =>
+                      globalDispatch({
+                        type: 'toggleUISize',
+                        payload: 'plots',
+                      })
+                    }
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </CardContent>
       </Card>
 
       <Snackbar
