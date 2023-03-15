@@ -31,6 +31,15 @@ type VariableEditorProps = {
 }
 
 export default function VariableEditor(props: VariableEditorProps) {
+  return (
+    <VariableEditorInner
+      {...props}
+      key={props.editingValueVariable?.index ?? 'blank'}
+    />
+  )
+}
+
+function VariableEditorInner(props: VariableEditorProps) {
   const {
     categoricalVariables,
     valueVariables,
