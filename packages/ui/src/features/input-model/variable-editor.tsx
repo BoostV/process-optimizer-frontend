@@ -43,21 +43,14 @@ export default function VariableEditor(props: VariableEditorProps) {
     onCancel,
   } = props
 
-  const isValueTabSelected = useMemo(
-    () =>
-      (editingValueVariable === undefined &&
-        editingCategoricalVariable === undefined) ||
-      editingCategoricalVariable === undefined,
-    [editingValueVariable, editingCategoricalVariable]
-  )
+  const isValueTabSelected =
+    (editingValueVariable === undefined &&
+      editingCategoricalVariable === undefined) ||
+    editingCategoricalVariable === undefined
 
   const [tabIndex, setTabIndex] = useState<number>(isValueTabSelected ? 0 : 1)
 
   const { classes } = useStyles()
-
-  useEffect(() => {
-    setTabIndex(isValueTabSelected ? 0 : 1)
-  }, [isValueTabSelected, setTabIndex])
 
   const handleTabChange = (_event: ChangeEvent<unknown>, newValue: number) => {
     setTabIndex(newValue)
