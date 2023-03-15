@@ -2,21 +2,22 @@ import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useEffect, useMemo, useReducer } from 'react'
 import { EditableTable } from '../core'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
-import { TitleCard } from '../core/title-card/title-card'
+import { InfoBox, TitleCard } from '../core/title-card/title-card'
 import DownloadCSVButton from './download-csv-button'
 import useStyles from './data-points.style'
 import UploadCSVButton from './upload-csv-button'
 import { dataPointsReducer } from './data-points-reducer'
-import { TableDataRow } from '../core/editable-table'
+import { EditableTableViolation, TableDataRow } from '../core/editable-table'
 import {
-  DataPointType,
   saveCSVToLocalFile,
   dataPointsToCSV,
   CategoricalVariableType,
   DataEntry,
   ScoreVariableType,
   ValueVariableType,
+  ValidationViolations,
 } from '@boostv/process-optimizer-frontend-core'
+import { findDataPointViolations } from './util'
 
 type DataPointProps = {
   experimentId: string
@@ -27,6 +28,7 @@ type DataPointProps = {
   newestFirst: boolean
   onToggleNewestFirst: () => void
   onUpdateDataPoints: (dataPoints: DataEntry[]) => void
+  violations?: ValidationViolations
 }
 
 export function DataPoints(props: DataPointProps) {
@@ -39,6 +41,7 @@ export function DataPoints(props: DataPointProps) {
     newestFirst,
     onToggleNewestFirst,
     onUpdateDataPoints,
+    violations,
   } = props
   const { classes } = useStyles()
   const [state, dispatch] = useReducer(dataPointsReducer, {
@@ -47,6 +50,44 @@ export function DataPoints(props: DataPointProps) {
     changed: false,
   })
   const isLoadingState = state.rows.length === 0
+  const isDuplicateVariableNames = useMemo(
+    () =>
+      violations !== undefined && violations?.duplicateVariableNames.length > 0,
+    [violations?.duplicateVariableNames]
+  )
+
+  const getGeneralViolations = (): InfoBox[] => {
+    const infoBoxes: InfoBox[] = []
+    if (violations !== undefined) {
+      if (isDuplicateVariableNames) {
+        infoBoxes.push({
+          text: `All data points disabled because of duplicate variable names: ${violations.duplicateVariableNames.join(
+            ', '
+          )}.`,
+          type: 'error',
+        })
+      }
+      if (violations?.duplicateDataPointIds.length > 0) {
+        infoBoxes.push({
+          text: `Data points with duplicate meta-ids have been disabled: ${violations.duplicateDataPointIds.join(
+            ', '
+          )}.`,
+          type: 'warning',
+        })
+      }
+    }
+    return infoBoxes
+  }
+
+  const violationsInTable: EditableTableViolation[] | undefined = useMemo(
+    () => findDataPointViolations(violations),
+    [
+      violations?.dataPointsUndefined,
+      violations?.upperBoundary,
+      violations?.lowerBoundary,
+      violations?.dataPointsNotNumber,
+    ]
+  )
 
   const scoreNames = useMemo(
     () => scoreVariables.filter(it => it.enabled).map(it => it.name),
@@ -56,7 +97,10 @@ export function DataPoints(props: DataPointProps) {
   const rowAdded = (row: TableDataRow) =>
     dispatch({
       type: 'rowAdded',
-      payload: row,
+      payload: {
+        row,
+        categoricalVariables,
+      },
     })
 
   const rowDeleted = (rowIndex: number) =>
@@ -69,8 +113,11 @@ export function DataPoints(props: DataPointProps) {
     dispatch({
       type: 'rowEdited',
       payload: {
-        rowIndex,
-        row,
+        editRow: {
+          rowIndex,
+          row,
+        },
+        categoricalVariables,
       },
     })
 
@@ -98,16 +145,13 @@ export function DataPoints(props: DataPointProps) {
         .filter(dp => scoreNames.includes(dp.name))
         .map(s => ({
           name: s.name,
-          value: (s.value && parseFloat(s.value)) ?? s.value,
+          value: s.value,
         }))
       return vars
-        .map(
-          dp =>
-            ({
-              name: dp.name,
-              value: dp.value,
-            } as DataPointType)
-        )
+        .map(dp => ({
+          name: dp.name,
+          value: dp.value,
+        }))
         .concat(scores) as DataEntry['data']
     }
     const updateDataPoints = (
@@ -168,6 +212,7 @@ export function DataPoints(props: DataPointProps) {
           </Box>
         </>
       }
+      infoBoxes={getGeneralViolations()}
     >
       {valueVariables.length + categoricalVariables.length === 0 &&
         'Data points will appear here'}
@@ -188,6 +233,9 @@ export function DataPoints(props: DataPointProps) {
               onRowEdited={(rowIndex: number, row: TableDataRow) =>
                 rowEdited(rowIndex, row)
               }
+              violations={violationsInTable}
+              order={newestFirst ? 'ascending' : 'descending'}
+              isEditingDisabled={isDuplicateVariableNames}
             />
           </Box>
         )}

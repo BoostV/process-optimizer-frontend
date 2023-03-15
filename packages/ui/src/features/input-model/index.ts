@@ -1,5 +1,5 @@
 export * from './categorical-variable'
 export * from './categorical-variable-options'
-export * from './optimizer-model'
+export * from './input-model'
 export * from './value-variable'
 export * from './variable-editor'

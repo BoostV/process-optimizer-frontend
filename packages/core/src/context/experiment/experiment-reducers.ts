@@ -31,16 +31,30 @@ export type ExperimentAction =
       payload: CategoricalVariableType
     }
   | {
+      type: 'editCategoricalVariable'
+      payload: {
+        index: number
+        variable: CategoricalVariableType
+      }
+    }
+  | {
       type: 'deleteCategorialVariable'
-      payload: CategoricalVariableType
+      payload: number
     }
   | {
       type: 'addValueVariable'
       payload: ValueVariableType
     }
   | {
+      type: 'editValueVariable'
+      payload: {
+        index: number
+        variable: ValueVariableType
+      }
+    }
+  | {
       type: 'deleteValueVariable'
-      payload: ValueVariableType
+      payload: number
     }
   | {
       type: 'updateExperiment'
@@ -104,7 +118,6 @@ export const experimentReducer = produce(
           .filter((_, i) => action.payload.includes(i))
           .map((n, k) => ({
             meta: {
-              // TODO: Move to general validation?
               enabled: false,
               id: Math.max(...state.dataPoints.map(d => d.meta.id)) + k + 1,
             },
@@ -134,10 +147,13 @@ export const experimentReducer = produce(
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
+      case 'editValueVariable':
+        state.changedSinceLastEvaluation = true
+        state.valueVariables[action.payload.index] = action.payload.variable
+        break
       case 'deleteValueVariable': {
         state.changedSinceLastEvaluation = true
-        const indexOfDelete = state.valueVariables.indexOf(action.payload)
-        state.valueVariables.splice(indexOfDelete, 1)
+        state.valueVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
@@ -154,12 +170,14 @@ export const experimentReducer = produce(
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
+      case 'editCategoricalVariable':
+        state.changedSinceLastEvaluation = true
+        state.categoricalVariables[action.payload.index] =
+          action.payload.variable
+        break
       case 'deleteCategorialVariable': {
         state.changedSinceLastEvaluation = true
-        const indexOfCatDelete = state.categoricalVariables.indexOf(
-          action.payload
-        )
-        state.categoricalVariables.splice(indexOfCatDelete, 1)
+        state.categoricalVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
