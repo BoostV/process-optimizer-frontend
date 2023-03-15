@@ -1,5 +1,4 @@
 import { Box, Button } from '@mui/material'
-import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import useStyles from './value-variable.style'
 import { FormRadioGroup } from '@ui/common'
@@ -42,31 +41,22 @@ export default function ValueVariable(props: ValueVariableProps) {
     description: '',
     type: 'continuous',
   }
+  const values = editingVariable
+    ? {
+        name: editingVariable.variable.name,
+        min: '' + editingVariable.variable.min,
+        max: '' + editingVariable.variable.max,
+        description: editingVariable.variable.description,
+        type: editingVariable.variable.type,
+      }
+    : emptyValues
 
   const { handleSubmit, reset, control, formState, getValues } =
-    useForm<ValueVariableInputType>({
-      defaultValues: emptyValues,
-    })
+    useForm<ValueVariableInputType>({ values: values, defaultValues: values })
 
-  useEffect(() => {
-    reset(
-      editingVariable !== undefined
-        ? {
-            name: editingVariable.variable.name,
-            min: '' + editingVariable.variable.min,
-            max: '' + editingVariable.variable.max,
-            description: editingVariable.variable.description,
-            type: editingVariable.variable.type,
-          }
-        : emptyValues
-    )
-  }, [editingVariable, reset])
-
-  useEffect(() => {
-    if (formState.isSubmitSuccessful) {
-      reset({ ...emptyValues, type: getValues().type })
-    }
-  }, [emptyValues, formState.isSubmitSuccessful, reset, getValues])
+  if (formState.isSubmitSuccessful) {
+    reset({ ...emptyValues, type: getValues().type })
+  }
 
   const onSubmit = (data: ValueVariableInputType) => {
     const noCommaMin = data.min.replace(',', '.')
