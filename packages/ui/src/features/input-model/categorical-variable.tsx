@@ -4,27 +4,53 @@ import { useState, useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import CategoricalVariableOptions from './categorical-variable-options'
 import { useStyles } from './categorical-variable.style'
-import { validation } from '@ui/common/forms'
-import { CategoricalVariableType } from '@boostv/process-optimizer-frontend-core'
+import { isValidVariableName, validation } from '@ui/common/forms'
+import {
+  CategoricalVariableType,
+  ValueVariableType,
+} from '@boostv/process-optimizer-frontend-core'
 
 type CategoricalVariableProps = {
-  isDisabled: boolean
-  onAdded: (data: CategoricalVariableType) => void
+  valueVariables: ValueVariableType[]
+  categoricalVariables: CategoricalVariableType[]
+  editingVariable?: {
+    index: number
+    variable: CategoricalVariableType
+  }
+  onAdd: (data: CategoricalVariableType) => void
+  onEdit: (data: CategoricalVariableType) => void
+  onCancel: () => void
 }
 
 export default function CategoricalVariable(props: CategoricalVariableProps) {
   const { classes } = useStyles()
-  const { isDisabled, onAdded } = props
+
+  const {
+    valueVariables,
+    categoricalVariables,
+    editingVariable,
+    onAdd,
+    onEdit,
+    onCancel,
+  } = props
+
   const [options, setOptions] = useState<string[]>([])
+
   const { register, handleSubmit, reset, formState, setError, clearErrors } =
     useForm<CategoricalVariableType>()
+
   const isOptionsValid = useCallback(() => {
     return options.length > 0
   }, [options])
 
   const onSubmit = (data: CategoricalVariableType) => {
     if (isOptionsValid()) {
-      onAdded({ ...data, options })
+      const newVariable: CategoricalVariableType = { ...data, options }
+      if (editingVariable !== undefined) {
+        onEdit(newVariable)
+      } else {
+        onAdd(newVariable)
+      }
       clearErrors('options')
     } else {
       setError('options.0', {
@@ -47,11 +73,40 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
     }
   }, [formState, reset, isOptionsValid])
 
+  useEffect(() => {
+    if (editingVariable !== undefined) {
+      setOptions(editingVariable.variable.options)
+    }
+    reset(
+      editingVariable !== undefined
+        ? {
+            description: editingVariable.variable.description,
+            name: editingVariable.variable.name,
+            options: editingVariable.variable.options,
+          }
+        : {
+            description: '',
+            name: '',
+            options: [],
+          }
+    )
+  }, [editingVariable, reset])
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
-          {...register('name', { ...validation.required })}
+          {...register('name', {
+            ...validation.required,
+            validate: (name: string, _: unknown) =>
+              isValidVariableName(
+                valueVariables,
+                categoricalVariables,
+                name,
+                'categorical',
+                editingVariable?.index
+              ),
+          })}
           label="Name"
           fullWidth
           margin="dense"
@@ -96,13 +151,13 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           }
         />
         <Box mt={2}>
-          <Button
-            disabled={isDisabled}
-            size="small"
-            variant="outlined"
-            type="submit"
-          >
-            Add variable
+          <Box mr={1} display="inline">
+            <Button size="small" variant="outlined" type="submit">
+              {editingVariable !== undefined ? 'Save' : 'Add'}
+            </Button>
+          </Box>
+          <Button size="small" variant="outlined" onClick={onCancel}>
+            Cancel
           </Button>
         </Box>
       </form>

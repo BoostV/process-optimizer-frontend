@@ -1,7 +1,7 @@
 import CategoricalVariable from './categorical-variable'
 import ValueVariable from './value-variable'
 import { Box, Tab, Tabs } from '@mui/material'
-import { useState, ChangeEvent } from 'react'
+import { useState, ChangeEvent, useEffect, useMemo } from 'react'
 import useStyles from './variable-editor.style'
 import {
   CategoricalVariableType,
@@ -9,17 +9,55 @@ import {
 } from '@boostv/process-optimizer-frontend-core'
 
 type VariableEditorProps = {
-  isAddVariableDisabled: boolean
+  categoricalVariables: CategoricalVariableType[]
+  valueVariables: ValueVariableType[]
+  editingValueVariable?: {
+    index: number
+    variable: ValueVariableType
+  }
+
+  editingCategoricalVariable?: {
+    index: number
+    variable: CategoricalVariableType
+  }
+
   addValueVariable: (valueVariable: ValueVariableType) => void
+  editValueVariable: (valueVariable: ValueVariableType) => void
   addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
+  editCategoricalVariable: (
+    categoricalVariable: CategoricalVariableType
+  ) => void
+  onCancel: () => void
 }
 
 export default function VariableEditor(props: VariableEditorProps) {
-  const { isAddVariableDisabled, addValueVariable, addCategoricalVariable } =
-    props
+  const {
+    categoricalVariables,
+    valueVariables,
+    editingValueVariable,
+    editingCategoricalVariable,
+    addValueVariable,
+    editValueVariable,
+    addCategoricalVariable,
+    editCategoricalVariable,
+    onCancel,
+  } = props
 
-  const [tabIndex, setTabIndex] = useState(0)
+  const isValueTabSelected = useMemo(
+    () =>
+      (editingValueVariable === undefined &&
+        editingCategoricalVariable === undefined) ||
+      editingCategoricalVariable === undefined,
+    [editingValueVariable, editingCategoricalVariable]
+  )
+
+  const [tabIndex, setTabIndex] = useState<number>(isValueTabSelected ? 0 : 1)
+
   const { classes } = useStyles()
+
+  useEffect(() => {
+    setTabIndex(isValueTabSelected ? 0 : 1)
+  }, [isValueTabSelected, setTabIndex])
 
   const handleTabChange = (_event: ChangeEvent<unknown>, newValue: number) => {
     setTabIndex(newValue)
@@ -33,24 +71,44 @@ export default function VariableEditor(props: VariableEditorProps) {
         onChange={handleTabChange}
         aria-label="variables"
       >
-        <Tab label="Value" className={classes.customTab} />
-        <Tab label="Categorical" className={classes.customTab} />
+        <Tab
+          label="Value"
+          className={classes.customTab}
+          disabled={editingCategoricalVariable !== undefined}
+        />
+        <Tab
+          label="Categorical"
+          className={classes.customTab}
+          disabled={editingValueVariable !== undefined}
+        />
       </Tabs>
-      <Box ml={2} mr={2}>
+      <Box ml={2} mr={2} mt={2}>
         {tabIndex === 0 && (
           <ValueVariable
-            isDisabled={isAddVariableDisabled}
-            onAdded={(valueVariable: ValueVariableType) =>
+            categoricalVariables={categoricalVariables}
+            valueVariables={valueVariables}
+            editingVariable={editingValueVariable}
+            onAdd={(valueVariable: ValueVariableType) =>
               addValueVariable(valueVariable)
             }
+            onEdit={(valueVariable: ValueVariableType) =>
+              editValueVariable(valueVariable)
+            }
+            onCancel={onCancel}
           />
         )}
         {tabIndex === 1 && (
           <CategoricalVariable
-            isDisabled={isAddVariableDisabled}
-            onAdded={(categoricalVariable: CategoricalVariableType) =>
+            categoricalVariables={categoricalVariables}
+            valueVariables={valueVariables}
+            editingVariable={editingCategoricalVariable}
+            onAdd={(categoricalVariable: CategoricalVariableType) =>
               addCategoricalVariable(categoricalVariable)
             }
+            onEdit={(categoricalVariable: CategoricalVariableType) =>
+              editCategoricalVariable(categoricalVariable)
+            }
+            onCancel={onCancel}
           />
         )}
       </Box>

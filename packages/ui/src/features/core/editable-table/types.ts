@@ -9,4 +9,5 @@ export type TableDataRow = {
   dataPoints: TableDataPoint[]
   isNew: boolean
   disabled?: boolean
+  metaId?: number
 }

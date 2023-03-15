@@ -17,6 +17,11 @@ export const useStyles = makeStyles()(() => ({
     border: 'none',
     borderTop: tableBorder,
   },
+  rowNew: {
+    '&:hover': {
+      background: 'white',
+    },
+  },
   row: {
     '&:hover': {
       background: '#fdfdfd',
@@ -31,7 +36,7 @@ export const useStyles = makeStyles()(() => ({
       background: 'white',
     },
   },
-  newRow: {
+  newRowCell: {
     paddingRight: 0,
     border: 'none',
     borderTop: tableBorder,

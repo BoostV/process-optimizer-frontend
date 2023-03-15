@@ -31,7 +31,10 @@ export type DataPointsAction =
     }
   | {
       type: 'rowAdded'
-      payload: TableDataRow
+      payload: {
+        row: TableDataRow
+        categoricalVariables: CategoricalVariableType[]
+      }
     }
   | {
       type: 'rowDeleted'
@@ -39,12 +42,11 @@ export type DataPointsAction =
     }
   | {
       type: 'rowEdited'
-      payload: EditRow
+      payload: {
+        editRow: EditRow
+        categoricalVariables: CategoricalVariableType[]
+      }
     }
-
-// TODO: Move to general validation?
-const isRowValid = (row: TableDataRow) =>
-  row.dataPoints.every(dp => dp.value !== undefined && dp.value !== '')
 
 export const dataPointsReducer = produce(
   (state: DataPointsState, action: DataPointsAction) => {
@@ -63,10 +65,17 @@ export const dataPointsReducer = produce(
         break
       }
       case 'rowAdded':
-        state.rows.push({ ...action.payload, isNew: false })
+        const metaId = Math.max(0, ...state.meta.map(m => m.id)) + 1
+        state.rows.push(
+          mapRowNumericValues(action.payload.categoricalVariables, {
+            ...action.payload.row,
+            isNew: false,
+            metaId,
+          })
+        )
         state.meta.push({
-          enabled: isRowValid(action.payload),
-          id: Math.max(0, ...state.meta.map(m => m.id)) + 1,
+          enabled: true,
+          id: metaId,
         })
         state.changed = true
         break
@@ -76,14 +85,10 @@ export const dataPointsReducer = produce(
         state.changed = true
         break
       case 'rowEdited':
-        state.rows[action.payload.rowIndex] = action.payload.row
-        const meta = state.meta[action.payload.rowIndex]
-        if (meta !== undefined) {
-          state.meta[action.payload.rowIndex] = {
-            ...meta,
-            enabled: isRowValid(action.payload.row),
-          }
-        }
+        state.rows[action.payload.editRow.rowIndex] = mapRowNumericValues(
+          action.payload.categoricalVariables,
+          action.payload.editRow.row
+        )
         state.changed = true
         break
       default:
@@ -92,6 +97,21 @@ export const dataPointsReducer = produce(
   }
 )
 
+const mapRowNumericValues = (
+  categoricalVariables: CategoricalVariableType[],
+  row: TableDataRow
+): TableDataRow => ({
+  ...row,
+  dataPoints: row.dataPoints.map(r =>
+    categoricalVariables.map(c => c.name).includes(r.name)
+      ? r
+      : {
+          ...r,
+          value: r.value?.replace(',', '.'),
+        }
+  ),
+})
+
 const buildCombinedVariables = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[]
@@ -99,7 +119,7 @@ const buildCombinedVariables = (
   return (
     valueVariables.map(v => ({
       ...v,
-      tooltip: `[${v.min}, ${v.max}]`,
+      tooltip: `[${v.min}, ${v.max}] ${v.type === 'discrete' ? '●' : '○'}`,
     })) as CombinedVariableType[]
   ).concat(
     categoricalVariables.map(v => ({
@@ -168,6 +188,7 @@ const buildRows = (
         isNew: false,
         dataPoints: vars.concat(scores),
         disabled: !item.meta.enabled,
+        metaId: item?.meta.id,
         // Uncomment the following line to display a meta data property in the table
         // .concat([{ name: 'id', value: `${item.meta.id}` }]),
       }

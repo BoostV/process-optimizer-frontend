@@ -3,7 +3,7 @@ import { useExperiment } from '@boostv/process-optimizer-frontend-core'
 import { useGlobal, useSelector } from '@sample/context/global'
 import {
   OptimizerConfigurator,
-  OptimizerModel,
+  InputModel,
   Details,
 } from '@boostv/process-optimizer-frontend-ui'
 import { selectAdvancedConfiguration } from '@sample/context/global/global-selectors'
@@ -26,6 +26,7 @@ export const ConfigurationTab = () => {
 
   const valueVariables = experiment.valueVariables
   const categoricalVariables = experiment.categoricalVariables
+  const dataPoints = experiment.dataPoints
 
   return (
     <Grid container spacing={3}>
@@ -48,22 +49,20 @@ export const ConfigurationTab = () => {
       </Grid>
 
       <Grid item xs={10} sm={6}>
-        <OptimizerModel
+        <InputModel
+          isDisabled={dataPoints.length > 0}
           valueVariables={valueVariables}
           categoricalVariables={categoricalVariables}
-          disabled={experiment.dataPoints.length > 0}
-          onDeleteValueVariable={(valueVariable: ValueVariableType) => {
+          onDeleteValueVariable={(index: number) => {
             dispatch({
               type: 'deleteValueVariable',
-              payload: valueVariable,
+              payload: index,
             })
           }}
-          onDeleteCategoricalVariable={(
-            categoricalVariable: CategoricalVariableType
-          ) => {
+          onDeleteCategoricalVariable={(index: number) => {
             dispatch({
               type: 'deleteCategorialVariable',
-              payload: categoricalVariable,
+              payload: index,
             })
           }}
           addValueVariable={(valueVariable: ValueVariableType) =>
@@ -72,11 +71,29 @@ export const ConfigurationTab = () => {
               payload: valueVariable,
             })
           }
+          editValueVariable={(valueVariable: {
+            index: number
+            variable: ValueVariableType
+          }) =>
+            dispatch({
+              type: 'editValueVariable',
+              payload: valueVariable,
+            })
+          }
           addCategoricalVariable={(
             categoricalVariable: CategoricalVariableType
           ) =>
             dispatch({
               type: 'addCategorialVariable',
+              payload: categoricalVariable,
+            })
+          }
+          editCategoricalVariable={(categoricalVariable: {
+            index: number
+            variable: CategoricalVariableType
+          }) =>
+            dispatch({
+              type: 'editCategoricalVariable',
               payload: categoricalVariable,
             })
           }

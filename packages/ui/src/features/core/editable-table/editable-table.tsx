@@ -11,12 +11,22 @@ import { getRowIndex, getRowId } from './editable-table-util'
 import useStyles from './editable-table.style'
 import { TableDataRow } from './types'
 
+export type EditableTableViolation = {
+  rowMetaId: number
+  messages: string[]
+}
+
+export type TableOrder = 'ascending' | 'descending'
+
 type EditableTableProps = {
   rows: TableDataRow[]
   newestFirst: boolean
   onRowAdded: (row: TableDataRow) => void
   onRowDeleted: (rowIndex: number) => void
   onRowEdited: (rowIndex: number, row: TableDataRow) => void
+  violations?: EditableTableViolation[]
+  order: TableOrder
+  isEditingDisabled?: boolean
 }
 
 export const EditableTable = ({
@@ -25,6 +35,9 @@ export const EditableTable = ({
   onRowAdded,
   onRowDeleted,
   onRowEdited,
+  violations,
+  order,
+  isEditingDisabled,
 }: EditableTableProps) => {
   const { classes } = useStyles()
 
@@ -59,6 +72,11 @@ export const EditableTable = ({
               }
               onAdd={(row: TableDataRow) => onRowAdded(row)}
               tableRow={row}
+              violations={
+                violations?.find(v => v.rowMetaId === row.metaId)?.messages
+              }
+              order={order}
+              isEditingDisabled={isEditingDisabled}
             />
           ))}
         </TableBody>

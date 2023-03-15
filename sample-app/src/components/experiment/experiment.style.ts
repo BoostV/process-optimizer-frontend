@@ -15,10 +15,6 @@ export const useStyles = makeStyles()(theme => ({
     marginLeft: theme.spacing(2),
     height: 42,
   },
-  cardContentWrapper: {
-    background: 'url(/logo_big.png)',
-    backgroundRepeat: 'no-repeat',
-  },
 }))
 
 export default useStyles

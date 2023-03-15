@@ -1,6 +1,8 @@
 import { assertUnreachable } from '@core/common/util'
 import { State } from './store'
 import { ExperimentAction, experimentReducer } from './experiment-reducers'
+import { validateExperiment, ValidationViolations } from './validation'
+import { validationReducer } from './validation-reducer'
 
 export type Action = ExperimentAction
 
@@ -14,17 +16,22 @@ export const rootReducer = (state: State, action: Action) => {
     case 'updateExperimentName':
     case 'updateExperimentDescription':
     case 'addCategorialVariable':
+    case 'editCategoricalVariable':
     case 'deleteCategorialVariable':
     case 'addValueVariable':
+    case 'editValueVariable':
     case 'deleteValueVariable':
     case 'updateConfiguration':
     case 'registerResult':
     case 'updateDataPoints':
     case 'copySuggestedToDataPoints':
     case 'experiment/toggleMultiObjective':
+      const experiment = experimentReducer(state.experiment, action)
+      const validationViolations: ValidationViolations =
+        validateExperiment(experiment)
       return {
         ...state,
-        experiment: experimentReducer(state.experiment, action),
+        experiment: validationReducer(experiment, validationViolations),
       }
     default:
       assertUnreachable(action)
