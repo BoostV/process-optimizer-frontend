@@ -241,7 +241,6 @@ export function InputModel(props: InputModelProps) {
                 resetEditor()
               }
             }}
-            // key={editingValueVariable?.index ?? 'blank'}
             onCancel={() => resetEditor()}
             editingValueVariable={editingValueVariable}
             editingCategoricalVariable={editingCategoricalVariable}
