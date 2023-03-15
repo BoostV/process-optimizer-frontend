@@ -164,7 +164,7 @@ const TabbedExperiment = () => {
             />
           </Grid>
         </Grid>
-        <Box className={classes.cardContentWrapper}>
+        <Box>
           <TabPanel value="configuration">
             <ConfigurationTab />
           </TabPanel>
