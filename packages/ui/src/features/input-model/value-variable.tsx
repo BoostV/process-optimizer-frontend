@@ -52,7 +52,7 @@ export default function ValueVariable(props: ValueVariableProps) {
     : emptyValues
 
   const { handleSubmit, reset, control, formState, getValues } =
-    useForm<ValueVariableInputType>({ values: values, defaultValues: values })
+    useForm<ValueVariableInputType>({ defaultValues: values })
 
   if (formState.isSubmitSuccessful) {
     reset({ ...emptyValues, type: getValues().type })
