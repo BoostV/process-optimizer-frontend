@@ -119,7 +119,10 @@ export const experimentReducer = produce(
           .map((n, k) => ({
             meta: {
               enabled: false,
-              id: Math.max(...state.dataPoints.map(d => d.meta.id)) + k + 1,
+              id:
+                state.dataPoints.length === 0
+                  ? k + 1
+                  : Math.max(...state.dataPoints.map(d => d.meta.id)) + k + 1,
             },
             data: n
               .map((v, i) => ({
