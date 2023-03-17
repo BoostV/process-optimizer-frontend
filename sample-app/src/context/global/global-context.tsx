@@ -4,7 +4,6 @@ import ThemeSelector from '@sample/components/theme-selector/theme-selector'
 import { useLocalStorageReducer } from '@boostv/process-optimizer-frontend-core'
 import { State, Dispatch, initialState, reducer } from './global-reducer'
 import { theme, themes, CustomTheme } from '@sample/theme/theme'
-import { ProcessOptimizerThemeProvider } from '@boostv/process-optimizer-frontend-ui'
 
 const GlobalContext = React.createContext<
   { state: State; dispatch: Dispatch } | undefined
@@ -45,9 +44,7 @@ export function GlobalStateProvider({ children }: GlobalStateProviderProps) {
   return (
     <GlobalContext.Provider value={{ state, dispatch }}>
       <ThemeProvider theme={loadTheme()}>
-        <ProcessOptimizerThemeProvider theme={loadTheme()}>
-          {children}
-        </ProcessOptimizerThemeProvider>
+        {children}
         <ThemeSelector />
       </ThemeProvider>
     </GlobalContext.Provider>
