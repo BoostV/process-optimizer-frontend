@@ -34,7 +34,9 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
     onCancel,
   } = props
 
-  const [options, setOptions] = useState<string[]>([])
+  const [options, setOptions] = useState<string[]>(
+    editingVariable?.variable.options ?? []
+  )
 
   const { register, handleSubmit, reset, formState, setError, clearErrors } =
     useForm<CategoricalVariableType>({
