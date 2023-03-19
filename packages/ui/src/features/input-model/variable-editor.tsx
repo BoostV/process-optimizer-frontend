@@ -34,7 +34,13 @@ export default function VariableEditor(props: VariableEditorProps) {
   return (
     <VariableEditorInner
       {...props}
-      key={props.editingValueVariable?.index ?? 'blank'}
+      key={
+        props.editingValueVariable
+          ? `value-${props.editingValueVariable.index}`
+          : props.editingCategoricalVariable
+          ? `categorial-${props.editingCategoricalVariable.index}`
+          : 'blank'
+      }
     />
   )
 }
