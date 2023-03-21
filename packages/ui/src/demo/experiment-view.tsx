@@ -18,6 +18,8 @@ const Experiment = () => {
   const {
     dispatch,
     state: { experiment },
+    evaluate,
+    loading,
   } = useExperiment()
   const dataPoints = useSelector(selectDataPoints)
 
@@ -34,6 +36,9 @@ const Experiment = () => {
       </button>
       <button onClick={() => loadSample(cake as ExperimentType)}>
         Load Cake
+      </button>
+      <button disabled={loading} onClick={() => evaluate()}>
+        Run experiment
       </button>
       <Box>
         <Stack spacing={2} direction="row">
