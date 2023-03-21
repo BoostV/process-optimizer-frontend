@@ -59,14 +59,16 @@ export function ExperimentProvider({
     getValue,
     loading,
     evaluate: async (exp?: ExperimentType) => {
-      setLoading(true)
-      try {
-        await runExperiment(dispatch, exp ?? state.experiment, api)
-      } catch (e) {
+      if (!loading) {
+        setLoading(true)
+        try {
+          await runExperiment(dispatch, exp ?? state.experiment, api)
+        } catch (e) {
+          setLoading(false)
+          throw e
+        }
         setLoading(false)
-        throw e
       }
-      setLoading(false)
     },
   }
   return (
