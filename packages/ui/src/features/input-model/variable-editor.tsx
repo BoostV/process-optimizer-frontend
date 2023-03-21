@@ -1,7 +1,7 @@
 import CategoricalVariable from './categorical-variable'
 import ValueVariable from './value-variable'
 import { Box, Tab, Tabs } from '@mui/material'
-import { useState, ChangeEvent, useEffect, useMemo } from 'react'
+import { useState, ChangeEvent } from 'react'
 import useStyles from './variable-editor.style'
 import {
   CategoricalVariableType,
@@ -31,6 +31,21 @@ type VariableEditorProps = {
 }
 
 export default function VariableEditor(props: VariableEditorProps) {
+  return (
+    <VariableEditorInner
+      {...props}
+      key={
+        props.editingValueVariable
+          ? `value-${props.editingValueVariable.index}`
+          : props.editingCategoricalVariable
+          ? `categorial-${props.editingCategoricalVariable.index}`
+          : 'blank'
+      }
+    />
+  )
+}
+
+function VariableEditorInner(props: VariableEditorProps) {
   const {
     categoricalVariables,
     valueVariables,
@@ -43,21 +58,14 @@ export default function VariableEditor(props: VariableEditorProps) {
     onCancel,
   } = props
 
-  const isValueTabSelected = useMemo(
-    () =>
-      (editingValueVariable === undefined &&
-        editingCategoricalVariable === undefined) ||
-      editingCategoricalVariable === undefined,
-    [editingValueVariable, editingCategoricalVariable]
-  )
+  const isValueTabSelected =
+    (editingValueVariable === undefined &&
+      editingCategoricalVariable === undefined) ||
+    editingCategoricalVariable === undefined
 
   const [tabIndex, setTabIndex] = useState<number>(isValueTabSelected ? 0 : 1)
 
   const { classes } = useStyles()
-
-  useEffect(() => {
-    setTabIndex(isValueTabSelected ? 0 : 1)
-  }, [isValueTabSelected, setTabIndex])
 
   const handleTabChange = (_event: ChangeEvent<unknown>, newValue: number) => {
     setTabIndex(newValue)
