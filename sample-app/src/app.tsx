@@ -5,6 +5,7 @@ import createEmotionCache from './createEmotionCache'
 import { CacheProvider } from '@emotion/react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from '@sample/components/home/home'
+import { ApiProvider } from '@boostv/process-optimizer-frontend-core'
 
 const router = createBrowserRouter(
   [
@@ -22,13 +23,20 @@ const router = createBrowserRouter(
 // <ExperimentContainer experimentId="4b1e207a-85e5-4800-b4f3-cfeb21338798" />
 const emotionCache = createEmotionCache()
 
+const apiConfig = {
+  basePath: import.meta.env.VITE_PUBLIC_API_SERVER,
+  apiKey: 'none',
+}
+
 export default function MyApp() {
   return (
     <CacheProvider value={emotionCache}>
       <GlobalStateProvider>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        <RouterProvider router={router} />
+        <ApiProvider config={apiConfig}>
+          <RouterProvider router={router} />
+        </ApiProvider>
       </GlobalStateProvider>
     </CacheProvider>
   )

@@ -15,7 +15,6 @@ import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { useStyles } from './experiment.style'
 import {
   useExperiment,
-  runExperiment,
   useSelector,
 } from '@boostv/process-optimizer-frontend-core'
 import { useState } from 'react'
@@ -40,6 +39,7 @@ const TabbedExperiment = () => {
     state: { experiment },
     dispatch,
     loading,
+    evaluate,
   } = useExperiment()
   const {
     state: { focus, debug, uiSizes },
@@ -60,9 +60,9 @@ const TabbedExperiment = () => {
     setRunning(true)
     try {
       if (isInitializing) {
-        await runExperiment(dispatch, { ...experiment, dataPoints: [] })
+        await evaluate({ ...experiment, dataPoints: [] })
       } else {
-        await runExperiment(dispatch, experiment)
+        await evaluate(experiment)
       }
       runCompleted({ message: 'Experiment run completed', severity: 'success' })
     } catch (error) {

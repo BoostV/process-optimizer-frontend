@@ -1,19 +1,24 @@
 import * as React from 'react'
 import { useLocalStorageReducer } from '@core/storage'
 import {
-  Configuration,
   DefaultApi,
   OptimizerapiOptimizerRunRequest,
 } from '@boostv/process-optimizer-frontend-api'
 import { Dispatch, rootReducer } from './reducers'
 import { calculateData, calculateSpace } from '@core/common/'
 import { migrate } from '@core/common'
-import { initialState, State } from '@core/context/experiment'
+import { initialState, State, useApi } from '@core/context/experiment'
 import { ExperimentResultType, ExperimentType } from '@core/common/types'
 import { versionInfo } from '@core/common'
 
 const ExperimentContext = React.createContext<
-  { state: State; dispatch: Dispatch; loading: boolean } | undefined
+  | {
+      state: State
+      dispatch: Dispatch
+      loading: boolean
+      evaluate: (exp?: ExperimentType) => Promise<void>
+    }
+  | undefined
 >(undefined)
 
 type ExperimentProviderProps = {
@@ -25,6 +30,7 @@ export function ExperimentProvider({
   experimentId,
   children,
 }: ExperimentProviderProps) {
+  const api = useApi()
   const storageKey = experimentId === undefined ? 'unknown' : experimentId
   const initialExperimentState = {
     ...initialState,
@@ -47,7 +53,14 @@ export function ExperimentProvider({
 
   const getValue = (callback: (state: State) => any) => callback(state)
 
-  const value = { state, dispatch, getValue, loading }
+  const value = {
+    state,
+    dispatch,
+    getValue,
+    loading,
+    evaluate: (exp?: ExperimentType) =>
+      runExperiment(dispatch, exp ?? state.experiment, api),
+  }
   return (
     <ExperimentContext.Provider value={value}>
       {children}
@@ -72,10 +85,9 @@ export const useSelector = <T,>(selector: (state: State) => T) => {
 }
 
 const fetchExperimentResult = async (
-  experiment: ExperimentType
+  experiment: ExperimentType,
+  api: DefaultApi
 ): Promise<ExperimentResultType> => {
-  const API_SERVER = import.meta.env.VITE_PUBLIC_API_SERVER
-  const api = new DefaultApi(new Configuration({ basePath: API_SERVER }))
   const cfg = experiment.optimizerConfig
   const extras = experiment.extras || {}
   const space = calculateSpace(experiment)
@@ -117,10 +129,11 @@ const fetchExperimentResult = async (
   return experimentResult
 }
 
-export async function runExperiment(
+async function runExperiment(
   dispatch: Dispatch,
-  experiment: ExperimentType
+  experiment: ExperimentType,
+  api: DefaultApi
 ) {
-  const result = await fetchExperimentResult(experiment)
+  const result = await fetchExperimentResult(experiment, api)
   dispatch({ type: 'registerResult', payload: result })
 }

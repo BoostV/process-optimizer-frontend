@@ -23,7 +23,7 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "scripts": {
-    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v2.3.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi",
+    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.0.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi",
     "build": "tsc",
     "prepublishOnly": "tsc"
   },

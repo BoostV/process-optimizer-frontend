@@ -1,3 +1,4 @@
+import { ApiProvider } from '@core/context/experiment/api-provider'
 import { renderHook } from '@testing-library/react'
 import { FC } from 'react'
 import { vi } from 'vitest'
@@ -9,7 +10,9 @@ import {
 import { State } from './store'
 
 const ExperimentWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
-  <ExperimentProvider experimentId="123">{children}</ExperimentProvider>
+  <ApiProvider>
+    <ExperimentProvider experimentId="123">{children}</ExperimentProvider>
+  </ApiProvider>
 )
 
 describe('useExperiment', () => {

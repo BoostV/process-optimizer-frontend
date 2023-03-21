@@ -31,7 +31,6 @@ import {
   CategoricalVariableType,
   useExperiment,
   saveObjectToLocalFile,
-  runExperiment,
   useSelector,
   selectDataPoints,
   DataEntry,
@@ -52,6 +51,7 @@ const LegacyExperiment = () => {
     state: { experiment },
     dispatch,
     loading,
+    evaluate,
   } = useExperiment()
   const {
     state: {
@@ -85,9 +85,9 @@ const LegacyExperiment = () => {
     setRunning(true)
     try {
       if (isInitializing) {
-        await runExperiment(dispatch, { ...experiment, dataPoints: [] })
+        await evaluate({ ...experiment, dataPoints: [] })
       } else {
-        await runExperiment(dispatch, {
+        await evaluate({
           ...experiment,
           extras: { objectivePars: 'expected_minimum', ...experiment.extras },
         })
