@@ -73,7 +73,6 @@ const LegacyExperiment = () => {
 
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
-  const [isRunning, setRunning] = useState(false)
   const [highlightNextExperiments, setHighlightNextExperiments] =
     useState(false)
 
@@ -82,7 +81,6 @@ const LegacyExperiment = () => {
   }
 
   const onRun = async () => {
-    setRunning(true)
     try {
       if (isInitializing) {
         await evaluate({ ...experiment, dataPoints: [] })
@@ -100,7 +98,6 @@ const LegacyExperiment = () => {
   }
 
   const runCompleted = (snackbarMessage: SnackbarMessage) => {
-    setRunning(false)
     openSnackbar(snackbarMessage)
   }
 
@@ -116,7 +113,7 @@ const LegacyExperiment = () => {
   const valueVariables = experiment.valueVariables
   const categoricalVariables = experiment.categoricalVariables
 
-  if (loading) {
+  if (experiment === undefined) {
     return <LoadingExperiment />
   }
 
@@ -169,7 +166,7 @@ const LegacyExperiment = () => {
                   <LoadingButton
                     disabled={!experiment.changedSinceLastEvaluation && !debug}
                     onClick={onRun}
-                    isLoading={isRunning}
+                    isLoading={loading}
                     label="Run"
                     marginLeft={2}
                     height={42}

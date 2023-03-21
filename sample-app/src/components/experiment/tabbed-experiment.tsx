@@ -50,14 +50,12 @@ const TabbedExperiment = () => {
 
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
-  const [isRunning, setRunning] = useState(false)
 
   const onDownload = () => {
     saveObjectToLocalFile(experiment, experiment.id)
   }
 
   const onRun = async () => {
-    setRunning(true)
     try {
       if (isInitializing) {
         await evaluate({ ...experiment, dataPoints: [] })
@@ -72,7 +70,6 @@ const TabbedExperiment = () => {
   }
 
   const runCompleted = (snackbarMessage: SnackbarMessage) => {
-    setRunning(false)
     openSnackbar(snackbarMessage)
   }
 
@@ -89,7 +86,7 @@ const TabbedExperiment = () => {
     globalDispatch({ type: 'global/setFocus', payload: newValue })
   }
 
-  if (loading) {
+  if (experiment === undefined) {
     return <LoadingExperiment />
   }
 
@@ -157,7 +154,7 @@ const TabbedExperiment = () => {
             </Button>
             <LoadingButton
               onClick={onRun}
-              isLoading={isRunning}
+              isLoading={loading}
               label="Run"
               marginLeft={2}
               height={42}
