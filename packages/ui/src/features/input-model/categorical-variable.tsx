@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, TextField, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import CategoricalVariableOptions from './categorical-variable-options'
 import { useStyles } from './categorical-variable.style'
@@ -34,10 +34,14 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
     onCancel,
   } = props
 
-  const [options, setOptions] = useState<string[]>([])
+  const [options, setOptions] = useState<string[]>(
+    editingVariable?.variable.options ?? []
+  )
 
   const { register, handleSubmit, reset, formState, setError, clearErrors } =
-    useForm<CategoricalVariableType>()
+    useForm<CategoricalVariableType>({
+      defaultValues: editingVariable?.variable,
+    })
 
   const isOptionsValid = useCallback(() => {
     return options.length > 0
@@ -66,31 +70,10 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
     setOptions(newOptions)
   }
 
-  useEffect(() => {
-    if (formState.isSubmitSuccessful) {
-      reset()
-      setOptions([])
-    }
-  }, [formState, reset, isOptionsValid])
-
-  useEffect(() => {
-    if (editingVariable !== undefined) {
-      setOptions(editingVariable.variable.options)
-    }
-    reset(
-      editingVariable !== undefined
-        ? {
-            description: editingVariable.variable.description,
-            name: editingVariable.variable.name,
-            options: editingVariable.variable.options,
-          }
-        : {
-            description: '',
-            name: '',
-            options: [],
-          }
-    )
-  }, [editingVariable, reset])
+  if (formState.isSubmitSuccessful) {
+    reset()
+    setOptions([])
+  }
 
   return (
     <>

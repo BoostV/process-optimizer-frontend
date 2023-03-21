@@ -9,6 +9,7 @@ import {
 } from '@boostv/process-optimizer-frontend-core'
 
 import catapult from '@ui/testing/sample-data/catapult.json'
+import cake from '@ui/testing/sample-data/cake.json'
 import { DataPoints, ExperimentationGuide, Plots } from '..'
 import { OptimizerConfigurator } from '../features/experiment'
 import { InputModel } from '../features/input-model'
@@ -20,15 +21,20 @@ const Experiment = () => {
   } = useExperiment()
   const dataPoints = useSelector(selectDataPoints)
 
-  const loadSample = () => {
+  const loadSample = (data: ExperimentType) => {
     dispatch({
       type: 'updateExperiment',
-      payload: catapult as ExperimentType,
+      payload: data,
     })
   }
   return (
     <div>
-      <button onClick={() => loadSample()}>Load sample</button>
+      <button onClick={() => loadSample(catapult as ExperimentType)}>
+        Load Catapult
+      </button>
+      <button onClick={() => loadSample(cake as ExperimentType)}>
+        Load Cake
+      </button>
       <Box>
         <Stack spacing={2} direction="row">
           <DataPoints
