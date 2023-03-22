@@ -38,12 +38,12 @@
   "dependencies": {
     "@boostv/process-optimizer-frontend-core": "*",
     "@boostv/process-optimizer-frontend-plots": "*",
-    "@mui/icons-material": "^5.11.0",
-    "@mui/material": "^5.11.7",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "tss-react": "^4.6.0",
-    "react-hook-form": "^7.33.0"
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.7",
+    "react-hook-form": "^7.33.0",
+    "tss-react": "^4.6.0"
   },
   "peerDependencies": {
     "react": "^18.2.0",
@@ -65,7 +65,7 @@
     "react-devtools": "^4.27.1",
     "rimraf": "^4.1.2",
     "typescript": "^4.9.5",
-    "vite": "^4.1.1",
+    "vite": "^4.2.1",
     "vitest": "^0.28.4"
   }
 }

@@ -61,8 +61,18 @@ export function ExperimentProvider({
     dispatch,
     getValue,
     loading,
-    evaluate: (exp?: ExperimentType) =>
-      runExperiment(dispatch, exp ?? state.experiment, api),
+    evaluate: async (exp?: ExperimentType) => {
+      if (!loading) {
+        setLoading(true)
+        try {
+          await runExperiment(dispatch, exp ?? state.experiment, api)
+        } catch (e) {
+          setLoading(false)
+          throw e
+        }
+        setLoading(false)
+      }
+    },
   }
   return (
     <ExperimentContext.Provider value={value}>
