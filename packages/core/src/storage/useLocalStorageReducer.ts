@@ -35,6 +35,6 @@ export const useLocalStorageReducer = <S, A>(
     return newState
   }
   return useReducer(localStorageReducer, initialState, s =>
-    transform(init(localStorageKey)(s))
+    transform(init(localStorageKey, storage)(s))
   )
 }

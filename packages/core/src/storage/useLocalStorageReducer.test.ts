@@ -33,9 +33,11 @@ describe('useLocalStorageReducer', () => {
 
   it('can use another storage backend', () => {
     const storage: typeof localStorage = {
-      getItem: k => {
-        console.log('GEEET', k)
-        return '{}'
+      ...localStorage,
+      getItem: () => {
+        return JSON.stringify({
+          experiment: { ...initialState.experiment, id: 'test' },
+        })
       },
     }
     const reducer = (state: State) => state
@@ -48,6 +50,9 @@ describe('useLocalStorageReducer', () => {
         storage
       )
     )
-    expect(result.current[0]).toEqual(initialState)
+    const {
+      experiment: { id },
+    } = result.current[0]
+    expect(id).toEqual('test')
   })
 })

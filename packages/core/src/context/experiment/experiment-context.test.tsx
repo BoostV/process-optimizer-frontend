@@ -85,9 +85,13 @@ describe('Pluggable storage', () => {
     }
     localCatapult.experiment.info.name = 'I am stored in storage provider'
     localCatapult.experiment.id = 'catapult'
+    const storage: Storage = {
+      ...localStorage,
+      getItem: () => JSON.stringify(localCatapult),
+    }
     render(
       <ApiProvider>
-        <ExperimentProvider experimentId="catapult">
+        <ExperimentProvider storage={storage} experimentId="catapult">
           <Tester />
         </ExperimentProvider>
       </ApiProvider>
