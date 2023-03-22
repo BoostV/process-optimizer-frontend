@@ -72,9 +72,9 @@ export type OptimizerConfig = {
 }
 
 // IMPORTANT! All meta data keys MUST be defined as lower case to ensure proper CSV parsing
-type MetaDataRequiredKeys = 'enabled' | 'id'
+type MetaDataRequiredKeys = 'enabled' | 'id' | 'valid'
 type MetaDataOptionalKeys = 'description'
-type MetaDataBoolKeys = 'enabled'
+type MetaDataBoolKeys = 'enabled' | 'valid'
 type MetaDataNumericKeys = 'id'
 
 type OptionalKnownMetaData = {

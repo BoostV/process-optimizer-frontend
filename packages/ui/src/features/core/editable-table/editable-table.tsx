@@ -24,6 +24,7 @@ type EditableTableProps = {
   onRowAdded: (row: TableDataRow) => void
   onRowDeleted: (rowIndex: number) => void
   onRowEdited: (rowIndex: number, row: TableDataRow) => void
+  onRowEnabledToggled: (rowIndex: number, enabled: boolean) => void
   violations?: EditableTableViolation[]
   order: TableOrder
   isEditingDisabled?: boolean
@@ -35,6 +36,7 @@ export const EditableTable = ({
   onRowAdded,
   onRowDeleted,
   onRowEdited,
+  onRowEnabledToggled,
   violations,
   order,
   isEditingDisabled,
@@ -77,6 +79,12 @@ export const EditableTable = ({
               }
               order={order}
               isEditingDisabled={isEditingDisabled}
+              onEnabledToggled={enabled =>
+                onRowEnabledToggled(
+                  getRowIndex(newestFirst, rowIndex, rows.length),
+                  enabled
+                )
+              }
             />
           ))}
         </TableBody>
