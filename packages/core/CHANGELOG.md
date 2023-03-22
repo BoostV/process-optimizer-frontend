@@ -1,5 +1,16 @@
 # @process-optimizer-frontend/core
 
+## 1.2.0
+
+### Minor Changes
+
+- 842cb41: Support pluggable experiment storage
+
+### Patch Changes
+
+- 123d09d: Fix various minor issues related to API provider
+- 53172b5: Minor fix to API provider
+
 ## 1.1.0
 
 ### Minor Changes

@@ -1,5 +1,17 @@
 # @process-optimizer-frontend/sample-app
 
+## 1.8.1
+
+### Patch Changes
+
+- 123d09d: Fix various minor issues related to API provider
+- 53172b5: Minor fix to API provider
+- Updated dependencies [842cb41]
+- Updated dependencies [123d09d]
+- Updated dependencies [53172b5]
+  - @boostv/process-optimizer-frontend-core@1.2.0
+  - @boostv/process-optimizer-frontend-ui@1.1.1
+
 ## 1.8.0
 
 ### Minor Changes
