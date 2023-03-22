@@ -23,7 +23,7 @@ const ExperimentContext = React.createContext<
 
 type ExperimentProviderProps = {
   experimentId: string
-  children: any
+  children?: React.ReactNode
 }
 
 export function ExperimentProvider({
