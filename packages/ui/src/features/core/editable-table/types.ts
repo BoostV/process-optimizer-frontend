@@ -9,6 +9,5 @@ export type TableDataRow = {
   dataPoints: TableDataPoint[]
   isNew: boolean
   disabled?: boolean
-  valid?: boolean
   metaId?: number
 }

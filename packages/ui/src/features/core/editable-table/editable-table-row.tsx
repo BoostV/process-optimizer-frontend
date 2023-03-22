@@ -11,7 +11,6 @@ interface EditableTableRowProps {
   onSave: (row: TableDataRow) => void
   onDelete: () => void
   onAdd: (row: TableDataRow) => void
-  onEnabledToggled: (enabled: boolean) => void
   violations?: string[]
   order: TableOrder
   isEditingDisabled?: boolean
@@ -24,7 +23,6 @@ export const EditableTableRow = ({
   onSave,
   onDelete,
   onAdd,
-  onEnabledToggled,
   violations,
   order,
   isEditingDisabled,
@@ -54,8 +52,8 @@ export const EditableTableRow = ({
           tableRow={tableRow}
           onDelete={() => onDelete()}
           setExpanded={expanded => setExpanded(expanded)}
+          disabled={tableRow.disabled}
           isEditingDisabled={isEditingDisabled}
-          onEnabledToggled={enabled => onEnabledToggled(enabled)}
         />
       )}
     </>
