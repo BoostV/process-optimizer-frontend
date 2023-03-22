@@ -23,12 +23,14 @@ const ExperimentContext = React.createContext<
 
 type ExperimentProviderProps = {
   experimentId: string
-  children: any
+  children?: React.ReactNode
+  storage?: Storage
 }
 
 export function ExperimentProvider({
   experimentId,
   children,
+  storage,
 }: ExperimentProviderProps) {
   const api = useApi()
   const storageKey = experimentId === undefined ? 'unknown' : experimentId
@@ -40,7 +42,8 @@ export function ExperimentProvider({
     rootReducer,
     initialExperimentState,
     storageKey,
-    (a: State) => ({ ...a, experiment: migrate(a.experiment) })
+    (a: State) => ({ ...a, experiment: migrate(a.experiment) }),
+    storage
   )
   const [loading, setLoading] = React.useState(true)
 

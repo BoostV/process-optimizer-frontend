@@ -30,4 +30,29 @@ describe('useLocalStorageReducer', () => {
     expect(result1.current[0]).toEqual(initialState)
     expect(result2.current[0].experiment.id).toEqual('321')
   })
+
+  it('can use another storage backend', () => {
+    const storage: typeof localStorage = {
+      ...localStorage,
+      getItem: () => {
+        return JSON.stringify({
+          experiment: { ...initialState.experiment, id: 'test' },
+        })
+      },
+    }
+    const reducer = (state: State) => state
+    const { result } = renderHook(() =>
+      useLocalStorageReducer(
+        reducer,
+        initialState,
+        'rootState',
+        x => x,
+        storage
+      )
+    )
+    const {
+      experiment: { id },
+    } = result.current[0]
+    expect(id).toEqual('test')
+  })
 })
