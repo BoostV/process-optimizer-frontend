@@ -10,7 +10,6 @@ import {
 import { State } from './store'
 
 import catapult from '../../../sample-data/catapult.json' assert { type: 'json' }
-import { ExperimentType } from '@core/common'
 
 const ExperimentWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
   <ApiProvider>
