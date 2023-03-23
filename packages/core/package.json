@@ -30,6 +30,7 @@
   },
   "scripts": {
     "clean": "rimraf ./dist",
+    "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "test": "vitest",
     "prepublishOnly": "vite build"
