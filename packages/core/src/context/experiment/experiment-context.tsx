@@ -4,12 +4,53 @@ import {
   DefaultApi,
   OptimizerapiOptimizerRunRequest,
 } from '@boostv/process-optimizer-frontend-api'
-import { Dispatch, rootReducer } from './reducers'
+import { Dispatch, Action, rootReducer } from './reducers'
 import { calculateData, calculateSpace } from '@core/common/'
 import { migrate } from '@core/common'
 import { initialState, State, useApi } from '@core/context/experiment'
 import { ExperimentResultType, ExperimentType } from '@core/common/types'
 import { versionInfo } from '@core/common'
+
+type ParentState = {
+  experiments: Record<string, ExperimentType>
+}
+const initialParentState: ParentState = { experiments: {} }
+
+const parentReducer = (s: ParentState, a: Action) => {
+  return s
+}
+
+const ParentContext = React.createContext<
+  [state: ParentState, dispatch: React.Dispatch<Action>] | undefined
+>(undefined)
+
+export const ExperimentsProvider = ({
+  children,
+}: {
+  children: React.ReactNode
+}) => {
+  const [state, dispatch] = React.useReducer(parentReducer, initialParentState)
+
+  return (
+    <ParentContext.Provider value={[state, dispatch]}>
+      {children}
+    </ParentContext.Provider>
+  )
+}
+
+export const useParent = () => {
+  const ctx = React.useContext(ParentContext)
+  if (ctx === undefined) {
+    throw new Error('useParent must be used inside ExperimentsProvider')
+  }
+  return ctx
+}
+
+const useChildReducer = (key: string) => {
+  const [state, dispatch] = useParent()
+
+  return [state, dispatch]
+}
 
 const ExperimentContext = React.createContext<
   | {
@@ -38,13 +79,19 @@ export function ExperimentProvider({
     ...initialState,
     experiment: { ...initialState.experiment, id: experimentId },
   }
-  const [state, dispatch] = useLocalStorageReducer(
+  const [state, dispatch] = React.useReducer(
     rootReducer,
     initialExperimentState,
-    storageKey,
-    (a: State) => ({ ...a, experiment: migrate(a.experiment) }),
-    storage
+    (a: State) => ({ ...a, experiment: migrate(a.experiment) })
   )
+
+  // const [state, dispatch] = useLocalStorageReducer(
+  //   rootReducer,
+  //   initialExperimentState,
+  //   storageKey,
+  //   (a: State) => ({ ...a, experiment: migrate(a.experiment) }),
+  //   storage
+  // )
   const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
