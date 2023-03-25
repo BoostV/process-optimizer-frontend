@@ -11,47 +11,6 @@ import { initialState, State, useApi } from '@core/context/experiment'
 import { ExperimentResultType, ExperimentType } from '@core/common/types'
 import { versionInfo } from '@core/common'
 
-type ParentState = {
-  experiments: Record<string, ExperimentType>
-}
-const initialParentState: ParentState = { experiments: {} }
-
-const parentReducer = (s: ParentState, a: Action) => {
-  return s
-}
-
-const ParentContext = React.createContext<
-  [state: ParentState, dispatch: React.Dispatch<Action>] | undefined
->(undefined)
-
-export const ExperimentsProvider = ({
-  children,
-}: {
-  children: React.ReactNode
-}) => {
-  const [state, dispatch] = React.useReducer(parentReducer, initialParentState)
-
-  return (
-    <ParentContext.Provider value={[state, dispatch]}>
-      {children}
-    </ParentContext.Provider>
-  )
-}
-
-export const useParent = () => {
-  const ctx = React.useContext(ParentContext)
-  if (ctx === undefined) {
-    throw new Error('useParent must be used inside ExperimentsProvider')
-  }
-  return ctx
-}
-
-const useChildReducer = (key: string) => {
-  const [state, dispatch] = useParent()
-
-  return [state, dispatch]
-}
-
 const ExperimentContext = React.createContext<
   | {
       state: State
@@ -68,38 +27,47 @@ type ExperimentProviderProps = {
   storage?: Storage
 }
 
-export function ExperimentProvider({
+export const ExperimentProvider = ({
   experimentId,
   children,
   storage,
-}: ExperimentProviderProps) {
-  const api = useApi()
+}: ExperimentProviderProps) => {
   const storageKey = experimentId === undefined ? 'unknown' : experimentId
   const initialExperimentState = {
     ...initialState,
     experiment: { ...initialState.experiment, id: experimentId },
   }
-  const [state, dispatch] = React.useReducer(
+  const [state, dispatch] = useLocalStorageReducer(
     rootReducer,
     initialExperimentState,
-    (a: State) => ({ ...a, experiment: migrate(a.experiment) })
+    storageKey,
+    (a: State) => ({ ...a, experiment: migrate(a.experiment) }),
+    storage
   )
+  return (
+    <ManagedExperimentProvider state={state} dispatch={dispatch}>
+      {children}
+    </ManagedExperimentProvider>
+  )
+}
 
-  // const [state, dispatch] = useLocalStorageReducer(
-  //   rootReducer,
-  //   initialExperimentState,
-  //   storageKey,
-  //   (a: State) => ({ ...a, experiment: migrate(a.experiment) }),
-  //   storage
-  // )
-  const [loading, setLoading] = React.useState(true)
+export type ManagedExperimentProviderProps = {
+  state: State
+  dispatch: Dispatch
+  children: React.ReactNode
+}
 
-  React.useEffect(() => {
-    if (state?.experiment?.info?.swVersion !== versionInfo.version) {
-      dispatch({ type: 'setSwVersion', payload: versionInfo.version })
-    }
-    setLoading(false)
-  }, [dispatch, experimentId, state])
+export function ManagedExperimentProvider({
+  state,
+  dispatch,
+  children,
+}: ManagedExperimentProviderProps) {
+  const api = useApi()
+
+  const [loading, setLoading] = React.useState(false)
+  if (state?.experiment?.info?.swVersion !== versionInfo.version) {
+    dispatch({ type: 'setSwVersion', payload: versionInfo.version })
+  }
 
   const getValue = (callback: (state: State) => any) => callback(state)
 

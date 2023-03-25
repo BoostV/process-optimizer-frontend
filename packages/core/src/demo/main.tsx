@@ -1,10 +1,4 @@
-import {
-  ApiProvider,
-  ExperimentProvider,
-  ExperimentsProvider,
-  useExperiment,
-  useParent,
-} from '@core/context'
+import { ApiProvider, ExperimentProvider, useExperiment } from '@core/context'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
@@ -31,11 +25,10 @@ const ExperimentDemo = () => {
 }
 
 const ExperimentManager = () => {
-  const [state, dispatch] = useParent()
   return (
     <>
       <h1>Experiments</h1>
-      <h2>Name: {state?.experiments['123']?.info.name ?? ''}</h2>
+      {/* <h2>Name: {state?.experiments['123']?.info.name ?? ''}</h2> */}
       <ExperimentProvider experimentId="123">
         <ExperimentDemo />
       </ExperimentProvider>
@@ -46,9 +39,7 @@ const ExperimentManager = () => {
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ApiProvider>
-      <ExperimentsProvider>
-        <ExperimentManager />
-      </ExperimentsProvider>
+      <ExperimentManager />
     </ApiProvider>
   </React.StrictMode>
 )
