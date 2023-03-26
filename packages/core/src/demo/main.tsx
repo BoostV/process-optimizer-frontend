@@ -1,7 +1,7 @@
 import {
   Action,
   ApiProvider,
-  ExperimentProvider,
+  State,
   initialState,
   ManagedExperimentProvider,
   rootReducer,
@@ -39,7 +39,10 @@ type ManagerState = {
 const initialManagerState: ManagerState = {
   experiments: {},
 }
-const managerReducer = (s: ManagerState, action: any | Action) => {
+const managerReducer = (
+  s: ManagerState,
+  action: any | Action
+): ManagerState => {
   return {
     ...s,
     experiments: {
@@ -52,6 +55,10 @@ const managerReducer = (s: ManagerState, action: any | Action) => {
   }
 }
 
+const selectExperiment = (s: ManagerState, id: string): State => ({
+  experiment: s.experiments[id] ?? initialState.experiment,
+})
+
 const ExperimentManager = () => {
   const [state, dispatch] = useReducer(managerReducer, initialManagerState)
   return (
@@ -59,9 +66,7 @@ const ExperimentManager = () => {
       <h1>Experiments</h1>
       <h2>Name: {state?.experiments['123']?.info.name ?? ''}</h2>
       <ManagedExperimentProvider
-        state={{
-          experiment: state.experiments['123'] ?? initialState.experiment,
-        }}
+        state={selectExperiment(state, '123')}
         dispatch={dispatch}
       >
         <ExperimentDemo />

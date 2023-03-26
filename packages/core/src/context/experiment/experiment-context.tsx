@@ -4,7 +4,7 @@ import {
   DefaultApi,
   OptimizerapiOptimizerRunRequest,
 } from '@boostv/process-optimizer-frontend-api'
-import { Dispatch, Action, rootReducer } from './reducers'
+import { Dispatch, rootReducer } from './reducers'
 import { calculateData, calculateSpace } from '@core/common/'
 import { migrate } from '@core/common'
 import { initialState, State, useApi } from '@core/context/experiment'
