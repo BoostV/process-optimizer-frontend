@@ -9,7 +9,6 @@ import { calculateData, calculateSpace } from '@core/common/'
 import { migrate } from '@core/common'
 import { initialState, State, useApi } from '@core/context/experiment'
 import { ExperimentResultType, ExperimentType } from '@core/common/types'
-import { versionInfo } from '@core/common'
 
 const ExperimentContext = React.createContext<
   | {
