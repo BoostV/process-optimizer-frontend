@@ -19,6 +19,7 @@
     "start": "npm run dev --workspace @boostv/process-optimizer-frontend-sample-app",
     "dev:app": "npm run dev --workspace @boostv/process-optimizer-frontend-sample-app",
     "dev:ui": "npm run dev --workspace @boostv/process-optimizer-frontend-ui",
+    "dev:core": "npm run dev --workspace @boostv/process-optimizer-frontend-core",
     "openapi": "npm run openapi --workspace @boostv/process-optimizer-frontend-api",
     "update-deps": "npx npm-check-updates -ws --root -i",
     "prepare": "husky install",

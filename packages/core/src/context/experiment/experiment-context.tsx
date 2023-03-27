@@ -27,12 +27,11 @@ type ExperimentProviderProps = {
   storage?: Storage
 }
 
-export function ExperimentProvider({
+export const ExperimentProvider = ({
   experimentId,
   children,
   storage,
-}: ExperimentProviderProps) {
-  const api = useApi()
+}: ExperimentProviderProps) => {
   const storageKey = experimentId === undefined ? 'unknown' : experimentId
   const initialExperimentState = {
     ...initialState,
@@ -45,14 +44,30 @@ export function ExperimentProvider({
     (a: State) => ({ ...a, experiment: migrate(a.experiment) }),
     storage
   )
-  const [loading, setLoading] = React.useState(true)
+  return (
+    <ManagedExperimentProvider state={state} dispatch={dispatch}>
+      {children}
+    </ManagedExperimentProvider>
+  )
+}
 
-  React.useEffect(() => {
-    if (state?.experiment?.info?.swVersion !== versionInfo.version) {
-      dispatch({ type: 'setSwVersion', payload: versionInfo.version })
-    }
-    setLoading(false)
-  }, [dispatch, experimentId, state])
+export type ManagedExperimentProviderProps = {
+  state: State
+  dispatch: Dispatch
+  children: React.ReactNode
+}
+
+export function ManagedExperimentProvider({
+  state,
+  dispatch,
+  children,
+}: ManagedExperimentProviderProps) {
+  const api = useApi()
+
+  const [loading, setLoading] = React.useState(false)
+  if (state?.experiment?.info?.swVersion !== versionInfo.version) {
+    dispatch({ type: 'setSwVersion', payload: versionInfo.version })
+  }
 
   const getValue = (callback: (state: State) => any) => callback(state)
 
