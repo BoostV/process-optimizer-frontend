@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 1.3.0
+
+### Minor Changes
+
+- 1acbe02: Add managed experiment provider
+
 ## 1.2.0
 
 ### Minor Changes
