@@ -9,7 +9,6 @@ import { calculateData, calculateSpace } from '@core/common/'
 import { migrate } from '@core/common'
 import { initialState, State, useApi } from '@core/context/experiment'
 import { ExperimentResultType, ExperimentType } from '@core/common/types'
-import { versionInfo } from '@core/common'
 
 const ExperimentContext = React.createContext<
   | {
@@ -65,9 +64,6 @@ export function ManagedExperimentProvider({
   const api = useApi()
 
   const [loading, setLoading] = React.useState(false)
-  if (state?.experiment?.info?.swVersion !== versionInfo.version) {
-    dispatch({ type: 'setSwVersion', payload: versionInfo.version })
-  }
 
   const getValue = (callback: (state: State) => any) => callback(state)
 
