@@ -65,9 +65,6 @@ export function ManagedExperimentProvider({
   const api = useApi()
 
   const [loading, setLoading] = React.useState(false)
-  if (state?.experiment?.info?.swVersion !== versionInfo.version) {
-    dispatch({ type: 'setSwVersion', payload: versionInfo.version })
-  }
 
   const getValue = (callback: (state: State) => any) => callback(state)
 
