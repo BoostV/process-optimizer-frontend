@@ -7,9 +7,12 @@ import {
   rootReducer,
   useExperiment,
 } from '@core/context'
-import React, { useReducer } from 'react'
+import React, { useReducer, useState } from 'react'
 import ReactDOM from 'react-dom/client'
-import { ExperimentType } from '..'
+import { ExperimentType, migrate } from '..'
+
+import catapult from '../../sample-data/catapult.json'
+import large from '../../sample-data/large.json'
 
 const ExperimentDemo = () => {
   const {
@@ -28,7 +31,7 @@ const ExperimentDemo = () => {
         value={experiment?.info.name}
         onChange={e => handleChange(e.target.value)}
       ></textarea>
-      <pre>{JSON.stringify(experiment, undefined, 2)}</pre>
+      <pre>{JSON.stringify(experiment.info, undefined, 2)}</pre>
     </>
   )
 }
@@ -37,22 +40,25 @@ type ManagerState = {
   experiments: Record<string, ExperimentType>
 }
 const initialManagerState: ManagerState = {
-  experiments: {},
+  experiments: {
+    catapult: migrate(catapult),
+    large: migrate(large),
+  },
 }
+
 const managerReducer = (
   s: ManagerState,
   action: any | Action
 ): ManagerState => {
-  return {
-    ...s,
-    experiments: {
-      ...s.experiments,
-      '123': rootReducer(
-        { experiment: s.experiments['123'] ?? initialState.experiment },
-        action
-      ).experiment,
-    },
+  if (action.target) {
+    const oldTargetState =
+      s.experiments[action.target] ?? initialState.experiment
+    const newTargetState = rootReducer({ experiment: oldTargetState }, action)
+    const experiments = { ...s.experiments }
+    experiments[action.target] = newTargetState.experiment
+    return { ...s, experiments }
   }
+  return s
 }
 
 const selectExperiment = (s: ManagerState, id: string): State => ({
@@ -61,13 +67,16 @@ const selectExperiment = (s: ManagerState, id: string): State => ({
 
 const ExperimentManager = () => {
   const [state, dispatch] = useReducer(managerReducer, initialManagerState)
+  const [selected, setSelected] = useState<'catapult' | 'large'>('catapult')
   return (
     <>
-      <h1>Experiments</h1>
-      <h2>Name: {state?.experiments['123']?.info.name ?? ''}</h2>
+      <h1>ManagedExperimentProvider</h1>
+      <h2>Name: {state?.experiments[selected]?.info.name ?? ''}</h2>
+      <button onClick={() => setSelected('catapult')}>Catapult</button>
+      <button onClick={() => setSelected('large')}>Large</button>
       <ManagedExperimentProvider
-        state={selectExperiment(state, '123')}
-        dispatch={dispatch}
+        state={selectExperiment(state, selected)}
+        dispatch={action => dispatch({ ...action, target: selected })}
       >
         <ExperimentDemo />
       </ManagedExperimentProvider>
