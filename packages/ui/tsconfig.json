@@ -2,9 +2,7 @@
   "extends": "../../scaffold/tsconfig.ui-lib.json",
   "compilerOptions": {
     "noImplicitReturns": false,
-    "noEmit": false,
     "emitDeclarationOnly": false,
-    "declarationDir": "./dist/types",
     "rootDir": "./src",
     "outDir": "./dist",
     "baseUrl": "./src",

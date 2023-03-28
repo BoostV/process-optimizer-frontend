@@ -2,12 +2,10 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
-import noBundlePlugin from 'vite-plugin-no-bundle'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig({
   plugins: [
-    noBundlePlugin(),
     dts(),
     react({
       jsxRuntime: 'classic',
@@ -17,6 +15,7 @@ export default defineConfig({
     alias: [{ find: '@core', replacement: resolve(__dirname, './src') }],
   },
   build: {
+    minify: false,
     lib: {
       formats: ['es'],
       entry: resolve(__dirname, 'src/index.ts'),
