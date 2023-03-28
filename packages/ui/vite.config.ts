@@ -3,6 +3,7 @@ import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
+import noBundlePlugin from 'vite-plugin-no-bundle'
 
 export default defineConfig({
   plugins: [
@@ -29,7 +30,6 @@ export default defineConfig({
         '@boostv/process-optimizer-frontend-core',
         '@boostv/process-optimizer-frontend-plots',
         'immer',
-        /@mui.*/,
         '@emotion/react',
         '@emotion/styled',
         'tss-react',
