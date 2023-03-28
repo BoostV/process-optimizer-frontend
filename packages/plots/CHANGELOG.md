@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/plots
 
+## 1.0.2
+
+### Patch Changes
+
+- 739e6b8: Revert conversion to tsc and use vite for all packages
+
 ## 1.0.1
 
 ### Patch Changes

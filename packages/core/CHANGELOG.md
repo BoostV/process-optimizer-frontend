@@ -1,5 +1,13 @@
 # @process-optimizer-frontend/core
 
+## 1.3.3
+
+### Patch Changes
+
+- 739e6b8: Revert conversion to tsc and use vite for all packages
+- Updated dependencies [739e6b8]
+  - @boostv/process-optimizer-frontend-api@1.1.2
+
 ## 1.3.2
 
 ### Patch Changes
