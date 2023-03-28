@@ -1,7 +1,7 @@
 {
   "name": "@boostv/process-optimizer-frontend-plots",
   "private": false,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Plot components for for process optimizer frontend",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
