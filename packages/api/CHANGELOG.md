@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/api
 
+## 1.1.3
+
+### Patch Changes
+
+- f432859: Fix build issues
+
 ## 1.1.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @process-optimizer-frontend/core
 
+## 1.3.4
+
+### Patch Changes
+
+- f432859: Fix build issues
+- Updated dependencies [f432859]
+  - @boostv/process-optimizer-frontend-api@1.1.3
+
 ## 1.3.3
 
 ### Patch Changes
