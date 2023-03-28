@@ -6,7 +6,7 @@ import {
   ScoreVariableType,
   ValueVariableType,
   Info,
-} from '@core/common/types'
+} from 'common/types'
 
 type ExperimentTypeV5 = {
   id: string

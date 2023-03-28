@@ -19,12 +19,17 @@
   "files": [
     "dist"
   ],
-  "types": "./dist/src/index.d.ts",
-  "main": "./dist/src/index.js",
-  "module": "./dist/src/index.js",
+  "type": "commonjs",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "scripts": {
-    "build": "tsc",
-    "prepublishOnly": "tsc"
+    "build": "tsc -b ./tsconfig.esm.json && tsc-alias -p tsconfig.esm.json && tsc -b ./tsconfig.cjs.json",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@bokeh/bokehjs": "^2.4.3",
@@ -34,5 +39,8 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "tsc-alias": "^1.8.4"
   }
 }

@@ -1,4 +1,4 @@
-import { ExperimentType } from '@core/common'
+import { ExperimentType } from 'common'
 import { State } from './store'
 
 export const selectExperiment = (state: State) => state.experiment

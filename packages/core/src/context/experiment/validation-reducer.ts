@@ -1,4 +1,4 @@
-import { ExperimentType } from '@core/common'
+import { ExperimentType } from 'common'
 import produce from 'immer'
 import { ValidationViolations } from './validation'
 

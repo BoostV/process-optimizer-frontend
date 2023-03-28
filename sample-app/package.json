@@ -17,7 +17,7 @@
     "@mui/lab": "^5.0.0-alpha.118",
     "@mui/material": "^5.11.7",
     "@boostv/process-optimizer-frontend-core": "*",
-    "@boostv/process-optimizer-frontend-plots": "1.0.0",
+    "@boostv/process-optimizer-frontend-plots": "*",
     "@boostv/process-optimizer-frontend-ui": "*",
     "@types/recharts": "^1.8.24",
     "immer": "^9.0.19",

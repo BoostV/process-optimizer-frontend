@@ -9,7 +9,7 @@ import {
 } from './experiment-context'
 import { State } from './store'
 
-import catapult from '../../../sample-data/catapult.json' assert { type: 'json' }
+import catapult from '@core/sample-data/catapult.json'
 
 const ExperimentWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
   <ApiProvider>
