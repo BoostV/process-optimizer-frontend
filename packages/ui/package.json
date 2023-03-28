@@ -20,17 +20,16 @@
   "files": [
     "dist"
   ],
-  "type": "commonjs",
-  "types": "./dist/types/index.d.ts",
+  "type": "module",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
-    "build": "tsc -b ./tsconfig.esm.json && tsc-alias -p tsconfig.esm.json && tsc -b ./tsconfig.cjs.json",
-    "prepublishOnly": "npm run build",
+    "build": "tsc && vite build",
+    "prepublishOnly": "vite build",
     "dev": "vite",
     "clean": "rimraf ./dist",
     "test": "vitest"
@@ -67,6 +66,8 @@
     "tsc-alias": "^1.8.4",
     "typescript": "^4.9.5",
     "vite": "^4.2.1",
+    "vite-plugin-dts": "^2.1.0",
+    "vite-plugin-no-bundle": "^2.0.2",
     "vitest": "^0.28.4"
   }
 }

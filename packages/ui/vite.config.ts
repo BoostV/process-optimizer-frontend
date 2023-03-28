@@ -2,17 +2,21 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
+import noBundlePlugin from 'vite-plugin-no-bundle'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig({
-  plugins: [dts(), react()],
+  plugins: [
+    noBundlePlugin(),
+    dts(),
+    react({
+      jsxRuntime: 'classic',
+    }),
+  ],
   resolve: {
     alias: [{ find: '@ui', replacement: resolve(__dirname, './src') }],
   },
   build: {
-    sourcemap: true,
-    target: 'esnext',
-    minify: false,
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       formats: ['es'],
@@ -22,9 +26,11 @@ export default defineConfig({
         'react',
         'react-dom',
         'react-hook-form',
+        '@boostv/process-optimizer-frontend-api',
         '@boostv/process-optimizer-frontend-core',
-        '@mui/icons-material',
-        '@mui/material',
+        '@boostv/process-optimizer-frontend-plots',
+        'immer',
+        /@mui.*/,
         '@emotion/react',
         '@emotion/styled',
         'tss-react',
