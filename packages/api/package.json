@@ -19,22 +19,24 @@
   "files": [
     "dist"
   ],
-  "type": "commonjs",
-  "types": "./dist/types/index.d.ts",
+  "type": "module",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
-    "build": "tsc -b ./tsconfig.esm.json  && tsc -b ./tsconfig.cjs.json",
-    "prepublishOnly": "npm run build",
+    "build": "tsc && vite build",
+    "prepublishOnly": "vite build",
     "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.0.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "2.5.2",
     "prettier": "^2.8.3",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "vite": "^4.2.1",
+    "vite-plugin-dts": "^2.1.0",
+    "vite-plugin-no-bundle": "^2.0.2"
   }
 }

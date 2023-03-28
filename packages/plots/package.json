@@ -19,16 +19,15 @@
   "files": [
     "dist"
   ],
-  "type": "commonjs",
+  "type": "module",
   "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "import": "./dist/esm/index.js"
     }
   },
   "scripts": {
-    "build": "tsc -b ./tsconfig.esm.json && tsc-alias -p tsconfig.esm.json && tsc -b ./tsconfig.cjs.json",
+    "build": "tsc -b ./tsconfig.esm.json && tsc-alias -p tsconfig.esm.json",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
