@@ -1,4 +1,4 @@
-import { emptyExperiment } from 'context'
+import { emptyExperiment } from '@core/context'
 import { currentVersion, ExperimentType, isExperiment } from './common'
 
 describe('Type guards', () => {

@@ -1,4 +1,4 @@
-import { assertUnreachable } from 'common/util'
+import { assertUnreachable } from '@core/common/util'
 import { State } from './store'
 import { ExperimentAction, experimentReducer } from './experiment-reducers'
 import { validateExperiment, ValidationViolations } from './validation'

@@ -1,5 +1,5 @@
-import { useLocalStorageReducer } from 'storage'
-import { initialState, State } from 'context/experiment'
+import { useLocalStorageReducer } from '@core/storage'
+import { initialState, State } from '@core/context/experiment'
 import { renderHook } from '@testing-library/react'
 
 describe('useLocalStorageReducer', () => {

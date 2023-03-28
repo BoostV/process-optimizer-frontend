@@ -8,9 +8,9 @@ import {
   ExperimentType,
   OptimizerConfig,
   ValueVariableType,
-} from 'common/types'
-import { emptyExperiment, State } from 'context/experiment'
-import { versionInfo } from 'common'
+} from '@core/common/types'
+import { emptyExperiment, State } from '@core/context/experiment'
+import { versionInfo } from '@core/common'
 
 describe('experiment reducer', () => {
   const initState: State = {

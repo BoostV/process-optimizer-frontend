@@ -1,6 +1,6 @@
-import { versionInfo } from 'common'
-import { currentVersion } from 'common/types'
-import { ExperimentType } from 'common/types'
+import { versionInfo } from '@core/common'
+import { currentVersion } from '@core/common/types'
+import { ExperimentType } from '@core/common/types'
 
 export const emptyExperiment: ExperimentType = {
   id: '',

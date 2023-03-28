@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { useLocalStorageReducer } from 'storage'
+import { useLocalStorageReducer } from '@core/storage'
 import {
   DefaultApi,
   OptimizerapiOptimizerRunRequest,
 } from '@boostv/process-optimizer-frontend-api'
 import { Dispatch, rootReducer } from './reducers'
-import { calculateData, calculateSpace } from 'common/'
-import { migrate } from 'common'
-import { initialState, State, useApi } from 'context/experiment'
-import { ExperimentResultType, ExperimentType } from 'common/types'
+import { calculateData, calculateSpace } from '@core/common/'
+import { migrate } from '@core/common'
+import { initialState, State, useApi } from '@core/context/experiment'
+import { ExperimentResultType, ExperimentType } from '@core/common/types'
 
 const ExperimentContext = React.createContext<
   | {
