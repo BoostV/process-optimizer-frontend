@@ -1,5 +1,7 @@
-import { CategoricalVariableType } from '@ui/../../core/dist'
-import { ValueVariableType } from '@ui/../../core/dist'
+import {
+  ValueVariableType,
+  CategoricalVariableType,
+} from '@boostv/process-optimizer-frontend-core'
 
 export const validation = {
   required: { required: 'Required' },

@@ -1,32 +1,15 @@
 {
+  "extends": "../../scaffold/tsconfig.ui-lib.json",
   "compilerOptions": {
-    "composite": true,
-    "target": "ESNext",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "noImplicitAny": true,
     "noImplicitReturns": false,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "strictNullChecks": true,
-    "outDir": "dist",
-    "types": ["vitest/globals"],
-    "declaration": true,
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "declarationDir": "./dist/types",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "baseUrl": "./src",
     "paths": {
-      "@plots/*": ["./src/*"]
+      "@plots/*": ["./*"]
     }
   },
   "include": ["src"]

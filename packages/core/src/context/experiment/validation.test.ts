@@ -1,4 +1,4 @@
-import { ExperimentType, ValueVariableType } from '@core/common'
+import { ExperimentType, ValueVariableType } from 'common'
 import { emptyExperiment } from './store'
 import {
   validateDataPointsNotNumber,

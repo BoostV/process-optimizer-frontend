@@ -1,4 +1,4 @@
-import { ExperimentType } from '@core/common'
+import { ExperimentType } from 'common'
 
 export type ValidationViolations = {
   upperBoundary: number[]

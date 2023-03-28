@@ -4,8 +4,8 @@ import {
   ExperimentType,
   ScoreVariableType,
   ValueVariableType,
-} from '@core/common/types'
-import { initialState } from '@core/context'
+} from 'common/types'
+import { initialState } from 'context'
 import {
   calculateSpace,
   calculateData,

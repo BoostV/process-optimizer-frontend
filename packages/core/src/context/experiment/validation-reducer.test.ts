@@ -1,4 +1,4 @@
-import { ExperimentType } from '@core/common'
+import { ExperimentType } from 'common'
 import { emptyExperiment } from './store'
 import { validationReducer } from './validation-reducer'
 

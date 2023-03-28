@@ -20,20 +20,20 @@
   "files": [
     "dist"
   ],
-  "type": "module",
-  "types": "./dist/index.d.ts",
-  "module": "./dist/process-optimizer-frontend-ui.js",
+  "type": "commonjs",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/process-optimizer-frontend-ui.js"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
     }
   },
   "scripts": {
+    "build": "tsc -b ./tsconfig.esm.json && tsc-alias -p tsconfig.esm.json && tsc -b ./tsconfig.cjs.json",
+    "prepublishOnly": "npm run build",
     "dev": "vite",
     "clean": "rimraf ./dist",
-    "build": "tsc --noEmit && vite build",
-    "test": "vitest",
-    "prepublishOnly": "vite build"
+    "test": "vitest"
   },
   "dependencies": {
     "@boostv/process-optimizer-frontend-core": "*",
@@ -64,6 +64,7 @@
     "node-mocks-http": "^1.12.1",
     "react-devtools": "^4.27.1",
     "rimraf": "^4.1.2",
+    "tsc-alias": "^1.8.4",
     "typescript": "^4.9.5",
     "vite": "^4.2.1",
     "vitest": "^0.28.4"

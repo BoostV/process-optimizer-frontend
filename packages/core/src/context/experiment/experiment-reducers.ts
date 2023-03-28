@@ -5,10 +5,10 @@ import {
   ExperimentType,
   OptimizerConfig,
   ValueVariableType,
-} from '@core/common/types'
+} from 'common/types'
 import produce from 'immer'
-import { versionInfo } from '@core/common'
-import { assertUnreachable } from '@core/common/util'
+import { versionInfo } from 'common'
+import { assertUnreachable } from 'common/util'
 import { selectNextValues } from './experiment-selectors'
 
 const calculateInitialPoints = (state: ExperimentType) =>

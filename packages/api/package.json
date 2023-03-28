@@ -19,13 +19,18 @@
   "files": [
     "dist"
   ],
-  "types": "./dist/index.d.ts",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
+  "type": "commonjs",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "scripts": {
-    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.0.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi",
-    "build": "tsc",
-    "prepublishOnly": "tsc"
+    "build": "tsc -b ./tsconfig.esm.json  && tsc -b ./tsconfig.cjs.json",
+    "prepublishOnly": "npm run build",
+    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.0.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "2.5.2",

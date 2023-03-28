@@ -1,4 +1,4 @@
-import { ApiProvider } from '@core/context/experiment/api-provider'
+import { ApiProvider } from 'context/experiment/api-provider'
 import { render, renderHook, screen } from '@testing-library/react'
 import { FC } from 'react'
 import { it, vi } from 'vitest'
@@ -9,7 +9,7 @@ import {
 } from './experiment-context'
 import { State } from './store'
 
-import catapult from '../../../sample-data/catapult.json' assert { type: 'json' }
+import catapult from 'sample-data/catapult.json'
 
 const ExperimentWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
   <ApiProvider>

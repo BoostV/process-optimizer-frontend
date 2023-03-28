@@ -1,4 +1,4 @@
-import { ExperimentType } from '@core/common/types'
+import { ExperimentType } from 'common/types'
 import { ExperimentTypeV8 } from './migrateToV8'
 
 export const migrateToV9 = (json: ExperimentTypeV8): ExperimentType => {

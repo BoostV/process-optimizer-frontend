@@ -2,13 +2,15 @@
   "extends": "../../scaffold/tsconfig.ui-lib.json",
   "compilerOptions": {
     "noImplicitReturns": false,
-
-    "outDir": "dist",
-    "rootDir": ".",
-    "baseUrl": "src",
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "declarationDir": "./dist/types",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "baseUrl": "./src",
     "paths": {
       "@core/*": ["./*"]
     }
   },
-  "include": ["./src", "./src/**/*.json", "./sample-data/**/*.json"]
+  "include": ["./src", "./src/**/*.json"]
 }
