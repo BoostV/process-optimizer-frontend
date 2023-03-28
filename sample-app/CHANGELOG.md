@@ -1,5 +1,15 @@
 # @process-optimizer-frontend/sample-app
 
+## 1.8.2
+
+### Patch Changes
+
+- 58fbac8: Use plain tsc for building packages
+- Updated dependencies [58fbac8]
+  - @boostv/process-optimizer-frontend-plots@1.0.1
+  - @boostv/process-optimizer-frontend-core@1.3.2
+  - @boostv/process-optimizer-frontend-ui@1.1.2
+
 ## 1.8.1
 
 ### Patch Changes
