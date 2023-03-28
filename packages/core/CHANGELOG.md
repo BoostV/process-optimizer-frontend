@@ -1,5 +1,13 @@
 # @process-optimizer-frontend/core
 
+## 1.3.2
+
+### Patch Changes
+
+- 58fbac8: Use plain tsc for building packages
+- Updated dependencies [58fbac8]
+  - @boostv/process-optimizer-frontend-api@1.1.1
+
 ## 1.3.1
 
 ### Patch Changes
