@@ -1,7 +1,5 @@
 import { Box, Card, CardContent } from '@mui/material'
-import ErrorIcon from '@mui/icons-material/Error'
-import WarningIcon from '@mui/icons-material/Warning'
-import InfoIcon from '@mui/icons-material/Info'
+import { Error, Warning, Info } from '@mui/icons-material'
 import { ReactNode } from 'react'
 import useStyles from './title-card.style'
 
@@ -37,11 +35,11 @@ export const TitleCard = (props: TitleCardProps) => {
   const getInfoIcon = (info: InfoType) => {
     switch (info) {
       case 'info':
-        return <InfoIcon fontSize="small" />
+        return <Info fontSize="small" />
       case 'warning':
-        return <WarningIcon fontSize="small" />
+        return <Warning fontSize="small" />
       case 'error':
-        return <ErrorIcon fontSize="small" />
+        return <Error fontSize="small" />
     }
   }
 

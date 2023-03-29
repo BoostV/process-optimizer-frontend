@@ -7,13 +7,19 @@ import noBundlePlugin from 'vite-plugin-no-bundle'
 
 export default defineConfig({
   plugins: [
-    dts(),
+    // noBundlePlugin(),
     react({
       jsxRuntime: 'classic',
     }),
   ],
   resolve: {
-    alias: [{ find: '@ui', replacement: resolve(__dirname, './src') }],
+    alias: [
+      { find: '@ui', replacement: resolve(__dirname, './src') },
+      {
+        find: /@mui\/icons-material\/.*/,
+        replacement: resolve(__dirname, './ssrc'),
+      },
+    ],
   },
   build: {
     minify: false,
@@ -30,6 +36,7 @@ export default defineConfig({
         '@boostv/process-optimizer-frontend-core',
         '@boostv/process-optimizer-frontend-plots',
         'immer',
+        /@mui.*/,
         '@emotion/react',
         '@emotion/styled',
         'tss-react',

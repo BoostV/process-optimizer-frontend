@@ -15,9 +15,7 @@ import { MouseEvent, useCallback, useReducer, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import Layout from '@sample/components/layout/layout'
 import useStyles from './home.style'
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { SystemUpdateAlt, ChevronRight, Delete } from '@mui/icons-material'
 import { useGlobal } from '@sample/context/global'
 import { v4 as uuid } from 'uuid'
 import { reducer } from './home-reducer'
@@ -183,7 +181,7 @@ export default function Home() {
                   primaryTypographyProps={{ variant: 'h6' }}
                   primary="Create new experiment"
                 />
-                <ChevronRightIcon />
+                <ChevronRight />
               </ListItem>
             </List>
           </Box>
@@ -191,7 +189,7 @@ export default function Home() {
           <Box p={3} pb={1} mb={1} className={classes.box}>
             <Typography variant="h6">Upload experiment file</Typography>
             <Box mb={5} className={classes.uploadBox} {...getRootProps()}>
-              <SystemUpdateAltIcon className={classes.uploadIcon} />
+              <SystemUpdateAlt className={classes.uploadIcon} />
               <input {...getInputProps()} />
               <div className={classes.uploadBoxInner}>
                 <Typography
@@ -225,7 +223,7 @@ export default function Home() {
                             onClick={(e: MouseEvent) => deleteExperiment(e, id)}
                             size="large"
                           >
-                            <DeleteIcon color="secondary" fontSize="small" />
+                            <Delete color="secondary" fontSize="small" />
                           </IconButton>
                         </ListItemIcon>
                         <ListItemText
@@ -233,7 +231,7 @@ export default function Home() {
                           secondary={id}
                           secondaryTypographyProps={{ color: 'inherit' }}
                         />
-                        <ChevronRightIcon />
+                        <ChevronRight />
                       </ListItem>
                     ))}
                 </List>

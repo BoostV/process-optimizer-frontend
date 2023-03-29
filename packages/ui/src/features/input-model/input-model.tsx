@@ -12,9 +12,7 @@ import {
 import VariableEditor from './variable-editor'
 import useStyles from './input-model.style'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
-import LensIcon from '@mui/icons-material/Lens'
-import AddIcon from '@mui/icons-material/Add'
-import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
+import { Lens, Add, PanoramaFishEye } from '@mui/icons-material'
 import {
   CategoricalVariableType,
   ValidationViolations,
@@ -120,13 +118,11 @@ export function InputModel(props: InputModelProps) {
                     <TableCell>
                       {valueVar.type === 'discrete' ? (
                         <Tooltip title="Discrete">
-                          <LensIcon className={classes.iconValueType} />
+                          <Lens className={classes.iconValueType} />
                         </Tooltip>
                       ) : (
                         <Tooltip title="Continuous">
-                          <PanoramaFishEyeIcon
-                            className={classes.iconValueType}
-                          />
+                          <PanoramaFishEye className={classes.iconValueType} />
                         </Tooltip>
                       )}
                     </TableCell>
@@ -256,7 +252,7 @@ export function InputModel(props: InputModelProps) {
             size="small"
             onClick={() => setEditorOpen(true)}
             disabled={isDisabled}
-            startIcon={<AddIcon fontSize="small" />}
+            startIcon={<Add fontSize="small" />}
           >
             Add variable
           </Button>

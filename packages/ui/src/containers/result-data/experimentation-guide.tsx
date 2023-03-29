@@ -7,7 +7,7 @@ import {
   selectIsInitializing,
 } from '@boostv/process-optimizer-frontend-core'
 import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
-import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
+import { ZoomOutMap } from '@mui/icons-material'
 import useStyles from './experimentation-guide.style'
 import {
   InitializationProgress,
@@ -84,10 +84,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
                 onMouseEnter={() => onMouseEnterExpand?.()}
                 onMouseLeave={() => onMouseLeaveExpand?.()}
               >
-                <ZoomOutMapIcon
-                  fontSize="small"
-                  className={classes.titleIcon}
-                />
+                <ZoomOutMap fontSize="small" className={classes.titleIcon} />
               </IconButton>
             </Tooltip>
           </Hidden>

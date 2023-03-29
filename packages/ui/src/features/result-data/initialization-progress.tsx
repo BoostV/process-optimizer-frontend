@@ -5,7 +5,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
+import { Check } from '@mui/icons-material'
 import { FC, useEffect, useState } from 'react'
 import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
 
@@ -54,7 +54,7 @@ export const InitializationProgress: FC<Props> = ({
               setEditActive(!editActive)
             }}
           >
-            <CheckIcon fontSize="small" color="primary" />
+            <Check fontSize="small" color="primary" />
           </IconButton>
         </Box>
         <LinearProgress variant="determinate" value={progress} />

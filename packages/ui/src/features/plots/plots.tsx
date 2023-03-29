@@ -1,6 +1,6 @@
 import useStyles from './plots.style'
 import { Tooltip, IconButton, Hidden } from '@mui/material'
-import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap'
+import { ZoomOutMap } from '@mui/icons-material'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
 import { isPNG } from '@boostv/process-optimizer-frontend-core'
@@ -32,10 +32,7 @@ export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
                   className={classes.titleButton}
                   onClick={onSizeToggle}
                 >
-                  <ZoomOutMapIcon
-                    fontSize="small"
-                    className={classes.titleIcon}
-                  />
+                  <ZoomOutMap fontSize="small" className={classes.titleIcon} />
                 </IconButton>
               </Tooltip>
             </Hidden>

@@ -1,5 +1,5 @@
 import { Grid, IconButton, TextField } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
+import { Add } from '@mui/icons-material'
 import { ChangeEvent, useState } from 'react'
 
 type CategoricalVariableOptionProps = {
@@ -39,7 +39,7 @@ export default function CategoricalVariableOptions({
       </Grid>
       <Grid item xs={4} display="flex" alignItems="center">
         <IconButton size="small" onClick={() => optionAdded()}>
-          <AddIcon color="primary" />
+          <Add color="primary" />
         </IconButton>
       </Grid>
     </Grid>

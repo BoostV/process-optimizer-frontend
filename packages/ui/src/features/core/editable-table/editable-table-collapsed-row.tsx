@@ -9,9 +9,7 @@ import {
 } from '@mui/material'
 import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
-import AddIcon from '@mui/icons-material/Add'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { Add, Edit, Delete } from '@mui/icons-material'
 
 interface EditableTableCollapsedRowProps {
   colSpan: number
@@ -49,7 +47,7 @@ export const EditableTableCollapsedRow = ({
                 size="small"
                 onClick={() => setExpanded(true)}
                 disabled={isEditingDisabled}
-                startIcon={<AddIcon fontSize="small" />}
+                startIcon={<Add fontSize="small" />}
                 variant="outlined"
               >
                 Add data point
@@ -87,7 +85,7 @@ export const EditableTableCollapsedRow = ({
                     onClick={() => setExpanded(true)}
                     disabled={isEditingDisabled}
                   >
-                    <EditIcon
+                    <Edit
                       fontSize="small"
                       color={isEditingDisabled ? 'disabled' : 'primary'}
                     />
@@ -100,7 +98,7 @@ export const EditableTableCollapsedRow = ({
                   aria-label="delete"
                   onClick={() => onDelete()}
                 >
-                  <DeleteIcon fontSize="small" color="primary" />
+                  <Delete fontSize="small" color="primary" />
                 </IconButton>
               </Tooltip>
             </div>

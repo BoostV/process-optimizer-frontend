@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, TextField, Typography } from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { Delete } from '@mui/icons-material'
 import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import CategoricalVariableOptions from './categorical-variable-options'
@@ -116,7 +116,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
                   aria-label="delete"
                   color="primary"
                 >
-                  <DeleteIcon fontSize="small" />
+                  <Delete fontSize="small" />
                 </IconButton>
               </div>
             </div>

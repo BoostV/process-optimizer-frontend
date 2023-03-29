@@ -13,9 +13,7 @@ import {
   Slider,
   CardHeader,
 } from '@mui/material'
-import LensIcon from '@mui/icons-material/Lens'
-import Settings from '@mui/icons-material/Settings'
-import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye'
+import { Lens, Settings, PanoramaFishEye } from '@mui/icons-material'
 import { useExperiment } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './summary-configuration.style'
 import { useGlobal } from '@sample/context/global'
@@ -44,13 +42,11 @@ export const SummaryConfiguration = () => {
                     <TableCell>
                       {variable.type === 'discrete' ? (
                         <Tooltip title="Discrete">
-                          <LensIcon className={classes.iconDiscrete} />
+                          <Lens className={classes.iconDiscrete} />
                         </Tooltip>
                       ) : (
                         <Tooltip title="Continuous">
-                          <PanoramaFishEyeIcon
-                            className={classes.iconDiscrete}
-                          />
+                          <PanoramaFishEye className={classes.iconDiscrete} />
                         </Tooltip>
                       )}
                     </TableCell>

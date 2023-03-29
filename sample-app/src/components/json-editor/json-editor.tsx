@@ -14,7 +14,7 @@ import {
   errorMessage,
 } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './json-editor.style'
-import CloseIcon from '@mui/icons-material/Close'
+import { Close } from '@mui/icons-material'
 import { useGlobal } from '@sample/context/global'
 
 type DisplayedResults = {
@@ -88,7 +88,7 @@ const JsonEditor = () => {
               global.dispatch({ type: 'setShowJsonEditor', payload: false })
             }
           >
-            <CloseIcon />
+            <Close />
           </IconButton>
         </Box>
         {loading ? (
