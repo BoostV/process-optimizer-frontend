@@ -1,8 +1,7 @@
 import { Box, IconButton, Tooltip } from '@mui/material'
 import { FC } from 'react'
 import useStyles from './edit-controls.style'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { Edit, Delete } from '@mui/icons-material'
 
 type Props = {
   isDisabled: boolean
@@ -18,7 +17,7 @@ export const EditControls: FC<Props> = ({ isDisabled, onEdit, onDelete }) => {
       <Tooltip title="Edit">
         <span>
           <IconButton size="small" disabled={isDisabled} onClick={onEdit}>
-            <EditIcon
+            <Edit
               color={isDisabled ? 'disabled' : 'primary'}
               fontSize="small"
             />
@@ -28,7 +27,7 @@ export const EditControls: FC<Props> = ({ isDisabled, onEdit, onDelete }) => {
       <Tooltip title="Delete">
         <span>
           <IconButton size="small" disabled={isDisabled} onClick={onDelete}>
-            <DeleteIcon
+            <Delete
               color={isDisabled ? 'disabled' : 'primary'}
               fontSize="small"
             />

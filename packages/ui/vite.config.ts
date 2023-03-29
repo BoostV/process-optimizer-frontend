@@ -1,14 +1,18 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite'
+import { defineConfig, PluginOption } from 'vite'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
+import replace from '@rollup/plugin-replace'
 
 export default defineConfig({
   plugins: [
-    dts(),
     react({
       jsxRuntime: 'classic',
+    }),
+    dts(),
+    replace({
+      'mui/material/styles': 'mui/material',
     }),
   ],
   resolve: {
@@ -32,8 +36,6 @@ export default defineConfig({
         /@mui.*/,
         '@emotion/react',
         '@emotion/styled',
-        'tss-react',
-        'tss-react/mui',
       ],
     },
     outDir: 'dist',

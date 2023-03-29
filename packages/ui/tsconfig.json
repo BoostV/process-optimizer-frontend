@@ -1,6 +1,7 @@
 {
   "extends": "../../scaffold/tsconfig.ui-lib.json",
   "compilerOptions": {
+    "esModuleInterop": true,
     "noImplicitReturns": false,
     "emitDeclarationOnly": false,
     "rootDir": "./src",
