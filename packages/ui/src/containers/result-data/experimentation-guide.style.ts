@@ -1,4 +1,5 @@
-import { makeStyles } from 'tss-react/mui'
+import tss from 'tss-react/mui'
+const { makeStyles } = tss
 import { colors } from '@mui/material'
 
 export const useStyles = makeStyles()(() => ({
