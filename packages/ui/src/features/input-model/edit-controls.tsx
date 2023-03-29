@@ -13,7 +13,7 @@ export const EditControls: FC<Props> = ({ isDisabled, onEdit, onDelete }) => {
   const { classes } = useStyles()
 
   return (
-    <Box className={classes.EditsContainer}>
+    <Box className={classes.editIconsContainer}>
       <Tooltip title="Edit">
         <span>
           <IconButton size="small" disabled={isDisabled} onClick={onEdit}>
