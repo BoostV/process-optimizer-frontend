@@ -1,6 +1,6 @@
 {
   "name": "@boostv/process-optimizer-frontend-sample-app",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "license": "BSD-3-Clause",
   "private": true,
   "scripts": {
