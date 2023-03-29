@@ -1,5 +1,14 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 1.1.5
+
+### Patch Changes
+
+- 28a3fd7: Fix bundling error
+- Updated dependencies [28a3fd7]
+- Updated dependencies [a912e3f]
+  - @boostv/process-optimizer-frontend-plots@1.0.3
+
 ## 1.1.4
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @process-optimizer-frontend/plots
 
+## 1.0.3
+
+### Patch Changes
+
+- 28a3fd7: Fix bundling error
+- a912e3f: Convert plots to ViteJS
+
 ## 1.0.2
 
 ### Patch Changes
