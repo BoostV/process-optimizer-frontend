@@ -118,5 +118,5 @@ export type OptimizerConfig = z.infer<typeof optimizerSchema>
 
 // Type guards
 export function isExperiment(obj: unknown): obj is ExperimentType {
-  return (obj as ExperimentType)?.info?.dataFormatVersion === currentVersion
+  return experimentSchema.safeParse(obj).success
 }
