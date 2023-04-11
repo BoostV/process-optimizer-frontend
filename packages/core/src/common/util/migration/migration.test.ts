@@ -1,4 +1,8 @@
 import { migrate, _migrate, MIGRATIONS } from './migration'
+import version10 from './data-formats/10.json'
+import version9 from './data-formats/9.json'
+import version8 from './data-formats/8.json'
+import version7 from './data-formats/7.json'
 import version6 from './data-formats/6.json'
 import version5 from './data-formats/5.json'
 import version4 from './data-formats/4.json'
@@ -9,7 +13,6 @@ import catapult from '@core/sample-data/catapult.json'
 import badCatapult from '@core/sample-data/bad-catapult.json'
 import large from '@core/sample-data/large.json'
 import fs from 'fs'
-import { ExperimentType } from '@core/common/types'
 import { emptyExperiment } from '@core/context/experiment'
 import { formatNext } from './migrations/migrateToV9'
 
@@ -72,14 +75,34 @@ describe('migration', () => {
       expect(_migrate(version3, '4')).toEqual(version4)
     })
 
-    it('should migrate to 6 from 4 (changedSinceEvaluation added to root)', () => {
+    it('should migrate to 5 from 4', () => {
+      expect(_migrate(version4, '5')).toEqual(version5)
+    })
+
+    it('should migrate to 6 from 5 (changedSinceEvaluation added to root)', () => {
       expect(_migrate(version5, '6')).toEqual(version6)
+    })
+
+    it('should migrate to 7 from 6', () => {
+      expect(_migrate(version6, '7')).toEqual(version7)
+    })
+
+    it('should migrate to 8 from 7', () => {
+      expect(_migrate(version7, '8')).toEqual(version8)
+    })
+
+    it('should migrate to 9 from 8', () => {
+      expect(_migrate(version8, '9')).toEqual(version9)
+    })
+
+    it('should migrate to 10 from 9 (introduce zod)', () => {
+      expect(_migrate(version9, '10')).toEqual(version10)
     })
 
     it(`should migrate to newest version (${
       MIGRATIONS.slice(-1)[0]?.version
     })`, async () => {
-      const expected = loadLatestJson() as ExperimentType
+      const expected = loadLatestJson()
       const actual = _migrate({ ...version2 })
       expect(actual).toEqual(expected)
     })
@@ -123,10 +146,10 @@ describe('migration', () => {
     //TODO: More/better tests
     it('newest data format json should match default empty experiment', () => {
       expect(Object.keys(emptyExperiment).length).toBe(
-        Object.keys(version6).length
+        Object.keys(version10).length
       )
       Object.keys(emptyExperiment).forEach(p =>
-        expect(version6).toHaveProperty(p)
+        expect(version10).toHaveProperty(p)
       )
     })
   })
