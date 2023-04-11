@@ -6,13 +6,13 @@ import {
   ManagedExperimentProvider,
   rootReducer,
   useExperiment,
-} from 'context'
+} from '../context'
 import React, { useReducer, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { ExperimentType, migrate } from '..'
 
-import catapult from 'sample-data/catapult.json'
-import large from 'sample-data/large.json'
+import catapult from '../sample-data/catapult.json'
+import large from '../sample-data/large.json'
 
 const ExperimentDemo = () => {
   const {
