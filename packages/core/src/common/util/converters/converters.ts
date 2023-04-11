@@ -132,12 +132,12 @@ const convertValue = (
   valueHeaders: string[],
   categorialHeaders: string[],
   name: string,
-  value: any
+  value: unknown
 ): DataPointTypeValue => {
   if (valueHeaders.includes(name)) {
     return Number(value)
-  } else if (categorialHeaders.includes(name)) {
-    return value as string
+  } else if (categorialHeaders.includes(name) && typeof value === 'string') {
+    return value
   } else {
     return Number(value)
   }

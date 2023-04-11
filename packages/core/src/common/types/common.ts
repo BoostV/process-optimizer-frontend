@@ -19,7 +19,7 @@ export const experimentResultSchema = z.object({
   plots: z.array(z.object({ id: z.string(), plot: z.string() })),
   next: nextSchema,
   pickled: z.string(),
-  expectedMinimum: z.array(z.array(z.number()).or(z.number())),
+  expectedMinimum: z.array(z.array(z.number().or(z.string())).or(z.number())),
   extras: z.record(z.unknown()),
 })
 
