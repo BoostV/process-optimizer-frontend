@@ -27,6 +27,7 @@ describe('validateUpperBoundary', () => {
           meta: {
             id: 1,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -46,6 +47,7 @@ describe('validateUpperBoundary', () => {
             meta: {
               id: 1,
               enabled: true,
+              valid: true,
             },
             data: [
               {
@@ -76,6 +78,7 @@ describe('validateUpperBoundary', () => {
           meta: {
             id: 1,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -106,6 +109,7 @@ describe('validateUpperBoundary', () => {
           meta: {
             id: 1,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -118,6 +122,7 @@ describe('validateUpperBoundary', () => {
           meta: {
             id: 2,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -150,6 +155,7 @@ describe('validateLowerBoundary', () => {
           meta: {
             id: 1,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -169,6 +175,7 @@ describe('validateLowerBoundary', () => {
             meta: {
               id: 1,
               enabled: true,
+              valid: true,
             },
             data: [
               {
@@ -199,6 +206,7 @@ describe('validateLowerBoundary', () => {
           meta: {
             id: 1,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -229,6 +237,7 @@ describe('validateLowerBoundary', () => {
           meta: {
             id: 1,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -241,6 +250,7 @@ describe('validateLowerBoundary', () => {
           meta: {
             id: 2,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -356,6 +366,7 @@ describe('validateDataPointsUndefined', () => {
           meta: {
             id: 1,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -388,6 +399,7 @@ describe('validateDataPointsUndefined', () => {
           meta: {
             id: 1,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -420,6 +432,7 @@ describe('validateDataPointsUndefined', () => {
           meta: {
             id: 1,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -436,6 +449,7 @@ describe('validateDataPointsUndefined', () => {
           meta: {
             id: 2,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -473,6 +487,7 @@ describe('validateDataPointsUndefined', () => {
           meta: {
             id: 1,
             enabled: true,
+            valid: true,
           },
           data: [
             {
@@ -503,6 +518,7 @@ describe('validateDuplicateDataPointIds', () => {
         {
           meta: {
             enabled: true,
+            valid: true,
             id: 1,
           },
           data: [],
@@ -510,6 +526,7 @@ describe('validateDuplicateDataPointIds', () => {
         {
           meta: {
             enabled: true,
+            valid: true,
             id: 1,
           },
           data: [],
@@ -517,6 +534,7 @@ describe('validateDuplicateDataPointIds', () => {
         {
           meta: {
             enabled: true,
+            valid: true,
             id: 1,
           },
           data: [],
@@ -524,6 +542,7 @@ describe('validateDuplicateDataPointIds', () => {
         {
           meta: {
             enabled: true,
+            valid: true,
             id: 2,
           },
           data: [],
@@ -531,6 +550,7 @@ describe('validateDuplicateDataPointIds', () => {
         {
           meta: {
             enabled: true,
+            valid: true,
             id: 2,
           },
           data: [],
@@ -538,6 +558,7 @@ describe('validateDuplicateDataPointIds', () => {
         {
           meta: {
             enabled: true,
+            valid: true,
             id: 3,
           },
           data: [],
@@ -554,6 +575,7 @@ describe('validateDuplicateDataPointIds', () => {
         {
           meta: {
             enabled: true,
+            valid: true,
             id: 1,
           },
           data: [],
@@ -561,6 +583,7 @@ describe('validateDuplicateDataPointIds', () => {
         {
           meta: {
             enabled: true,
+            valid: true,
             id: 2,
           },
           data: [],
@@ -591,6 +614,7 @@ describe('validateDataPointsNotNumber', () => {
           {
             meta: {
               enabled: true,
+              valid: true,
               id: 1,
             },
             data: [
@@ -614,6 +638,7 @@ describe('validateDataPointsNotNumber', () => {
           {
             meta: {
               enabled: true,
+              valid: true,
               id: 1,
             },
             data: [
@@ -637,6 +662,7 @@ describe('validateDataPointsNotNumber', () => {
           {
             meta: {
               enabled: true,
+              valid: true,
               id: 1,
             },
             data: [
@@ -667,6 +693,7 @@ describe('validateDataPointsNotNumber', () => {
           {
             meta: {
               enabled: true,
+              valid: true,
               id: 1,
             },
             data: [
@@ -690,6 +717,7 @@ describe('validateDataPointsNotNumber', () => {
           {
             meta: {
               enabled: true,
+              valid: true,
               id: 1,
             },
             data: [
@@ -713,6 +741,7 @@ describe('validateDataPointsNotNumber', () => {
           {
             meta: {
               enabled: true,
+              valid: true,
               id: 1,
             },
             data: [

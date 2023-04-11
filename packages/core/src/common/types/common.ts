@@ -2,7 +2,7 @@
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '9'
+export const currentVersion = '10'
 
 export type Info = {
   name: string

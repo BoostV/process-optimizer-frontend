@@ -180,6 +180,7 @@
     {
       "meta": {
         "enabled": true,
+        "valid": true,
         "id": 1
       },
       "data": [
@@ -244,6 +245,7 @@
     {
       "meta": {
         "enabled": true,
+        "valid": true,
         "id": 3
       },
       "data": [

@@ -1,6 +1,5 @@
 import {
   CategoricalVariableType,
-  DataEntry,
   DataPointType,
   ExperimentResultType,
   OptimizerConfig,
@@ -44,7 +43,12 @@ export type ExperimentTypeV8 = {
     expectedMinimum: Array<Array<number>>
     extras: object
   }
-  dataPoints: DataEntry[]
+  dataPoints: DataEntryV8[]
+}
+
+export type DataEntryV8 = {
+  meta: { enabled: boolean; id: number }
+  data: DataPointType[]
 }
 
 export const migrateToV8 = (json: ExperimentTypeV7): ExperimentTypeV8 => {
@@ -55,7 +59,7 @@ export const migrateToV8 = (json: ExperimentTypeV7): ExperimentTypeV8 => {
   }
 }
 
-const migrateDataPoints = (dataPoints: DataPointType[][]): DataEntry[] =>
+const migrateDataPoints = (dataPoints: DataPointType[][]): DataEntryV8[] =>
   dataPoints.map((dp, idx) => ({
     meta: { enabled: true, id: idx + 1 },
     data: dp,

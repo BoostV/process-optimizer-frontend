@@ -82,6 +82,7 @@ export const dataPointsReducer = produce(
         )
         state.meta.push({
           enabled: true,
+          valid: true,
           id: metaId,
         })
         state.changed = true
