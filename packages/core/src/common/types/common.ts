@@ -2,14 +2,18 @@
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '9'
+import { z } from 'zod'
 
-export type Info = {
-  name: string
-  description: string
-  swVersion: string
-  dataFormatVersion: typeof currentVersion
-}
+export const currentVersion = '10'
+
+export const infoSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  swVersion: z.string(),
+  dataFormatVersion: z.literal(currentVersion),
+})
+
+export type Info = z.infer<typeof infoSchema>
 
 export type ExperimentType = {
   id: string
