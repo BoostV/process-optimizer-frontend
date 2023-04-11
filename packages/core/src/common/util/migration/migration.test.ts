@@ -6,6 +6,7 @@ import version3 from './data-formats/3.json'
 import version2 from './data-formats/2.json'
 import version1 from './data-formats/1.json'
 import catapult from '@core/sample-data/catapult.json'
+import badCatapult from '@core/sample-data/bad-catapult.json'
 import large from '@core/sample-data/large.json'
 import fs from 'fs'
 import { ExperimentType } from '@core/common/types'
@@ -85,6 +86,13 @@ describe('migration', () => {
 
     it('should migrate catapult to newest version', async () => {
       const actual = migrate({ ...catapult })
+      expect(actual.info.dataFormatVersion).toEqual(
+        MIGRATIONS.slice(-1)[0]?.version
+      )
+    })
+
+    it('should migrate bad catapult to newest version', async () => {
+      const actual = migrate({ ...badCatapult })
       expect(actual.info.dataFormatVersion).toEqual(
         MIGRATIONS.slice(-1)[0]?.version
       )
