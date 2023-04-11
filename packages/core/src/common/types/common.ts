@@ -52,8 +52,8 @@ const optimizerSchema = z.object({
 })
 
 const dataEntryMetaDataSchema = z.object({
-  id: z.number(),
-  enabled: z.boolean(),
+  id: z.coerce.number().default(0),
+  enabled: z.coerce.boolean().default(true),
   description: z.optional(z.string()),
 })
 

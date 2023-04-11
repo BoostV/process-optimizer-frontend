@@ -5,6 +5,7 @@ import version2 from './data-formats/2.json'
 import version1 from './data-formats/1.json'
 import catapult from '@core/sample-data/catapult.json'
 import badCatapult from '@core/sample-data/bad-catapult.json'
+import badCookie from '@core/sample-data/bad-cookie.json'
 import large from '@core/sample-data/large.json'
 import fs from 'fs'
 import { emptyExperiment } from '@core/context/experiment'
@@ -88,6 +89,13 @@ describe('migration', () => {
 
     it('should migrate bad catapult to newest version', async () => {
       const actual = migrate({ ...badCatapult })
+      expect(actual.info.dataFormatVersion).toEqual(
+        MIGRATIONS.slice(-1)[0]?.version
+      )
+    })
+
+    it('should migrate bad cookie to newest version', async () => {
+      const actual = migrate({ ...badCookie })
       expect(actual.info.dataFormatVersion).toEqual(
         MIGRATIONS.slice(-1)[0]?.version
       )
