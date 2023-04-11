@@ -17,13 +17,6 @@ import useStyles from './json-editor.style'
 import { Close } from '@mui/icons-material'
 import { useGlobal } from '@sample/context/global'
 
-type DisplayedResults = {
-  id: string
-  next: (number | string)[] | (number | string)[][]
-  expectedMinimum: Array<Array<number>>
-  extras: object
-}
-
 const JsonEditor = () => {
   const { classes } = useStyles()
   const [errorMsg, setErrorMsg] = useState('')
@@ -43,7 +36,7 @@ const JsonEditor = () => {
   const displayedExperimentFromExperiment = (
     experiment: ExperimentType
   ): string => {
-    const results: DisplayedResults = {
+    const results = {
       id: experiment.results.id,
       next: experiment.results.next,
       expectedMinimum: experiment.results.expectedMinimum,
