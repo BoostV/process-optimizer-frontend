@@ -32,7 +32,7 @@ const categorialVariableSchema = z.object({
 const valueVariableSchema = z.object({
   type: z.literal('discrete').or(z.literal('continuous')),
   name: z.string(),
-  description: z.coerce.string(),
+  description: z.string().default(''),
   min: z.number(),
   max: z.number(),
 })
