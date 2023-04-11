@@ -12,13 +12,14 @@
       "settings": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "jest.jestCommandLine": "yarn test",
         "typescript.tsserver.experimental.enableProjectDiagnostics": true
       },
       "extensions": [
         "dbaeumer.vscode-eslint",
         "mhutchie.git-graph",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "rhalaly.scope-to-this",
+        "GitHub.vscode-pull-request-github"
       ]
     }
   },
