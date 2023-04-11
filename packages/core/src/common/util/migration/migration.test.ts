@@ -1,11 +1,5 @@
 import { migrate, _migrate, MIGRATIONS } from './migration'
 import version10 from './data-formats/10.json'
-import version9 from './data-formats/9.json'
-import version8 from './data-formats/8.json'
-import version7 from './data-formats/7.json'
-import version6 from './data-formats/6.json'
-import version5 from './data-formats/5.json'
-import version4 from './data-formats/4.json'
 import version3 from './data-formats/3.json'
 import version2 from './data-formats/2.json'
 import version1 from './data-formats/1.json'
@@ -16,21 +10,21 @@ import fs from 'fs'
 import { emptyExperiment } from '@core/context/experiment'
 import { formatNext } from './migrations/migrateToV9'
 
-const loadLatestJson = () => {
-  const fileVersions: number[] = fs
-    .readdirSync('./src/common/util/migration/data-formats')
-    .map(f => parseInt(f.replace(/[^0-9]/, '')))
-  const latestVersion = Math.max(...fileVersions)
+const fileVersions: number[] = fs
+  .readdirSync('./src/common/util/migration/data-formats')
+  .map(f => parseInt(f.replace(/[^0-9]/, '')))
+const latestVersion = Math.max(...fileVersions)
+
+const loadNamedJson = (version: number) => {
   return JSON.parse(
-    fs.readFileSync(
-      `src/common/util/migration/data-formats/${latestVersion}.json`,
-      {
-        encoding: 'utf8',
-        flag: 'r',
-      }
-    )
+    fs.readFileSync(`src/common/util/migration/data-formats/${version}.json`, {
+      encoding: 'utf8',
+      flag: 'r',
+    })
   )
 }
+
+const loadLatestJson = () => loadNamedJson(latestVersion)
 
 describe('migration', () => {
   describe('migrate', () => {
@@ -51,6 +45,16 @@ describe('migration', () => {
       expect(_migrate({ ...latestJson })).toEqual({ ...latestJson })
     })
 
+    it(`should migrate from 2 through ${latestVersion}`, () => {
+      for (let index = 2; index < latestVersion; index++) {
+        const prev = index
+        const current = index + 1
+        expect(_migrate(loadNamedJson(prev), `${current}`)).toEqual(
+          loadNamedJson(current)
+        )
+      }
+    })
+
     it('should migrate to 3 from 1 (before versioning and no discrete/continuous)', () => {
       expect(_migrate(version1, '3')).toEqual({
         ...version3,
@@ -65,38 +69,6 @@ describe('migration', () => {
           }
         }),
       })
-    })
-
-    it('should migrate to 3 from 2 (before versioning and with discrete as boolean instead of string)', () => {
-      expect(_migrate(version2, '3')).toEqual(version3)
-    })
-
-    it('should migrate to 4 from 3 (expectedMinimum added to result)', () => {
-      expect(_migrate(version3, '4')).toEqual(version4)
-    })
-
-    it('should migrate to 5 from 4', () => {
-      expect(_migrate(version4, '5')).toEqual(version5)
-    })
-
-    it('should migrate to 6 from 5 (changedSinceEvaluation added to root)', () => {
-      expect(_migrate(version5, '6')).toEqual(version6)
-    })
-
-    it('should migrate to 7 from 6', () => {
-      expect(_migrate(version6, '7')).toEqual(version7)
-    })
-
-    it('should migrate to 8 from 7', () => {
-      expect(_migrate(version7, '8')).toEqual(version8)
-    })
-
-    it('should migrate to 9 from 8', () => {
-      expect(_migrate(version8, '9')).toEqual(version9)
-    })
-
-    it('should migrate to 10 from 9 (introduce zod)', () => {
-      expect(_migrate(version9, '10')).toEqual(version10)
     })
 
     it(`should migrate to newest version (${
