@@ -28,32 +28,39 @@ export type ExperimentType = {
   dataPoints: DataEntry[]
 }
 
-export type ExperimentResultType = {
-  id: string
-  plots: { id: string; plot: string }[]
-  next: (number | string)[][]
-  pickled: string
-  expectedMinimum: Array<Array<number>>
-  extras: object
-}
+export const experimentResultSchema = z.object({
+  id: z.string(),
+  plots: z.array(z.object({ id: z.string(), plot: z.string() })),
+  next: z.array(z.array(z.number().or(z.string()))),
+  pickled: z.string(),
+  expectedMinimum: z.array(z.array(z.number()).or(z.number())),
+  extras: z.record(z.unknown()),
+})
 
-export type CategoricalVariableType = {
-  name: string
-  description: string
-  options: string[]
-}
-export type ValueVariableType = {
-  type: 'discrete' | 'continuous'
-  name: string
-  description: string
-  min: number
-  max: number
-}
-export type ScoreVariableType = {
-  name: string
-  description: string
-  enabled: boolean
-}
+export type ExperimentResultType = z.infer<typeof experimentResultSchema>
+
+export const categorialVariableSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  options: z.array(z.string()),
+})
+export type CategoricalVariableType = z.infer<typeof categorialVariableSchema>
+
+export const valueVariableSchema = z.object({
+  type: z.literal('discrete').or(z.literal('continuous')),
+  name: z.string(),
+  description: z.string(),
+  min: z.number(),
+  max: z.number(),
+})
+export type ValueVariableType = z.infer<typeof valueVariableSchema>
+
+export const scoreVariableSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  enabled: z.boolean(),
+})
+export type ScoreVariableType = z.infer<typeof scoreVariableSchema>
 
 type Override<T, K> = Omit<T, keyof K> & K
 
@@ -67,13 +74,15 @@ export type ValueVariableInputType = Override<
 
 export type VariableType = CategoricalVariableType | ValueVariableType
 
-export type OptimizerConfig = {
-  baseEstimator: string
-  acqFunc: string
-  initialPoints: number
-  kappa: number
-  xi: number
-}
+export const optimizerSchema = z.object({
+  baseEstimator: z.string(),
+  acqFunc: z.string(),
+  initialPoints: z.number(),
+  kappa: z.number(),
+  xi: z.number(),
+})
+
+export type OptimizerConfig = z.infer<typeof optimizerSchema>
 
 // IMPORTANT! All meta data keys MUST be defined as lower case to ensure proper CSV parsing
 type MetaDataRequiredKeys = 'enabled' | 'id'
@@ -104,25 +113,31 @@ export type DataEntry = {
   data: DataPointType[]
 }
 
-export type DataPointType =
-  | CategorialDataPointType
-  | ValueDataPointType
-  | ScoreDataPointType
+export const dataPointValueSchema = z
+  .number()
+  .or(z.string())
+  .or(z.array(z.number()))
+export type DataPointTypeValue = z.infer<typeof dataPointValueSchema>
 // TODO: Is this ever number or number[]? Maybe in older json-versions
-export type DataPointTypeValue = string | number | number[]
+// export type DataPointTypeValue = string | number | number[]
+export const genericDataPointSchema = z.object({
+  name: z.string(),
+  value: dataPointValueSchema,
+})
 
-export type CategorialDataPointType = {
-  name: string
-  value: DataPointTypeValue
-}
-export type ValueDataPointType = {
-  name: string
-  value: DataPointTypeValue
-}
-export type ScoreDataPointType = {
-  name: string
-  value: DataPointTypeValue | undefined
-}
+export type CategorialDataPointType = z.infer<typeof genericDataPointSchema>
+export type ValueDataPointType = z.infer<typeof genericDataPointSchema>
+
+export const scoreDataPointSchema = z.object({
+  name: z.string(),
+  value: genericDataPointSchema.or(z.undefined()),
+})
+
+export type ScoreDataPointType = z.infer<typeof scoreDataPointSchema>
+
+export const dataPointSchema = genericDataPointSchema.or(scoreDataPointSchema)
+
+export type DataPointType = z.infer<typeof dataPointSchema>
 
 export type SpaceType = {
   type: string
