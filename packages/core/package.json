@@ -24,7 +24,8 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/process-optimizer-frontend-core.js"
+      "import": "./dist/process-optimizer-frontend-core.js",
+      "require": "./dist/process-optimizer-frontend-core.umd.js"
     }
   },
   "scripts": {
