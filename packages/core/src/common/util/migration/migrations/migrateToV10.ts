@@ -1,7 +1,6 @@
-import { ExperimentType, experimentSchema } from '../../../types/common'
-import { ExperimentTypeV9 } from './migrateToV9'
+import { experimentSchema } from '../../../types/common'
 
-export const migrateToV10 = (json: ExperimentTypeV9): ExperimentType => {
+export const migrateToV10 = (json: any) => {
   return experimentSchema.parse({
     ...json,
     info: { ...json.info, dataFormatVersion: '10' },
