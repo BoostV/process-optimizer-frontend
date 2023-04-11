@@ -43,7 +43,9 @@ const doMigrations = (
   json: any,
   stopAtVersion: string
 ): ExperimentType | unknown => {
-  console.log('Migrating', json.info.dataFormatVersion)
+  console.log(
+    `Migrating ${json.info.dataFormatVersion} to ${migration.version}`
+  )
   json = migration.converter(json)
   const migrationIndex = MIGRATIONS.findIndex(m => m === migration)
   const isLastMigration =

@@ -12,10 +12,12 @@ const infoSchema = z.object({
   dataFormatVersion: z.literal(currentVersion),
 })
 
-const experimentResultSchema = z.object({
+const nextSchema = z.array(z.array(z.number().or(z.string())))
+
+export const experimentResultSchema = z.object({
   id: z.string(),
   plots: z.array(z.object({ id: z.string(), plot: z.string() })),
-  next: z.array(z.array(z.number().or(z.string()))),
+  next: nextSchema,
   pickled: z.string(),
   expectedMinimum: z.array(z.array(z.number()).or(z.number())),
   extras: z.record(z.unknown()),
@@ -56,7 +58,7 @@ const dataEntryMetaDataSchema = z.object({
 })
 
 const dataPointValueSchema = z.number().or(z.string()).or(z.array(z.number()))
-export type DataPointTypeValue = z.infer<typeof dataPointValueSchema>
+
 const genericDataPointSchema = z.object({
   name: z.string(),
   value: dataPointValueSchema,
@@ -87,6 +89,7 @@ export const experimentSchema = z.object({
   dataPoints: z.array(dataEntrySchema),
 })
 
+export type DataPointTypeValue = z.infer<typeof dataPointValueSchema>
 export type CategorialDataPointType = z.infer<typeof genericDataPointSchema>
 export type ValueDataPointType = z.infer<typeof genericDataPointSchema>
 export type ScoreDataPointType = z.infer<typeof scoreDataPointSchema>

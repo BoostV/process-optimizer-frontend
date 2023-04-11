@@ -8,7 +8,7 @@ import { Dispatch, rootReducer } from './reducers'
 import { calculateData, calculateSpace } from '@core/common/'
 import { migrate } from '@core/common'
 import { initialState, State, useApi } from '@core/context/experiment'
-import { ExperimentResultType, ExperimentType } from '@core/common/types'
+import { ExperimentType, experimentResultSchema } from '@core/common/types'
 
 const ExperimentContext = React.createContext<
   | {
@@ -111,7 +111,7 @@ export const useSelector = <T,>(selector: (state: State) => T) => {
 const fetchExperimentResult = async (
   experiment: ExperimentType,
   api: DefaultApi
-): Promise<ExperimentResultType> => {
+) => {
   const cfg = experiment.optimizerConfig
   const extras = experiment.extras || {}
   const space = calculateSpace(experiment)
@@ -138,19 +138,16 @@ const fetchExperimentResult = async (
 
   const result = await api.optimizerapiOptimizerRun(request)
 
-  const experimentResult: ExperimentResultType = {
+  return experimentResultSchema.parse({
     id: experiment.id,
     plots:
       result.plots?.map(p => ({ id: p.id ?? '', plot: p.plot ?? '' })) ?? [],
-    // TODO: Remove cast, use zod
-    next: (result.result?.next ?? []) as (string | number)[][],
+    next: result.result?.next ?? [],
     pickled: result.result?.pickled ?? '',
     expectedMinimum:
       result.result?.models?.find(() => true)?.expectedMinimum ?? [],
     extras: result.result?.extras ?? {},
-  }
-
-  return experimentResult
+  })
 }
 
 async function runExperiment(
