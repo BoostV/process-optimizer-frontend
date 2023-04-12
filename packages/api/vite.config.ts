@@ -8,7 +8,8 @@ export default defineConfig({
   build: {
     minify: false,
     lib: {
-      formats: ['es'],
+      formats: ['es', 'umd'],
+      name: 'process-optimizer-api',
       entry: resolve(__dirname, 'openapi/index.ts'),
     },
   },

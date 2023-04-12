@@ -23,7 +23,8 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/process-optimizer-frontend-api.js"
+      "import": "./dist/process-optimizer-frontend-api.js",
+      "require": "./dist/process-optimizer-frontend-api.umd.cjs"
     }
   },
   "scripts": {
