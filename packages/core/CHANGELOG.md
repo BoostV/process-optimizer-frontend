@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 1.4.2
+
+### Patch Changes
+
+- 2cdb142: Fix immer externalization
+
 ## 1.4.1
 
 ### Patch Changes
