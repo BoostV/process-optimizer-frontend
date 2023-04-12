@@ -1,5 +1,17 @@
 # @process-optimizer-frontend/sample-app
 
+## 1.9.0
+
+### Minor Changes
+
+- f915c8a: Introduce Zod for input validation
+
+### Patch Changes
+
+- Updated dependencies [f915c8a]
+  - @boostv/process-optimizer-frontend-core@1.4.0
+  - @boostv/process-optimizer-frontend-ui@1.2.0
+
 ## 1.8.3
 
 ### Patch Changes

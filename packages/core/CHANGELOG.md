@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 1.4.0
+
+### Minor Changes
+
+- f915c8a: Introduce Zod for input validation
+
 ## 1.3.4
 
 ### Patch Changes
