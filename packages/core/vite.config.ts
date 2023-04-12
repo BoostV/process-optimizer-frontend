@@ -17,8 +17,9 @@ export default defineConfig({
   build: {
     minify: false,
     lib: {
-      formats: ['es'],
+      formats: ['es', 'umd'],
       entry: resolve(__dirname, 'src/index.ts'),
+      name: 'process-optimizer-core',
     },
     rollupOptions: {
       external: [

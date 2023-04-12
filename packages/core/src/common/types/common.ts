@@ -1,125 +1,98 @@
+import { z } from 'zod'
 // IMPORTANT!
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '9'
+export const currentVersion = '10'
 
-export type Info = {
-  name: string
-  description: string
-  swVersion: string
-  dataFormatVersion: typeof currentVersion
-}
+const infoSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  swVersion: z.string(),
+  dataFormatVersion: z.literal(currentVersion),
+})
 
-export type ExperimentType = {
-  id: string
-  changedSinceLastEvaluation: boolean
-  info: Info
-  extras: Record<string, unknown>
-  categoricalVariables: CategoricalVariableType[]
-  valueVariables: ValueVariableType[]
-  scoreVariables: ScoreVariableType[]
-  optimizerConfig: OptimizerConfig
-  results: ExperimentResultType
-  dataPoints: DataEntry[]
-}
+export const experimentResultSchema = z.object({
+  id: z.string(),
+  plots: z.array(z.object({ id: z.string(), plot: z.string() })),
+  next: z.array(z.array(z.number().or(z.string()))),
+  pickled: z.string(),
+  expectedMinimum: z.array(z.array(z.number().or(z.string())).or(z.number())),
+  extras: z.record(z.unknown()),
+})
 
-export type ExperimentResultType = {
-  id: string
-  plots: { id: string; plot: string }[]
-  next: (number | string)[][]
-  pickled: string
-  expectedMinimum: Array<Array<number>>
-  extras: object
-}
+const categorialVariableSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  options: z.array(z.string()),
+})
 
-export type CategoricalVariableType = {
-  name: string
-  description: string
-  options: string[]
-}
-export type ValueVariableType = {
-  type: 'discrete' | 'continuous'
-  name: string
-  description: string
-  min: number
-  max: number
-}
-export type ScoreVariableType = {
-  name: string
-  description: string
-  enabled: boolean
-}
+const valueVariableSchema = z.object({
+  type: z.literal('discrete').or(z.literal('continuous')),
+  name: z.string(),
+  description: z.string().default(''),
+  min: z.number(),
+  max: z.number(),
+})
 
-type Override<T, K> = Omit<T, keyof K> & K
+const scoreVariableSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  enabled: z.boolean(),
+})
 
-export type ValueVariableInputType = Override<
-  ValueVariableType,
-  {
-    min: string
-    max: string
-  }
->
+const optimizerSchema = z.object({
+  baseEstimator: z.string(),
+  acqFunc: z.string(),
+  initialPoints: z.number(),
+  kappa: z.number(),
+  xi: z.number(),
+})
 
-export type VariableType = CategoricalVariableType | ValueVariableType
+const dataEntryMetaDataSchema = z.object({
+  id: z.coerce.number().default(0),
+  enabled: z.coerce.boolean().default(true),
+  description: z.optional(z.string()),
+})
 
-export type OptimizerConfig = {
-  baseEstimator: string
-  acqFunc: string
-  initialPoints: number
-  kappa: number
-  xi: number
-}
+const dataPointValueSchema = z.number().or(z.string()).or(z.array(z.number()))
 
-// IMPORTANT! All meta data keys MUST be defined as lower case to ensure proper CSV parsing
-type MetaDataRequiredKeys = 'enabled' | 'id'
-type MetaDataOptionalKeys = 'description'
-type MetaDataBoolKeys = 'enabled'
-type MetaDataNumericKeys = 'id'
+const genericDataPointSchema = z.object({
+  name: z.string(),
+  value: dataPointValueSchema,
+})
 
-type OptionalKnownMetaData = {
-  readonly [key in MetaDataOptionalKeys]?: key extends MetaDataBoolKeys
-    ? boolean
-    : key extends MetaDataNumericKeys
-    ? number
-    : string
-}
+const scoreDataPointSchema = z.object({
+  name: z.string(),
+  value: genericDataPointSchema.or(z.undefined()),
+})
 
-type RequiredKnownMetaData = {
-  readonly [key in MetaDataRequiredKeys]: key extends MetaDataBoolKeys
-    ? boolean
-    : key extends MetaDataNumericKeys
-    ? number
-    : string
-}
+const dataPointSchema = genericDataPointSchema.or(scoreDataPointSchema)
 
-type DataEntryMetaData = RequiredKnownMetaData & OptionalKnownMetaData
+const dataEntrySchema = z.object({
+  meta: dataEntryMetaDataSchema,
+  data: z.array(dataPointSchema),
+})
 
-export type DataEntry = {
-  meta: DataEntryMetaData
-  data: DataPointType[]
-}
+export const experimentSchema = z.object({
+  id: z.string(),
+  changedSinceLastEvaluation: z.boolean(),
+  info: infoSchema,
+  extras: z.record(z.unknown()),
+  categoricalVariables: z.array(categorialVariableSchema),
+  valueVariables: z.array(valueVariableSchema),
+  scoreVariables: z.array(scoreVariableSchema),
+  optimizerConfig: optimizerSchema,
+  results: experimentResultSchema,
+  dataPoints: z.array(dataEntrySchema),
+})
 
-export type DataPointType =
-  | CategorialDataPointType
-  | ValueDataPointType
-  | ScoreDataPointType
-// TODO: Is this ever number or number[]? Maybe in older json-versions
-export type DataPointTypeValue = string | number | number[]
-
-export type CategorialDataPointType = {
-  name: string
-  value: DataPointTypeValue
-}
-export type ValueDataPointType = {
-  name: string
-  value: DataPointTypeValue
-}
-export type ScoreDataPointType = {
-  name: string
-  value: DataPointTypeValue | undefined
-}
-
+export type DataPointTypeValue = z.infer<typeof dataPointValueSchema>
+export type CategorialDataPointType = z.infer<typeof genericDataPointSchema>
+export type ValueDataPointType = z.infer<typeof genericDataPointSchema>
+export type ScoreDataPointType = z.infer<typeof scoreDataPointSchema>
+export type DataPointType = z.infer<typeof dataPointSchema>
+export type DataEntry = z.infer<typeof dataEntrySchema>
 export type SpaceType = {
   type: string
   name: string
@@ -127,16 +100,21 @@ export type SpaceType = {
   to?: number
   categories?: string[]
 }[]
-
 export type CombinedVariableType = {
   name: string
   description: string
   tooltip?: string
   options?: string[]
 }
+export type ExperimentType = z.infer<typeof experimentSchema>
+export type Info = z.infer<typeof infoSchema>
+export type ExperimentResultType = z.infer<typeof experimentResultSchema>
+export type CategoricalVariableType = z.infer<typeof categorialVariableSchema>
+export type ValueVariableType = z.infer<typeof valueVariableSchema>
+export type ScoreVariableType = z.infer<typeof scoreVariableSchema>
+export type OptimizerConfig = z.infer<typeof optimizerSchema>
 
 // Type guards
-
 export function isExperiment(obj: unknown): obj is ExperimentType {
-  return (obj as ExperimentType)?.info?.dataFormatVersion === currentVersion
+  return experimentSchema.safeParse(obj).success
 }

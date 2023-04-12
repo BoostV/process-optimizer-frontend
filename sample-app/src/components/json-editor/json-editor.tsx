@@ -12,17 +12,11 @@ import {
   useExperiment,
   ExperimentType,
   errorMessage,
+  experimentSchema,
 } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './json-editor.style'
 import { Close } from '@mui/icons-material'
 import { useGlobal } from '@sample/context/global'
-
-type DisplayedResults = {
-  id: string
-  next: (number | string)[] | (number | string)[][]
-  expectedMinimum: Array<Array<number>>
-  extras: object
-}
 
 const JsonEditor = () => {
   const { classes } = useStyles()
@@ -43,7 +37,7 @@ const JsonEditor = () => {
   const displayedExperimentFromExperiment = (
     experiment: ExperimentType
   ): string => {
-    const results: DisplayedResults = {
+    const results = {
       id: experiment.results.id,
       next: experiment.results.next,
       expectedMinimum: experiment.results.expectedMinimum,
@@ -52,23 +46,21 @@ const JsonEditor = () => {
     return JSON.stringify({ ...experiment, results }, null, 2)
   }
 
-  const experimentFromDisplayedExperiment = (
-    displayedExperiment: string
-  ): ExperimentType => {
+  const experimentFromDisplayedExperiment = (displayedExperiment: string) => {
     const displayedExperimentObject = JSON.parse(displayedExperiment)
-    return {
+    return experimentSchema.parse({
       ...displayedExperimentObject,
       results: {
         ...displayedExperimentObject.results,
         pickled: experiment.results.pickled,
         plots: experiment.results.plots,
       },
-    }
+    })
   }
 
   const handleSave = async () => {
     try {
-      const experimentToSave: ExperimentType =
+      const experimentToSave =
         experimentFromDisplayedExperiment(displayedExperiment)
       dispatch({ type: 'updateExperiment', payload: experimentToSave })
       location.reload()

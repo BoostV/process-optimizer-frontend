@@ -12,7 +12,7 @@ import useStyles from './single-data-point.style'
 interface SingleDataPointProps {
   title: string
   headers: string[]
-  dataPoint: any[][]
+  dataPoint: (number | (string | number)[])[]
 }
 
 export const SingleDataPoint = ({

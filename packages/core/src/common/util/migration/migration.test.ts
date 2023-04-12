@@ -1,32 +1,31 @@
 import { migrate, _migrate, MIGRATIONS } from './migration'
-import version6 from './data-formats/6.json'
-import version5 from './data-formats/5.json'
-import version4 from './data-formats/4.json'
+import version10 from './data-formats/10.json'
 import version3 from './data-formats/3.json'
 import version2 from './data-formats/2.json'
 import version1 from './data-formats/1.json'
 import catapult from '@core/sample-data/catapult.json'
+import badCatapult from '@core/sample-data/bad-catapult.json'
+import badCookie from '@core/sample-data/bad-cookie.json'
 import large from '@core/sample-data/large.json'
 import fs from 'fs'
-import { ExperimentType } from '@core/common/types'
 import { emptyExperiment } from '@core/context/experiment'
 import { formatNext } from './migrations/migrateToV9'
 
-const loadLatestJson = () => {
-  const fileVersions: number[] = fs
-    .readdirSync('./src/common/util/migration/data-formats')
-    .map(f => parseInt(f.replace(/[^0-9]/, '')))
-  const latestVersion = Math.max(...fileVersions)
+const fileVersions: number[] = fs
+  .readdirSync('./src/common/util/migration/data-formats')
+  .map(f => parseInt(f.replace(/[^0-9]/, '')))
+const latestVersion = Math.max(...fileVersions)
+
+const loadNamedJson = (version: number) => {
   return JSON.parse(
-    fs.readFileSync(
-      `src/common/util/migration/data-formats/${latestVersion}.json`,
-      {
-        encoding: 'utf8',
-        flag: 'r',
-      }
-    )
+    fs.readFileSync(`src/common/util/migration/data-formats/${version}.json`, {
+      encoding: 'utf8',
+      flag: 'r',
+    })
   )
 }
+
+const loadLatestJson = () => loadNamedJson(latestVersion)
 
 describe('migration', () => {
   describe('migrate', () => {
@@ -47,6 +46,16 @@ describe('migration', () => {
       expect(_migrate({ ...latestJson })).toEqual({ ...latestJson })
     })
 
+    it(`should migrate from 2 through ${latestVersion}`, () => {
+      for (let index = 2; index < latestVersion; index++) {
+        const prev = index
+        const current = index + 1
+        expect(_migrate(loadNamedJson(prev), `${current}`)).toEqual(
+          loadNamedJson(current)
+        )
+      }
+    })
+
     it('should migrate to 3 from 1 (before versioning and no discrete/continuous)', () => {
       expect(_migrate(version1, '3')).toEqual({
         ...version3,
@@ -63,28 +72,30 @@ describe('migration', () => {
       })
     })
 
-    it('should migrate to 3 from 2 (before versioning and with discrete as boolean instead of string)', () => {
-      expect(_migrate(version2, '3')).toEqual(version3)
-    })
-
-    it('should migrate to 4 from 3 (expectedMinimum added to result)', () => {
-      expect(_migrate(version3, '4')).toEqual(version4)
-    })
-
-    it('should migrate to 6 from 4 (changedSinceEvaluation added to root)', () => {
-      expect(_migrate(version5, '6')).toEqual(version6)
-    })
-
     it(`should migrate to newest version (${
       MIGRATIONS.slice(-1)[0]?.version
     })`, async () => {
-      const expected = loadLatestJson() as ExperimentType
+      const expected = loadLatestJson()
       const actual = _migrate({ ...version2 })
       expect(actual).toEqual(expected)
     })
 
     it('should migrate catapult to newest version', async () => {
       const actual = migrate({ ...catapult })
+      expect(actual.info.dataFormatVersion).toEqual(
+        MIGRATIONS.slice(-1)[0]?.version
+      )
+    })
+
+    it('should migrate bad catapult to newest version', async () => {
+      const actual = migrate({ ...badCatapult })
+      expect(actual.info.dataFormatVersion).toEqual(
+        MIGRATIONS.slice(-1)[0]?.version
+      )
+    })
+
+    it('should migrate bad cookie to newest version', async () => {
+      const actual = migrate({ ...badCookie })
       expect(actual.info.dataFormatVersion).toEqual(
         MIGRATIONS.slice(-1)[0]?.version
       )
@@ -115,10 +126,10 @@ describe('migration', () => {
     //TODO: More/better tests
     it('newest data format json should match default empty experiment', () => {
       expect(Object.keys(emptyExperiment).length).toBe(
-        Object.keys(version6).length
+        Object.keys(version10).length
       )
       Object.keys(emptyExperiment).forEach(p =>
-        expect(version6).toHaveProperty(p)
+        expect(version10).toHaveProperty(p)
       )
     })
   })

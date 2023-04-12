@@ -41,8 +41,7 @@ export const validateUpperBoundary = (experiment: ExperimentType): number[] => {
       )?.max
       if (
         valueVarMax !== undefined &&
-        d.value !== undefined &&
-        d.value !== '' &&
+        typeof d.value === 'number' &&
         d.value > valueVarMax
       ) {
         violations.push(dp.meta.id)
@@ -61,8 +60,7 @@ export const validateLowerBoundary = (experiment: ExperimentType): number[] => {
       )?.min
       if (
         valueVarMin !== undefined &&
-        d.value !== undefined &&
-        d.value !== '' &&
+        typeof d.value === 'number' &&
         d.value < valueVarMin
       ) {
         violations.push(dp.meta.id)

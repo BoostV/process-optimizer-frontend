@@ -1,21 +1,11 @@
 import { emptyExperiment } from '@core/context'
-import { currentVersion, ExperimentType, isExperiment } from './common'
+import { ExperimentType, isExperiment } from './common'
 
 describe('Type guards', () => {
   it('should not narrow blank object', () => {
     const blank = {}
     const result = isExperiment(blank)
     expect(result).toBeFalsy()
-  })
-
-  it('should narrow object with correct version in info', () => {
-    const minimal = {
-      info: {
-        dataFormatVersion: currentVersion,
-      },
-    }
-    const result = isExperiment(minimal)
-    expect(result).toBeTruthy()
   })
 
   it('should not narrow object with wrong version in info', () => {
