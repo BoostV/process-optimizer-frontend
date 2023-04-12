@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/api
 
+## 1.1.4
+
+### Patch Changes
+
+- c49168d: Fix budling
+
 ## 1.1.3
 
 ### Patch Changes
