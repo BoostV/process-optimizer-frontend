@@ -1,5 +1,13 @@
 # @process-optimizer-frontend/core
 
+## 1.4.1
+
+### Patch Changes
+
+- 12b13b4: Fix packaging
+- Updated dependencies [c49168d]
+  - @boostv/process-optimizer-frontend-api@1.1.4
+
 ## 1.4.0
 
 ### Minor Changes
