@@ -30,6 +30,15 @@ export default defineConfig({
         'compare-versions',
         '@boostv/process-optimizer-frontend-api',
       ],
+      output: {
+        globals: {
+          react: 'React',
+          'compare-versions': 'compareVersions',
+          immer: 'produce',
+          '@boostv/process-optimizer-frontend-api':
+            'processOptimizerFrontendApi',
+        },
+      },
     },
   },
   test: {

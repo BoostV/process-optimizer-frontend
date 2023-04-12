@@ -1,5 +1,5 @@
 import { ExperimentType } from 'common'
-import produce from 'immer'
+import { produce } from 'immer'
 import { ValidationViolations } from './validation'
 
 export const validationReducer = produce(
