@@ -24,14 +24,34 @@ const ExperimentDemo = () => {
     dispatch({ type: 'updateExperimentName', payload: value })
   }
 
+  const handleVariableChange = (value: string) => {
+    dispatch({
+      type: 'editValueVariable',
+      payload: { index: 0, variable: JSON.parse(value) },
+    })
+  }
+
   return (
     <>
       <h1>Experiment</h1>
-      <textarea
-        value={experiment?.info.name}
-        onChange={e => handleChange(e.target.value)}
-      ></textarea>
-      <pre>{JSON.stringify(experiment.info, undefined, 2)}</pre>
+      <label>
+        Name:
+        <textarea
+          value={experiment?.info.name}
+          onChange={e => handleChange(e.target.value)}
+        />
+      </label>
+      <label>
+        Variables:
+        <textarea
+          value={JSON.stringify(experiment.valueVariables[0], undefined, 2)}
+          onChange={e => handleVariableChange(e.target.value)}
+        />
+      </label>
+      <pre>
+        {JSON.stringify(experiment.changedSinceLastEvaluation, undefined, 2)}
+      </pre>
+      <pre>{JSON.stringify(experiment.valueVariables, undefined, 2)}</pre>
     </>
   )
 }
