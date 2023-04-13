@@ -5,23 +5,41 @@ import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig({
-  plugins: [dts(), react()],
-
+  plugins: [
+    dts(),
+    react({
+      jsxRuntime: 'classic',
+    }),
+  ],
   resolve: {
     alias: [{ find: '@core', replacement: resolve(__dirname, './src') }],
   },
   build: {
-    sourcemap: true,
-    target: 'esnext',
     minify: false,
     lib: {
+      formats: ['es', 'umd'],
       entry: resolve(__dirname, 'src/index.ts'),
-      formats: ['es'],
+      name: 'process-optimizer-core',
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react-hook-form'],
+      external: [
+        'react',
+        'react-dom',
+        'react-hook-form',
+        'immer',
+        'compare-versions',
+        '@boostv/process-optimizer-frontend-api',
+      ],
+      output: {
+        globals: {
+          react: 'React',
+          'compare-versions': 'compareVersions',
+          immer: 'produce',
+          '@boostv/process-optimizer-frontend-api':
+            'processOptimizerFrontendApi',
+        },
+      },
     },
-    outDir: 'dist',
   },
   test: {
     coverage: {

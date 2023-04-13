@@ -4,7 +4,6 @@ import useStyles from './value-variable.style'
 import { FormRadioGroup } from '@ui/common'
 import { isValidVariableName, validation } from '@ui/common/forms'
 import {
-  ValueVariableInputType,
   CategoricalVariableType,
   ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
@@ -20,6 +19,11 @@ type ValueVariableProps = {
   onAdd: (data: ValueVariableType) => void
   onEdit: (data: ValueVariableType) => void
   onCancel: () => void
+}
+
+type ValueVariableInputType = Omit<ValueVariableType, 'min' | 'max'> & {
+  min: string
+  max: string
 }
 
 export default function ValueVariable(props: ValueVariableProps) {

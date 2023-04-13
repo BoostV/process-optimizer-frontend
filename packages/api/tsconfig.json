@@ -4,10 +4,7 @@
     "noImplicitOverride": false,
     "noUnusedParameters": false,
     "noUnusedLocals": false,
-    "noEmit": false,
     "emitDeclarationOnly": false,
-    "declaration": true,
-    "declarationDir": "./dist",
     "outDir": "./dist",
     "rootDir": "./openapi"
   },

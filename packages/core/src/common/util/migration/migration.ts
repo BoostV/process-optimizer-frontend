@@ -9,6 +9,7 @@ import {
   migrateToV5,
   migrateToV8,
   migrateToV9,
+  migrateToV10,
   migrateToV11,
 } from './migrations'
 
@@ -43,7 +44,9 @@ const doMigrations = (
   json: any,
   stopAtVersion: string
 ): ExperimentType | unknown => {
-  console.log('Migrating', json.info.dataFormatVersion)
+  console.log(
+    `Migrating ${json.info.dataFormatVersion} to ${migration.version}`
+  )
   json = migration.converter(json)
   const migrationIndex = MIGRATIONS.findIndex(m => m === migration)
   const isLastMigration =
@@ -81,5 +84,6 @@ export const MIGRATIONS: Migration[] = [
   { version: '7', converter: migrateToV7 },
   { version: '8', converter: migrateToV8 },
   { version: '9', converter: migrateToV9 },
+  { version: '10', converter: migrateToV10 },
   { version: '11', converter: migrateToV11 },
 ]

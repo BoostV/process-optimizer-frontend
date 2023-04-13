@@ -6,21 +6,18 @@ import {
   TableRow,
   Tooltip,
   Box,
-  Checkbox,
 } from '@mui/material'
 import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
-import AddIcon from '@mui/icons-material/Add'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { Add, Edit, Delete } from '@mui/icons-material'
 
 interface EditableTableCollapsedRowProps {
   colSpan: number
   rowId: number
   tableRow: TableDataRow
+  disabled?: boolean
   setExpanded: (expanded: boolean) => void
   onDelete: () => void
-  onEnabledToggled: (enabled: boolean) => void
   isEditingDisabled?: boolean
 }
 
@@ -28,13 +25,12 @@ export const EditableTableCollapsedRow = ({
   colSpan,
   rowId,
   tableRow,
+  disabled = false,
   setExpanded,
   onDelete,
-  onEnabledToggled,
   isEditingDisabled,
 }: EditableTableCollapsedRowProps) => {
   const { classes } = useStyles()
-  const disabled = tableRow.disabled || !tableRow.valid
 
   return (
     <TableRow className={tableRow.isNew ? classes.rowNew : classes.row}>
@@ -51,7 +47,7 @@ export const EditableTableCollapsedRow = ({
                 size="small"
                 onClick={() => setExpanded(true)}
                 disabled={isEditingDisabled}
-                startIcon={<AddIcon fontSize="small" />}
+                startIcon={<Add fontSize="small" />}
                 variant="outlined"
               >
                 Add data point
@@ -89,7 +85,7 @@ export const EditableTableCollapsedRow = ({
                     onClick={() => setExpanded(true)}
                     disabled={isEditingDisabled}
                   >
-                    <EditIcon
+                    <Edit
                       fontSize="small"
                       color={isEditingDisabled ? 'disabled' : 'primary'}
                     />
@@ -102,22 +98,8 @@ export const EditableTableCollapsedRow = ({
                   aria-label="delete"
                   onClick={() => onDelete()}
                 >
-                  <DeleteIcon fontSize="small" color="primary" />
+                  <Delete fontSize="small" color="primary" />
                 </IconButton>
-              </Tooltip>
-              <Tooltip title="Disable/enable">
-                <span>
-                  <Checkbox
-                    checked={!disabled}
-                    disabled={!tableRow.valid || isEditingDisabled}
-                    onChange={(_, checked) => onEnabledToggled(checked)}
-                    inputProps={{
-                      'aria-label': 'Enable/disable',
-                    }}
-                    size="small"
-                    color="primary"
-                  />
-                </span>
               </Tooltip>
             </div>
           </TableCell>

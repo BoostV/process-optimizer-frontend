@@ -2,13 +2,13 @@
   "extends": "../../scaffold/tsconfig.ui-lib.json",
   "compilerOptions": {
     "noImplicitReturns": false,
-
-    "outDir": "dist",
-    "rootDir": ".",
-    "baseUrl": "src",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "jsx": "react-jsx",
     "paths": {
       "@core/*": ["./*"]
     }
   },
-  "include": ["./src", "./src/**/*.json", "./sample-data/**/*.json"]
+  "include": ["./src", "./src/**/*.json"]
 }

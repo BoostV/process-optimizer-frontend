@@ -1,4 +1,4 @@
-import { ExperimentType } from '@core/common'
+import { ExperimentType } from 'common'
 import { emptyExperiment } from './store'
 import { validationReducer } from './validation-reducer'
 
@@ -9,7 +9,6 @@ const exp: ExperimentType = {
       meta: {
         id: 1,
         enabled: true,
-        valid: true,
       },
       data: [
         {
@@ -22,7 +21,6 @@ const exp: ExperimentType = {
       meta: {
         id: 2,
         enabled: true,
-        valid: true,
       },
       data: [
         {
@@ -96,7 +94,6 @@ describe('validationReducer', () => {
             meta: {
               id: 1,
               enabled: true,
-              valid: true,
             },
             data: [
               {
@@ -109,7 +106,6 @@ describe('validationReducer', () => {
             meta: {
               id: 1,
               enabled: true,
-              valid: true,
             },
             data: [
               {

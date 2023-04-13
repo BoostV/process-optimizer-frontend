@@ -1,7 +1,7 @@
 {
   "name": "@boostv/process-optimizer-frontend-plots",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Plot components for for process optimizer frontend",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
@@ -19,12 +19,16 @@
   "files": [
     "dist"
   ],
-  "types": "./dist/src/index.d.ts",
-  "main": "./dist/src/index.js",
-  "module": "./dist/src/index.js",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/process-optimizer-frontend-plots.js"
+    }
+  },
   "scripts": {
-    "build": "tsc",
-    "prepublishOnly": "tsc"
+    "build": "tsc && vite build",
+    "prepublishOnly": "vite build"
   },
   "dependencies": {
     "@bokeh/bokehjs": "^2.4.3",
@@ -34,5 +38,10 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^3.1.0",
+    "vite": "^4.2.1",
+    "vite-plugin-dts": "^2.1.0"
   }
 }

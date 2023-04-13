@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from '@mui/material'
 import useStyles from './suggestions.style'
-import MoveDownIcon from '@mui/icons-material/MoveDown'
+import { MoveDown } from '@mui/icons-material'
 
 interface SuggestionsProps {
   values: string[][]
@@ -52,7 +52,7 @@ export const Suggestions = ({
                           size="small"
                           onClick={() => onCopyToDataPoints(ir)}
                         >
-                          <MoveDownIcon fontSize="small" color="primary" />
+                          <MoveDown fontSize="small" color="primary" />
                         </IconButton>
                       </Tooltip>
                     </TableCell>

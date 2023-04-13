@@ -1,7 +1,5 @@
 import { dataPointsReducer, DataPointsState } from './data-points-reducer'
 
-// TODO: Test 'rowEnabledToggled'
-
 describe('data points reducer', () => {
   const initialState: DataPointsState = {
     changed: false,

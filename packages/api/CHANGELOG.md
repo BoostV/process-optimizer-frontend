@@ -1,5 +1,29 @@
 # @process-optimizer-frontend/api
 
+## 1.1.4
+
+### Patch Changes
+
+- c49168d: Fix budling
+
+## 1.1.3
+
+### Patch Changes
+
+- f432859: Fix build issues
+
+## 1.1.2
+
+### Patch Changes
+
+- 739e6b8: Revert conversion to tsc and use vite for all packages
+
+## 1.1.1
+
+### Patch Changes
+
+- 58fbac8: Use plain tsc for building packages
+
 ## 1.1.0
 
 ### Minor Changes

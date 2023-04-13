@@ -1,6 +1,6 @@
 {
   "name": "@boostv/process-optimizer-frontend-scaffol",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": "https://github.com/BoostV/process-optimizer-frontend.git",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "license": "BSD-3-Clause",

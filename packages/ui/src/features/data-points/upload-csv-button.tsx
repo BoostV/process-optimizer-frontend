@@ -1,5 +1,5 @@
 import { IconButton, Input, Tooltip } from '@mui/material'
-import PublishIcon from '@mui/icons-material/Publish'
+import { Publish } from '@mui/icons-material'
 import { ChangeEvent } from 'react'
 import {
   CategoricalVariableType,
@@ -51,7 +51,7 @@ const UploadCSVButton = ({
   return (
     <Tooltip title="Upload CSV">
       <IconButton component="label" size="small">
-        <PublishIcon fontSize="small" style={{ color: light ? 'white' : '' }} />
+        <Publish fontSize="small" style={{ color: light ? 'white' : '' }} />
         <Input
           type="file"
           value=""

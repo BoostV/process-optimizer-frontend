@@ -1,39 +1,4 @@
-import {
-  CategoricalVariableType,
-  OptimizerConfig,
-  ScoreVariableType,
-  ValueVariableType,
-} from '@core/common/types'
-import { DataEntryV8, ExperimentTypeV8 } from './migrateToV8'
-
-export type DataEntryV9 = DataEntryV8
-
-export type ExperimentTypeV9 = {
-  id: string
-  changedSinceLastEvaluation: boolean
-  info: {
-    name: string
-    description: string
-    swVersion: string
-    dataFormatVersion: '9'
-  }
-  extras: Record<string, unknown>
-  categoricalVariables: CategoricalVariableType[]
-  valueVariables: ValueVariableType[]
-  scoreVariables: ScoreVariableType[]
-  optimizerConfig: OptimizerConfig
-  results: {
-    id: string
-    plots: { id: string; plot: string }[]
-    next: (string | number)[][]
-    pickled: string
-    expectedMinimum: Array<Array<number>>
-    extras: object
-  }
-  dataPoints: DataEntryV9[]
-}
-
-export const migrateToV9 = (json: ExperimentTypeV8): ExperimentTypeV9 => {
+export const migrateToV9 = (json: any): any => {
   return {
     ...json,
     info: { ...json.info, dataFormatVersion: '9' },

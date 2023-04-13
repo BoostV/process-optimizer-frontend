@@ -1,7 +1,7 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 import { useEffect, useMemo, useReducer } from 'react'
 import { EditableTable } from '../core'
-import SwapVertIcon from '@mui/icons-material/SwapVert'
+import { SwapVert } from '@mui/icons-material'
 import { InfoBox, TitleCard } from '../core/title-card/title-card'
 import DownloadCSVButton from './download-csv-button'
 import useStyles from './data-points.style'
@@ -121,15 +121,6 @@ export function DataPoints(props: DataPointProps) {
       },
     })
 
-  const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
-    dispatch({
-      type: 'rowEnabledToggled',
-      payload: {
-        index: rowIndex,
-        enabled,
-      },
-    })
-
   useEffect(() => {
     dispatch({
       type: 'setInitialState',
@@ -211,10 +202,7 @@ export function DataPoints(props: DataPointProps) {
                   className={classes.titleButton}
                   onClick={onToggleNewestFirst}
                 >
-                  <SwapVertIcon
-                    fontSize="small"
-                    className={classes.titleIcon}
-                  />
+                  <SwapVert fontSize="small" className={classes.titleIcon} />
                 </IconButton>
               </Tooltip>
             </Box>
@@ -245,9 +233,6 @@ export function DataPoints(props: DataPointProps) {
               violations={violationsInTable}
               order={newestFirst ? 'ascending' : 'descending'}
               isEditingDisabled={isDuplicateVariableNames}
-              onRowEnabledToggled={(index, enabled) =>
-                rowEnabledToggled(index, enabled)
-              }
             />
           </Box>
         )}

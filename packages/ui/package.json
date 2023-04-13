@@ -2,7 +2,7 @@
   "name": "@boostv/process-optimizer-frontend-ui",
   "private": false,
   "sideEffects": false,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "UI library for process optimizer frontend",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
@@ -22,34 +22,38 @@
   ],
   "type": "module",
   "types": "./dist/index.d.ts",
-  "module": "./dist/process-optimizer-frontend-ui.js",
   "exports": {
     ".": {
       "import": "./dist/process-optimizer-frontend-ui.js"
     }
   },
   "scripts": {
+    "build": "tsc && vite build",
+    "prepublishOnly": "vite build",
     "dev": "vite",
     "clean": "rimraf ./dist",
-    "build": "tsc --noEmit && vite build",
-    "test": "vitest",
-    "prepublishOnly": "vite build"
+    "test": "vitest"
   },
   "dependencies": {
     "@boostv/process-optimizer-frontend-core": "*",
     "@boostv/process-optimizer-frontend-plots": "*",
-    "@mui/icons-material": "^5.11.0",
-    "@mui/material": "^5.11.7",
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
-    "tss-react": "^4.6.0",
-    "react-hook-form": "^7.33.0"
+    "react-hook-form": "^7.33.0",
+    "tss-react": "^4.8.2"
   },
   "peerDependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.7",
+    "@rollup/plugin-replace": "^5.0.2",
     "@testing-library/dom": "^8.20.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -64,8 +68,12 @@
     "node-mocks-http": "^1.12.1",
     "react-devtools": "^4.27.1",
     "rimraf": "^4.1.2",
+    "rollup-plugin-postprocess": "^1.0.2",
+    "tsc-alias": "^1.8.4",
     "typescript": "^4.9.5",
-    "vite": "^4.1.1",
+    "vite": "^4.2.1",
+    "vite-plugin-dts": "^2.1.0",
+    "vite-plugin-no-bundle": "^2.0.2",
     "vitest": "^0.28.4"
   }
 }

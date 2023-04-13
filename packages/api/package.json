@@ -1,7 +1,7 @@
 {
   "name": "@boostv/process-optimizer-frontend-api",
   "private": false,
-  "version": "1.1.0",
+  "version": "1.1.4",
   "description": "API for process optimizer backend",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
@@ -19,17 +19,24 @@
   "files": [
     "dist"
   ],
+  "type": "module",
   "types": "./dist/index.d.ts",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/process-optimizer-frontend-api.js",
+      "require": "./dist/process-optimizer-frontend-api.umd.cjs"
+    }
+  },
   "scripts": {
-    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.0.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi",
-    "build": "tsc",
-    "prepublishOnly": "tsc"
+    "build": "tsc && vite build",
+    "prepublishOnly": "vite build",
+    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.0.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "2.5.2",
     "prettier": "^2.8.3",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "vite": "^4.2.1",
+    "vite-plugin-dts": "^2.1.0"
   }
 }

@@ -6,7 +6,7 @@ import {
   OptimizerConfig,
   ValueVariableType,
 } from '@core/common/types'
-import produce from 'immer'
+import { produce } from 'immer'
 import { versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
 import { selectNextValues } from './experiment-selectors'

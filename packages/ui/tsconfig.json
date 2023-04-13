@@ -1,9 +1,12 @@
 {
   "extends": "../../scaffold/tsconfig.ui-lib.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
-    "baseUrl": "src",
+    "esModuleInterop": true,
+    "noImplicitReturns": false,
+    "emitDeclarationOnly": false,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "baseUrl": "./src",
     "paths": {
       "@ui/*": ["*"]
     }

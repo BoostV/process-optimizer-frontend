@@ -1,5 +1,5 @@
 import { IconButton, Tooltip } from '@mui/material'
-import GetAppIcon from '@mui/icons-material/GetApp'
+import { GetApp } from '@mui/icons-material'
 
 interface DownloadCSVButtonProps {
   light?: boolean
@@ -10,7 +10,7 @@ const DownloadCSVButton = ({ light, onClick }: DownloadCSVButtonProps) => {
   return (
     <Tooltip title="Download CSV">
       <IconButton size="small" onClick={onClick}>
-        <GetAppIcon fontSize="small" style={{ color: light ? 'white' : '' }} />
+        <GetApp fontSize="small" style={{ color: light ? 'white' : '' }} />
       </IconButton>
     </Tooltip>
   )

@@ -7,7 +7,7 @@ import {
   ScoreVariableType,
   SpaceType,
   ValueVariableType,
-} from '@core/common/types'
+} from 'common/types'
 /**
  * Calculate the "space" parameter to send to the API based on the
  * variables defined in the supplied experiment
@@ -132,12 +132,12 @@ const convertValue = (
   valueHeaders: string[],
   categorialHeaders: string[],
   name: string,
-  value: any
+  value: unknown
 ): DataPointTypeValue => {
   if (valueHeaders.includes(name)) {
     return Number(value)
-  } else if (categorialHeaders.includes(name)) {
-    return value as string
+  } else if (categorialHeaders.includes(name) && typeof value === 'string') {
+    return value
   } else {
     return Number(value)
   }

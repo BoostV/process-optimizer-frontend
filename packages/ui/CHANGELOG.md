@@ -1,5 +1,62 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 1.2.0
+
+### Minor Changes
+
+- f915c8a: Introduce Zod for input validation
+
+### Patch Changes
+
+- Updated dependencies [f915c8a]
+  - @boostv/process-optimizer-frontend-core@1.4.0
+
+## 1.1.5
+
+### Patch Changes
+
+- 28a3fd7: Fix bundling error
+- Updated dependencies [28a3fd7]
+- Updated dependencies [a912e3f]
+  - @boostv/process-optimizer-frontend-plots@1.0.3
+
+## 1.1.4
+
+### Patch Changes
+
+- f432859: Fix build issues
+- Updated dependencies [f432859]
+  - @boostv/process-optimizer-frontend-core@1.3.4
+
+## 1.1.3
+
+### Patch Changes
+
+- 739e6b8: Revert conversion to tsc and use vite for all packages
+- Updated dependencies [739e6b8]
+  - @boostv/process-optimizer-frontend-plots@1.0.2
+  - @boostv/process-optimizer-frontend-core@1.3.3
+
+## 1.1.2
+
+### Patch Changes
+
+- 58fbac8: Use plain tsc for building packages
+- Updated dependencies [58fbac8]
+  - @boostv/process-optimizer-frontend-plots@1.0.1
+  - @boostv/process-optimizer-frontend-core@1.3.2
+
+## 1.1.1
+
+### Patch Changes
+
+- 123d09d: Fix various minor issues related to API provider
+- 53172b5: Minor fix to API provider
+- Updated dependencies [842cb41]
+- Updated dependencies [123d09d]
+- Updated dependencies [53172b5]
+  - @boostv/process-optimizer-frontend-core@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes

@@ -1,5 +1,72 @@
 # @process-optimizer-frontend/core
 
+## 1.4.2
+
+### Patch Changes
+
+- 2cdb142: Fix immer externalization
+
+## 1.4.1
+
+### Patch Changes
+
+- 12b13b4: Fix packaging
+- Updated dependencies [c49168d]
+  - @boostv/process-optimizer-frontend-api@1.1.4
+
+## 1.4.0
+
+### Minor Changes
+
+- f915c8a: Introduce Zod for input validation
+
+## 1.3.4
+
+### Patch Changes
+
+- f432859: Fix build issues
+- Updated dependencies [f432859]
+  - @boostv/process-optimizer-frontend-api@1.1.3
+
+## 1.3.3
+
+### Patch Changes
+
+- 739e6b8: Revert conversion to tsc and use vite for all packages
+- Updated dependencies [739e6b8]
+  - @boostv/process-optimizer-frontend-api@1.1.2
+
+## 1.3.2
+
+### Patch Changes
+
+- 58fbac8: Use plain tsc for building packages
+- Updated dependencies [58fbac8]
+  - @boostv/process-optimizer-frontend-api@1.1.1
+
+## 1.3.1
+
+### Patch Changes
+
+- a0c3d31: Remove bad dispatch call
+
+## 1.3.0
+
+### Minor Changes
+
+- 1acbe02: Add managed experiment provider
+
+## 1.2.0
+
+### Minor Changes
+
+- 842cb41: Support pluggable experiment storage
+
+### Patch Changes
+
+- 123d09d: Fix various minor issues related to API provider
+- 53172b5: Minor fix to API provider
+
 ## 1.1.0
 
 ### Minor Changes
