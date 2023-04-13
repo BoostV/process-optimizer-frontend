@@ -9,10 +9,7 @@ import {
   experimentResultSchema,
 } from '@core/common'
 
-export const fetchExperimentResult = async (
-  experiment: ExperimentType,
-  api: DefaultApi
-) => {
+const createFetchExperimentResultRequest = (experiment: ExperimentType) => {
   const cfg = experiment.optimizerConfig
   const extras = experiment.extras || {}
   const space = calculateSpace(experiment)
@@ -36,7 +33,14 @@ export const fetchExperimentResult = async (
       },
     },
   }
+  return request
+}
 
+export const fetchExperimentResult = async (
+  experiment: ExperimentType,
+  api: DefaultApi
+) => {
+  const request = createFetchExperimentResultRequest(experiment)
   const result = await api.optimizerapiOptimizerRun(request)
 
   return experimentResultSchema.parse({
