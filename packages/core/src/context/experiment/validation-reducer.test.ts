@@ -9,6 +9,7 @@ const exp: ExperimentType = {
       meta: {
         id: 1,
         enabled: true,
+        valid: true,
       },
       data: [
         {
@@ -21,6 +22,7 @@ const exp: ExperimentType = {
       meta: {
         id: 2,
         enabled: true,
+        valid: true,
       },
       data: [
         {
@@ -94,6 +96,7 @@ describe('validationReducer', () => {
             meta: {
               id: 1,
               enabled: true,
+              valid: true,
             },
             data: [
               {
@@ -106,6 +109,7 @@ describe('validationReducer', () => {
             meta: {
               id: 1,
               enabled: true,
+              valid: true,
             },
             data: [
               {

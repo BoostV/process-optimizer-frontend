@@ -60,7 +60,7 @@ describe('data points reducer', () => {
         )
       ).toEqual({
         ...initialState,
-        meta: [{ enabled: true, id: 1 }],
+        meta: [{ enabled: true, id: 1, valid: true }],
         rows: [...initialState.rows, payload.row],
         changed: true,
       })
