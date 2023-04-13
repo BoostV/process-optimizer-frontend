@@ -1,7 +1,5 @@
 import { dataPointsReducer, DataPointsState } from './data-points-reducer'
 
-// TODO: Test 'rowEnabledToggled'
-
 describe('data points reducer', () => {
   const initialState: DataPointsState = {
     changed: false,
@@ -38,7 +36,7 @@ describe('data points reducer', () => {
     })
   })
   describe('dataPointsReducer - rowAdded', () => {
-    it('should add a row and set changed to true', async () => {
+    it('should add a row and set changed to true', () => {
       const payload = {
         row: {
           isNew: false,
@@ -69,7 +67,7 @@ describe('data points reducer', () => {
     })
   })
   describe('dataPointsReducer - rowDeleted', () => {
-    it('should delete a row and set changed to true', async () => {
+    it('should delete a row and set changed to true', () => {
       expect(
         dataPointsReducer(
           {
@@ -118,7 +116,7 @@ describe('data points reducer', () => {
     })
   })
   describe('dataPointsReducer - rowEdited', () => {
-    it('should edit a row and set changed to true', async () => {
+    it('should edit a row and set changed to true', () => {
       const payload = {
         editRow: {
           row: {
@@ -172,7 +170,7 @@ describe('data points reducer', () => {
       })
     })
   })
-  it('should change "," to "." for non-categorical values', async () => {
+  it('should change "," to "." for non-categorical values', () => {
     const payload = {
       editRow: {
         row: {
@@ -236,6 +234,33 @@ describe('data points reducer', () => {
         },
       ],
       changed: true,
+    })
+  })
+  describe('dataPointsReducer - rowEnabledToggled', () => {
+    it('should toggle enabled', () => {
+      const payload = {
+        index: 1,
+        enabled: true,
+      }
+      expect(
+        dataPointsReducer(
+          {
+            ...initialState,
+            meta: [
+              { enabled: false, id: 1, valid: true },
+              { enabled: false, id: 2, valid: true },
+            ],
+          },
+          { type: 'rowEnabledToggled', payload }
+        )
+      ).toEqual({
+        ...initialState,
+        meta: [
+          { enabled: false, id: 1, valid: true },
+          { enabled: true, id: 2, valid: true },
+        ],
+        changed: true,
+      })
     })
   })
 })
