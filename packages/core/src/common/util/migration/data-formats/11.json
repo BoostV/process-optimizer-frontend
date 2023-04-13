@@ -2,7 +2,7 @@
   "id": "1234",
   "changedSinceLastEvaluation": true,
   "info": {
-    "dataFormatVersion": "10",
+    "dataFormatVersion": "11",
     "swVersion": "v1.2.0-16",
     "name": "Cake",
     "description": "Yummy"

@@ -2,9 +2,6 @@ import { ExperimentType } from '@core/common'
 import { emptyExperiment } from './store'
 import { validationReducer } from './validation-reducer'
 
-// TODO: Update tests after adding 'valid' to data points
-// TODO: Is 'valid' added correctly in meta type? Json migration needed?
-
 const exp: ExperimentType = {
   ...emptyExperiment,
   dataPoints: [

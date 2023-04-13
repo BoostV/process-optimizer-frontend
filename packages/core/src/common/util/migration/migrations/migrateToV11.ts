@@ -1,10 +1,10 @@
 import { DataEntry, ExperimentType } from '@core/common/types'
 import { DataEntryV9, ExperimentTypeV9 } from './migrateToV9'
 
-export const migrateToV10 = (json: ExperimentTypeV9): ExperimentType => {
+export const migrateToV11 = (json: ExperimentTypeV9): ExperimentType => {
   return {
     ...json,
-    info: { ...json.info, dataFormatVersion: '10' },
+    info: { ...json.info, dataFormatVersion: '11' },
     dataPoints: migrateDataPoints(json.dataPoints),
   }
 }
