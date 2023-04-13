@@ -5,7 +5,7 @@ import {
   DataEntry,
   ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
-import produce from 'immer'
+import { produce } from 'immer'
 import { assertUnreachable } from '@boostv/process-optimizer-frontend-core'
 
 interface EditRow {
