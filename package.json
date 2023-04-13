@@ -31,7 +31,7 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
-    "@boostv/process-optimizer-frontend-eslint-config": "1.0.0",
+    "@boostv/eslint-config": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "eslint": "^8.33.0",
