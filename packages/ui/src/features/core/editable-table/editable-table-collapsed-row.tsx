@@ -6,6 +6,7 @@ import {
   TableRow,
   Tooltip,
   Box,
+  Checkbox,
 } from '@mui/material'
 import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
@@ -15,9 +16,9 @@ interface EditableTableCollapsedRowProps {
   colSpan: number
   rowId: number
   tableRow: TableDataRow
-  disabled?: boolean
   setExpanded: (expanded: boolean) => void
   onDelete: () => void
+  onEnabledToggled: (enabled: boolean) => void
   isEditingDisabled?: boolean
 }
 
@@ -25,12 +26,13 @@ export const EditableTableCollapsedRow = ({
   colSpan,
   rowId,
   tableRow,
-  disabled = false,
   setExpanded,
   onDelete,
+  onEnabledToggled,
   isEditingDisabled,
 }: EditableTableCollapsedRowProps) => {
   const { classes } = useStyles()
+  const disabled = tableRow.disabled || !tableRow.valid
 
   return (
     <TableRow className={tableRow.isNew ? classes.rowNew : classes.row}>
@@ -100,6 +102,20 @@ export const EditableTableCollapsedRow = ({
                 >
                   <Delete fontSize="small" color="primary" />
                 </IconButton>
+              </Tooltip>
+              <Tooltip title="Disable/enable">
+                <span>
+                  <Checkbox
+                    checked={!disabled}
+                    disabled={!tableRow.valid || isEditingDisabled}
+                    onChange={(_, checked) => onEnabledToggled(checked)}
+                    inputProps={{
+                      'aria-label': 'Enable/disable',
+                    }}
+                    size="small"
+                    color="primary"
+                  />
+                </span>
               </Tooltip>
             </div>
           </TableCell>
