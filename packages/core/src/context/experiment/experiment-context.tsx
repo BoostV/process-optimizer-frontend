@@ -62,7 +62,7 @@ export function ManagedExperimentProvider({
 
   const [loading, setLoading] = React.useState(false)
 
-  const getValue = (callback: (state: State) => any) => callback(state)
+  const getValue = (callback: (state: State) => unknown) => callback(state)
 
   const value = {
     state,
@@ -103,6 +103,22 @@ export const useSelector = <T,>(selector: (state: State) => T) => {
     throw new Error('useSelector must be used within an ExperimentProvider')
   }
   return selector(context.state)
+}
+export const useAutoEvaluate = () => {
+  const {
+    state: {
+      experiment: { changedSinceLastEvaluation },
+    },
+    evaluate,
+    loading,
+  } = useExperiment()
+
+  React.useEffect(() => {
+    if (changedSinceLastEvaluation && !loading) {
+      console.log('%cAuto updating', 'color:blue')
+      evaluate()
+    }
+  }, [changedSinceLastEvaluation, evaluate, loading])
 }
 
 async function runExperiment(

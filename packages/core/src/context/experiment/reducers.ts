@@ -25,7 +25,7 @@ export const rootReducer = (state: State, action: Action) => {
     case 'registerResult':
     case 'updateDataPoints':
     case 'copySuggestedToDataPoints':
-    case 'experiment/toggleMultiObjective':
+    case 'experiment/toggleMultiObjective': {
       const experiment = experimentReducer(state.experiment, action)
       const validationViolations: ValidationViolations =
         validateExperiment(experiment)
@@ -33,6 +33,7 @@ export const rootReducer = (state: State, action: Action) => {
         ...state,
         experiment: validationReducer(experiment, validationViolations),
       }
+    }
     default:
       assertUnreachable(action)
   }

@@ -6,6 +6,7 @@ import {
   ManagedExperimentProvider,
   rootReducer,
   useExperiment,
+  useAutoEvaluate,
 } from '../context'
 import React, { useReducer, useState } from 'react'
 import ReactDOM from 'react-dom/client'
@@ -15,9 +16,12 @@ import catapult from '../sample-data/catapult.json'
 import large from '../sample-data/large.json'
 
 const ExperimentDemo = () => {
+  useAutoEvaluate()
   const {
     state: { experiment },
     dispatch,
+    loading,
+    evaluate,
   } = useExperiment()
 
   const handleChange = (value: string) => {
@@ -34,6 +38,7 @@ const ExperimentDemo = () => {
   return (
     <>
       <h1>Experiment</h1>
+      <button onClick={() => evaluate()}>Evaluate</button>
       <label>
         Name:
         <textarea
@@ -48,9 +53,16 @@ const ExperimentDemo = () => {
           onChange={e => handleVariableChange(e.target.value)}
         />
       </label>
-      <pre>
-        {JSON.stringify(experiment.changedSinceLastEvaluation, undefined, 2)}
-      </pre>
+      <br />
+      <label>
+        Loading: <pre>{JSON.stringify(loading, undefined, 2)}</pre>
+      </label>
+      <label>
+        Changed since last evaluation:
+        <pre>
+          {JSON.stringify(experiment.changedSinceLastEvaluation, undefined, 2)}
+        </pre>
+      </label>
       <pre>{JSON.stringify(experiment.valueVariables, undefined, 2)}</pre>
     </>
   )
@@ -106,7 +118,7 @@ const ExperimentManager = () => {
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ApiProvider>
+    <ApiProvider config={{ apiKey: 'none' }}>
       <ExperimentManager />
     </ApiProvider>
   </React.StrictMode>
