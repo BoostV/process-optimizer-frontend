@@ -174,7 +174,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 1
       },
       "data": [
@@ -203,7 +202,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 2
       },
       "data": [
@@ -232,7 +230,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 3
       },
       "data": [
@@ -261,7 +258,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 4
       },
       "data": [
@@ -290,7 +286,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 5
       },
       "data": [
@@ -319,7 +314,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 6
       },
       "data": [
@@ -348,7 +342,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 7
       },
       "data": [
@@ -377,7 +370,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 8
       },
       "data": [
@@ -406,7 +398,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 9
       },
       "data": [
@@ -435,7 +426,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 10
       },
       "data": [
@@ -464,7 +454,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 11
       },
       "data": [
@@ -493,7 +482,6 @@
     {
       "meta": {
         "enabled": true,
-        "valid": true,
         "id": 12
       },
       "data": [
