@@ -27,6 +27,7 @@ export default defineConfig({
         'react-dom',
         'react-hook-form',
         'immer',
+        'md5',
         'compare-versions',
         '@boostv/process-optimizer-frontend-api',
       ],
@@ -35,6 +36,7 @@ export default defineConfig({
           react: 'React',
           'compare-versions': 'compareVersions',
           immer: 'produce',
+          md5: 'md5',
           '@boostv/process-optimizer-frontend-api':
             'processOptimizerFrontendApi',
         },
