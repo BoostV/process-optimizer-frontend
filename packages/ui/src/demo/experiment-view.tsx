@@ -5,6 +5,7 @@ import {
   useExperiment,
   useSelector,
   DataEntry,
+  migrate,
 } from '@boostv/process-optimizer-frontend-core'
 
 import catapult from '@ui/testing/sample-data/catapult.json'
@@ -12,7 +13,6 @@ import cake from '@ui/testing/sample-data/cake.json'
 import { DataPoints, ExperimentationGuide, Plots } from '..'
 import { OptimizerConfigurator } from '../features/experiment'
 import { InputModel } from '../features/input-model'
-import { migrate } from '@ui/../../core/dist'
 
 const Experiment = () => {
   const {
