@@ -7,6 +7,7 @@ import {
   ValueVariableType,
 } from '@core/common/types'
 import { produce } from 'immer'
+import md5 from 'md5'
 import { versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
 import { selectNextValues } from './experiment-selectors'
@@ -91,7 +92,6 @@ export type ExperimentAction =
 
 export const experimentReducer = produce(
   (state: ExperimentType, action: ExperimentAction): void | ExperimentType => {
-    const requestParametersBefore = createFetchExperimentResultRequest(state)
     switch (action.type) {
       case 'setSwVersion':
         state.info.swVersion = action.payload
@@ -191,6 +191,9 @@ export const experimentReducer = produce(
         state.optimizerConfig = action.payload
         break
       case 'registerResult':
+        state.lastEvaluationHash = md5(
+          JSON.stringify(createFetchExperimentResultRequest(state))
+        )
         state.results = action.payload
         break
       case 'updateDataPoints':
@@ -237,9 +240,8 @@ export const experimentReducer = produce(
       default:
         assertUnreachable(action)
     }
-    const requestParametersAfter = createFetchExperimentResultRequest(state)
     state.changedSinceLastEvaluation =
-      JSON.stringify(requestParametersBefore) !==
-      JSON.stringify(requestParametersAfter)
+      state.lastEvaluationHash !==
+      md5(JSON.stringify(createFetchExperimentResultRequest(state)))
   }
 )

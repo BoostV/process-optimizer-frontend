@@ -76,6 +76,7 @@ const dataEntrySchema = z.object({
 
 export const experimentSchema = z.object({
   id: z.string(),
+  lastEvaluationHash: z.string().optional(),
   changedSinceLastEvaluation: z.boolean(),
   info: infoSchema,
   extras: z.record(z.unknown()),
