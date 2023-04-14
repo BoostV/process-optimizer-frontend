@@ -4,31 +4,36 @@ import useStyles from './edit-controls.style'
 import { Edit, Delete } from '@mui/icons-material'
 
 type Props = {
-  isDisabled: boolean
+  isAddRemoveDisabled: boolean
   onEdit: () => void
   onDelete: () => void
 }
 
-export const EditControls: FC<Props> = ({ isDisabled, onEdit, onDelete }) => {
+export const EditControls: FC<Props> = ({
+  isAddRemoveDisabled,
+  onEdit,
+  onDelete,
+}) => {
   const { classes } = useStyles()
 
   return (
     <Box className={classes.editIconsContainer}>
       <Tooltip title="Edit">
         <span>
-          <IconButton size="small" disabled={isDisabled} onClick={onEdit}>
-            <Edit
-              color={isDisabled ? 'disabled' : 'primary'}
-              fontSize="small"
-            />
+          <IconButton size="small" onClick={onEdit}>
+            <Edit color={'primary'} fontSize="small" />
           </IconButton>
         </span>
       </Tooltip>
       <Tooltip title="Delete">
         <span>
-          <IconButton size="small" disabled={isDisabled} onClick={onDelete}>
+          <IconButton
+            size="small"
+            disabled={isAddRemoveDisabled}
+            onClick={onDelete}
+          >
             <Delete
-              color={isDisabled ? 'disabled' : 'primary'}
+              color={isAddRemoveDisabled ? 'disabled' : 'primary'}
               fontSize="small"
             />
           </IconButton>
