@@ -120,6 +120,7 @@ export const experimentReducer = produce(
           .map((n, k) => ({
             meta: {
               enabled: false,
+              valid: true,
               id:
                 state.dataPoints.length === 0
                   ? k + 1

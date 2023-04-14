@@ -1,0 +1,85 @@
+{
+  "id": "1234",
+  "changedSinceLastEvaluation": true,
+  "info": {
+    "dataFormatVersion": "11",
+    "swVersion": "v1.2.0-16",
+    "name": "Cake",
+    "description": "Yummy"
+  },
+  "categoricalVariables": [
+    {
+      "name": "Icing",
+      "description": "Sugary",
+      "options": ["White", "Brown"]
+    }
+  ],
+  "valueVariables": [
+    {
+      "name": "name1",
+      "description": "desc1",
+      "min": 10,
+      "max": 100,
+      "type": "discrete"
+    },
+    {
+      "name": "name2",
+      "description": "desc2",
+      "min": 10.2,
+      "max": 100.3,
+      "type": "continuous"
+    }
+  ],
+  "scoreVariables": [
+    {
+      "name": "score",
+      "description": "score",
+      "enabled": true
+    }
+  ],
+  "optimizerConfig": {
+    "baseEstimator": "GP",
+    "acqFunc": "EI",
+    "initialPoints": 3,
+    "kappa": 1.96,
+    "xi": 0.01
+  },
+  "results": {
+    "id": "",
+    "next": [[]],
+    "plots": [],
+    "pickled": "",
+    "expectedMinimum": [],
+    "extras": {}
+  },
+  "dataPoints": [
+    {
+      "meta": {
+        "enabled": true,
+        "valid": true,
+        "id": 1
+      },
+      "data": [
+        {
+          "name": "Icing",
+          "value": "Brown"
+        },
+        {
+          "name": "name1",
+          "value": "10"
+        },
+        {
+          "name": "name2",
+          "value": "10.2"
+        },
+        {
+          "name": "score",
+          "value": "0.5"
+        }
+      ]
+    }
+  ],
+  "extras": {
+    "experimentSuggestionCount": 1
+  }
+}

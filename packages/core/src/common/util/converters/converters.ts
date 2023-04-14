@@ -53,7 +53,7 @@ export const calculateData = (
     .filter(it => it.enabled)
     .map(it => it.name)
   return dataPoints
-    .filter(dp => dp.meta.enabled)
+    .filter(dp => dp.meta.enabled && dp.meta.valid)
     .map(dp => dp.data)
     .map(
       (run): ExperimentData => ({
@@ -233,6 +233,10 @@ const convertToMetaData = (
     enabled:
       'enabled' in parsedMeta
         ? parsedMeta['enabled']?.toLowerCase() === 'true'
+        : true,
+    valid:
+      'valid' in parsedMeta
+        ? parsedMeta['valid']?.toLowerCase() === 'true'
         : true,
     id: 'id' in parsedMeta ? Number(parsedMeta['id'] ?? idx + 1) : idx + 1,
   }

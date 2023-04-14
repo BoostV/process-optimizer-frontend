@@ -69,6 +69,7 @@ describe('experiment reducer', () => {
         {
           meta: {
             enabled: true,
+            valid: true,
             id: 1,
           },
           data: [
@@ -660,7 +661,7 @@ describe('experiment reducer', () => {
 
 const createDataPoints = (count: number): DataEntry[] =>
   [...Array(count)].map((_id, idx) => ({
-    meta: { enabled: true, id: idx + 1 },
+    meta: { enabled: true, id: idx + 1, valid: true },
     data: [
       {
         name: 'New point 1',

@@ -26,9 +26,9 @@ describe('Experiment selectors', () => {
 
     it('should return false if dataPoints.length >= number of points', () => {
       state.experiment.dataPoints = [
-        { data: [], meta: { enabled: true, id: 1 } },
-        { data: [], meta: { enabled: true, id: 2 } },
-        { data: [], meta: { enabled: true, id: 3 } },
+        { data: [], meta: { enabled: true, id: 1, valid: true } },
+        { data: [], meta: { enabled: true, id: 2, valid: true } },
+        { data: [], meta: { enabled: true, id: 3, valid: true } },
       ]
       state.experiment.optimizerConfig.initialPoints = 3
       expect(selectIsInitializing(state)).toBeFalsy()

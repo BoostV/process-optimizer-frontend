@@ -29,7 +29,10 @@ describe('converters', () => {
       { name: 'Kunde', value: 'Ræv' },
       { name: 'score', value: 0.2 },
     ],
-  ].map((data, idx) => ({ meta: { enabled: true, id: idx + 1 }, data }))
+  ].map((data, idx) => ({
+    meta: { enabled: true, id: idx + 1, valid: true },
+    data,
+  }))
   const sampleMultiObjectiveDataPoints: DataEntry[] = [
     [
       { name: 'Sukker', value: 23 },
@@ -47,7 +50,10 @@ describe('converters', () => {
       { name: 'score', value: 0.2 },
       { name: 'score2', value: 0.4 },
     ],
-  ].map((data, idx) => ({ meta: { enabled: true, id: idx + 1 }, data }))
+  ].map((data, idx) => ({
+    meta: { enabled: true, id: idx + 1, valid: true },
+    data,
+  }))
   const sampleExperiment: ExperimentType = {
     ...initialState.experiment,
     id: '123',
@@ -156,7 +162,24 @@ describe('converters', () => {
         sampleExperiment.valueVariables,
         sampleExperiment.scoreVariables,
         sampleDataPoints.concat({
-          meta: { enabled: false, id: sampleDataPoints.length },
+          meta: { enabled: false, id: sampleDataPoints.length, valid: true },
+          data: sampleDataPoints[0]?.data ?? [],
+        })
+      )
+      expect(actualData).toEqual(expectedData)
+    })
+
+    it('should skip invalid data entries', () => {
+      const expectedData = [
+        { xi: [23, 982, 632, 'Mus'], yi: [0.1] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [0.2] },
+      ]
+      const actualData = calculateData(
+        sampleExperiment.categoricalVariables,
+        sampleExperiment.valueVariables,
+        sampleExperiment.scoreVariables,
+        sampleDataPoints.concat({
+          meta: { enabled: true, id: sampleDataPoints.length, valid: false },
           data: sampleDataPoints[0]?.data ?? [],
         })
       )
@@ -212,6 +235,7 @@ describe('converters', () => {
           meta: {
             enabled: true,
             id: 1,
+            valid: true,
           },
           data: [
             {
@@ -240,6 +264,7 @@ describe('converters', () => {
           meta: {
             enabled: false,
             id: 3,
+            valid: true,
           },
           data: [
             {
@@ -266,7 +291,7 @@ describe('converters', () => {
         },
       ]
       const expected =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n1;28;982;632;Mus;1;true\n3;15;986;5;Mus;2;false'
+        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;982;632;Mus;1;true;true\n3;15;986;5;Mus;2;false;true'
       const actual = dataPointsToCSV(input)
       expect(actual).toEqual(expected)
     })
@@ -277,6 +302,7 @@ describe('converters', () => {
           meta: {
             enabled: true,
             id: 3,
+            valid: true,
           },
           data: [
             {
@@ -293,6 +319,7 @@ describe('converters', () => {
           meta: {
             enabled: true,
             id: 1,
+            valid: true,
           },
           data: [
             {
@@ -309,6 +336,7 @@ describe('converters', () => {
           meta: {
             enabled: true,
             id: 2,
+            valid: true,
           },
           data: [
             {
@@ -323,7 +351,7 @@ describe('converters', () => {
         },
       ]
       const expected =
-        'id;Sukker;score;enabled\n3;282;2;true\n1;280;0;true\n2;281;1;true'
+        'id;Sukker;score;enabled;valid\n3;282;2;true;true\n1;280;0;true;true\n2;281;1;true;true'
       const actual = dataPointsToCSV(input)
       expect(actual).toEqual(expected)
     })
@@ -366,7 +394,7 @@ describe('converters', () => {
 
     const sampleDataPoints: DataEntry[] = [
       {
-        meta: { enabled: true, id: 1 },
+        meta: { enabled: true, id: 1, valid: true },
         data: [
           {
             name: 'Sukker',
@@ -391,7 +419,7 @@ describe('converters', () => {
         ],
       },
       {
-        meta: { enabled: false, id: 2 },
+        meta: { enabled: false, id: 2, valid: true },
         data: [
           {
             name: 'Sukker',
@@ -426,7 +454,7 @@ describe('converters', () => {
 
     it('should convert known value', () => {
       const input =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n1;28;982;632;Mus;1;true\n2;15;986;5;Mus;2;false'
+        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;982;632;Mus;1;true;true\n2;15;986;5;Mus;2;false;true'
       const expected = sampleDataPoints
       const actual = csvToDataPoints(
         input,
@@ -439,11 +467,11 @@ describe('converters', () => {
 
     it('should interpret enabled field as case insensitive', () => {
       const inputWithLowerCase =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n1;28;982;632;Mus;1;true\n2;15;986;5;Mus;2;false'
+        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;982;632;Mus;1;true\n2;15;986;5;Mus;2;false;true'
       const inputWithUpperCase =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n1;28;982;632;Mus;1;TRUE\n2;15;986;5;Mus;2;FALSE'
+        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;982;632;Mus;1;TRUE\n2;15;986;5;Mus;2;FALSE;true'
       const inputWithMixedCase =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n1;28;982;632;Mus;1;True\n2;15;986;5;Mus;2;False'
+        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;982;632;Mus;1;True\n2;15;986;5;Mus;2;False;true'
       const expected = sampleDataPoints
       const actual = [
         inputWithLowerCase,
@@ -497,7 +525,7 @@ describe('converters', () => {
         'Sukker;Peber;Hvedemel;Kunde;score\n28;982;632;Mus;1\n15;986;5;Mus;2'
       const expected = sampleDataPoints.map((dp, idx) => ({
         ...dp,
-        meta: { enabled: true, id: idx + 1 },
+        meta: { enabled: true, id: idx + 1, valid: true },
       }))
       const actual = csvToDataPoints(
         input,
@@ -548,7 +576,7 @@ describe('converters', () => {
 
     it('should add extra headers to meta', () => {
       const input =
-        'Sukker;Peber;Hvedemel;Halm;Kunde;score;enabled\n28;982;632;008;Mus;1;true\n15;986;5;008;Mus;2;false'
+        'Sukker;Peber;Hvedemel;Halm;Kunde;score;enabled;valid\n28;982;632;008;Mus;1;true;true\n15;986;5;008;Mus;2;false;true'
       const expected = sampleDataPoints.map(d => ({
         ...d,
         meta: { ...d.meta, halm: '008' },
@@ -564,7 +592,7 @@ describe('converters', () => {
 
     it('should parse optional meta data field (description)', () => {
       const input =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;description\n1;28;982;632;Mus;1;true;I am a description\n2;15;986;5;Mus;2;false;I am also a description'
+        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid;description\n1;28;982;632;Mus;1;true;true;I am a description\n2;15;986;5;Mus;2;false;true;I am also a description'
       const actual = csvToDataPoints(
         input,
         valueVariables,

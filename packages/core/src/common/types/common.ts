@@ -3,7 +3,7 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '10'
+export const currentVersion = '11'
 
 const infoSchema = z.object({
   name: z.string(),
@@ -52,6 +52,7 @@ const optimizerSchema = z.object({
 const dataEntryMetaDataSchema = z.object({
   id: z.coerce.number().default(0),
   enabled: z.coerce.boolean().default(true),
+  valid: z.coerce.boolean().default(true),
   description: z.optional(z.string()),
 })
 
