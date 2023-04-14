@@ -206,7 +206,7 @@ const buildRows = (
       return {
         isNew: false,
         dataPoints: vars.concat(scores),
-        disabled: !item.meta.enabled,
+        enabled: item.meta.enabled,
         valid: item.meta.valid ?? true,
         metaId: item?.meta.id,
         // Uncomment the following line to display a meta data property in the table

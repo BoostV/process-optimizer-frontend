@@ -169,6 +169,23 @@ describe('converters', () => {
       expect(actualData).toEqual(expectedData)
     })
 
+    it('should skip invalid data entries', () => {
+      const expectedData = [
+        { xi: [23, 982, 632, 'Mus'], yi: [0.1] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [0.2] },
+      ]
+      const actualData = calculateData(
+        sampleExperiment.categoricalVariables,
+        sampleExperiment.valueVariables,
+        sampleExperiment.scoreVariables,
+        sampleDataPoints.concat({
+          meta: { enabled: true, id: sampleDataPoints.length, valid: false },
+          data: sampleDataPoints[0]?.data ?? [],
+        })
+      )
+      expect(actualData).toEqual(expectedData)
+    })
+
     it('should include enabled score values', () => {
       const expectedData = [
         { xi: [23, 982, 632, 'Mus'], yi: [0.1, 0.3] },

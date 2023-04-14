@@ -35,7 +35,7 @@ const exp: ExperimentType = {
 }
 
 describe('validationReducer', () => {
-  it('should not disable data points with no violations', () => {
+  it('should not invalidate data points with no violations', () => {
     const validatedExperiment = validationReducer(exp, {
       dataPointsUndefined: [],
       duplicateVariableNames: [],
@@ -44,11 +44,11 @@ describe('validationReducer', () => {
       duplicateDataPointIds: [],
       dataPointsNotNumber: [],
     })
-    expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeTruthy()
-    expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeTruthy()
+    expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeTruthy()
+    expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
   })
 
-  it('should disable data points with undefined properties', () => {
+  it('should invalidate data points with undefined properties', () => {
     const validatedExperiment = validationReducer(exp, {
       dataPointsUndefined: [1],
       duplicateVariableNames: [],
@@ -57,11 +57,11 @@ describe('validationReducer', () => {
       duplicateDataPointIds: [],
       dataPointsNotNumber: [],
     })
-    expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
-    expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeTruthy()
+    expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
+    expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
   })
 
-  it('should disable data points with lower boundary violations', () => {
+  it('should invalidate data points with lower boundary violations', () => {
     const validatedExperiment = validationReducer(exp, {
       dataPointsUndefined: [],
       duplicateVariableNames: [],
@@ -70,11 +70,11 @@ describe('validationReducer', () => {
       duplicateDataPointIds: [],
       dataPointsNotNumber: [],
     })
-    expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
-    expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeTruthy()
+    expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
+    expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
   })
 
-  it('should disable data points with upper boundary violations', () => {
+  it('should invalidate data points with upper boundary violations', () => {
     const validatedExperiment = validationReducer(exp, {
       dataPointsUndefined: [],
       duplicateVariableNames: [],
@@ -83,11 +83,11 @@ describe('validationReducer', () => {
       duplicateDataPointIds: [],
       dataPointsNotNumber: [],
     })
-    expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
-    expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeTruthy()
+    expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
+    expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
   })
 
-  it('should disable data points with duplicate ids', () => {
+  it('should invalidate data points with duplicate ids', () => {
     const validatedExperiment = validationReducer(
       {
         ...exp,
@@ -129,11 +129,11 @@ describe('validationReducer', () => {
         dataPointsNotNumber: [],
       }
     )
-    expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
-    expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeFalsy()
+    expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
+    expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeFalsy()
   })
 
-  it('should disable all data points when there are duplicate variable names', () => {
+  it('should invalidate all data points when there are duplicate variable names', () => {
     const validatedExperiment = validationReducer(exp, {
       dataPointsUndefined: [],
       duplicateVariableNames: [],
@@ -142,11 +142,11 @@ describe('validationReducer', () => {
       duplicateDataPointIds: [1, 2],
       dataPointsNotNumber: [],
     })
-    expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
-    expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeFalsy()
+    expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
+    expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeFalsy()
   })
 
-  it('should disable data points with non-numeric value variables', () => {
+  it('should invalidate data points with non-numeric value variables', () => {
     const validatedExperiment = validationReducer(exp, {
       dataPointsUndefined: [],
       duplicateVariableNames: [],
@@ -155,7 +155,7 @@ describe('validationReducer', () => {
       duplicateDataPointIds: [],
       dataPointsNotNumber: [1],
     })
-    expect(validatedExperiment.dataPoints[0]?.meta.enabled).toBeFalsy()
-    expect(validatedExperiment.dataPoints[1]?.meta.enabled).toBeTruthy()
+    expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
+    expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
   })
 })

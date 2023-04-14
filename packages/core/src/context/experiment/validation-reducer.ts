@@ -19,7 +19,7 @@ export const validationReducer = produce(
           meta: {
             ...dp.meta,
             valid: isValid,
-            enabled: !isValid ? false : dp.meta.enabled,
+            enabled: dp.meta.enabled,
           },
         }
       }),

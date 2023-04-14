@@ -8,7 +8,7 @@ export type TableDataPoint = {
 export type TableDataRow = {
   dataPoints: TableDataPoint[]
   isNew: boolean
-  disabled?: boolean
+  enabled?: boolean
   valid?: boolean
   metaId?: number
 }

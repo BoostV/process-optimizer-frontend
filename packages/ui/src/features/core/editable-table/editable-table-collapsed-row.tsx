@@ -32,7 +32,7 @@ export const EditableTableCollapsedRow = ({
   isEditingDisabled,
 }: EditableTableCollapsedRowProps) => {
   const { classes } = useStyles()
-  const disabled = tableRow.disabled || !tableRow.valid
+  const rowEnabled = tableRow.enabled && tableRow.valid
 
   return (
     <TableRow className={tableRow.isNew ? classes.rowNew : classes.row}>
@@ -63,7 +63,7 @@ export const EditableTableCollapsedRow = ({
           <TableCell className={classes.emptyCell} />
           <TableCell
             className={classes.cell}
-            style={disabled ? disabledCell : {}}
+            style={rowEnabled ? {} : disabledCell}
           >
             {rowId}
           </TableCell>
@@ -74,7 +74,7 @@ export const EditableTableCollapsedRow = ({
               isEditMode={false}
               options={item.options}
               tooltip={item.tooltip}
-              style={disabled ? disabledCell : {}}
+              style={rowEnabled ? {} : disabledCell}
             />
           ))}
           <TableCell className={classes.editCell}>
@@ -106,8 +106,7 @@ export const EditableTableCollapsedRow = ({
               <Tooltip title="Disable/enable">
                 <span>
                   <Checkbox
-                    checked={!disabled}
-                    disabled={!tableRow.valid || isEditingDisabled}
+                    checked={tableRow.enabled}
                     onChange={(_, checked) => onEnabledToggled(checked)}
                     inputProps={{
                       'aria-label': 'Enable/disable',
