@@ -1,7 +1,6 @@
 import { Box, Stack } from '@mui/system'
 import {
   ExperimentProvider,
-  ExperimentType,
   selectDataPoints,
   useExperiment,
   useSelector,
@@ -13,6 +12,7 @@ import cake from '@ui/testing/sample-data/cake.json'
 import { DataPoints, ExperimentationGuide, Plots } from '..'
 import { OptimizerConfigurator } from '../features/experiment'
 import { InputModel } from '../features/input-model'
+import { migrate } from '@ui/../../core/dist'
 
 const Experiment = () => {
   const {
@@ -23,20 +23,16 @@ const Experiment = () => {
   } = useExperiment()
   const dataPoints = useSelector(selectDataPoints)
 
-  const loadSample = (data: ExperimentType) => {
+  const loadSample = (data: any) => {
     dispatch({
       type: 'updateExperiment',
-      payload: data,
+      payload: migrate(data),
     })
   }
   return (
     <div>
-      <button onClick={() => loadSample(catapult as ExperimentType)}>
-        Load Catapult
-      </button>
-      <button onClick={() => loadSample(cake as ExperimentType)}>
-        Load Cake
-      </button>
+      <button onClick={() => loadSample(catapult)}>Load Catapult</button>
+      <button onClick={() => loadSample(cake)}>Load Cake</button>
       <button disabled={loading} onClick={() => evaluate()}>
         Run experiment
       </button>

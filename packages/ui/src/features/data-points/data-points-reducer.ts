@@ -47,6 +47,13 @@ export type DataPointsAction =
         categoricalVariables: CategoricalVariableType[]
       }
     }
+  | {
+      type: 'rowEnabledToggled'
+      payload: {
+        index: number
+        enabled: boolean
+      }
+    }
 
 export const dataPointsReducer = produce(
   (state: DataPointsState, action: DataPointsAction) => {
@@ -75,6 +82,7 @@ export const dataPointsReducer = produce(
         )
         state.meta.push({
           enabled: true,
+          valid: true,
           id: metaId,
         })
         state.changed = true
@@ -90,6 +98,17 @@ export const dataPointsReducer = produce(
           action.payload.editRow.row
         )
         state.changed = true
+        break
+      case 'rowEnabledToggled':
+        const newMeta: DataEntry['meta'] | undefined =
+          state.meta[action.payload.index]
+        if (newMeta !== undefined) {
+          state.meta[action.payload.index] = {
+            ...newMeta,
+            enabled: action.payload.enabled,
+          }
+          state.changed = true
+        }
         break
       default:
         assertUnreachable(action)
@@ -187,7 +206,8 @@ const buildRows = (
       return {
         isNew: false,
         dataPoints: vars.concat(scores),
-        disabled: !item.meta.enabled,
+        enabled: item.meta.enabled,
+        valid: item.meta.valid ?? true,
         metaId: item?.meta.id,
         // Uncomment the following line to display a meta data property in the table
         // .concat([{ name: 'id', value: `${item.meta.id}` }]),

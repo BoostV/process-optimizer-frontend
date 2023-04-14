@@ -121,6 +121,15 @@ export function DataPoints(props: DataPointProps) {
       },
     })
 
+  const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
+    dispatch({
+      type: 'rowEnabledToggled',
+      payload: {
+        index: rowIndex,
+        enabled,
+      },
+    })
+
   useEffect(() => {
     dispatch({
       type: 'setInitialState',
@@ -233,6 +242,9 @@ export function DataPoints(props: DataPointProps) {
               violations={violationsInTable}
               order={newestFirst ? 'ascending' : 'descending'}
               isEditingDisabled={isDuplicateVariableNames}
+              onRowEnabledToggled={(index, enabled) =>
+                rowEnabledToggled(index, enabled)
+              }
             />
           </Box>
         )}
