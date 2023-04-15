@@ -10,6 +10,6 @@ export const migrateToV11 = (json: ExperimentType): ExperimentType => {
 
 const migrateDataPoints = (dataPoints: DataEntry[]): DataEntry[] =>
   dataPoints.map((dp, idx) => ({
-    meta: { enabled: true, id: idx + 1, valid: true },
+    meta: { ...dp.meta, enabled: true, id: idx + 1, valid: true },
     data: dp.data,
   }))

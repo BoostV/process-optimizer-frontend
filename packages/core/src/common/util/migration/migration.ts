@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ExperimentType, isExperiment } from '@core/common/types'
 
 import compareVersions from 'compare-versions'

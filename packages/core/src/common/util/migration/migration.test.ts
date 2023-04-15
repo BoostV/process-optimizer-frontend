@@ -1,3 +1,5 @@
+import zodToJsonSchema from 'zod-to-json-schema'
+import { JSONSchemaFaker } from 'json-schema-faker'
 import { migrate, _migrate, MIGRATIONS } from './migration'
 import version11 from './data-formats/11.json'
 import version3 from './data-formats/3.json'
@@ -10,6 +12,7 @@ import large from '@core/sample-data/large.json'
 import fs from 'fs'
 import { emptyExperiment } from '@core/context/experiment'
 import { formatNext } from './migrations/migrateToV9'
+import { currentVersion, experimentSchema } from '@core/common/types'
 
 const fileVersions: number[] = fs
   .readdirSync('./src/common/util/migration/data-formats')
@@ -26,6 +29,49 @@ const loadNamedJson = (version: number) => {
 }
 
 const loadLatestJson = () => loadNamedJson(latestVersion)
+
+const storeLatestSchema = () => {
+  const jsonSchema = zodToJsonSchema(
+    experimentSchema,
+    `experiment-v${currentVersion}`
+  )
+  fs.writeFileSync(
+    `src/common/util/migration/schemas/${currentVersion}.json`,
+    JSON.stringify(jsonSchema, undefined, 2)
+  )
+}
+
+storeLatestSchema()
+
+const schemas = Object.fromEntries(
+  fs
+    .readdirSync('src/common/util/migration/schemas')
+    .filter(f => f.endsWith('.json'))
+    .map(
+      f =>
+        [
+          f,
+          fs.readFileSync(`src/common/util/migration/schemas/${f}`, {
+            encoding: 'utf-8',
+            flag: 'r',
+          }),
+        ] as const
+    )
+    .map(x => [parseInt(x[0].replace(/[^0-9]/, '')), JSON.parse(x[1])])
+)
+
+describe.each(Array(100).fill(null))('Automatic schema testing run %i', () => {
+  it.each(Object.keys(schemas))(
+    `should migrate %i to ${latestVersion} from faker data`,
+    async idx => {
+      // TODO investigate why JSONSchemaFaker generates datapoints[].meta = undefined. It treats the meta field as optional (schema 11)
+      JSONSchemaFaker.option({ alwaysFakeOptionals: true })
+      const sample = JSONSchemaFaker.generate(schemas[idx])
+      const migrated = _migrate(sample)
+      expect(experimentSchema.parse(migrated))
+    }
+  )
+})
 
 describe('migration', () => {
   describe('migrate', () => {
@@ -123,7 +169,7 @@ describe('migration', () => {
   })
 
   describe('experiment properties', () => {
-    //TODO: More/better tests
+    //TODO: More/better tests - maybe this can be mabe obsolete by schema testing
     it('newest data format json should match default empty experiment', () => {
       expect(Object.keys(emptyExperiment).length).toBe(
         Object.keys(version11).length
