@@ -4,7 +4,7 @@ import { ExperimentType } from '@core/common/types'
 
 export const emptyExperiment: ExperimentType = {
   id: '',
-  changedSinceLastEvaluation: false,
+  changedSinceLastEvaluation: true,
   info: {
     name: '',
     description: '',

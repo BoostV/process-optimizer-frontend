@@ -11,6 +11,7 @@ import {
 } from '@core/common/types'
 import { emptyExperiment, State } from '@core/context/experiment'
 import { versionInfo } from '@core/common'
+import { expect } from 'vitest'
 
 describe('experiment reducer', () => {
   const initState: State = {
@@ -180,7 +181,6 @@ describe('experiment reducer', () => {
         type: 'updateExperimentDescription',
         payload: 'Tasty',
       }
-
       expect(rootReducer(initState, action)).toEqual({
         experiment: {
           ...initState.experiment,
@@ -190,6 +190,19 @@ describe('experiment reducer', () => {
           },
         },
       })
+    })
+  })
+
+  describe('updateSuggestionCount', () => {
+    it('should change suggestion count', () => {
+      const newState = rootReducer(initState, {
+        type: 'updateSuggestionCount',
+        payload: '42',
+      })
+      expect(newState.experiment.extras).toMatchObject({
+        experimentSuggestionCount: 42,
+      })
+      expect(newState.experiment.changedSinceLastEvaluation).toBeTruthy()
     })
   })
 
@@ -428,10 +441,11 @@ describe('experiment reducer', () => {
         payload: payload,
       }
 
-      expect(rootReducer(initState, action)).toEqual({
+      expect(rootReducer(initState, action)).toMatchObject({
         experiment: {
           ...initState.experiment,
           changedSinceLastEvaluation: false,
+          lastEvaluationHash: expect.stringMatching(/.+/),
           results: payload,
         },
       })

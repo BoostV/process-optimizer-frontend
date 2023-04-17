@@ -7,9 +7,11 @@ import {
   ValueVariableType,
 } from '@core/common/types'
 import { produce } from 'immer'
+import md5 from 'md5'
 import { versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
 import { selectNextValues } from './experiment-selectors'
+import { createFetchExperimentResultRequest } from '@core/context/experiment/api'
 
 const calculateInitialPoints = (state: ExperimentType) =>
   Math.max(
@@ -106,7 +108,6 @@ export const experimentReducer = produce(
         state.info.description = action.payload
         break
       case 'updateSuggestionCount':
-        state.changedSinceLastEvaluation = true
         state.extras.experimentSuggestionCount = Number(action.payload)
         break
       case 'copySuggestedToDataPoints':
@@ -138,10 +139,8 @@ export const experimentReducer = produce(
               ]),
           }))
         state.dataPoints.push(...newEntries)
-        state.changedSinceLastEvaluation = true
         break
       case 'addValueVariable':
-        state.changedSinceLastEvaluation = true
         state.valueVariables.splice(
           state.valueVariables.length,
           0,
@@ -152,11 +151,9 @@ export const experimentReducer = produce(
           state.optimizerConfig.initialPoints
         break
       case 'editValueVariable':
-        state.changedSinceLastEvaluation = true
         state.valueVariables[action.payload.index] = action.payload.variable
         break
       case 'deleteValueVariable': {
-        state.changedSinceLastEvaluation = true
         state.valueVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
@@ -164,7 +161,6 @@ export const experimentReducer = produce(
         break
       }
       case 'addCategorialVariable':
-        state.changedSinceLastEvaluation = true
         state.categoricalVariables.splice(
           state.categoricalVariables.length,
           0,
@@ -175,12 +171,10 @@ export const experimentReducer = produce(
           state.optimizerConfig.initialPoints
         break
       case 'editCategoricalVariable':
-        state.changedSinceLastEvaluation = true
         state.categoricalVariables[action.payload.index] =
           action.payload.variable
         break
       case 'deleteCategorialVariable': {
-        state.changedSinceLastEvaluation = true
         state.categoricalVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
@@ -188,7 +182,6 @@ export const experimentReducer = produce(
         break
       }
       case 'updateConfiguration':
-        state.changedSinceLastEvaluation = true
         if (
           action.payload.initialPoints !==
             state.optimizerConfig.initialPoints &&
@@ -199,7 +192,9 @@ export const experimentReducer = produce(
         state.optimizerConfig = action.payload
         break
       case 'registerResult':
-        state.changedSinceLastEvaluation = false
+        state.lastEvaluationHash = md5(
+          JSON.stringify(createFetchExperimentResultRequest(state))
+        )
         state.results = action.payload
         break
       case 'updateDataPoints':
@@ -217,10 +212,8 @@ export const experimentReducer = produce(
           state.extras.experimentSuggestionCount = 1
         }
         state.dataPoints = action.payload
-        state.changedSinceLastEvaluation = true
         break
       case 'experiment/toggleMultiObjective':
-        state.changedSinceLastEvaluation = true
         state.scoreVariables = state.scoreVariables.map((it, idx) => ({
           ...it,
           enabled: idx < 1 || !it.enabled,
@@ -248,5 +241,8 @@ export const experimentReducer = produce(
       default:
         assertUnreachable(action)
     }
+    state.changedSinceLastEvaluation =
+      state.lastEvaluationHash !==
+      md5(JSON.stringify(createFetchExperimentResultRequest(state)))
   }
 )
