@@ -128,6 +128,7 @@ const LegacyExperiment = () => {
               <Grid container>
                 <Grid item xs={7}>
                   <Tooltip
+                    disableInteractive
                     placement="bottom-start"
                     title={
                       <span style={{ whiteSpace: 'pre-line' }}>
@@ -197,7 +198,7 @@ const LegacyExperiment = () => {
 
                 <Grid item xs={12}>
                   <InputModel
-                    isDisabled={dataPoints.length > 0}
+                    isAddRemoveDisabled={dataPoints.length > 0}
                     valueVariables={valueVariables}
                     categoricalVariables={categoricalVariables}
                     onDeleteValueVariable={(index: number) => {

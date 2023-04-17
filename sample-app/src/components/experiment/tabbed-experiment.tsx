@@ -101,6 +101,7 @@ const TabbedExperiment = () => {
               {experiment.info.name}
             </Typography>
             <Tooltip
+              disableInteractive
               title={
                 <span style={{ whiteSpace: 'pre-line' }}>{tooltipText}</span>
               }
