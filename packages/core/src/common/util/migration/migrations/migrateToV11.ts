@@ -1,6 +1,7 @@
-import { DataEntry, ExperimentType } from '@core/common/types'
+import { DataEntry } from '@core/common/types'
 
-export const migrateToV11 = (json: ExperimentType): ExperimentType => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const migrateToV11 = (json: any): any => {
   return {
     ...json,
     info: { ...json.info, dataFormatVersion: '11' },
