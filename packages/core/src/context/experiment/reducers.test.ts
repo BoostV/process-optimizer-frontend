@@ -504,7 +504,8 @@ describe('experiment reducer', () => {
       }
       const dp = rootReducer(initState, action).experiment.dataPoints
       expect(dp.length).toBe(2)
-      expect(dp[dp.length - 1]?.meta.enabled).toBeFalsy()
+      expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
+      expect(dp[dp.length - 1]?.meta.valid).toBeFalsy()
       expect(dp[dp.length - 1]?.meta.id).toBe(2)
       expect(dp[dp.length - 1]?.data).toEqual([
         {
@@ -528,7 +529,8 @@ describe('experiment reducer', () => {
       const dp = rootReducer(initState, action).experiment.dataPoints
       expect(dp.length).toBe(3)
       //Check second-to-last item
-      expect(dp[dp.length - 2]?.meta.enabled).toBeFalsy()
+      expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
+      expect(dp[dp.length - 1]?.meta.valid).toBeFalsy()
       expect(dp[dp.length - 2]?.meta.id).toBe(2)
       expect(dp[dp.length - 2]?.data).toEqual([
         {
@@ -544,7 +546,8 @@ describe('experiment reducer', () => {
         },
       ])
       //Check last item
-      expect(dp[dp.length - 1]?.meta.enabled).toBeFalsy()
+      expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
+      expect(dp[dp.length - 1]?.meta.valid).toBeFalsy()
       expect(dp[dp.length - 1]?.meta.id).toBe(3)
       expect(dp[dp.length - 1]?.data).toEqual([
         {

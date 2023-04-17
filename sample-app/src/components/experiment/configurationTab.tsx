@@ -50,7 +50,7 @@ export const ConfigurationTab = () => {
 
       <Grid item xs={10} sm={6}>
         <InputModel
-          isDisabled={dataPoints.length > 0}
+          isAddRemoveDisabled={dataPoints.length > 0}
           valueVariables={valueVariables}
           categoricalVariables={categoricalVariables}
           onDeleteValueVariable={(index: number) => {
