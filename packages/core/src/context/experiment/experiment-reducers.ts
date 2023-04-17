@@ -118,8 +118,8 @@ export const experimentReducer = produce(
           .filter((_, i) => action.payload.includes(i))
           .map((n, k) => ({
             meta: {
-              enabled: false,
-              valid: true,
+              enabled: true,
+              valid: false,
               id:
                 state.dataPoints.length === 0
                   ? k + 1
