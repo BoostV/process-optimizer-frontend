@@ -1,5 +1,17 @@
 # @process-optimizer-frontend/core
 
+## 1.5.0
+
+### Minor Changes
+
+- 92517b0: Enable input model editing when data points are present
+
+### Patch Changes
+
+- b83ec77: Enable/disable datapoints
+- 9015ba2: Fix how changedSinceLastEvaluation is calculated
+- 47e76d5: Use Faker.js and JSON schema in migration testing
+
 ## 1.4.2
 
 ### Patch Changes

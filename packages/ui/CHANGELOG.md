@@ -1,5 +1,21 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 1.3.0
+
+### Minor Changes
+
+- 92517b0: Enable input model editing when data points are present
+
+### Patch Changes
+
+- b83ec77: Enable/disable datapoints
+- 9855ae2: Fix tooltip covering buttons
+- Updated dependencies [b83ec77]
+- Updated dependencies [9015ba2]
+- Updated dependencies [92517b0]
+- Updated dependencies [47e76d5]
+  - @boostv/process-optimizer-frontend-core@1.5.0
+
 ## 1.2.0
 
 ### Minor Changes
