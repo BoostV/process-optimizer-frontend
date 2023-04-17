@@ -47,7 +47,10 @@ export const Suggestions = ({
                   ))}
                   {onCopyToDataPoints && (
                     <TableCell>
-                      <Tooltip title="Transfer to data points">
+                      <Tooltip
+                        disableInteractive
+                        title="Transfer to data points"
+                      >
                         <IconButton
                           size="small"
                           onClick={() => onCopyToDataPoints(ir)}

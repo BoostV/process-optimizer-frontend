@@ -72,6 +72,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           Experimentation guide
           <Hidden xlDown>
             <Tooltip
+              disableInteractive
               title={
                 (isUIBig ? 'Collapse' : 'Expand') +
                 " 'Result data' and 'Data points'"

@@ -26,7 +26,10 @@ export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
           <>
             Plots
             <Hidden xlDown>
-              <Tooltip title={(isUIBig ? 'Collapse' : 'Expand') + " 'Plots'"}>
+              <Tooltip
+                disableInteractive
+                title={(isUIBig ? 'Collapse' : 'Expand') + " 'Plots'"}
+              >
                 <IconButton
                   size="small"
                   className={classes.titleButton}

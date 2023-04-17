@@ -22,7 +22,7 @@ import { useState } from 'react'
 import { EditControls } from './edit-controls'
 
 type InputModelProps = {
-  isDisabled: boolean
+  isAddRemoveDisabled: boolean
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   onDeleteValueVariable: (index: number) => void
@@ -42,7 +42,7 @@ type InputModelProps = {
 
 export function InputModel(props: InputModelProps) {
   const {
-    isDisabled,
+    isAddRemoveDisabled,
     valueVariables,
     categoricalVariables,
     onDeleteValueVariable,
@@ -117,11 +117,11 @@ export function InputModel(props: InputModelProps) {
                   <TableRow key={valueIndex}>
                     <TableCell>
                       {valueVar.type === 'discrete' ? (
-                        <Tooltip title="Discrete">
+                        <Tooltip disableInteractive title="Discrete">
                           <Lens className={classes.iconValueType} />
                         </Tooltip>
                       ) : (
-                        <Tooltip title="Continuous">
+                        <Tooltip disableInteractive title="Continuous">
                           <PanoramaFishEye className={classes.iconValueType} />
                         </Tooltip>
                       )}
@@ -134,7 +134,7 @@ export function InputModel(props: InputModelProps) {
                     <TableCell align="right">{valueVar.max}</TableCell>
                     <TableCell align="right">
                       <EditControls
-                        isDisabled={isDisabled}
+                        isAddRemoveDisabled={isAddRemoveDisabled}
                         onEdit={() => {
                           setEditingCategoricalVariable(undefined)
                           setEditingValueVariable({
@@ -182,7 +182,7 @@ export function InputModel(props: InputModelProps) {
                       </TableCell>
                       <TableCell align="right">
                         <EditControls
-                          isDisabled={isDisabled}
+                          isAddRemoveDisabled={isAddRemoveDisabled}
                           onEdit={() => {
                             setEditingValueVariable(undefined)
                             setEditingCategoricalVariable({
@@ -251,7 +251,7 @@ export function InputModel(props: InputModelProps) {
             color="primary"
             size="small"
             onClick={() => setEditorOpen(true)}
-            disabled={isDisabled}
+            disabled={isAddRemoveDisabled}
             startIcon={<Add fontSize="small" />}
           >
             Add variable

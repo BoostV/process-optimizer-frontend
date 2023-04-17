@@ -8,7 +8,7 @@ interface DownloadCSVButtonProps {
 
 const DownloadCSVButton = ({ light, onClick }: DownloadCSVButtonProps) => {
   return (
-    <Tooltip title="Download CSV">
+    <Tooltip disableInteractive title="Download CSV">
       <IconButton size="small" onClick={onClick}>
         <GetApp fontSize="small" style={{ color: light ? 'white' : '' }} />
       </IconButton>

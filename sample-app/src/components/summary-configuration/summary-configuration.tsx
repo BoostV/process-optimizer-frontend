@@ -41,11 +41,11 @@ export const SummaryConfiguration = () => {
                   <TableRow key={idx}>
                     <TableCell>
                       {variable.type === 'discrete' ? (
-                        <Tooltip title="Discrete">
+                        <Tooltip disableInteractive title="Discrete">
                           <Lens className={classes.iconDiscrete} />
                         </Tooltip>
                       ) : (
-                        <Tooltip title="Continuous">
+                        <Tooltip disableInteractive title="Continuous">
                           <PanoramaFishEye className={classes.iconDiscrete} />
                         </Tooltip>
                       )}

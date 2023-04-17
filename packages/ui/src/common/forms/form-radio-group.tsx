@@ -37,7 +37,7 @@ export const FormRadioGroup = ({
         {...rest}
       >
         {values.map((_v, i) => (
-          <Tooltip key={i} title={tooltips[i] ?? ''}>
+          <Tooltip disableInteractive key={i} title={tooltips[i] ?? ''}>
             <FormControlLabel
               value={values[i]}
               control={<Radio />}

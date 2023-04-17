@@ -39,6 +39,7 @@ export const NextExperiments: FC<Props> = ({
         onChange={handleSuggestionChange}
       />
       <Tooltip
+        disableInteractive
         enterDelay={1000}
         arrow={true}
         placement="top-start"
