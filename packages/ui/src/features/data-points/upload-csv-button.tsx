@@ -49,7 +49,7 @@ const UploadCSVButton = ({
   }
 
   return (
-    <Tooltip title="Upload CSV">
+    <Tooltip disableInteractive title="Upload CSV">
       <IconButton component="label" size="small">
         <Publish fontSize="small" style={{ color: light ? 'white' : '' }} />
         <Input

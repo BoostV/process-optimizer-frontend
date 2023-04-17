@@ -61,7 +61,9 @@ export function EditableTableCell({
           ) : (
             <>
               {tooltip !== undefined ? (
-                <Tooltip title={tooltip}>{textField}</Tooltip>
+                <Tooltip disableInteractive title={tooltip}>
+                  {textField}
+                </Tooltip>
               ) : (
                 <>{textField}</>
               )}

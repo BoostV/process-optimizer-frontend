@@ -79,7 +79,7 @@ export const EditableTableCollapsedRow = ({
           ))}
           <TableCell className={classes.editCell}>
             <div className={classes.buttonContainer}>
-              <Tooltip title="Edit">
+              <Tooltip disableInteractive title="Edit">
                 <span>
                   <IconButton
                     size="small"
@@ -94,7 +94,7 @@ export const EditableTableCollapsedRow = ({
                   </IconButton>
                 </span>
               </Tooltip>
-              <Tooltip title="Delete">
+              <Tooltip disableInteractive title="Delete">
                 <IconButton
                   size="small"
                   aria-label="delete"
@@ -103,7 +103,7 @@ export const EditableTableCollapsedRow = ({
                   <Delete fontSize="small" color="primary" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Disable/enable">
+              <Tooltip disableInteractive title="Disable/enable">
                 <span>
                   <Checkbox
                     checked={tableRow.enabled}

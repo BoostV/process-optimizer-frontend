@@ -128,6 +128,7 @@ const LegacyExperiment = () => {
               <Grid container>
                 <Grid item xs={7}>
                   <Tooltip
+                    disableInteractive
                     placement="bottom-start"
                     title={
                       <span style={{ whiteSpace: 'pre-line' }}>

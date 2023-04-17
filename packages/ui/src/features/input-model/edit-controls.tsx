@@ -14,7 +14,7 @@ export const EditControls: FC<Props> = ({ isDisabled, onEdit, onDelete }) => {
 
   return (
     <Box className={classes.editIconsContainer}>
-      <Tooltip title="Edit">
+      <Tooltip disableInteractive title="Edit">
         <span>
           <IconButton size="small" disabled={isDisabled} onClick={onEdit}>
             <Edit
@@ -24,7 +24,7 @@ export const EditControls: FC<Props> = ({ isDisabled, onEdit, onDelete }) => {
           </IconButton>
         </span>
       </Tooltip>
-      <Tooltip title="Delete">
+      <Tooltip disableInteractive title="Delete">
         <span>
           <IconButton size="small" disabled={isDisabled} onClick={onDelete}>
             <Delete

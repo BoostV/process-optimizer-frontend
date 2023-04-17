@@ -117,11 +117,11 @@ export function InputModel(props: InputModelProps) {
                   <TableRow key={valueIndex}>
                     <TableCell>
                       {valueVar.type === 'discrete' ? (
-                        <Tooltip title="Discrete">
+                        <Tooltip disableInteractive title="Discrete">
                           <Lens className={classes.iconValueType} />
                         </Tooltip>
                       ) : (
-                        <Tooltip title="Continuous">
+                        <Tooltip disableInteractive title="Continuous">
                           <PanoramaFishEye className={classes.iconValueType} />
                         </Tooltip>
                       )}

@@ -205,7 +205,7 @@ export function DataPoints(props: DataPointProps) {
                 valueVariables={valueVariables}
                 scoreVariables={scoreVariables}
               />
-              <Tooltip title="Reverse order">
+              <Tooltip disableInteractive title="Reverse order">
                 <IconButton
                   size="small"
                   className={classes.titleButton}
