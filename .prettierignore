@@ -7,3 +7,4 @@
 **/tmp
 **/openapi
 CHANGELOG.md
+**/schemas/*.json

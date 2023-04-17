@@ -1,3 +1,4 @@
+import { JSONSchemaFaker } from 'json-schema-faker'
 import { migrate, _migrate, MIGRATIONS } from './migration'
 import version11 from './data-formats/11.json'
 import version3 from './data-formats/3.json'
@@ -7,55 +8,96 @@ import catapult from '@core/sample-data/catapult.json'
 import badCatapult from '@core/sample-data/bad-catapult.json'
 import badCookie from '@core/sample-data/bad-cookie.json'
 import large from '@core/sample-data/large.json'
-import fs from 'fs'
 import { emptyExperiment } from '@core/context/experiment'
 import { formatNext } from './migrations/migrateToV9'
+import { experimentSchema } from '@core/common/types'
+import { storeLatestSchema, loadTestData } from './test-utils'
 
-const fileVersions: number[] = fs
-  .readdirSync('./src/common/util/migration/data-formats')
-  .map(f => parseInt(f.replace(/[^0-9]/, '')))
-const latestVersion = Math.max(...fileVersions)
+describe('Migration of data format', () => {
+  storeLatestSchema()
 
-const loadNamedJson = (version: number) => {
-  return JSON.parse(
-    fs.readFileSync(`src/common/util/migration/data-formats/${version}.json`, {
-      encoding: 'utf8',
-      flag: 'r',
-    })
+  const latestVersion =
+    experimentSchema.shape.info.shape.dataFormatVersion.value
+
+  const latestVersionNumber = Number(latestVersion)
+
+  const { schemas, loadLatestJson, loadNamedJson } = loadTestData()
+
+  describe.each(Array(100).fill(null))(
+    'Automatic schema testing run %i',
+    () => {
+      it.each(Object.keys(schemas))(
+        `should migrate %i to ${latestVersion} from faker data`,
+        async idx => {
+          // TODO investigate why JSONSchemaFaker generates datapoints[].meta = undefined. It treats the meta field as optional (schema 11)
+          JSONSchemaFaker.option({ alwaysFakeOptionals: true })
+          const sample = JSONSchemaFaker.generate(schemas[idx])
+          const migrated = _migrate(sample)
+          expect(experimentSchema.parse(migrated))
+        }
+      )
+    }
   )
-}
 
-const loadLatestJson = () => loadNamedJson(latestVersion)
-
-describe('migration', () => {
   describe('migrate', () => {
     it('should fail if not migrating to newest version', async () => {
       const latestJson = await loadLatestJson()
       expect(() => migrate(latestJson)).not.toThrowError()
     })
+
+    it('should migrate catapult to newest version', async () => {
+      const actual = migrate({ ...catapult })
+      expect(actual.info.dataFormatVersion).toEqual(latestVersion)
+    })
+
+    it('should migrate bad catapult to newest version', async () => {
+      const actual = migrate({ ...badCatapult })
+      expect(actual.info.dataFormatVersion).toEqual(latestVersion)
+    })
+
+    it('should migrate bad cookie to newest version', async () => {
+      const actual = migrate({ ...badCookie })
+      expect(actual.info.dataFormatVersion).toEqual(latestVersion)
+    })
+
+    it('should migrate large experiment to newest version', async () => {
+      const actual = migrate({ ...large })
+      expect(actual.info.dataFormatVersion).toEqual(latestVersion)
+    })
   })
 
   describe('_migrate', () => {
-    it('should not migrate if version is newer or equal to latest data format json', async () => {
-      const latestJson = await loadLatestJson()
-      const jsonNoMigration = {
-        ...latestJson,
-        info: { ...latestJson.info, dataFormatVersion: '10000' },
+    it.each([
+      latestVersionNumber,
+      latestVersionNumber + 1,
+      latestVersionNumber + 42,
+    ])(
+      'should not migrate if version is newer or equal to latest data format json (version=%i)',
+      async version => {
+        const latestJson = await loadLatestJson()
+        const jsonNoMigration = {
+          ...latestJson,
+          info: {
+            ...latestJson.info,
+            dataFormatVersion: String(version),
+          },
+        }
+        expect(_migrate(jsonNoMigration)).toEqual(jsonNoMigration)
+        expect(_migrate({ ...latestJson })).toEqual({ ...latestJson })
       }
-      expect(_migrate(jsonNoMigration)).toEqual(jsonNoMigration)
-      expect(_migrate({ ...latestJson })).toEqual({ ...latestJson })
-    })
+    )
 
     it(`should migrate from 2 through ${latestVersion}`, () => {
-      for (let index = 2; index < latestVersion; index++) {
+      for (let index = 2; index < latestVersionNumber; index++) {
         const prev = index
         const current = index + 1
-        expect(_migrate(loadNamedJson(prev), `${current}`)).toEqual(
+        expect(_migrate(loadNamedJson(prev), `${current}`)).toMatchObject(
           loadNamedJson(current)
         )
       }
     })
 
+    // Special case
     it('should migrate to 3 from 1 (before versioning and no discrete/continuous)', () => {
       expect(_migrate(version1, '3')).toEqual({
         ...version3,
@@ -79,34 +121,6 @@ describe('migration', () => {
       const actual = _migrate({ ...version2 })
       expect(actual).toEqual(expected)
     })
-
-    it('should migrate catapult to newest version', async () => {
-      const actual = migrate({ ...catapult })
-      expect(actual.info.dataFormatVersion).toEqual(
-        MIGRATIONS.slice(-1)[0]?.version
-      )
-    })
-
-    it('should migrate bad catapult to newest version', async () => {
-      const actual = migrate({ ...badCatapult })
-      expect(actual.info.dataFormatVersion).toEqual(
-        MIGRATIONS.slice(-1)[0]?.version
-      )
-    })
-
-    it('should migrate bad cookie to newest version', async () => {
-      const actual = migrate({ ...badCookie })
-      expect(actual.info.dataFormatVersion).toEqual(
-        MIGRATIONS.slice(-1)[0]?.version
-      )
-    })
-
-    it('should migrate large experiment to newest version', async () => {
-      const actual = migrate({ ...large })
-      expect(actual.info.dataFormatVersion).toEqual(
-        MIGRATIONS.slice(-1)[0]?.version
-      )
-    })
   })
 
   describe('migrateToV9 formatNext', () => {
@@ -123,7 +137,7 @@ describe('migration', () => {
   })
 
   describe('experiment properties', () => {
-    //TODO: More/better tests
+    //TODO: More/better tests - maybe this can be mabe obsolete by schema testing
     it('newest data format json should match default empty experiment', () => {
       expect(Object.keys(emptyExperiment).length).toBe(
         Object.keys(version11).length

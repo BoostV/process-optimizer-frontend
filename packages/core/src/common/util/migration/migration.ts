@@ -1,4 +1,5 @@
-import { ExperimentType, isExperiment } from '@core/common/types'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ExperimentType, experimentSchema } from '@core/common/types'
 
 import compareVersions from 'compare-versions'
 import {
@@ -18,9 +19,11 @@ export const migrate = (json: any): ExperimentType => {
     json,
     MIGRATIONS[MIGRATIONS.length - 1]?.version ?? '0'
   )
-  if (isExperiment(migrated)) {
-    return migrated
+  const parsed = experimentSchema.safeParse(migrated)
+  if (parsed.success) {
+    return parsed.data
   }
+  console.warn(parsed.error)
   throw new Error('Error migrating json to experiment')
 }
 
