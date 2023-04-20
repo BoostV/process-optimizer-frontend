@@ -18,6 +18,7 @@ import {
   ValidationViolations,
 } from '@boostv/process-optimizer-frontend-core'
 import { findDataPointViolations } from './util'
+import { useDatapoints } from './useDatapoints'
 
 type DataPointProps = {
   experimentId: string
@@ -44,33 +45,22 @@ export function DataPoints(props: DataPointProps) {
     violations,
   } = props
   const { classes } = useStyles()
-  const scoreNames = useMemo(
-    () => scoreVariables.filter(it => it.enabled).map(it => it.name),
-    [scoreVariables]
-  )
-
-  const [state, dispatch] = useReducer(
-    dataPointsReducer,
-    dataPointsReducer(
-      {
-        meta: [],
-        rows: [],
-        changed: false,
-      },
-      {
-        type: 'setInitialState',
-        payload: {
-          valueVariables,
-          categoricalVariables,
-          scoreNames,
-          data: dataPoints,
-        },
-      }
-    )
+  const {
+    state,
+    addRow,
+    deleteRow,
+    editRow,
+    setRowIsEnabled,
+    updateDataPoints,
+  } = useDatapoints(
+    valueVariables,
+    categoricalVariables,
+    scoreVariables,
+    dataPoints
   )
 
   const notifyParent = (state: DataPointsState) =>
-    updateDataPoints(state.meta, state.rows)
+    onUpdateDataPoints(updateDataPoints(state.meta, state.rows))
 
   const isLoadingState = state.rows.length === 0
   const isDuplicateVariableNames = useMemo(
@@ -107,94 +97,16 @@ export function DataPoints(props: DataPointProps) {
     [violations]
   )
 
-  const rowAdded = (row: TableDataRow) =>
-    notifyParent(
-      dataPointsReducer(state, {
-        type: 'rowAdded',
-        payload: {
-          row,
-          categoricalVariables,
-        },
-      })
-    )
+  const rowAdded = (row: TableDataRow) => notifyParent(addRow(row))
 
   const rowDeleted = (rowIndex: number) =>
-    notifyParent(
-      dataPointsReducer(state, {
-        type: 'rowDeleted',
-        payload: rowIndex,
-      })
-    )
+    notifyParent(notifyParent(deleteRow(rowIndex)))
 
   const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
-    notifyParent(
-      dataPointsReducer(state, {
-        type: 'rowEnabledToggled',
-        payload: {
-          index: rowIndex,
-          enabled,
-        },
-      })
-    )
-
-  const [prevData, setPrevData] = useState(dataPoints)
-  if (dataPoints !== prevData) {
-    setPrevData(dataPoints)
-    dispatch({
-      type: 'setInitialState',
-      payload: {
-        valueVariables,
-        categoricalVariables,
-        scoreNames,
-        data: dataPoints,
-      },
-    })
-  }
-
-  const convertEditableRowToExperimentRow = (row: TableDataRow | undefined) => {
-    if (row === undefined) {
-      return []
-    }
-    const vars = row.dataPoints.filter(dp => !scoreNames.includes(dp.name))
-    const scores = row.dataPoints
-      .filter(dp => scoreNames.includes(dp.name))
-      .map(s => ({
-        name: s.name,
-        value: s.value,
-      }))
-    return vars
-      .map(dp => ({
-        name: dp.name,
-        value: dp.value,
-      }))
-      .concat(scores) as DataEntry['data']
-  }
-  const updateDataPoints = (
-    meta: DataEntry['meta'][],
-    rows: TableDataRow[]
-  ) => {
-    const zipped = meta.map((m, idx) => [
-      m,
-      convertEditableRowToExperimentRow(rows.filter(e => !e.isNew)[idx]),
-    ])
-    onUpdateDataPoints(
-      zipped.map(e => ({ meta: e[0], data: e[1] })) as DataEntry[]
-    )
-  }
+    notifyParent(setRowIsEnabled(rowIndex, enabled))
 
   const rowEdited = (rowIndex: number, row: TableDataRow) =>
-    notifyParent(
-      dataPointsReducer(state, {
-        type: 'rowEdited',
-        payload: {
-          editRow: {
-            rowIndex,
-            row,
-          },
-          categoricalVariables,
-        },
-      })
-    )
+    notifyParent(editRow(rowIndex, row))
 
   return (
     <TitleCard
