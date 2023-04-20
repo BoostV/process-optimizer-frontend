@@ -1,5 +1,5 @@
 import { TableDataRow } from './types'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { EditableTableExpandedRow } from './editable-table-expanded-row'
 import { EditableTableCollapsedRow } from './editable-table-collapsed-row'
 import { TableOrder } from './editable-table'
@@ -30,10 +30,12 @@ export const EditableTableRow = ({
   isEditingDisabled,
 }: EditableTableRowProps) => {
   const [expanded, setExpanded] = useState(false)
+  const [prevOrder, setPrevOrder] = useState(order)
 
-  useEffect(() => {
+  if (order !== prevOrder) {
+    setPrevOrder(order)
     setExpanded(false)
-  }, [order, setExpanded])
+  }
 
   return (
     <>
