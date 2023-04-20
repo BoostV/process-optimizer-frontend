@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { Warning } from '@mui/icons-material'
+import * as R from 'remeda'
 import useStyles from './editable-table-expanded-row.style'
 import {
   Box,
@@ -11,8 +14,6 @@ import {
 } from '@mui/material'
 import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
-import { useState } from 'react'
-import { Warning } from '@mui/icons-material'
 
 interface EditableTableExpandedRowProps {
   colSpan: number
@@ -41,6 +42,23 @@ export const EditableTableExpandedRow = ({
   } satisfies TableDataRow
   const { classes } = useStyles()
   const [editedRow, setEditedRow] = useState<TableDataRow>({ ...tableRow })
+  const isModified = !R.equals(editedRow, tableRow)
+
+  const handleEdit = (idx: number, value: string) => {
+    setEditedRow({
+      ...editedRow,
+      dataPoints: [
+        ...editedRow.dataPoints.map((d, n) =>
+          n === idx
+            ? {
+                ...d,
+                value,
+              }
+            : d
+        ),
+      ],
+    })
+  }
 
   return (
     <TableRow className={classes.row}>
@@ -79,21 +97,7 @@ export const EditableTableExpandedRow = ({
                         key={'expandedvalues' + i}
                         value={d.value}
                         isEditMode
-                        onChange={(value: string) =>
-                          setEditedRow({
-                            ...editedRow,
-                            dataPoints: [
-                              ...editedRow.dataPoints.map((d, n) =>
-                                n === i
-                                  ? {
-                                      ...d,
-                                      value,
-                                    }
-                                  : d
-                              ),
-                            ],
-                          })
-                        }
+                        onChange={(value: string) => handleEdit(i, value)}
                         options={d.options}
                         style={{
                           fontSize: 14,
@@ -125,6 +129,7 @@ export const EditableTableExpandedRow = ({
               variant="outlined"
               size="small"
               style={{ float: 'right', marginLeft: 8 }}
+              disabled={!isModified}
               onClick={() => {
                 if (tableRow.isNew) {
                   onAdd(editedRow)
