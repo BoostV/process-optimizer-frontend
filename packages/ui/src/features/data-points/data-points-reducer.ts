@@ -1,11 +1,12 @@
-import { TableDataPoint, TableDataRow } from '@ui/features/core/editable-table'
+import * as R from 'remeda'
+import { produce } from 'immer'
+import { TableDataRow } from '@ui/features/core/editable-table'
 import {
   CategoricalVariableType,
   CombinedVariableType,
   DataEntry,
   ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
-import { produce } from 'immer'
 import { assertUnreachable } from '@boostv/process-optimizer-frontend-core'
 
 interface EditRow {
@@ -121,14 +122,14 @@ export const dataPointsReducer = produce(
 const mapRowNumericValues = (
   categoricalVariables: CategoricalVariableType[],
   row: TableDataRow
-): TableDataRow => ({
+) => ({
   ...row,
-  dataPoints: row.dataPoints.map(r =>
-    categoricalVariables.map(c => c.name).includes(r.name)
+  dataPoints: R.map(row.dataPoints, r =>
+    R.map(categoricalVariables, c => c.name).includes(r.name)
       ? r
       : {
           ...r,
-          value: r.value?.replace(',', '.'),
+          value: String(Number(r.value?.replace(',', '.'))),
         }
   ),
 })
@@ -154,17 +155,15 @@ const buildEmptyRow = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
   scoreNames: string[]
-): TableDataRow => {
+) => {
   return {
     dataPoints: buildCombinedVariables(valueVariables, categoricalVariables)
-      .map(variable => {
-        return {
-          name: variable.name,
-          value: variable.options?.[0] ?? '',
-          options: variable.options,
-          tooltip: variable.tooltip,
-        }
-      })
+      .map(variable => ({
+        name: variable.name,
+        value: variable.options?.[0] ?? '',
+        options: variable.options,
+        tooltip: variable.tooltip,
+      }))
       .concat(
         scoreNames.map(s => ({
           name: s,
@@ -182,17 +181,17 @@ const buildRows = (
   categoricalVariables: CategoricalVariableType[],
   scoreNames: string[],
   dataPoints: DataEntry[]
-): TableDataRow[] => {
-  const combinedVariables: CombinedVariableType[] = buildCombinedVariables(
+) => {
+  const combinedVariables = buildCombinedVariables(
     valueVariables,
     categoricalVariables
   )
-  const dataPointRows: TableDataRow[] = dataPoints
-    .map((item): TableDataRow => {
+  const dataPointRows = R.concat(
+    R.map(dataPoints, item => {
       const rowData: DataEntry['data'] = item.data.filter(
         dp => !scoreNames.includes(dp.name)
       )
-      const vars: TableDataPoint[] = new Array(rowData.length)
+      const vars = new Array(rowData.length)
       rowData.forEach(v => {
         const idx = combinedVariables.findIndex(it => it.name === v.name)
         vars[idx] = {
@@ -202,19 +201,22 @@ const buildRows = (
           tooltip: combinedVariables[idx]?.tooltip,
         }
       })
-      const scores: TableDataPoint[] = item.data
-        .filter(dp => scoreNames.includes(dp.name))
-        .map(score => ({ name: score.name, value: score.value as string }))
+      const scores = R.pipe(
+        item.data,
+        R.filter(dp => scoreNames.includes(dp.name)),
+        R.map(score => ({ name: score.name, value: String(score.value) }))
+      )
       return {
         isNew: false,
         dataPoints: vars.concat(scores),
         enabled: item.meta.enabled,
-        valid: item.meta.valid ?? true,
+        valid: item.meta.valid,
         metaId: item?.meta.id,
         // Uncomment the following line to display a meta data property in the table
         // .concat([{ name: 'id', value: `${item.meta.id}` }]),
       }
-    })
-    .concat(buildEmptyRow(valueVariables, categoricalVariables, scoreNames))
+    }),
+    [buildEmptyRow(valueVariables, categoricalVariables, scoreNames)]
+  )
   return dataPointRows
 }
