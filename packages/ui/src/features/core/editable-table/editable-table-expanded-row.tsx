@@ -27,12 +27,18 @@ interface EditableTableExpandedRowProps {
 export const EditableTableExpandedRow = ({
   colSpan,
   rowId,
-  tableRow,
+  tableRow: inputTableRow,
   setExpanded,
   onAdd,
   onSave,
   violations,
 }: EditableTableExpandedRowProps) => {
+  const tableRow = {
+    ...inputTableRow,
+    dataPoints: inputTableRow.dataPoints.filter(
+      dp => dp !== undefined && dp !== null
+    ),
+  } satisfies TableDataRow
   const { classes } = useStyles()
   const [editedRow, setEditedRow] = useState<TableDataRow>({ ...tableRow })
 
