@@ -6,6 +6,7 @@ import {
   useSelector,
   DataEntry,
   migrate,
+  selectIsMultiObjective,
 } from '@boostv/process-optimizer-frontend-core'
 
 import catapult from '@ui/testing/sample-data/catapult.json'
@@ -13,6 +14,7 @@ import cake from '@ui/testing/sample-data/cake.json'
 import { DataPoints, ExperimentationGuide, Plots } from '..'
 import { OptimizerConfigurator } from '../features/experiment'
 import { InputModel } from '../features/input-model'
+import { Switch } from '@mui/material'
 
 const Experiment = () => {
   const {
@@ -22,6 +24,7 @@ const Experiment = () => {
     loading,
   } = useExperiment()
   const dataPoints = useSelector(selectDataPoints)
+  const isMultiObjective = useSelector(selectIsMultiObjective)
 
   const loadSample = (data: any) => {
     dispatch({
@@ -36,6 +39,12 @@ const Experiment = () => {
       <button disabled={loading} onClick={() => evaluate()}>
         Run experiment
       </button>
+      <Switch
+        checked={isMultiObjective}
+        onChange={() => dispatch({ type: 'experiment/toggleMultiObjective' })}
+        name="multiobj"
+        color="secondary"
+      />
       <Box>
         <Stack spacing={2} direction="row">
           <DataPoints
