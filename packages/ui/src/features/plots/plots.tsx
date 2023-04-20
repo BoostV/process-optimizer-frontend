@@ -11,12 +11,16 @@ import { FC } from 'react'
 import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
-  isUIBig: boolean
-  onSizeToggle: () => void
+  isUIBig?: boolean
+  onSizeToggle?: () => void
   experiment: ExperimentType
 }
 
-export const Plots: FC<Props> = ({ isUIBig, onSizeToggle, experiment }) => {
+export const Plots: FC<Props> = ({
+  isUIBig = false,
+  onSizeToggle,
+  experiment,
+}) => {
   const { classes } = useStyles()
 
   return (

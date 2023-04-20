@@ -25,15 +25,17 @@ type InputModelProps = {
   isAddRemoveDisabled: boolean
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
-  onDeleteValueVariable: (index: number) => void
-  onDeleteCategoricalVariable: (index: number) => void
-  addValueVariable: (valueVariable: ValueVariableType) => void
-  editValueVariable: (editValueVariable: {
+  onDeleteValueVariable?: (index: number) => void
+  onDeleteCategoricalVariable?: (index: number) => void
+  addValueVariable?: (valueVariable: ValueVariableType) => void
+  editValueVariable?: (editValueVariable: {
     index: number
     variable: ValueVariableType
   }) => void
-  addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
-  editCategoricalVariable: (editCategoricalVariable: {
+  addCategoricalVariable?: (
+    categoricalVariable: CategoricalVariableType
+  ) => void
+  editCategoricalVariable?: (editCategoricalVariable: {
     index: number
     variable: CategoricalVariableType
   }) => void
@@ -144,7 +146,7 @@ export function InputModel(props: InputModelProps) {
                           setEditorOpen(true)
                         }}
                         onDelete={() => {
-                          onDeleteValueVariable(valueIndex)
+                          onDeleteValueVariable?.(valueIndex)
                           resetEditor()
                         }}
                       />
@@ -192,7 +194,7 @@ export function InputModel(props: InputModelProps) {
                             setEditorOpen(true)
                           }}
                           onDelete={() => {
-                            onDeleteCategoricalVariable(catIndex)
+                            onDeleteCategoricalVariable?.(catIndex)
                             resetEditor()
                           }}
                         />
@@ -213,12 +215,12 @@ export function InputModel(props: InputModelProps) {
             categoricalVariables={categoricalVariables}
             addCategoricalVariable={(
               categoricalVariable: CategoricalVariableType
-            ) => addCategoricalVariable(categoricalVariable)}
+            ) => addCategoricalVariable?.(categoricalVariable)}
             editCategoricalVariable={(
               categoricalVariable: CategoricalVariableType
             ) => {
               if (editingCategoricalVariable !== undefined) {
-                editCategoricalVariable({
+                editCategoricalVariable?.({
                   index: editingCategoricalVariable.index,
                   variable: categoricalVariable,
                 })
@@ -226,11 +228,11 @@ export function InputModel(props: InputModelProps) {
               }
             }}
             addValueVariable={(valueVariable: ValueVariableType) =>
-              addValueVariable(valueVariable)
+              addValueVariable?.(valueVariable)
             }
             editValueVariable={(valueVariable: ValueVariableType) => {
               if (editingValueVariable !== undefined) {
-                editValueVariable({
+                editValueVariable?.({
                   index: editingValueVariable.index,
                   variable: valueVariable,
                 })
