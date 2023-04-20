@@ -71,7 +71,7 @@ export const dataPointsReducer = produce(
         state.changed = false
         break
       }
-      case 'rowAdded':
+      case 'rowAdded': {
         const metaId = Math.max(0, ...state.meta.map(m => m.id)) + 1
         state.rows.push(
           mapRowNumericValues(action.payload.categoricalVariables, {
@@ -87,6 +87,7 @@ export const dataPointsReducer = produce(
         })
         state.changed = true
         break
+      }
       case 'rowDeleted':
         state.rows.splice(action.payload, 1)
         state.meta.splice(action.payload, 1)
@@ -99,7 +100,7 @@ export const dataPointsReducer = produce(
         )
         state.changed = true
         break
-      case 'rowEnabledToggled':
+      case 'rowEnabledToggled': {
         const newMeta: DataEntry['meta'] | undefined =
           state.meta[action.payload.index]
         if (newMeta !== undefined) {
@@ -110,6 +111,7 @@ export const dataPointsReducer = produce(
           state.changed = true
         }
         break
+      }
       default:
         assertUnreachable(action)
     }

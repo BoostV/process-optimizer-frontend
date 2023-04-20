@@ -1,16 +1,12 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
-import { useEffect, useMemo, useReducer, useState } from 'react'
+import { useMemo, useReducer, useState } from 'react'
 import { EditableTable } from '../core'
 import { SwapVert } from '@mui/icons-material'
 import { InfoBox, TitleCard } from '../core/title-card/title-card'
 import DownloadCSVButton from './download-csv-button'
 import useStyles from './data-points.style'
 import UploadCSVButton from './upload-csv-button'
-import {
-  DataPointsAction,
-  DataPointsState,
-  dataPointsReducer,
-} from './data-points-reducer'
+import { DataPointsState, dataPointsReducer } from './data-points-reducer'
 import { EditableTableViolation, TableDataRow } from '../core/editable-table'
 import {
   saveCSVToLocalFile,
@@ -73,11 +69,14 @@ export function DataPoints(props: DataPointProps) {
     )
   )
 
+  const notifyParent = (state: DataPointsState) =>
+    updateDataPoints(state.meta, state.rows)
+
   const isLoadingState = state.rows.length === 0
   const isDuplicateVariableNames = useMemo(
     () =>
       violations !== undefined && violations?.duplicateVariableNames.length > 0,
-    [violations?.duplicateVariableNames]
+    [violations]
   )
 
   const getGeneralViolations = (): InfoBox[] => {
@@ -105,37 +104,38 @@ export function DataPoints(props: DataPointProps) {
 
   const violationsInTable: EditableTableViolation[] | undefined = useMemo(
     () => findDataPointViolations(violations),
-    [
-      violations?.dataPointsUndefined,
-      violations?.upperBoundary,
-      violations?.lowerBoundary,
-      violations?.dataPointsNotNumber,
-    ]
+    [violations]
   )
 
   const rowAdded = (row: TableDataRow) =>
-    dispatch({
-      type: 'rowAdded',
-      payload: {
-        row,
-        categoricalVariables,
-      },
-    })
+    notifyParent(
+      dataPointsReducer(state, {
+        type: 'rowAdded',
+        payload: {
+          row,
+          categoricalVariables,
+        },
+      })
+    )
 
   const rowDeleted = (rowIndex: number) =>
-    dispatch({
-      type: 'rowDeleted',
-      payload: rowIndex,
-    })
+    notifyParent(
+      dataPointsReducer(state, {
+        type: 'rowDeleted',
+        payload: rowIndex,
+      })
+    )
 
   const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
-    dispatch({
-      type: 'rowEnabledToggled',
-      payload: {
-        index: rowIndex,
-        enabled,
-      },
-    })
+    notifyParent(
+      dataPointsReducer(state, {
+        type: 'rowEnabledToggled',
+        payload: {
+          index: rowIndex,
+          enabled,
+        },
+      })
+    )
 
   const [prevData, setPrevData] = useState(dataPoints)
   if (dataPoints !== prevData) {
@@ -182,27 +182,19 @@ export function DataPoints(props: DataPointProps) {
     )
   }
 
-  const notiftIfChanged = (state: DataPointsState) => {
-    if (state.changed) {
-      updateDataPoints(state.meta, state.rows)
-    }
-  }
-
-  const rowEdited = (rowIndex: number, row: TableDataRow) => {
-    const action = {
-      type: 'rowEdited',
-      payload: {
-        editRow: {
-          rowIndex,
-          row,
+  const rowEdited = (rowIndex: number, row: TableDataRow) =>
+    notifyParent(
+      dataPointsReducer(state, {
+        type: 'rowEdited',
+        payload: {
+          editRow: {
+            rowIndex,
+            row,
+          },
+          categoricalVariables,
         },
-        categoricalVariables,
-      },
-    } satisfies DataPointsAction
-    dispatch(action)
-    const newState = dataPointsReducer(state, action)
-    notiftIfChanged(newState)
-  }
+      })
+    )
 
   return (
     <TitleCard
