@@ -6,7 +6,11 @@ import { InfoBox, TitleCard } from '../core/title-card/title-card'
 import DownloadCSVButton from './download-csv-button'
 import useStyles from './data-points.style'
 import UploadCSVButton from './upload-csv-button'
-import { dataPointsReducer } from './data-points-reducer'
+import {
+  DataPointsAction,
+  DataPointsState,
+  dataPointsReducer,
+} from './data-points-reducer'
 import { EditableTableViolation, TableDataRow } from '../core/editable-table'
 import {
   saveCSVToLocalFile,
@@ -124,18 +128,6 @@ export function DataPoints(props: DataPointProps) {
       payload: rowIndex,
     })
 
-  const rowEdited = (rowIndex: number, row: TableDataRow) =>
-    dispatch({
-      type: 'rowEdited',
-      payload: {
-        editRow: {
-          rowIndex,
-          row,
-        },
-        categoricalVariables,
-      },
-    })
-
   const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
     dispatch({
       type: 'rowEnabledToggled',
@@ -159,43 +151,58 @@ export function DataPoints(props: DataPointProps) {
     })
   }
 
-  useEffect(() => {
-    const convertEditableRowToExperimentRow = (
-      row: TableDataRow | undefined
-    ) => {
-      if (row === undefined) {
-        return []
-      }
-      const vars = row.dataPoints.filter(dp => !scoreNames.includes(dp.name))
-      const scores = row.dataPoints
-        .filter(dp => scoreNames.includes(dp.name))
-        .map(s => ({
-          name: s.name,
-          value: s.value,
-        }))
-      return vars
-        .map(dp => ({
-          name: dp.name,
-          value: dp.value,
-        }))
-        .concat(scores) as DataEntry['data']
+  const convertEditableRowToExperimentRow = (row: TableDataRow | undefined) => {
+    if (row === undefined) {
+      return []
     }
-    const updateDataPoints = (
-      meta: DataEntry['meta'][],
-      rows: TableDataRow[]
-    ) => {
-      const zipped = meta.map((m, idx) => [
-        m,
-        convertEditableRowToExperimentRow(rows.filter(e => !e.isNew)[idx]),
-      ])
-      onUpdateDataPoints(
-        zipped.map(e => ({ meta: e[0], data: e[1] })) as DataEntry[]
-      )
-    }
+    const vars = row.dataPoints.filter(dp => !scoreNames.includes(dp.name))
+    const scores = row.dataPoints
+      .filter(dp => scoreNames.includes(dp.name))
+      .map(s => ({
+        name: s.name,
+        value: s.value,
+      }))
+    return vars
+      .map(dp => ({
+        name: dp.name,
+        value: dp.value,
+      }))
+      .concat(scores) as DataEntry['data']
+  }
+  const updateDataPoints = (
+    meta: DataEntry['meta'][],
+    rows: TableDataRow[]
+  ) => {
+    const zipped = meta.map((m, idx) => [
+      m,
+      convertEditableRowToExperimentRow(rows.filter(e => !e.isNew)[idx]),
+    ])
+    onUpdateDataPoints(
+      zipped.map(e => ({ meta: e[0], data: e[1] })) as DataEntry[]
+    )
+  }
+
+  const notiftIfChanged = (state: DataPointsState) => {
     if (state.changed) {
       updateDataPoints(state.meta, state.rows)
     }
-  }, [onUpdateDataPoints, scoreNames, state.changed, state.rows, state.meta])
+  }
+
+  const rowEdited = (rowIndex: number, row: TableDataRow) => {
+    const action = {
+      type: 'rowEdited',
+      payload: {
+        editRow: {
+          rowIndex,
+          row,
+        },
+        categoricalVariables,
+      },
+    } satisfies DataPointsAction
+    dispatch(action)
+    const newState = dataPointsReducer(state, action)
+    notiftIfChanged(newState)
+  }
 
   return (
     <TitleCard
