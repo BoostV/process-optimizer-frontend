@@ -1,5 +1,5 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
-import { useEffect, useMemo, useReducer } from 'react'
+import { useEffect, useMemo, useReducer, useState } from 'react'
 import { EditableTable } from '../core'
 import { SwapVert } from '@mui/icons-material'
 import { InfoBox, TitleCard } from '../core/title-card/title-card'
@@ -44,11 +44,31 @@ export function DataPoints(props: DataPointProps) {
     violations,
   } = props
   const { classes } = useStyles()
-  const [state, dispatch] = useReducer(dataPointsReducer, {
-    meta: [],
-    rows: [],
-    changed: false,
-  })
+  const scoreNames = useMemo(
+    () => scoreVariables.filter(it => it.enabled).map(it => it.name),
+    [scoreVariables]
+  )
+
+  const [state, dispatch] = useReducer(
+    dataPointsReducer,
+    dataPointsReducer(
+      {
+        meta: [],
+        rows: [],
+        changed: false,
+      },
+      {
+        type: 'setInitialState',
+        payload: {
+          valueVariables,
+          categoricalVariables,
+          scoreNames,
+          data: dataPoints,
+        },
+      }
+    )
+  )
+
   const isLoadingState = state.rows.length === 0
   const isDuplicateVariableNames = useMemo(
     () =>
@@ -89,11 +109,6 @@ export function DataPoints(props: DataPointProps) {
     ]
   )
 
-  const scoreNames = useMemo(
-    () => scoreVariables.filter(it => it.enabled).map(it => it.name),
-    [scoreVariables]
-  )
-
   const rowAdded = (row: TableDataRow) =>
     dispatch({
       type: 'rowAdded',
@@ -130,7 +145,9 @@ export function DataPoints(props: DataPointProps) {
       },
     })
 
-  useEffect(() => {
+  const [prevData, setPrevData] = useState(dataPoints)
+  if (dataPoints !== prevData) {
+    setPrevData(dataPoints)
     dispatch({
       type: 'setInitialState',
       payload: {
@@ -140,7 +157,7 @@ export function DataPoints(props: DataPointProps) {
         data: dataPoints,
       },
     })
-  }, [valueVariables, categoricalVariables, scoreNames, dataPoints])
+  }
 
   useEffect(() => {
     const convertEditableRowToExperimentRow = (
