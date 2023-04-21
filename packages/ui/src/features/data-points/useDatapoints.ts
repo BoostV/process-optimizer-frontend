@@ -6,7 +6,6 @@ import {
   CombinedVariableType,
 } from '@boostv/process-optimizer-frontend-core'
 import { useCallback, useMemo } from 'react'
-import * as R from 'remeda'
 import { TableDataRow } from '../core'
 import produce from 'immer'
 
@@ -184,7 +183,7 @@ const buildEmptyRow = (
         }))
       ),
     isNew: true,
-  }
+  } satisfies TableDataRow
 }
 
 const buildRows = (
@@ -197,8 +196,8 @@ const buildRows = (
     valueVariables,
     categoricalVariables
   )
-  const dataPointRows = R.concat(
-    R.map(dataPoints, item => {
+  const dataPointRows = dataPoints
+    .map(item => {
       const rowData: DataEntry['data'] = item.data.filter(
         dp => !scoreNames.includes(dp.name)
       )
@@ -212,22 +211,20 @@ const buildRows = (
           tooltip: combinedVariables[idx]?.tooltip,
         }
       })
-      const scores = R.pipe(
-        item.data,
-        R.filter(dp => scoreNames.includes(dp.name)),
-        R.map(score => ({ name: score.name, value: String(score.value ?? '') }))
-      )
+      const scores = item.data
+        .filter(dp => scoreNames.includes(dp.name))
+        .map(score => ({ name: score.name, value: String(score.value ?? '') }))
       return {
         isNew: false,
         dataPoints: vars.concat(scores),
         enabled: item.meta.enabled,
         valid: item.meta.valid,
-        metaId: item?.meta.id,
+        metaId: item.meta.id,
         // Uncomment the following line to display a meta data property in the table
         // .concat([{ name: 'id', value: `${item.meta.id}` }]),
-      }
-    }),
-    [buildEmptyRow(valueVariables, categoricalVariables, scoreNames)]
-  )
+      } satisfies TableDataRow as TableDataRow
+    })
+    .concat([buildEmptyRow(valueVariables, categoricalVariables, scoreNames)])
+
   return dataPointRows
 }
