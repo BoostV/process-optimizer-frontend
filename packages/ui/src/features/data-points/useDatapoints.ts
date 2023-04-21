@@ -35,22 +35,34 @@ export const useDatapoints = (
     [categoricalVariables, dataPoints, scoreNames, valueVariables]
   )
 
-  const addRow = (row: TableDataRow) =>
-    _addRow(
-      dataPoints,
-      convertToDataEntry(
-        valueVariables,
-        categoricalVariables,
-        scoreVariables,
-        row
-      )
-    )
+  const addRow = useCallback(
+    (row: TableDataRow) =>
+      _addRow(
+        dataPoints,
+        convertToDataEntry(
+          valueVariables,
+          categoricalVariables,
+          scoreVariables,
+          row
+        )
+      ),
+    [categoricalVariables, dataPoints, scoreVariables, valueVariables]
+  )
 
-  const deleteRow = (rowIndex: number) => _deleteRow(dataPoints, rowIndex)
-  const editRow = (rowIndex: number, row: TableDataRow) =>
-    _editRow(dataPoints, rowIndex, row)
-  const setEnabledState = (rowIndex: number, enabled: boolean) =>
-    _setEnabledState(dataPoints, rowIndex, enabled)
+  const deleteRow = useCallback(
+    (rowIndex: number) => _deleteRow(dataPoints, rowIndex),
+    [dataPoints]
+  )
+  const editRow = useCallback(
+    (rowIndex: number, row: TableDataRow) =>
+      _editRow(dataPoints, rowIndex, row),
+    [dataPoints]
+  )
+  const setEnabledState = useCallback(
+    (rowIndex: number, enabled: boolean) =>
+      _setEnabledState(dataPoints, rowIndex, enabled),
+    [dataPoints]
+  )
 
   return {
     state,
