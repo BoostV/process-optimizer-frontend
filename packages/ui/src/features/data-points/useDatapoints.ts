@@ -83,8 +83,8 @@ const convertToDataEntry = (
     name: dp.name,
     value:
       categoricalVariables.find(cv => cv.name === dp.name) !== undefined
-        ? String(dp.value)
-        : Number(dp.value),
+        ? String(dp.value ?? '')
+        : Number(dp.value ?? 0),
   })) satisfies DataEntry['data']
   const meta = {
     enabled: row.enabled ?? true,
@@ -122,7 +122,7 @@ const _editRow = (original: DataEntry[], rowIndex: number, row: TableDataRow) =>
         const type = typeof originalDataPoint
         if (originalDataPoint !== undefined) {
           originalDataPoint.value =
-            type === 'number' ? Number(dp.value) : String(dp.value)
+            type === 'number' ? Number(dp.value ?? 0) : String(dp.value ?? '')
         }
       })
     }
@@ -215,7 +215,7 @@ const buildRows = (
       const scores = R.pipe(
         item.data,
         R.filter(dp => scoreNames.includes(dp.name)),
-        R.map(score => ({ name: score.name, value: String(score.value) }))
+        R.map(score => ({ name: score.name, value: String(score.value ?? '') }))
       )
       return {
         isNew: false,
