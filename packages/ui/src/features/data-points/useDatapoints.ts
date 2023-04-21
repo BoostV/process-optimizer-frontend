@@ -35,112 +35,103 @@ export const useDatapoints = (
     [categoricalVariables, dataPoints, scoreNames, valueVariables]
   )
 
-  const convertEditableRowToExperimentRow = useCallback(
-    (row: TableDataRow) => {
-      const vars = row.dataPoints.filter(dp => !scoreNames.includes(dp.name))
-      const scores = row.dataPoints
-        .filter(dp => scoreNames.includes(dp.name))
-        .map(s => ({
-          name: s.name,
-          value: s.value,
-        }))
-      return vars
-        .map(dp => ({
-          name: dp.name,
-          value: dp.value,
-        }))
-        .concat(scores) as DataEntry['data']
-    },
-    [scoreNames]
-  )
+  const addRow = (row: TableDataRow) =>
+    _addRow(
+      dataPoints,
+      convertToDataEntry(
+        valueVariables,
+        categoricalVariables,
+        scoreVariables,
+        row
+      )
+    )
 
-  const updateDataPoints = useCallback(
-    (meta: DataEntry['meta'][], rows: TableDataRow[]) => {
-      const zipped = meta.map((m, idx) => [
-        m,
-        convertEditableRowToExperimentRow(rows.filter(e => !e.isNew)[idx]),
-      ])
-      return zipped.map(e => ({ meta: e[0], data: e[1] })) as DataEntry[]
-    },
-    [convertEditableRowToExperimentRow]
-  )
-
-  const addRow = useCallback(
-    (row: TableDataRow) =>
-      produce(state, draft => {
-        const metaId = Math.max(0, ...draft.meta.map(m => m.id)) + 1
-        draft.rows.push(
-          mapRowNumericValues(categoricalVariables, {
-            ...row,
-            isNew: false,
-            metaId,
-          })
-        )
-        draft.meta.push({
-          enabled: true,
-          valid: true,
-          id: metaId,
-        })
-      }),
-    [categoricalVariables, state]
-  )
-
-  const deleteRow = useCallback(
-    (idx: number) =>
-      produce(state, draft => {
-        state.rows.splice(idx, 1)
-        state.meta.splice(idx, 1)
-      }),
-    [state]
-  )
-
-  const editRow = useCallback(
-    (idx: number, row: TableDataRow) =>
-      produce(state, draft => {
-        draft.rows[idx] = mapRowNumericValues(categoricalVariables, row)
-      }),
-    [categoricalVariables, state]
-  )
-
-  const setRowIsEnabled = useCallback(
-    (idx: number, enabled: boolean) =>
-      produce(state, draft => {
-        const newMeta: DataEntry['meta'] | undefined = draft.meta[idx]
-        if (newMeta !== undefined) {
-          draft.meta[idx] = {
-            ...newMeta,
-            enabled,
-          }
-        }
-      }),
-    [state]
-  )
+  const deleteRow = (rowIndex: number) => _deleteRow(dataPoints, rowIndex)
+  const editRow = (rowIndex: number, row: TableDataRow) =>
+    _editRow(dataPoints, rowIndex, row)
+  const setEnabledState = (rowIndex: number, enabled: boolean) =>
+    _setEnabledState(dataPoints, rowIndex, enabled)
 
   return {
     state,
     addRow,
     deleteRow,
     editRow,
-    setRowIsEnabled,
-    updateDataPoints,
+    setEnabledState,
   }
 }
 
-/// OLD HELPERS
-const mapRowNumericValues = (
+const convertToDataEntry = (
+  valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
+  scoreVariables: ScoreVariableType[],
   row: TableDataRow
-) => ({
-  ...row,
-  dataPoints: R.map(row.dataPoints, r =>
-    R.map(categoricalVariables, c => c.name).includes(r.name)
-      ? r
-      : {
-          ...r,
-          value: String(Number(r.value?.replace(',', '.'))),
+) => {
+  const data = row.dataPoints.map(dp => ({
+    name: dp.name,
+    value:
+      categoricalVariables.find(cv => cv.name === dp.name) !== undefined
+        ? String(dp.value)
+        : Number(dp.value),
+  })) satisfies DataEntry['data']
+  const meta = {
+    enabled: row.enabled ?? true,
+    id: row.metaId ?? 0,
+    valid: row.valid ?? true,
+  } satisfies DataEntry['meta']
+  if (
+    data.length <
+      valueVariables.length +
+        categoricalVariables.length +
+        scoreVariables.length -
+        1 &&
+    scoreVariables[1] !== undefined
+  ) {
+    data.push({ name: scoreVariables[1].name, value: 0 })
+  }
+  return { data, meta } satisfies DataEntry
+}
+
+const _addRow = (original: DataEntry[], newRow: DataEntry) =>
+  produce(original, result => {
+    result.push(newRow)
+  })
+
+const _editRow = (original: DataEntry[], rowIndex: number, row: TableDataRow) =>
+  produce(original, result => {
+    const originalRow = result[rowIndex]
+    if (originalRow !== undefined) {
+      originalRow.meta.enabled = row.enabled ?? originalRow.meta.enabled
+      originalRow.meta.id = row.metaId ?? originalRow.meta.id
+      row.dataPoints.forEach(dp => {
+        const originalDataPoint = originalRow.data.find(
+          odp => odp.name === dp.name
+        )
+        const type = typeof originalDataPoint
+        if (originalDataPoint !== undefined) {
+          originalDataPoint.value =
+            type === 'number' ? Number(dp.value) : String(dp.value)
         }
-  ),
-})
+      })
+    }
+  })
+
+const _setEnabledState = (
+  original: DataEntry[],
+  rowIndex: number,
+  enabled: boolean
+) =>
+  produce(original, result => {
+    const originalRow = result[rowIndex]
+    if (originalRow !== undefined) {
+      originalRow.meta.enabled = enabled
+    }
+  })
+
+const _deleteRow = (original: DataEntry[], rowIndex: number) =>
+  produce(original, result => {
+    result.splice(rowIndex, 1)
+  })
 
 const buildCombinedVariables = (
   valueVariables: ValueVariableType[],

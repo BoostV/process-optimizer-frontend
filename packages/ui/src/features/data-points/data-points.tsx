@@ -1,12 +1,11 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
-import { useMemo, useReducer, useState } from 'react'
+import { useMemo } from 'react'
 import { EditableTable } from '../core'
 import { SwapVert } from '@mui/icons-material'
 import { InfoBox, TitleCard } from '../core/title-card/title-card'
 import DownloadCSVButton from './download-csv-button'
 import useStyles from './data-points.style'
 import UploadCSVButton from './upload-csv-button'
-import { DataPointsState, dataPointsReducer } from './data-points-reducer'
 import { EditableTableViolation, TableDataRow } from '../core/editable-table'
 import {
   saveCSVToLocalFile,
@@ -45,22 +44,12 @@ export function DataPoints(props: DataPointProps) {
     violations,
   } = props
   const { classes } = useStyles()
-  const {
-    state,
-    addRow,
-    deleteRow,
-    editRow,
-    setRowIsEnabled,
-    updateDataPoints,
-  } = useDatapoints(
+  const { state, addRow, deleteRow, editRow, setEnabledState } = useDatapoints(
     valueVariables,
     categoricalVariables,
     scoreVariables,
     dataPoints
   )
-
-  const notifyParent = (state: DataPointsState) =>
-    onUpdateDataPoints(updateDataPoints(state.meta, state.rows))
 
   const isLoadingState = state.rows.length === 0
   const isDuplicateVariableNames = useMemo(
@@ -97,16 +86,16 @@ export function DataPoints(props: DataPointProps) {
     [violations]
   )
 
-  const rowAdded = (row: TableDataRow) => notifyParent(addRow(row))
+  const rowAdded = (row: TableDataRow) => onUpdateDataPoints(addRow(row))
 
   const rowDeleted = (rowIndex: number) =>
-    notifyParent(notifyParent(deleteRow(rowIndex)))
+    onUpdateDataPoints(deleteRow(rowIndex))
 
   const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
-    notifyParent(setRowIsEnabled(rowIndex, enabled))
+    onUpdateDataPoints(setEnabledState(rowIndex, enabled))
 
   const rowEdited = (rowIndex: number, row: TableDataRow) =>
-    notifyParent(editRow(rowIndex, row))
+    onUpdateDataPoints(editRow(rowIndex, row))
 
   return (
     <TitleCard
