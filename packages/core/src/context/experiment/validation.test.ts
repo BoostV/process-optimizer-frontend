@@ -1,7 +1,6 @@
-import { ExperimentType, ValueVariableType } from 'common'
+import { ExperimentType } from 'common'
 import { emptyExperiment } from './store'
 import {
-  validateDataPointsNotNumber,
   validateDataPointsUndefined,
   validateDuplicateDataPointIds,
   validateDuplicateVariableNames,
@@ -31,6 +30,7 @@ describe('validateUpperBoundary', () => {
           },
           data: [
             {
+              type: 'numeric',
               name: 'Water',
               value: 50,
             },
@@ -49,12 +49,7 @@ describe('validateUpperBoundary', () => {
               enabled: true,
               valid: true,
             },
-            data: [
-              {
-                name: 'Water',
-                value: 100,
-              },
-            ],
+            data: [{ type: 'numeric', name: 'Water', value: 100 }],
           },
         ],
       })
@@ -80,12 +75,7 @@ describe('validateUpperBoundary', () => {
             enabled: true,
             valid: true,
           },
-          data: [
-            {
-              name: 'Water',
-              value: 101,
-            },
-          ],
+          data: [{ type: 'numeric', name: 'Water', value: 101 }],
         },
       ],
     }
@@ -111,12 +101,7 @@ describe('validateUpperBoundary', () => {
             enabled: true,
             valid: true,
           },
-          data: [
-            {
-              name: 'Water',
-              value: 101,
-            },
-          ],
+          data: [{ type: 'numeric', name: 'Water', value: 101 }],
         },
         {
           meta: {
@@ -124,12 +109,7 @@ describe('validateUpperBoundary', () => {
             enabled: true,
             valid: true,
           },
-          data: [
-            {
-              name: 'Water',
-              value: 102,
-            },
-          ],
+          data: [{ type: 'numeric', name: 'Water', value: 102 }],
         },
       ],
     }
@@ -157,12 +137,7 @@ describe('validateLowerBoundary', () => {
             enabled: true,
             valid: true,
           },
-          data: [
-            {
-              name: 'Water',
-              value: 50,
-            },
-          ],
+          data: [{ type: 'numeric', name: 'Water', value: 50 }],
         },
       ],
     }
@@ -177,12 +152,7 @@ describe('validateLowerBoundary', () => {
               enabled: true,
               valid: true,
             },
-            data: [
-              {
-                name: 'Water',
-                value: 10,
-              },
-            ],
+            data: [{ type: 'numeric', name: 'Water', value: 10 }],
           },
         ],
       })
@@ -208,12 +178,7 @@ describe('validateLowerBoundary', () => {
             enabled: true,
             valid: true,
           },
-          data: [
-            {
-              name: 'Water',
-              value: 9,
-            },
-          ],
+          data: [{ type: 'numeric', name: 'Water', value: 9 }],
         },
       ],
     }
@@ -239,12 +204,7 @@ describe('validateLowerBoundary', () => {
             enabled: true,
             valid: true,
           },
-          data: [
-            {
-              name: 'Water',
-              value: 8,
-            },
-          ],
+          data: [{ type: 'numeric', name: 'Water', value: 8 }],
         },
         {
           meta: {
@@ -252,12 +212,7 @@ describe('validateLowerBoundary', () => {
             enabled: true,
             valid: true,
           },
-          data: [
-            {
-              name: 'Water',
-              value: 9,
-            },
-          ],
+          data: [{ type: 'numeric', name: 'Water', value: 9 }],
         },
       ],
     }
@@ -369,14 +324,8 @@ describe('validateDataPointsUndefined', () => {
             valid: true,
           },
           data: [
-            {
-              name: 'Water',
-              value: 10,
-            },
-            {
-              name: 'score',
-              value: 1,
-            },
+            { type: 'numeric', name: 'Water', value: 10 },
+            { type: 'score', name: 'score', value: 1 },
           ],
         },
       ],
@@ -401,16 +350,7 @@ describe('validateDataPointsUndefined', () => {
             enabled: true,
             valid: true,
           },
-          data: [
-            {
-              name: 'Water',
-              value: 10,
-            },
-            {
-              name: 'score',
-              value: undefined,
-            },
-          ],
+          data: [{ type: 'numeric', name: 'Water', value: 10 }],
         },
       ],
     }
@@ -420,6 +360,15 @@ describe('validateDataPointsUndefined', () => {
   it('should return two data point with undefined properties', () => {
     const exp: ExperimentType = {
       ...emptyExperiment,
+      valueVariables: [
+        {
+          name: 'Water',
+          type: 'discrete',
+          description: '',
+          min: 0,
+          max: 100,
+        },
+      ],
       scoreVariables: [
         {
           name: 'score',
@@ -436,12 +385,9 @@ describe('validateDataPointsUndefined', () => {
           },
           data: [
             {
+              type: 'numeric',
               name: 'Water',
               value: 10,
-            },
-            {
-              name: 'score',
-              value: undefined,
             },
           ],
         },
@@ -453,10 +399,7 @@ describe('validateDataPointsUndefined', () => {
           },
           data: [
             {
-              name: 'Water',
-              value: undefined,
-            },
-            {
+              type: 'score',
               name: 'score',
               value: 1,
             },
@@ -491,16 +434,14 @@ describe('validateDataPointsUndefined', () => {
           },
           data: [
             {
+              type: 'numeric',
               name: 'Water',
               value: 10,
             },
             {
+              type: 'score',
               name: 'score',
               value: 1,
-            },
-            {
-              name: 'score 2',
-              value: undefined,
             },
           ],
         },
@@ -591,168 +532,5 @@ describe('validateDuplicateDataPointIds', () => {
       ],
     }
     expect(validateDuplicateDataPointIds(exp)).toEqual([])
-  })
-})
-
-describe('validateDataPointsNotNumber', () => {
-  const valueVariables: ValueVariableType[] = [
-    {
-      name: 'Water',
-      min: 10,
-      max: 100,
-      type: 'discrete',
-      description: '',
-    },
-  ]
-
-  it('should return violation when value variable is not a number - string', () => {
-    expect(
-      validateDataPointsNotNumber({
-        ...emptyExperiment,
-        valueVariables,
-        dataPoints: [
-          {
-            meta: {
-              enabled: true,
-              valid: true,
-              id: 1,
-            },
-            data: [
-              {
-                name: 'Water',
-                value: 'notANumber',
-              },
-            ],
-          },
-        ],
-      })
-    ).toEqual([1])
-  })
-
-  it('should return violation when value variable is not a number - empty array', () => {
-    expect(
-      validateDataPointsNotNumber({
-        ...emptyExperiment,
-        valueVariables,
-        dataPoints: [
-          {
-            meta: {
-              enabled: true,
-              valid: true,
-              id: 1,
-            },
-            data: [
-              {
-                name: 'Water',
-                value: [],
-              },
-            ],
-          },
-        ],
-      })
-    ).toEqual([1])
-  })
-
-  it('should return violation when value variable is a number array', () => {
-    expect(
-      validateDataPointsNotNumber({
-        ...emptyExperiment,
-        valueVariables,
-        dataPoints: [
-          {
-            meta: {
-              enabled: true,
-              valid: true,
-              id: 1,
-            },
-            data: [
-              {
-                name: 'Water',
-                value: [1],
-              },
-            ],
-          },
-        ],
-      })
-    ).toEqual([1])
-  })
-
-  it('should return violation when score is not a number', () => {
-    expect(
-      validateDataPointsNotNumber({
-        ...emptyExperiment,
-        valueVariables,
-        scoreVariables: [
-          {
-            name: 'score',
-            description: '',
-            enabled: true,
-          },
-        ],
-        dataPoints: [
-          {
-            meta: {
-              enabled: true,
-              valid: true,
-              id: 1,
-            },
-            data: [
-              {
-                name: 'score',
-                value: 'notANumber',
-              },
-            ],
-          },
-        ],
-      })
-    ).toEqual([1])
-  })
-
-  it('should return empty array when value variable is a number - number', () => {
-    expect(
-      validateDataPointsNotNumber({
-        ...emptyExperiment,
-        valueVariables,
-        dataPoints: [
-          {
-            meta: {
-              enabled: true,
-              valid: true,
-              id: 1,
-            },
-            data: [
-              {
-                name: 'Water',
-                value: 1,
-              },
-            ],
-          },
-        ],
-      })
-    ).toEqual([])
-  })
-
-  it('should return empty array when value variable is a number - string', () => {
-    expect(
-      validateDataPointsNotNumber({
-        ...emptyExperiment,
-        valueVariables,
-        dataPoints: [
-          {
-            meta: {
-              enabled: true,
-              valid: true,
-              id: 1,
-            },
-            data: [
-              {
-                name: 'Water',
-                value: '1',
-              },
-            ],
-          },
-        ],
-      })
-    ).toEqual([])
   })
 })

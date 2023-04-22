@@ -1,6 +1,7 @@
 import {
   CategoricalVariableType,
   DataEntry,
+  DataPointType,
   ExperimentType,
   ScoreVariableType,
   ValueVariableType,
@@ -16,40 +17,40 @@ import {
 describe('converters', () => {
   const sampleDataPoints: DataEntry[] = [
     [
-      { name: 'Sukker', value: 23 },
-      { name: 'Peber', value: 982 },
-      { name: 'Hvedemel', value: 632 },
-      { name: 'Kunde', value: 'Mus' },
-      { name: 'score', value: 0.1 },
-    ],
+      { type: 'numeric', name: 'Sukker', value: 23 },
+      { type: 'numeric', name: 'Peber', value: 982 },
+      { type: 'numeric', name: 'Hvedemel', value: 632 },
+      { type: 'categorical', name: 'Kunde', value: 'Mus' },
+      { type: 'score', name: 'score', value: 0.1 },
+    ] satisfies DataPointType[],
     [
-      { name: 'Sukker', value: 15 },
-      { name: 'Peber', value: 123 },
-      { name: 'Hvedemel', value: 324 },
-      { name: 'Kunde', value: 'Ræv' },
-      { name: 'score', value: 0.2 },
-    ],
+      { type: 'numeric', name: 'Sukker', value: 15 },
+      { type: 'numeric', name: 'Peber', value: 123 },
+      { type: 'numeric', name: 'Hvedemel', value: 324 },
+      { type: 'categorical', name: 'Kunde', value: 'Ræv' },
+      { type: 'score', name: 'score', value: 0.2 },
+    ] satisfies DataPointType[],
   ].map((data, idx) => ({
     meta: { enabled: true, id: idx + 1, valid: true },
     data,
   }))
   const sampleMultiObjectiveDataPoints: DataEntry[] = [
     [
-      { name: 'Sukker', value: 23 },
-      { name: 'Peber', value: 982 },
-      { name: 'Hvedemel', value: 632 },
-      { name: 'Kunde', value: 'Mus' },
-      { name: 'score', value: 0.1 },
-      { name: 'score2', value: 0.3 },
-    ],
+      { type: 'numeric', name: 'Sukker', value: 23 },
+      { type: 'numeric', name: 'Peber', value: 982 },
+      { type: 'numeric', name: 'Hvedemel', value: 632 },
+      { type: 'categorical', name: 'Kunde', value: 'Mus' },
+      { type: 'score', name: 'score', value: 0.1 },
+      { type: 'score', name: 'score2', value: 0.3 },
+    ] satisfies DataPointType[],
     [
-      { name: 'Sukker', value: 15 },
-      { name: 'Peber', value: 123 },
-      { name: 'Hvedemel', value: 324 },
-      { name: 'Kunde', value: 'Ræv' },
-      { name: 'score', value: 0.2 },
-      { name: 'score2', value: 0.4 },
-    ],
+      { type: 'numeric', name: 'Sukker', value: 15 },
+      { type: 'numeric', name: 'Peber', value: 123 },
+      { type: 'numeric', name: 'Hvedemel', value: 324 },
+      { type: 'categorical', name: 'Kunde', value: 'Ræv' },
+      { type: 'score', name: 'score', value: 0.2 },
+      { type: 'score', name: 'score2', value: 0.4 },
+    ] satisfies DataPointType[],
   ].map((data, idx) => ({
     meta: { enabled: true, id: idx + 1, valid: true },
     data,
@@ -63,11 +64,27 @@ describe('converters', () => {
       description: "Bager haremus' peberkager",
     },
     categoricalVariables: [
-      { name: 'Kunde', description: '', options: ['Mus', 'Ræv'] },
+      {
+        name: 'Kunde',
+        description: '',
+        options: ['Mus', 'Ræv'],
+      },
     ],
     valueVariables: [
-      { type: 'discrete', name: 'Sukker', description: '', min: 0, max: 1000 },
-      { type: 'discrete', name: 'Peber', description: '', min: 0, max: 1000 },
+      {
+        type: 'discrete',
+        name: 'Sukker',
+        description: '',
+        min: 0,
+        max: 1000,
+      },
+      {
+        type: 'discrete',
+        name: 'Peber',
+        description: '',
+        min: 0,
+        max: 1000,
+      },
       {
         type: 'continuous',
         name: 'Hvedemel',
@@ -239,24 +256,29 @@ describe('converters', () => {
           },
           data: [
             {
+              type: 'numeric',
               name: 'Sukker',
               value: 28,
             },
             {
+              type: 'numeric',
               name: 'Peber',
               value: 982,
             },
             {
+              type: 'numeric',
               name: 'Hvedemel',
               value: 632,
             },
             {
+              type: 'categorical',
               name: 'Kunde',
               value: 'Mus',
             },
             {
+              type: 'score',
               name: 'score',
-              value: [1],
+              value: 1,
             },
           ],
         },
@@ -268,24 +290,29 @@ describe('converters', () => {
           },
           data: [
             {
+              type: 'numeric',
               name: 'Sukker',
-              value: '15',
+              value: 15,
             },
             {
+              type: 'numeric',
               name: 'Peber',
-              value: '986',
+              value: 986,
             },
             {
+              type: 'numeric',
               name: 'Hvedemel',
-              value: '5',
+              value: 5,
             },
             {
+              type: 'categorical',
               name: 'Kunde',
               value: 'Mus',
             },
             {
+              type: 'score',
               name: 'score',
-              value: '2',
+              value: 2,
             },
           ],
         },
@@ -306,12 +333,14 @@ describe('converters', () => {
           },
           data: [
             {
+              type: 'numeric',
               name: 'Sukker',
               value: 282,
             },
             {
+              type: 'score',
               name: 'score',
-              value: [2],
+              value: 2,
             },
           ],
         },
@@ -323,12 +352,14 @@ describe('converters', () => {
           },
           data: [
             {
+              type: 'numeric',
               name: 'Sukker',
               value: 280,
             },
             {
+              type: 'score',
               name: 'score',
-              value: [0],
+              value: 0,
             },
           ],
         },
@@ -340,12 +371,14 @@ describe('converters', () => {
           },
           data: [
             {
+              type: 'numeric',
               name: 'Sukker',
-              value: '281',
+              value: 281,
             },
             {
+              type: 'score',
               name: 'score',
-              value: '1',
+              value: 1,
             },
           ],
         },
@@ -397,22 +430,27 @@ describe('converters', () => {
         meta: { enabled: true, id: 1, valid: true },
         data: [
           {
+            type: 'numeric',
             name: 'Sukker',
             value: 28,
           },
           {
+            type: 'numeric',
             name: 'Peber',
             value: 982,
           },
           {
+            type: 'numeric',
             name: 'Hvedemel',
             value: 632,
           },
           {
+            type: 'categorical',
             name: 'Kunde',
             value: 'Mus',
           },
           {
+            type: 'score',
             name: 'score',
             value: 1,
           },
@@ -422,22 +460,27 @@ describe('converters', () => {
         meta: { enabled: false, id: 2, valid: true },
         data: [
           {
+            type: 'numeric',
             name: 'Sukker',
             value: 15,
           },
           {
+            type: 'numeric',
             name: 'Peber',
             value: 986,
           },
           {
+            type: 'numeric',
             name: 'Hvedemel',
             value: 5,
           },
           {
+            type: 'categorical',
             name: 'Kunde',
             value: 'Mus',
           },
           {
+            type: 'score',
             name: 'score',
             value: 2,
           },

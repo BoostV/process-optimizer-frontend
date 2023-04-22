@@ -2,7 +2,7 @@ import { ExperimentDataInner as ExperimentData } from '@boostv/process-optimizer
 import {
   CategoricalVariableType,
   DataEntry,
-  DataPointTypeValue,
+  DataPointType,
   ExperimentType,
   ScoreVariableType,
   SpaceType,
@@ -131,16 +131,18 @@ export const dataPointsToCSV = (
 const convertValue = (
   valueHeaders: string[],
   categorialHeaders: string[],
+  scoreHeaders: string[],
   name: string,
   value: unknown
-): DataPointTypeValue => {
+): DataPointType => {
   if (valueHeaders.includes(name)) {
-    return Number(value)
+    return { name, value: Number(value), type: 'numeric' }
   } else if (categorialHeaders.includes(name) && typeof value === 'string') {
-    return value
-  } else {
-    return Number(value)
+    return { name, value: value, type: 'categorical' }
+  } else if (scoreHeaders.includes(name)) {
+    return { name, value: Number(value), type: 'score' }
   }
+  throw new Error(`Cannot convert ${name}:${value} to known type`)
 }
 
 /**
@@ -189,10 +191,10 @@ export const csvToDataPoints = (
         data: line
           .filter(e => expectedHeader.includes(e.key))
           .map(e => ({
-            name: e.key,
-            value: convertValue(
+            ...convertValue(
               valueHeaders,
               categorialHeaders,
+              scoreHeaders,
               e.key,
               e.value
             ),

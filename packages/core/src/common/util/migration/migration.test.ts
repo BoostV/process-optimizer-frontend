@@ -12,7 +12,6 @@ import { emptyExperiment } from '@core/context/experiment'
 import { formatNext } from './migrations/migrateToV9'
 import { experimentSchema } from '@core/common/types'
 import { storeLatestSchema, loadTestData } from './test-utils'
-import { exit } from 'process'
 
 describe('Migration of data format', () => {
   storeLatestSchema()
@@ -32,9 +31,6 @@ describe('Migration of data format', () => {
         JSONSchemaFaker.option({ alwaysFakeOptionals: true })
         const sample = JSONSchemaFaker.generate(schemas[idx])
         const migrated = _migrate(sample)
-        if (!experimentSchema.safeParse(migrated).success) {
-          console.info(JSON.stringify(migrated.dataPoints))
-        }
         expect(experimentSchema.parse(migrated))
       }
     )

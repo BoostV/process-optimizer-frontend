@@ -74,14 +74,17 @@ describe('experiment reducer', () => {
           },
           data: [
             {
+              type: 'numeric',
               name: 'Water',
               value: 100,
             },
             {
+              type: 'categorical',
               name: 'Icing',
               value: 'Vanilla',
             },
             {
+              type: 'score',
               name: 'score',
               value: 10,
             },
@@ -522,17 +525,16 @@ describe('experiment reducer', () => {
       expect(dp[dp.length - 1]?.meta.valid).toBeFalsy()
       expect(dp[dp.length - 1]?.meta.id).toBe(2)
       expect(dp[dp.length - 1]?.data).toEqual([
-        {
+        expect.objectContaining({
+          type: 'numeric',
           name: 'Water',
           value: 100,
-        },
-        {
+        }),
+        expect.objectContaining({
+          type: 'categorical',
           name: 'Icing',
           value: 'Vanilla',
-        },
-        {
-          name: 'score',
-        },
+        }),
       ])
     })
     it('should copy multiple rows from suggested to data points', () => {
@@ -547,34 +549,16 @@ describe('experiment reducer', () => {
       expect(dp[dp.length - 1]?.meta.valid).toBeFalsy()
       expect(dp[dp.length - 2]?.meta.id).toBe(2)
       expect(dp[dp.length - 2]?.data).toEqual([
-        {
-          name: 'Water',
-          value: 100,
-        },
-        {
-          name: 'Icing',
-          value: 'Vanilla',
-        },
-        {
-          name: 'score',
-        },
+        { type: 'numeric', name: 'Water', value: 100 },
+        { type: 'categorical', name: 'Icing', value: 'Vanilla' },
       ])
       //Check last item
       expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
       expect(dp[dp.length - 1]?.meta.valid).toBeFalsy()
       expect(dp[dp.length - 1]?.meta.id).toBe(3)
       expect(dp[dp.length - 1]?.data).toEqual([
-        {
-          name: 'Water',
-          value: 150,
-        },
-        {
-          name: 'Icing',
-          value: 'Chocolate',
-        },
-        {
-          name: 'score',
-        },
+        { type: 'numeric', name: 'Water', value: 150 },
+        { type: 'categorical', name: 'Icing', value: 'Chocolate' },
       ])
     })
   })
@@ -604,18 +588,14 @@ describe('experiment reducer', () => {
     const dp = rootReducer(testState, action).experiment.dataPoints
     expect(dp[dp.length - 1]?.data).toEqual([
       {
+        type: 'numeric',
         name: 'Water',
         value: 100,
       },
       {
+        type: 'categorical',
         name: 'Icing',
         value: 'Vanilla',
-      },
-      {
-        name: 'score',
-      },
-      {
-        name: 'score2',
       },
     ])
   })
@@ -645,18 +625,14 @@ describe('experiment reducer', () => {
     const dp = rootReducer(testState, action).experiment.dataPoints
     expect(dp[dp.length - 1]?.data).toEqual([
       {
+        type: 'numeric',
         name: 'Water',
         value: 100,
       },
       {
+        type: 'categorical',
         name: 'Icing',
         value: 'Vanilla',
-      },
-      {
-        name: 'score',
-      },
-      {
-        name: 'score2',
       },
     ])
   })
@@ -667,12 +643,19 @@ const createDataPoints = (count: number): DataEntry[] =>
     meta: { enabled: true, id: idx + 1, valid: true },
     data: [
       {
-        name: 'New point 1',
-        value: '1',
+        type: 'numeric',
+        name: 'Water',
+        value: 100,
       },
       {
+        type: 'categorical',
+        name: 'Icing',
+        value: 'Vanilla',
+      },
+      {
+        type: 'score',
         name: 'score',
-        value: [2],
+        value: 2,
       },
     ],
   }))

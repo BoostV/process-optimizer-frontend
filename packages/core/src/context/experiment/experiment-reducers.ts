@@ -110,11 +110,16 @@ export const experimentReducer = produce(
       case 'updateSuggestionCount':
         state.extras.experimentSuggestionCount = Number(action.payload)
         break
-      case 'copySuggestedToDataPoints':
+      case 'copySuggestedToDataPoints': {
         const nextValues = selectNextValues(state)
-        const variableNames = state.valueVariables
-          .map(v => v.name)
-          .concat(state.categoricalVariables.map(c => c.name))
+        const variables = state.valueVariables
+          .map(v => ({ name: v.name, type: 'numeric' }))
+          .concat(
+            state.categoricalVariables.map(c => ({
+              name: c.name,
+              type: 'categorical',
+            }))
+          )
         const newEntries: DataEntry[] = nextValues
           .filter((_, i) => action.payload.includes(i))
           .map((n, k) => ({
@@ -126,20 +131,32 @@ export const experimentReducer = produce(
                   ? k + 1
                   : Math.max(...state.dataPoints.map(d => d.meta.id)) + k + 1,
             },
-            data: n
-              .map((v, i) => ({
-                name: variableNames[i] || '',
-                value: v,
-              }))
-              .concat([
-                ...state.scoreVariables.map(s => ({
-                  name: s.name,
-                  value: undefined,
-                })),
-              ]),
+            data: n.map((v, i) => {
+              const variable = variables[i]
+              if (variable !== undefined) {
+                switch (variable.type) {
+                  case 'numeric':
+                    return {
+                      name: variable.name,
+                      value: Number(v),
+                      type: 'numeric',
+                    }
+                  case 'categorical':
+                    return {
+                      name: variable.name,
+                      value: String(v),
+                      type: 'categorical',
+                    }
+                }
+              }
+              throw new Error(
+                `Could not find match for index ${i} of ${JSON.stringify(n)}`
+              )
+            }),
           }))
         state.dataPoints.push(...newEntries)
         break
+      }
       case 'addValueVariable':
         state.valueVariables.splice(
           state.valueVariables.length,
@@ -233,7 +250,7 @@ export const experimentReducer = produce(
               .map(it => it.name)
             scoreNames.forEach(scoreName => {
               if (!containedScores.includes(scoreName))
-                dp.push({ name: scoreName, value: 0 })
+                dp.push({ type: 'score', name: scoreName, value: 0 })
             })
           })
         }
