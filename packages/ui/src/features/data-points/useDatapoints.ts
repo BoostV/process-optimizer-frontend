@@ -132,10 +132,12 @@ const _editRow = (original: DataEntry[], rowIndex: number, row: TableDataRow) =>
         const originalDataPoint = originalRow.data.find(
           odp => odp.name === dp.name
         )
-        const type = typeof originalDataPoint
         if (originalDataPoint !== undefined) {
           originalDataPoint.value =
-            type === 'number' ? Number(dp.value ?? 0) : String(dp.value ?? '')
+            originalDataPoint.type === 'numeric' ||
+            originalDataPoint.type === 'score'
+              ? Number(dp.value ?? 0)
+              : String(dp.value ?? '')
         }
       })
     }
