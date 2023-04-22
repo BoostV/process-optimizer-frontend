@@ -5,6 +5,7 @@ import {
   ExperimentType,
   OptimizerConfig,
   ValueVariableType,
+  experimentSchema,
 } from '@core/common/types'
 import { produce } from 'immer'
 import md5 from 'md5'
@@ -97,15 +98,18 @@ export const experimentReducer = produce(
         state.info.swVersion = action.payload
         break
       case 'updateExperiment':
-        return {
+        return experimentSchema.parse({
           ...action.payload,
           info: { ...action.payload.info, swVersion: versionInfo.version },
-        }
+        })
       case 'updateExperimentName':
-        state.info.name = action.payload
+        state.info.name = experimentSchema.shape.info.shape.name.parse(
+          action.payload
+        )
         break
       case 'updateExperimentDescription':
-        state.info.description = action.payload
+        state.info.description =
+          experimentSchema.shape.info.shape.description.parse(action.payload)
         break
       case 'updateSuggestionCount':
         state.extras.experimentSuggestionCount = Number(action.payload)
@@ -161,14 +165,17 @@ export const experimentReducer = produce(
         state.valueVariables.splice(
           state.valueVariables.length,
           0,
-          action.payload
+          experimentSchema.shape.valueVariables.element.parse(action.payload)
         )
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
       case 'editValueVariable':
-        state.valueVariables[action.payload.index] = action.payload.variable
+        state.valueVariables[action.payload.index] =
+          experimentSchema.shape.valueVariables.element.parse(
+            action.payload.variable
+          )
         break
       case 'deleteValueVariable': {
         state.valueVariables.splice(action.payload, 1)
@@ -181,7 +188,9 @@ export const experimentReducer = produce(
         state.categoricalVariables.splice(
           state.categoricalVariables.length,
           0,
-          action.payload
+          experimentSchema.shape.categoricalVariables.element.parse(
+            action.payload
+          )
         )
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
@@ -189,7 +198,9 @@ export const experimentReducer = produce(
         break
       case 'editCategoricalVariable':
         state.categoricalVariables[action.payload.index] =
-          action.payload.variable
+          experimentSchema.shape.categoricalVariables.element.parse(
+            action.payload.variable
+          )
         break
       case 'deleteCategorialVariable': {
         state.categoricalVariables.splice(action.payload, 1)
@@ -206,15 +217,18 @@ export const experimentReducer = produce(
         ) {
           state.extras.experimentSuggestionCount = action.payload.initialPoints
         }
-        state.optimizerConfig = action.payload
+        state.optimizerConfig = experimentSchema.shape.optimizerConfig.parse(
+          action.payload
+        )
         break
       case 'registerResult':
         state.lastEvaluationHash = md5(
           JSON.stringify(createFetchExperimentResultRequest(state))
         )
-        state.results = action.payload
+        state.results = experimentSchema.shape.results.parse(action.payload)
         break
       case 'updateDataPoints':
+        experimentSchema.shape.dataPoints.parse(action.payload)
         if (
           action.payload.length < state.dataPoints.length &&
           state.dataPoints.length === state.optimizerConfig.initialPoints
