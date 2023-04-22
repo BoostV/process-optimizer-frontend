@@ -7,7 +7,8 @@ import {
   ScoreVariableType,
   SpaceType,
   ValueVariableType,
-} from 'common/types'
+  dataPointSchema,
+} from '@core/common/types'
 
 /**
  * Calculate the "space" parameter to send to the API based on the
@@ -138,11 +139,15 @@ const convertValue = (
   value: unknown
 ): DataPointType => {
   if (valueHeaders.includes(name)) {
-    return { name, value: Number(value), type: 'numeric' }
+    return dataPointSchema.parse({
+      name,
+      value: Number(value),
+      type: 'numeric',
+    })
   } else if (categorialHeaders.includes(name) && typeof value === 'string') {
-    return { name, value: value, type: 'categorical' }
+    return dataPointSchema.parse({ name, value: value, type: 'categorical' })
   } else if (scoreHeaders.includes(name)) {
-    return { name, value: Number(value), type: 'score' }
+    return dataPointSchema.parse({ name, value: Number(value), type: 'score' })
   }
   throw new Error(`Cannot convert ${name}:${value} to known type`)
 }

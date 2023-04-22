@@ -74,7 +74,7 @@ const scoreDataPoint = z.object({
   value: z.number(),
 })
 
-const dataPointSchema = z.discriminatedUnion('type', [
+export const dataPointSchema = z.discriminatedUnion('type', [
   numericDataPoint,
   categoricalDataPoint,
   scoreDataPoint,

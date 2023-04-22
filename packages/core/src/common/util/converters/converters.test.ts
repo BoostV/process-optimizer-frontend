@@ -635,6 +635,19 @@ describe('converters', () => {
       ).toThrowErrorMatchingSnapshot()
     })
 
+    it('should fail if types does not match schema', () => {
+      const input =
+        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n1;fisk;982;632;Mus;1;true\n2;15;986;5;Mus;2;false'
+      expect(() =>
+        csvToDataPoints(
+          input,
+          valueVariables,
+          categorialVariables,
+          scoreVariables
+        )
+      ).toThrowErrorMatchingSnapshot()
+    })
+
     it('should work with no meta data columns (ID is generated based on line order)', () => {
       const input =
         'Sukker;Peber;Hvedemel;Kunde;score\n28;982;632;Mus;1\n15;986;5;Mus;2'
