@@ -12,6 +12,7 @@ import { emptyExperiment } from '@core/context/experiment'
 import { formatNext } from './migrations/migrateToV9'
 import { experimentSchema } from '@core/common/types'
 import { storeLatestSchema, loadTestData } from './test-utils'
+import { exit } from 'process'
 
 describe('Migration of data format', () => {
   storeLatestSchema()
@@ -23,21 +24,21 @@ describe('Migration of data format', () => {
 
   const { schemas, loadLatestJson, loadNamedJson } = loadTestData()
 
-  describe.each(Array(100).fill(null))(
-    'Automatic schema testing run %i',
-    () => {
-      it.each(Object.keys(schemas))(
-        `should migrate %i to ${latestVersion} from faker data`,
-        async idx => {
-          // TODO investigate why JSONSchemaFaker generates datapoints[].meta = undefined. It treats the meta field as optional (schema 11)
-          JSONSchemaFaker.option({ alwaysFakeOptionals: true })
-          const sample = JSONSchemaFaker.generate(schemas[idx])
-          const migrated = _migrate(sample)
-          expect(experimentSchema.parse(migrated))
+  describe.each(Array(100).fill(null))('Automatic schema testing run', () => {
+    it.each(Object.keys(schemas))(
+      `should migrate %i to ${latestVersion} from faker data`,
+      async idx => {
+        // TODO investigate why JSONSchemaFaker generates datapoints[].meta = undefined. It treats the meta field as optional (schema 11)
+        JSONSchemaFaker.option({ alwaysFakeOptionals: true })
+        const sample = JSONSchemaFaker.generate(schemas[idx])
+        const migrated = _migrate(sample)
+        if (!experimentSchema.safeParse(migrated).success) {
+          console.info(JSON.stringify(migrated.dataPoints))
         }
-      )
-    }
-  )
+        expect(experimentSchema.parse(migrated))
+      }
+    )
+  })
 
   describe('migrate', () => {
     it('should fail if not migrating to newest version', async () => {
