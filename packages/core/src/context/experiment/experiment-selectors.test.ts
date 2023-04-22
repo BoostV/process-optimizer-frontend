@@ -1,5 +1,10 @@
 import { initialState, State } from '@core/context/experiment/store'
-import { selectId, selectIsInitializing } from './experiment-selectors'
+import {
+  selectId,
+  selectIsInitializing,
+  selectIsMultiObjective,
+} from './experiment-selectors'
+import { rootReducer } from './reducers'
 
 describe('Experiment selectors', () => {
   let state: State
@@ -32,6 +37,26 @@ describe('Experiment selectors', () => {
       ]
       state.experiment.optimizerConfig.initialPoints = 3
       expect(selectIsInitializing(state)).toBeFalsy()
+    })
+  })
+
+  describe('selectIsMultiObjective', () => {
+    it('should return false for initial ', () => {
+      expect(selectIsMultiObjective(initialState)).toEqual(false)
+    })
+
+    it('should change value after toggle ', () => {
+      const before = selectIsMultiObjective(initialState)
+      const toggledOnceState = rootReducer(state, {
+        type: 'experiment/toggleMultiObjective',
+      })
+      const after1stToggle = selectIsMultiObjective(toggledOnceState)
+      const toggledTwiceState = rootReducer(toggledOnceState, {
+        type: 'experiment/toggleMultiObjective',
+      })
+      const after2ndToggle = selectIsMultiObjective(toggledTwiceState)
+      expect(after1stToggle).toEqual(!before)
+      expect(after2ndToggle).toEqual(before)
     })
   })
 })

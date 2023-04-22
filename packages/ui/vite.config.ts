@@ -37,6 +37,7 @@ export default defineConfig({
         /@mui.*/,
         '@emotion/react',
         '@emotion/styled',
+        'remeda',
       ],
     },
     outDir: 'dist',

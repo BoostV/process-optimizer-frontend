@@ -38,6 +38,7 @@
     "@boostv/process-optimizer-frontend-core": "*",
     "@boostv/process-optimizer-frontend-plots": "*",
     "react-hook-form": "^7.33.0",
+    "remeda": "^1.12.0",
     "tss-react": "^4.8.2"
   },
   "peerDependencies": {

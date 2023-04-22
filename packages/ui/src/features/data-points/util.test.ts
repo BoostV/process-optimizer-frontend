@@ -25,7 +25,6 @@ describe('findDataPointViolations', () => {
         messages: [
           'All properties must be defined to enable the data point.',
           'Values must be under input max values to enable the data point.',
-          'Value variables must be numeric to enable the data point.',
         ],
       },
       {

@@ -6,7 +6,7 @@ import { FC } from 'react'
 type Props = {
   config: OptimizerConfig
   debug: boolean
-  onConfigUpdated: (config: OptimizerConfig) => void
+  onConfigUpdated?: (config: OptimizerConfig) => void
 }
 
 export const OptimizerConfigurator: FC<Props> = ({
@@ -23,7 +23,9 @@ export const OptimizerConfigurator: FC<Props> = ({
         margin="dense"
         defaultValue={config.acqFunc}
         label="Acq func"
-        onChange={e => onConfigUpdated({ ...config, acqFunc: e.target.value })}
+        onChange={e =>
+          onConfigUpdated?.({ ...config, acqFunc: e.target.value })
+        }
       />
       <TextField
         name="initialPoints"
@@ -32,7 +34,7 @@ export const OptimizerConfigurator: FC<Props> = ({
         defaultValue={config.initialPoints}
         label="N initial points"
         onChange={e =>
-          onConfigUpdated({
+          onConfigUpdated?.({
             ...config,
             initialPoints: parseInt(e.target.value),
           })
@@ -45,7 +47,7 @@ export const OptimizerConfigurator: FC<Props> = ({
         defaultValue={config.kappa}
         label="Kappa"
         onChange={e =>
-          onConfigUpdated({ ...config, kappa: parseFloat(e.target.value) })
+          onConfigUpdated?.({ ...config, kappa: parseFloat(e.target.value) })
         }
       />
       <TextField
@@ -55,7 +57,7 @@ export const OptimizerConfigurator: FC<Props> = ({
         defaultValue={config.xi}
         label="Xi"
         onChange={e =>
-          onConfigUpdated({ ...config, xi: parseFloat(e.target.value) })
+          onConfigUpdated?.({ ...config, xi: parseFloat(e.target.value) })
         }
       />
     </TitleCard>
