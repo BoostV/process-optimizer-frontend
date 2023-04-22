@@ -15,7 +15,6 @@ import {
   ScoreVariableType,
   ValueVariableType,
   ValidationViolations,
-  experimentSchema,
 } from '@boostv/process-optimizer-frontend-core'
 import { findDataPointViolations } from './util'
 import { useDatapoints } from './useDatapoints'
@@ -87,7 +86,13 @@ export function DataPoints(props: DataPointProps) {
     [violations]
   )
 
-  const rowAdded = (row: TableDataRow) => onUpdateDataPoints(addRow(row))
+  const rowAdded = (row: TableDataRow) =>
+    onUpdateDataPoints(
+      addRow({
+        ...row,
+        dataPoints: row.dataPoints.filter(dp => dp.value !== undefined),
+      })
+    )
 
   const rowDeleted = (rowIndex: number) =>
     onUpdateDataPoints(deleteRow(rowIndex))
@@ -95,16 +100,8 @@ export function DataPoints(props: DataPointProps) {
   const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
     onUpdateDataPoints(setEnabledState(rowIndex, enabled))
 
-  const rowEdited = (rowIndex: number, row: TableDataRow) => {
-    const data = editRow(rowIndex, row)
-    const parsed = experimentSchema.shape.dataPoints.safeParse(data)
-    if (!parsed.success) {
-      console.error(parsed.error, data)
-    } else {
-      onUpdateDataPoints(editRow(rowIndex, row))
-    }
-    // onUpdateDataPoints(editRow(rowIndex, row))
-  }
+  const rowEdited = (rowIndex: number, row: TableDataRow) =>
+    onUpdateDataPoints(editRow(rowIndex, row))
 
   return (
     <TitleCard

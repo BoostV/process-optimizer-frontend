@@ -6,7 +6,7 @@ import {
   CombinedVariableType,
 } from '@boostv/process-optimizer-frontend-core'
 import { useCallback, useMemo } from 'react'
-import { TableDataRow } from '../core'
+import { TableDataPoint, TableDataRow } from '../core'
 import produce from 'immer'
 
 export const useDatapoints = (
@@ -54,8 +54,15 @@ export const useDatapoints = (
   )
   const editRow = useCallback(
     (rowIndex: number, row: TableDataRow) =>
-      _editRow(dataPoints, rowIndex, row),
-    [dataPoints]
+      _editRow(
+        valueVariables,
+        categoricalVariables,
+        scoreVariables,
+        dataPoints,
+        rowIndex,
+        row
+      ),
+    [categoricalVariables, dataPoints, scoreVariables, valueVariables]
   )
   const setEnabledState = useCallback(
     (rowIndex: number, enabled: boolean) =>
@@ -119,25 +126,61 @@ const convertToDataEntry = (
 
 const _addRow = (original: DataEntry[], newRow: DataEntry) =>
   produce(original, result => {
-    result.push(newRow)
+    result.push({
+      ...newRow,
+      data: newRow.data.filter(dp => dp.value !== undefined),
+      meta: {
+        ...newRow.meta,
+        id: original.reduce((id, curr) => Math.max(id + 1, curr.meta.id), 1),
+      },
+    })
   })
 
-const _editRow = (original: DataEntry[], rowIndex: number, row: TableDataRow) =>
+const _editRow = (
+  valueVariables: ValueVariableType[],
+  categoricalVariables: CategoricalVariableType[],
+  scoreVariables: ScoreVariableType[],
+  original: DataEntry[],
+  rowIndex: number,
+  row: TableDataRow
+) =>
   produce(original, result => {
     const originalRow = result[rowIndex]
     if (originalRow !== undefined) {
       originalRow.meta.enabled = row.enabled ?? originalRow.meta.enabled
       originalRow.meta.id = row.metaId ?? originalRow.meta.id
       row.dataPoints.forEach(dp => {
-        const originalDataPoint = originalRow.data.find(
-          odp => odp.name === dp.name
-        )
-        if (originalDataPoint !== undefined) {
-          originalDataPoint.value =
-            originalDataPoint.type === 'numeric' ||
-            originalDataPoint.type === 'score'
-              ? Number(dp.value ?? 0)
-              : String(dp.value ?? '')
+        if (dp.value !== undefined) {
+          const originalDataPoint = originalRow.data.find(
+            odp => odp.name === dp.name
+          )
+          if (originalDataPoint !== undefined) {
+            originalDataPoint.value =
+              originalDataPoint.type === 'numeric' ||
+              originalDataPoint.type === 'score'
+                ? Number(dp.value ?? 0)
+                : String(dp.value ?? '')
+          } else {
+            if (valueVariables.find(v => v.name === dp.name)) {
+              originalRow.data.push({
+                name: dp.name,
+                value: Number(dp.value),
+                type: 'numeric',
+              })
+            } else if (categoricalVariables.find(v => v.name === dp.name)) {
+              originalRow.data.push({
+                name: dp.name,
+                value: String(dp.value),
+                type: 'categorical',
+              })
+            } else if (scoreVariables.find(v => v.name === dp.name)) {
+              originalRow.data.push({
+                name: dp.name,
+                value: Number(dp.value),
+                type: 'score',
+              })
+            }
+          }
         }
       })
     }
@@ -186,14 +229,14 @@ const buildEmptyRow = (
     dataPoints: buildCombinedVariables(valueVariables, categoricalVariables)
       .map(variable => ({
         name: variable.name,
-        value: variable.options?.[0] ?? '',
+        value: variable.options?.[0],
         options: variable.options,
         tooltip: variable.tooltip,
       }))
       .concat(
         scoreNames.map(s => ({
           name: s,
-          value: '',
+          value: undefined,
           options: undefined,
           tooltip: undefined,
         }))
@@ -214,25 +257,46 @@ const buildRows = (
   )
   const dataPointRows = dataPoints
     .map(item => {
-      const rowData: DataEntry['data'] = item.data.filter(
-        dp => !scoreNames.includes(dp.name)
-      )
-      const vars = new Array(rowData.length)
-      rowData.forEach(v => {
-        const idx = combinedVariables.findIndex(it => it.name === v.name)
-        vars[idx] = {
-          name: v.name,
-          value: v.value?.toString(),
-          options: combinedVariables[idx]?.options,
-          tooltip: combinedVariables[idx]?.tooltip,
+      // const rowData: DataEntry['data'] = item.data.filter(
+      //   dp => !scoreNames.includes(dp.name)
+      // )
+      const vars: TableDataPoint[] = []
+      combinedVariables.forEach(v => {
+        const existingData = item.data.find(d => d.name === v.name)
+        if (existingData !== undefined) {
+          vars.push({
+            ...existingData,
+            value: String(existingData.value),
+            options: v?.options,
+            tooltip: v?.tooltip,
+          })
+        } else {
+          vars.push({
+            name: v.name,
+            value: undefined,
+            options: v?.options,
+            tooltip: v?.tooltip,
+          })
         }
       })
-      const scores = item.data
-        .filter(dp => scoreNames.includes(dp.name))
-        .map(score => ({ name: score.name, value: String(score.value ?? '') }))
+      scoreNames.forEach(v => {
+        const existingData = item.data.find(d => d.name === v)
+        if (existingData !== undefined) {
+          vars.push({
+            ...existingData,
+            value: String(existingData.value),
+          })
+        } else {
+          vars.push({
+            name: v,
+            value: undefined,
+          })
+        }
+      })
+
       return {
         isNew: false,
-        dataPoints: vars.concat(scores),
+        dataPoints: vars,
         enabled: item.meta.enabled,
         valid: item.meta.valid,
         metaId: item.meta.id,
