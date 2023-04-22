@@ -95,13 +95,13 @@ const convertToDataEntry = (
     } else if (valueVariables.find(cv => cv.name === dp.name) !== undefined) {
       return {
         name: dp.name,
-        value: Number(dp.value ?? 0),
+        value: Number((dp.value ?? '0').replaceAll(',', '.')),
         type: 'numeric',
       }
     } else {
       return {
         name: dp.name,
-        value: Number(dp.value ?? 0),
+        value: Number((dp.value ?? '0').replaceAll(',', '.')),
         type: 'score',
       }
     }
@@ -158,13 +158,13 @@ const _editRow = (
             originalDataPoint.value =
               originalDataPoint.type === 'numeric' ||
               originalDataPoint.type === 'score'
-                ? Number(dp.value ?? 0)
-                : String(dp.value ?? '')
+                ? Number(dp.value.replaceAll(',', '.'))
+                : String(dp.value)
           } else {
             if (valueVariables.find(v => v.name === dp.name)) {
               originalRow.data.push({
                 name: dp.name,
-                value: Number(dp.value),
+                value: Number(dp.value.replaceAll(',', '.')),
                 type: 'numeric',
               })
             } else if (categoricalVariables.find(v => v.name === dp.name)) {
@@ -176,7 +176,7 @@ const _editRow = (
             } else if (scoreVariables.find(v => v.name === dp.name)) {
               originalRow.data.push({
                 name: dp.name,
-                value: Number(dp.value),
+                value: Number(dp.value.replaceAll(',', '.')),
                 type: 'score',
               })
             }
