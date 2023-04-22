@@ -323,6 +323,78 @@ describe('converters', () => {
       expect(actual).toEqual(expected)
     })
 
+    it('should fill missing values', () => {
+      const input: DataEntry[] = [
+        {
+          meta: {
+            enabled: true,
+            id: 1,
+            valid: true,
+          },
+          data: [
+            {
+              type: 'numeric',
+              name: 'Sukker',
+              value: 28,
+            },
+            {
+              type: 'numeric',
+              name: 'Hvedemel',
+              value: 632,
+            },
+            {
+              type: 'categorical',
+              name: 'Kunde',
+              value: 'Mus',
+            },
+            {
+              type: 'score',
+              name: 'score',
+              value: 1,
+            },
+          ],
+        },
+        {
+          meta: {
+            enabled: false,
+            id: 3,
+            valid: true,
+          },
+          data: [
+            {
+              type: 'numeric',
+              name: 'Sukker',
+              value: 15,
+            },
+            {
+              type: 'numeric',
+              name: 'Peber',
+              value: 986,
+            },
+            {
+              type: 'numeric',
+              name: 'Hvedemel',
+              value: 5,
+            },
+            {
+              type: 'categorical',
+              name: 'Kunde',
+              value: 'Mus',
+            },
+            {
+              type: 'score',
+              name: 'score',
+              value: 2,
+            },
+          ],
+        },
+      ]
+      const expected =
+        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;;632;Mus;1;true;true\n3;15;986;5;Mus;2;false;true'
+      const actual = dataPointsToCSV(input)
+      expect(actual).toEqual(expected)
+    })
+
     it('should not sort lines according to meta.id', () => {
       const input: DataEntry[] = [
         {

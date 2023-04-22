@@ -8,6 +8,7 @@ import {
   SpaceType,
   ValueVariableType,
 } from 'common/types'
+
 /**
  * Calculate the "space" parameter to send to the API based on the
  * variables defined in the supplied experiment
@@ -86,47 +87,48 @@ export const dataPointsToCSV = (
   dataPoints: DataEntry[],
   separator = ';',
   newline = '\n'
-): string =>
-  dataPoints
-    // Generate headers
-    .reduce(
-      (prev, curr, idx) =>
-        idx === 0
-          ? [
-              // Add ID column as first column
-              ['id']
-                .concat(
-                  curr.data
-                    .map(item => item.name)
-                    .concat(
-                      Object.entries(curr.meta)
-                        .filter(e => e[0] !== 'id')
-                        .map(e => e[0])
-                    )
-                )
-                .join(separator),
-            ]
-          : prev,
-      [] as string[]
+): string => {
+  const header = [
+    ...new Set(dataPoints.flatMap(d => d.data.map(x => x.name))),
+  ].sort((a, b) =>
+    dataPoints.reduce(
+      (_, curr) =>
+        curr.data.map(x => x.name).indexOf(a) -
+        curr.data.map(x => x.name).indexOf(b),
+      0
     )
-    // Generate data lines
-    .concat(
-      [...dataPoints]
-        // .sort((a, b) => a.meta.id - b.meta.id)
-        .map(
-          line =>
-            `${line.meta.id}${separator}${line.data
-              .map(item => item.value)
-              .concat(
-                Object.entries(line.meta as object)
-                  .filter(e => e[0] !== 'id')
-                  .map(e => e[1])
+  )
+  const meta = [
+    ...new Set(
+      dataPoints.flatMap(d => Object.keys(d.meta).filter(elm => elm !== 'id'))
+    ),
+  ]
+  return dataPoints.length === 0
+    ? ''
+    : [['id'].concat(header, meta).join(separator)]
+        // Generate data lines
+        .concat(
+          [...dataPoints]
+            .map(line => {
+              const values = new Map(
+                line.data.map(elm => [elm.name, String(elm.value)])
               )
-              .join(separator)}`
+              return { ...line, data: header.map(h => values.get(h) ?? '') }
+            })
+            .map(
+              line =>
+                `${line.meta.id}${separator}${line.data
+                  .concat(
+                    Object.entries(line.meta as object)
+                      .filter(e => e[0] !== 'id')
+                      .map(e => e[1])
+                  )
+                  .join(separator)}`
+            )
         )
-    )
-    .filter(s => '' !== s)
-    .join(newline)
+        .filter(s => '' !== s)
+        .join(newline)
+}
 
 const convertValue = (
   valueHeaders: string[],
