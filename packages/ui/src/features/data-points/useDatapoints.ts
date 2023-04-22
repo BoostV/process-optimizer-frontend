@@ -55,12 +55,14 @@ export const useDatapoints = (
   const editRow = useCallback(
     (rowIndex: number, row: TableDataRow) =>
       _editRow(
-        valueVariables,
-        categoricalVariables,
-        scoreVariables,
         dataPoints,
         rowIndex,
-        row
+        convertToDataEntry(
+          valueVariables,
+          categoricalVariables,
+          scoreVariables,
+          row
+        )
       ),
     [categoricalVariables, dataPoints, scoreVariables, valueVariables]
   )
@@ -86,22 +88,27 @@ const convertToDataEntry = (
   row: TableDataRow
 ) => {
   const data = row.dataPoints.map(dp => {
+    if (dp.value === undefined) {
+      throw new Error(
+        'Undefined values must be filtered away before convertion to data points'
+      )
+    }
     if (categoricalVariables.find(cv => cv.name === dp.name) !== undefined) {
       return {
         name: dp.name,
-        value: String(dp.value ?? ''),
+        value: String(dp.value),
         type: 'categorical',
       }
     } else if (valueVariables.find(cv => cv.name === dp.name) !== undefined) {
       return {
         name: dp.name,
-        value: Number((dp.value ?? '0').replaceAll(',', '.')),
+        value: Number(dp.value.replaceAll(',', '.')),
         type: 'numeric',
       }
     } else {
       return {
         name: dp.name,
-        value: Number((dp.value ?? '0').replaceAll(',', '.')),
+        value: Number(dp.value.replaceAll(',', '.')),
         type: 'score',
       }
     }
@@ -136,50 +143,21 @@ const _addRow = (original: DataEntry[], newRow: DataEntry) =>
     })
   })
 
-const _editRow = (
-  valueVariables: ValueVariableType[],
-  categoricalVariables: CategoricalVariableType[],
-  scoreVariables: ScoreVariableType[],
-  original: DataEntry[],
-  rowIndex: number,
-  row: TableDataRow
-) =>
+const _editRow = (original: DataEntry[], rowIndex: number, row: DataEntry) =>
   produce(original, result => {
     const originalRow = result[rowIndex]
     if (originalRow !== undefined) {
-      originalRow.meta.enabled = row.enabled ?? originalRow.meta.enabled
-      originalRow.meta.id = row.metaId ?? originalRow.meta.id
-      row.dataPoints.forEach(dp => {
+      originalRow.meta.enabled = row.meta.enabled ?? originalRow.meta.enabled
+      originalRow.meta.id = row.meta.id ?? originalRow.meta.id
+      row.data.forEach(dp => {
         if (dp.value !== undefined) {
           const originalDataPoint = originalRow.data.find(
             odp => odp.name === dp.name
           )
           if (originalDataPoint !== undefined) {
-            originalDataPoint.value =
-              originalDataPoint.type === 'numeric' ||
-              originalDataPoint.type === 'score'
-                ? Number(dp.value.replaceAll(',', '.'))
-                : String(dp.value)
+            originalDataPoint.value = dp.value
           } else {
-            if (valueVariables.find(v => v.name === dp.name)) {
-              originalRow.data.push({
-                name: dp.name,
-                value: Number(dp.value.replaceAll(',', '.')),
-                type: 'numeric',
-              })
-            } else if (categoricalVariables.find(v => v.name === dp.name)) {
-              originalRow.data.push({
-                name: dp.name,
-                value: String(dp.value),
-                type: 'categorical',
-              })
-            } else if (scoreVariables.find(v => v.name === dp.name)) {
-              originalRow.data.push({
-                name: dp.name,
-                value: Number(dp.value.replaceAll(',', '.')),
-                type: 'score',
-              })
-            }
+            originalRow.data.push(dp)
           }
         }
       })
