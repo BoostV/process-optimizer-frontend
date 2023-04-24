@@ -4,6 +4,7 @@ import {
   ExperimentResultType,
   ExperimentType,
   OptimizerConfig,
+  ScoreVariableType,
   ValueVariableType,
   experimentSchema,
 } from '@core/common/types'
@@ -19,6 +20,26 @@ const calculateInitialPoints = (state: ExperimentType) =>
     3,
     (state.categoricalVariables.length + state.valueVariables.length) * 3
   )
+
+const defaultSorted = (
+  values: ValueVariableType[],
+  categorical: CategoricalVariableType[],
+  scores: ScoreVariableType[],
+  dataRows: DataEntry[]
+) => {
+  const orderedNames = values
+    .map(v => v.name)
+    .concat(categorical.map(v => v.name))
+    .concat(scores.map(v => v.name))
+  return dataRows.map(dr => ({
+    ...dr,
+    data: [...dr.data].sort(
+      (a, b) =>
+        orderedNames.findIndex(n => n === a.name) -
+        orderedNames.findIndex(n => n === b.name)
+    ),
+  }))
+}
 
 export type ExperimentAction =
   | {
@@ -158,7 +179,14 @@ export const experimentReducer = produce(
               )
             }),
           }))
-        state.dataPoints.push(...newEntries)
+        state.dataPoints.push(
+          ...defaultSorted(
+            state.valueVariables,
+            state.categoricalVariables,
+            state.scoreVariables,
+            newEntries
+          )
+        )
         break
       }
       case 'addValueVariable':
@@ -242,7 +270,12 @@ export const experimentReducer = produce(
         ) {
           state.extras.experimentSuggestionCount = 1
         }
-        state.dataPoints = action.payload
+        state.dataPoints = defaultSorted(
+          state.valueVariables,
+          state.categoricalVariables,
+          state.scoreVariables,
+          action.payload
+        )
         break
       case 'experiment/toggleMultiObjective':
         state.scoreVariables = state.scoreVariables.map((it, idx) => ({
