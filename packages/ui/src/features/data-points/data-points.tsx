@@ -86,7 +86,13 @@ export function DataPoints(props: DataPointProps) {
     [violations]
   )
 
-  const rowAdded = (row: TableDataRow) => onUpdateDataPoints(addRow(row))
+  const rowAdded = (row: TableDataRow) =>
+    onUpdateDataPoints(
+      addRow({
+        ...row,
+        dataPoints: row.dataPoints.filter(dp => dp.value !== undefined),
+      })
+    )
 
   const rowDeleted = (rowIndex: number) =>
     onUpdateDataPoints(deleteRow(rowIndex))

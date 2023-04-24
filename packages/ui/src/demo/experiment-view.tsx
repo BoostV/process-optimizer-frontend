@@ -64,10 +64,7 @@ const Experiment = () => {
               })
             }
           />
-          <OptimizerConfigurator
-            debug={false}
-            config={experiment.optimizerConfig}
-          />
+          <ExperimentationGuide />
           <InputModel
             isAddRemoveDisabled={false}
             categoricalVariables={experiment.categoricalVariables}
@@ -75,11 +72,13 @@ const Experiment = () => {
           />
         </Stack>
         <Stack spacing={2} direction="row">
-          <ExperimentationGuide />
-        </Stack>
-        <Stack spacing={2} direction="row">
+          <OptimizerConfigurator
+            debug={false}
+            config={experiment.optimizerConfig}
+          />
           <Plots experiment={experiment} />
         </Stack>
+        <Stack spacing={2} direction="row"></Stack>
       </Box>
 
       <pre>{JSON.stringify(experiment, undefined, 2)}</pre>

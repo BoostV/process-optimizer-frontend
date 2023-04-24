@@ -12,7 +12,6 @@ export const validationReducer = produce(
           !violations.lowerBoundary.includes(dp.meta.id) &&
           !violations.upperBoundary.includes(dp.meta.id) &&
           !violations.duplicateDataPointIds.includes(dp.meta.id) &&
-          !violations.dataPointsNotNumber.includes(dp.meta.id) &&
           violations.duplicateVariableNames.length === 0
         return {
           ...dp,

@@ -3,7 +3,7 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '12'
+export const currentVersion = '13'
 
 const infoSchema = z.object({
   name: z.string(),
@@ -56,19 +56,29 @@ const dataEntryMetaDataSchema = z.object({
   description: z.optional(z.string()),
 })
 
-const dataPointValueSchema = z.number().or(z.string()).or(z.array(z.number()))
-
-const genericDataPointSchema = z.object({
+const numericDataPoint = z.object({
+  type: z.literal('numeric'),
   name: z.string(),
-  value: dataPointValueSchema,
+  value: z.number(),
 })
 
-const scoreDataPointSchema = z.object({
+const categoricalDataPoint = z.object({
+  type: z.literal('categorical'),
   name: z.string(),
-  value: genericDataPointSchema.or(z.undefined()),
+  value: z.string(),
 })
 
-const dataPointSchema = genericDataPointSchema.or(scoreDataPointSchema)
+const scoreDataPoint = z.object({
+  type: z.literal('score'),
+  name: z.string(),
+  value: z.number(),
+})
+
+export const dataPointSchema = z.discriminatedUnion('type', [
+  numericDataPoint,
+  categoricalDataPoint,
+  scoreDataPoint,
+])
 
 const dataEntrySchema = z.object({
   meta: dataEntryMetaDataSchema,
@@ -89,10 +99,10 @@ export const experimentSchema = z.object({
   dataPoints: z.array(dataEntrySchema),
 })
 
-export type DataPointTypeValue = z.infer<typeof dataPointValueSchema>
-export type CategorialDataPointType = z.infer<typeof genericDataPointSchema>
-export type ValueDataPointType = z.infer<typeof genericDataPointSchema>
-export type ScoreDataPointType = z.infer<typeof scoreDataPointSchema>
+export type DataPointTypeValue = z.infer<typeof dataPointSchema>['value']
+export type CategorialDataPointType = z.infer<typeof categoricalDataPoint>
+export type ValueDataPointType = z.infer<typeof numericDataPoint>
+export type ScoreDataPointType = z.infer<typeof scoreDataPoint>
 export type DataPointType = z.infer<typeof dataPointSchema>
 export type DataEntry = z.infer<typeof dataEntrySchema>
 export type SpaceType = {

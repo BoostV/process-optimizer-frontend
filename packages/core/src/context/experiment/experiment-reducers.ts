@@ -4,7 +4,9 @@ import {
   ExperimentResultType,
   ExperimentType,
   OptimizerConfig,
+  ScoreVariableType,
   ValueVariableType,
+  experimentSchema,
 } from '@core/common/types'
 import { produce } from 'immer'
 import md5 from 'md5'
@@ -18,6 +20,26 @@ const calculateInitialPoints = (state: ExperimentType) =>
     3,
     (state.categoricalVariables.length + state.valueVariables.length) * 3
   )
+
+const defaultSorted = (
+  values: ValueVariableType[],
+  categorical: CategoricalVariableType[],
+  scores: ScoreVariableType[],
+  dataRows: DataEntry[]
+) => {
+  const orderedNames = values
+    .map(v => v.name)
+    .concat(categorical.map(v => v.name))
+    .concat(scores.map(v => v.name))
+  return dataRows.map(dr => ({
+    ...dr,
+    data: [...dr.data].sort(
+      (a, b) =>
+        orderedNames.findIndex(n => n === a.name) -
+        orderedNames.findIndex(n => n === b.name)
+    ),
+  }))
+}
 
 export type ExperimentAction =
   | {
@@ -97,24 +119,32 @@ export const experimentReducer = produce(
         state.info.swVersion = action.payload
         break
       case 'updateExperiment':
-        return {
+        return experimentSchema.parse({
           ...action.payload,
           info: { ...action.payload.info, swVersion: versionInfo.version },
-        }
+        })
       case 'updateExperimentName':
-        state.info.name = action.payload
+        state.info.name = experimentSchema.shape.info.shape.name.parse(
+          action.payload
+        )
         break
       case 'updateExperimentDescription':
-        state.info.description = action.payload
+        state.info.description =
+          experimentSchema.shape.info.shape.description.parse(action.payload)
         break
       case 'updateSuggestionCount':
         state.extras.experimentSuggestionCount = Number(action.payload)
         break
-      case 'copySuggestedToDataPoints':
+      case 'copySuggestedToDataPoints': {
         const nextValues = selectNextValues(state)
-        const variableNames = state.valueVariables
-          .map(v => v.name)
-          .concat(state.categoricalVariables.map(c => c.name))
+        const variables = state.valueVariables
+          .map(v => ({ name: v.name, type: 'numeric' }))
+          .concat(
+            state.categoricalVariables.map(c => ({
+              name: c.name,
+              type: 'categorical',
+            }))
+          )
         const newEntries: DataEntry[] = nextValues
           .filter((_, i) => action.payload.includes(i))
           .map((n, k) => ({
@@ -126,32 +156,54 @@ export const experimentReducer = produce(
                   ? k + 1
                   : Math.max(...state.dataPoints.map(d => d.meta.id)) + k + 1,
             },
-            data: n
-              .map((v, i) => ({
-                name: variableNames[i] || '',
-                value: v,
-              }))
-              .concat([
-                ...state.scoreVariables.map(s => ({
-                  name: s.name,
-                  value: undefined,
-                })),
-              ]),
+            data: n.map((v, i) => {
+              const variable = variables[i]
+              if (variable !== undefined) {
+                switch (variable.type) {
+                  case 'numeric':
+                    return {
+                      name: variable.name,
+                      value: Number(v),
+                      type: 'numeric',
+                    }
+                  case 'categorical':
+                    return {
+                      name: variable.name,
+                      value: String(v),
+                      type: 'categorical',
+                    }
+                }
+              }
+              throw new Error(
+                `Could not find match for index ${i} of ${JSON.stringify(n)}`
+              )
+            }),
           }))
-        state.dataPoints.push(...newEntries)
+        state.dataPoints.push(
+          ...defaultSorted(
+            state.valueVariables,
+            state.categoricalVariables,
+            state.scoreVariables,
+            newEntries
+          )
+        )
         break
+      }
       case 'addValueVariable':
         state.valueVariables.splice(
           state.valueVariables.length,
           0,
-          action.payload
+          experimentSchema.shape.valueVariables.element.parse(action.payload)
         )
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
       case 'editValueVariable':
-        state.valueVariables[action.payload.index] = action.payload.variable
+        state.valueVariables[action.payload.index] =
+          experimentSchema.shape.valueVariables.element.parse(
+            action.payload.variable
+          )
         break
       case 'deleteValueVariable': {
         state.valueVariables.splice(action.payload, 1)
@@ -164,7 +216,9 @@ export const experimentReducer = produce(
         state.categoricalVariables.splice(
           state.categoricalVariables.length,
           0,
-          action.payload
+          experimentSchema.shape.categoricalVariables.element.parse(
+            action.payload
+          )
         )
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
@@ -172,7 +226,9 @@ export const experimentReducer = produce(
         break
       case 'editCategoricalVariable':
         state.categoricalVariables[action.payload.index] =
-          action.payload.variable
+          experimentSchema.shape.categoricalVariables.element.parse(
+            action.payload.variable
+          )
         break
       case 'deleteCategorialVariable': {
         state.categoricalVariables.splice(action.payload, 1)
@@ -189,15 +245,18 @@ export const experimentReducer = produce(
         ) {
           state.extras.experimentSuggestionCount = action.payload.initialPoints
         }
-        state.optimizerConfig = action.payload
+        state.optimizerConfig = experimentSchema.shape.optimizerConfig.parse(
+          action.payload
+        )
         break
       case 'registerResult':
         state.lastEvaluationHash = md5(
           JSON.stringify(createFetchExperimentResultRequest(state))
         )
-        state.results = action.payload
+        state.results = experimentSchema.shape.results.parse(action.payload)
         break
       case 'updateDataPoints':
+        experimentSchema.shape.dataPoints.parse(action.payload)
         if (
           action.payload.length < state.dataPoints.length &&
           state.dataPoints.length === state.optimizerConfig.initialPoints
@@ -211,7 +270,12 @@ export const experimentReducer = produce(
         ) {
           state.extras.experimentSuggestionCount = 1
         }
-        state.dataPoints = action.payload
+        state.dataPoints = defaultSorted(
+          state.valueVariables,
+          state.categoricalVariables,
+          state.scoreVariables,
+          action.payload
+        )
         break
       case 'experiment/toggleMultiObjective':
         state.scoreVariables = state.scoreVariables.map((it, idx) => ({
@@ -233,7 +297,7 @@ export const experimentReducer = produce(
               .map(it => it.name)
             scoreNames.forEach(scoreName => {
               if (!containedScores.includes(scoreName))
-                dp.push({ name: scoreName, value: 0 })
+                dp.push({ type: 'score', name: scoreName, value: 0 })
             })
           })
         }

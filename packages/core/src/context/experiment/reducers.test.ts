@@ -4,6 +4,7 @@ import {
   CategoricalVariableType,
   currentVersion,
   DataEntry,
+  DataPointType,
   ExperimentResultType,
   ExperimentType,
   OptimizerConfig,
@@ -12,6 +13,8 @@ import {
 import { emptyExperiment, State } from '@core/context/experiment'
 import { versionInfo } from '@core/common'
 import { expect } from 'vitest'
+import _ from 'lodash'
+import produce from 'immer'
 
 describe('experiment reducer', () => {
   const initState: State = {
@@ -74,14 +77,17 @@ describe('experiment reducer', () => {
           },
           data: [
             {
+              type: 'numeric',
               name: 'Water',
               value: 100,
             },
             {
+              type: 'categorical',
               name: 'Icing',
               value: 'Vanilla',
             },
             {
+              type: 'score',
               name: 'score',
               value: 10,
             },
@@ -508,6 +514,65 @@ describe('experiment reducer', () => {
           .experimentSuggestionCount
       ).toEqual(3)
     })
+
+    it.each(new Array(100).fill(0))(
+      'should sort data points according to variable definitions',
+      () => {
+        const values = ['value1', 'value2', 'value3']
+        const cats = ['cat1', 'cat2', 'cat3']
+        const scores = ['score1', 'score2']
+
+        const testState = produce(initState, draft => {
+          draft.experiment.valueVariables = values.map(name => ({
+            name,
+            description: '',
+            max: 100,
+            min: 0,
+            type: 'continuous',
+          }))
+          draft.experiment.categoricalVariables = cats.map(name => ({
+            name,
+            description: '',
+            options: ['test'],
+          }))
+          draft.experiment.scoreVariables = scores.map(name => ({
+            name,
+            description: '',
+            enabled: true,
+          }))
+        })
+
+        const payload: DataEntry[] = createDataPoints(
+          1,
+          values,
+          cats,
+          scores,
+          true
+        ).map(dr => ({
+          ...dr,
+          data: _.shuffle(dr.data),
+        }))
+
+        const action: ExperimentAction = {
+          type: 'updateDataPoints',
+          payload,
+        }
+        const expected = [
+          'value1',
+          'value2',
+          'value3',
+          'cat1',
+          'cat2',
+          'cat3',
+          'score1',
+          'score2',
+        ]
+        const actual = rootReducer(testState, action).experiment.dataPoints.map(
+          dr => dr.data.map(d => d.name)
+        )
+        actual.forEach(namesRow => expect(namesRow).toEqual(expected))
+      }
+    )
   })
 
   describe('copySuggestedToDataPoints', () => {
@@ -522,17 +587,16 @@ describe('experiment reducer', () => {
       expect(dp[dp.length - 1]?.meta.valid).toBeFalsy()
       expect(dp[dp.length - 1]?.meta.id).toBe(2)
       expect(dp[dp.length - 1]?.data).toEqual([
-        {
+        expect.objectContaining({
+          type: 'numeric',
           name: 'Water',
           value: 100,
-        },
-        {
+        }),
+        expect.objectContaining({
+          type: 'categorical',
           name: 'Icing',
           value: 'Vanilla',
-        },
-        {
-          name: 'score',
-        },
+        }),
       ])
     })
     it('should copy multiple rows from suggested to data points', () => {
@@ -547,34 +611,16 @@ describe('experiment reducer', () => {
       expect(dp[dp.length - 1]?.meta.valid).toBeFalsy()
       expect(dp[dp.length - 2]?.meta.id).toBe(2)
       expect(dp[dp.length - 2]?.data).toEqual([
-        {
-          name: 'Water',
-          value: 100,
-        },
-        {
-          name: 'Icing',
-          value: 'Vanilla',
-        },
-        {
-          name: 'score',
-        },
+        { type: 'numeric', name: 'Water', value: 100 },
+        { type: 'categorical', name: 'Icing', value: 'Vanilla' },
       ])
       //Check last item
       expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
       expect(dp[dp.length - 1]?.meta.valid).toBeFalsy()
       expect(dp[dp.length - 1]?.meta.id).toBe(3)
       expect(dp[dp.length - 1]?.data).toEqual([
-        {
-          name: 'Water',
-          value: 150,
-        },
-        {
-          name: 'Icing',
-          value: 'Chocolate',
-        },
-        {
-          name: 'score',
-        },
+        { type: 'numeric', name: 'Water', value: 150 },
+        { type: 'categorical', name: 'Icing', value: 'Chocolate' },
       ])
     })
   })
@@ -604,18 +650,14 @@ describe('experiment reducer', () => {
     const dp = rootReducer(testState, action).experiment.dataPoints
     expect(dp[dp.length - 1]?.data).toEqual([
       {
+        type: 'numeric',
         name: 'Water',
         value: 100,
       },
       {
+        type: 'categorical',
         name: 'Icing',
         value: 'Vanilla',
-      },
-      {
-        name: 'score',
-      },
-      {
-        name: 'score2',
       },
     ])
   })
@@ -645,34 +687,43 @@ describe('experiment reducer', () => {
     const dp = rootReducer(testState, action).experiment.dataPoints
     expect(dp[dp.length - 1]?.data).toEqual([
       {
+        type: 'numeric',
         name: 'Water',
         value: 100,
       },
       {
+        type: 'categorical',
         name: 'Icing',
         value: 'Vanilla',
-      },
-      {
-        name: 'score',
-      },
-      {
-        name: 'score2',
       },
     ])
   })
 })
 
-const createDataPoints = (count: number): DataEntry[] =>
-  [...Array(count)].map((_id, idx) => ({
-    meta: { enabled: true, id: idx + 1, valid: true },
-    data: [
-      {
-        name: 'New point 1',
-        value: '1',
-      },
-      {
-        name: 'score',
-        value: [2],
-      },
-    ],
+const createDataPoints = (
+  count: number,
+  values = ['Water'],
+  categorical = ['Icing'],
+  scores = ['score'],
+  randomize = false
+): DataEntry[] => {
+  const valueData: DataPointType[] = values.map(name => ({
+    name,
+    type: 'numeric',
+    value: randomize ? Math.random() * 100 : 100,
   }))
+  const categoricalData: DataPointType[] = categorical.map(name => ({
+    name,
+    type: 'categorical',
+    value: 'Vanilla',
+  }))
+  const scoreData: DataPointType[] = scores.map(name => ({
+    name,
+    type: 'score',
+    value: randomize ? Math.random() * 10 : 2,
+  }))
+  return [...Array(count)].map((_id, idx) => ({
+    meta: { enabled: true, id: idx + 1, valid: true },
+    data: valueData.concat(categoricalData, scoreData),
+  }))
+}

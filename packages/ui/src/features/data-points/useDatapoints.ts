@@ -6,7 +6,7 @@ import {
   CombinedVariableType,
 } from '@boostv/process-optimizer-frontend-core'
 import { useCallback, useMemo } from 'react'
-import { TableDataRow } from '../core'
+import { TableDataPoint, TableDataRow } from '../core'
 import produce from 'immer'
 
 export const useDatapoints = (
@@ -54,8 +54,17 @@ export const useDatapoints = (
   )
   const editRow = useCallback(
     (rowIndex: number, row: TableDataRow) =>
-      _editRow(dataPoints, rowIndex, row),
-    [dataPoints]
+      _editRow(
+        dataPoints,
+        rowIndex,
+        convertToDataEntry(
+          valueVariables,
+          categoricalVariables,
+          scoreVariables,
+          row
+        )
+      ),
+    [categoricalVariables, dataPoints, scoreVariables, valueVariables]
   )
   const setEnabledState = useCallback(
     (rowIndex: number, enabled: boolean) =>
@@ -78,13 +87,32 @@ const convertToDataEntry = (
   scoreVariables: ScoreVariableType[],
   row: TableDataRow
 ) => {
-  const data = row.dataPoints.map(dp => ({
-    name: dp.name,
-    value:
-      categoricalVariables.find(cv => cv.name === dp.name) !== undefined
-        ? String(dp.value ?? '')
-        : Number(dp.value ?? 0),
-  })) satisfies DataEntry['data']
+  const data = row.dataPoints.map(dp => {
+    if (dp.value === undefined) {
+      throw new Error(
+        'Undefined values must be filtered away before convertion to data points'
+      )
+    }
+    if (categoricalVariables.find(cv => cv.name === dp.name) !== undefined) {
+      return {
+        name: dp.name,
+        value: String(dp.value),
+        type: 'categorical',
+      }
+    } else if (valueVariables.find(cv => cv.name === dp.name) !== undefined) {
+      return {
+        name: dp.name,
+        value: Number(dp.value.replaceAll(',', '.')),
+        type: 'numeric',
+      }
+    } else {
+      return {
+        name: dp.name,
+        value: Number(dp.value.replaceAll(',', '.')),
+        type: 'score',
+      }
+    }
+  }) satisfies DataEntry['data']
   const meta = {
     enabled: row.enabled ?? true,
     id: row.metaId ?? 0,
@@ -98,30 +126,39 @@ const convertToDataEntry = (
         1 &&
     scoreVariables[1] !== undefined
   ) {
-    data.push({ name: scoreVariables[1].name, value: 0 })
+    data.push({ name: scoreVariables[1].name, value: 0, type: 'score' })
   }
   return { data, meta } satisfies DataEntry
 }
 
 const _addRow = (original: DataEntry[], newRow: DataEntry) =>
   produce(original, result => {
-    result.push(newRow)
+    result.push({
+      ...newRow,
+      data: newRow.data.filter(dp => dp.value !== undefined),
+      meta: {
+        ...newRow.meta,
+        id: original.reduce((id, curr) => Math.max(id + 1, curr.meta.id), 1),
+      },
+    })
   })
 
-const _editRow = (original: DataEntry[], rowIndex: number, row: TableDataRow) =>
+const _editRow = (original: DataEntry[], rowIndex: number, row: DataEntry) =>
   produce(original, result => {
     const originalRow = result[rowIndex]
     if (originalRow !== undefined) {
-      originalRow.meta.enabled = row.enabled ?? originalRow.meta.enabled
-      originalRow.meta.id = row.metaId ?? originalRow.meta.id
-      row.dataPoints.forEach(dp => {
-        const originalDataPoint = originalRow.data.find(
-          odp => odp.name === dp.name
-        )
-        const type = typeof originalDataPoint
-        if (originalDataPoint !== undefined) {
-          originalDataPoint.value =
-            type === 'number' ? Number(dp.value ?? 0) : String(dp.value ?? '')
+      originalRow.meta.enabled = row.meta.enabled ?? originalRow.meta.enabled
+      originalRow.meta.id = row.meta.id ?? originalRow.meta.id
+      row.data.forEach(dp => {
+        if (dp.value !== undefined) {
+          const originalDataPoint = originalRow.data.find(
+            odp => odp.name === dp.name
+          )
+          if (originalDataPoint !== undefined) {
+            originalDataPoint.value = dp.value
+          } else {
+            originalRow.data.push(dp)
+          }
         }
       })
     }
@@ -170,14 +207,14 @@ const buildEmptyRow = (
     dataPoints: buildCombinedVariables(valueVariables, categoricalVariables)
       .map(variable => ({
         name: variable.name,
-        value: variable.options?.[0] ?? '',
+        value: variable.options?.[0],
         options: variable.options,
         tooltip: variable.tooltip,
       }))
       .concat(
         scoreNames.map(s => ({
           name: s,
-          value: '',
+          value: undefined,
           options: undefined,
           tooltip: undefined,
         }))
@@ -198,25 +235,46 @@ const buildRows = (
   )
   const dataPointRows = dataPoints
     .map(item => {
-      const rowData: DataEntry['data'] = item.data.filter(
-        dp => !scoreNames.includes(dp.name)
-      )
-      const vars = new Array(rowData.length)
-      rowData.forEach(v => {
-        const idx = combinedVariables.findIndex(it => it.name === v.name)
-        vars[idx] = {
-          name: v.name,
-          value: v.value?.toString(),
-          options: combinedVariables[idx]?.options,
-          tooltip: combinedVariables[idx]?.tooltip,
+      // const rowData: DataEntry['data'] = item.data.filter(
+      //   dp => !scoreNames.includes(dp.name)
+      // )
+      const vars: TableDataPoint[] = []
+      combinedVariables.forEach(v => {
+        const existingData = item.data.find(d => d.name === v.name)
+        if (existingData !== undefined) {
+          vars.push({
+            ...existingData,
+            value: String(existingData.value),
+            options: v?.options,
+            tooltip: v?.tooltip,
+          })
+        } else {
+          vars.push({
+            name: v.name,
+            value: undefined,
+            options: v?.options,
+            tooltip: v?.tooltip,
+          })
         }
       })
-      const scores = item.data
-        .filter(dp => scoreNames.includes(dp.name))
-        .map(score => ({ name: score.name, value: String(score.value ?? '') }))
+      scoreNames.forEach(v => {
+        const existingData = item.data.find(d => d.name === v)
+        if (existingData !== undefined) {
+          vars.push({
+            ...existingData,
+            value: String(existingData.value),
+          })
+        } else {
+          vars.push({
+            name: v,
+            value: undefined,
+          })
+        }
+      })
+
       return {
         isNew: false,
-        dataPoints: vars.concat(scores),
+        dataPoints: vars,
         enabled: item.meta.enabled,
         valid: item.meta.valid,
         metaId: item.meta.id,

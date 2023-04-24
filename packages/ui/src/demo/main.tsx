@@ -5,7 +5,7 @@ import { ExperimentView } from './experiment-view'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ApiProvider>
+    <ApiProvider config={{ apiKey: 'none' }}>
       <ExperimentView />
     </ApiProvider>
   </React.StrictMode>
