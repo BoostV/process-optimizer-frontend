@@ -1,5 +1,16 @@
 # @process-optimizer-frontend/core
 
+## 2.0.0
+
+### Major Changes
+
+- d7d66b4: Include type of each value of a data row.
+
+### Patch Changes
+
+- c512d7c: Fix issue where editing breaks after toggling multi objective
+- 82b8489: Add selector for multi objective state
+
 ## 1.5.0
 
 ### Minor Changes

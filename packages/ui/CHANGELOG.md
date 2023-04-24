@@ -1,5 +1,15 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 1.3.1
+
+### Patch Changes
+
+- c512d7c: Fix issue where editing breaks after toggling multi objective
+- Updated dependencies [d7d66b4]
+- Updated dependencies [c512d7c]
+- Updated dependencies [82b8489]
+  - @boostv/process-optimizer-frontend-core@2.0.0
+
 ## 1.3.0
 
 ### Minor Changes
