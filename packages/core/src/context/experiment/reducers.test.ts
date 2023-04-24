@@ -14,8 +14,8 @@ import { emptyExperiment, State } from '@core/context/experiment'
 import { versionInfo } from '@core/common'
 import { expect } from 'vitest'
 import _ from 'lodash'
-import { satisfies } from 'compare-versions'
 import produce from 'immer'
+
 describe('experiment reducer', () => {
   const initState: State = {
     experiment: {
