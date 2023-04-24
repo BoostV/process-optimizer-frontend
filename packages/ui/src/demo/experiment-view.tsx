@@ -6,6 +6,7 @@ import {
   useSelector,
   DataEntry,
   migrate,
+  selectIsMultiObjective,
 } from '@boostv/process-optimizer-frontend-core'
 
 import catapult from '@ui/testing/sample-data/catapult.json'
@@ -13,6 +14,8 @@ import cake from '@ui/testing/sample-data/cake.json'
 import { DataPoints, ExperimentationGuide, Plots } from '..'
 import { OptimizerConfigurator } from '../features/experiment'
 import { InputModel } from '../features/input-model'
+import { Switch } from '@mui/material'
+import { useState } from 'react'
 
 const Experiment = () => {
   const {
@@ -22,8 +25,10 @@ const Experiment = () => {
     loading,
   } = useExperiment()
   const dataPoints = useSelector(selectDataPoints)
+  const isMultiObjective = useSelector(selectIsMultiObjective)
+  const [newestFirst, setNewestFirst] = useState(false)
 
-  const loadSample = (data: any) => {
+  const loadSample = (data: unknown) => {
     dispatch({
       type: 'updateExperiment',
       payload: migrate(data),
@@ -36,6 +41,12 @@ const Experiment = () => {
       <button disabled={loading} onClick={() => evaluate()}>
         Run experiment
       </button>
+      <Switch
+        checked={isMultiObjective}
+        onChange={() => dispatch({ type: 'experiment/toggleMultiObjective' })}
+        name="multiobj"
+        color="secondary"
+      />
       <Box>
         <Stack spacing={2} direction="row">
           <DataPoints
@@ -44,8 +55,8 @@ const Experiment = () => {
             categoricalVariables={experiment.categoricalVariables}
             scoreVariables={experiment.scoreVariables}
             dataPoints={dataPoints}
-            newestFirst={true}
-            onToggleNewestFirst={() => {}}
+            newestFirst={newestFirst}
+            onToggleNewestFirst={() => setNewestFirst(!newestFirst)}
             onUpdateDataPoints={(dataPoints: DataEntry[]) =>
               dispatch({
                 type: 'updateDataPoints',
@@ -55,17 +66,10 @@ const Experiment = () => {
           />
           <OptimizerConfigurator
             debug={false}
-            onConfigUpdated={() => {}}
             config={experiment.optimizerConfig}
           />
           <InputModel
             isAddRemoveDisabled={false}
-            onDeleteValueVariable={() => {}}
-            onDeleteCategoricalVariable={() => {}}
-            addCategoricalVariable={() => {}}
-            addValueVariable={() => {}}
-            editValueVariable={() => {}}
-            editCategoricalVariable={() => {}}
             categoricalVariables={experiment.categoricalVariables}
             valueVariables={experiment.valueVariables}
           />
@@ -74,11 +78,7 @@ const Experiment = () => {
           <ExperimentationGuide />
         </Stack>
         <Stack spacing={2} direction="row">
-          <Plots
-            experiment={experiment}
-            isUIBig={false}
-            onSizeToggle={() => {}}
-          />
+          <Plots experiment={experiment} />
         </Stack>
       </Box>
 

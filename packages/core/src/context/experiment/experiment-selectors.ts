@@ -15,6 +15,9 @@ export const selectDataPoints = (state: State) =>
 export const selectExpectedMinimum = (state: State) =>
   selectExperiment(state).results.expectedMinimum
 
+export const selectIsMultiObjective = (state: State) =>
+  selectExperiment(state).scoreVariables.filter(it => it.enabled).length > 1
+
 export const selectNextValues = (experiment: ExperimentType) => {
   return experiment.results.next && Array.isArray(experiment.results.next[0])
     ? (experiment.results.next as unknown as any[][])

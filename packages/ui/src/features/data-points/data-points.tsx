@@ -1,12 +1,11 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
-import { useEffect, useMemo, useReducer } from 'react'
+import { useMemo } from 'react'
 import { EditableTable } from '../core'
 import { SwapVert } from '@mui/icons-material'
 import { InfoBox, TitleCard } from '../core/title-card/title-card'
 import DownloadCSVButton from './download-csv-button'
 import useStyles from './data-points.style'
 import UploadCSVButton from './upload-csv-button'
-import { dataPointsReducer } from './data-points-reducer'
 import { EditableTableViolation, TableDataRow } from '../core/editable-table'
 import {
   saveCSVToLocalFile,
@@ -18,6 +17,7 @@ import {
   ValidationViolations,
 } from '@boostv/process-optimizer-frontend-core'
 import { findDataPointViolations } from './util'
+import { useDatapoints } from './useDatapoints'
 
 type DataPointProps = {
   experimentId: string
@@ -44,16 +44,18 @@ export function DataPoints(props: DataPointProps) {
     violations,
   } = props
   const { classes } = useStyles()
-  const [state, dispatch] = useReducer(dataPointsReducer, {
-    meta: [],
-    rows: [],
-    changed: false,
-  })
+  const { state, addRow, deleteRow, editRow, setEnabledState } = useDatapoints(
+    valueVariables,
+    categoricalVariables,
+    scoreVariables,
+    dataPoints
+  )
+
   const isLoadingState = state.rows.length === 0
   const isDuplicateVariableNames = useMemo(
     () =>
       violations !== undefined && violations?.duplicateVariableNames.length > 0,
-    [violations?.duplicateVariableNames]
+    [violations]
   )
 
   const getGeneralViolations = (): InfoBox[] => {
@@ -81,104 +83,19 @@ export function DataPoints(props: DataPointProps) {
 
   const violationsInTable: EditableTableViolation[] | undefined = useMemo(
     () => findDataPointViolations(violations),
-    [
-      violations?.dataPointsUndefined,
-      violations?.upperBoundary,
-      violations?.lowerBoundary,
-      violations?.dataPointsNotNumber,
-    ]
+    [violations]
   )
 
-  const scoreNames = useMemo(
-    () => scoreVariables.filter(it => it.enabled).map(it => it.name),
-    [scoreVariables]
-  )
-
-  const rowAdded = (row: TableDataRow) =>
-    dispatch({
-      type: 'rowAdded',
-      payload: {
-        row,
-        categoricalVariables,
-      },
-    })
+  const rowAdded = (row: TableDataRow) => onUpdateDataPoints(addRow(row))
 
   const rowDeleted = (rowIndex: number) =>
-    dispatch({
-      type: 'rowDeleted',
-      payload: rowIndex,
-    })
-
-  const rowEdited = (rowIndex: number, row: TableDataRow) =>
-    dispatch({
-      type: 'rowEdited',
-      payload: {
-        editRow: {
-          rowIndex,
-          row,
-        },
-        categoricalVariables,
-      },
-    })
+    onUpdateDataPoints(deleteRow(rowIndex))
 
   const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
-    dispatch({
-      type: 'rowEnabledToggled',
-      payload: {
-        index: rowIndex,
-        enabled,
-      },
-    })
+    onUpdateDataPoints(setEnabledState(rowIndex, enabled))
 
-  useEffect(() => {
-    dispatch({
-      type: 'setInitialState',
-      payload: {
-        valueVariables,
-        categoricalVariables,
-        scoreNames,
-        data: dataPoints,
-      },
-    })
-  }, [valueVariables, categoricalVariables, scoreNames, dataPoints])
-
-  useEffect(() => {
-    const convertEditableRowToExperimentRow = (
-      row: TableDataRow | undefined
-    ) => {
-      if (row === undefined) {
-        return []
-      }
-      const vars = row.dataPoints.filter(dp => !scoreNames.includes(dp.name))
-      const scores = row.dataPoints
-        .filter(dp => scoreNames.includes(dp.name))
-        .map(s => ({
-          name: s.name,
-          value: s.value,
-        }))
-      return vars
-        .map(dp => ({
-          name: dp.name,
-          value: dp.value,
-        }))
-        .concat(scores) as DataEntry['data']
-    }
-    const updateDataPoints = (
-      meta: DataEntry['meta'][],
-      rows: TableDataRow[]
-    ) => {
-      const zipped = meta.map((m, idx) => [
-        m,
-        convertEditableRowToExperimentRow(rows.filter(e => !e.isNew)[idx]),
-      ])
-      onUpdateDataPoints(
-        zipped.map(e => ({ meta: e[0], data: e[1] })) as DataEntry[]
-      )
-    }
-    if (state.changed) {
-      updateDataPoints(state.meta, state.rows)
-    }
-  }, [onUpdateDataPoints, scoreNames, state.changed, state.rows, state.meta])
+  const rowEdited = (rowIndex: number, row: TableDataRow) =>
+    onUpdateDataPoints(editRow(rowIndex, row))
 
   return (
     <TitleCard
