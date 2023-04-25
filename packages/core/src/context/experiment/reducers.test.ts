@@ -295,6 +295,35 @@ describe('experiment reducer', () => {
       })
     })
 
+    describe('editValueVariable', () => {
+      it('should edit value variable', () => {
+        const newVariable: ValueVariableType = {
+          type: 'continuous',
+          name: 'new name',
+          description: 'new description',
+          min: 1,
+          max: 2,
+        }
+        const payload: {
+          index: number
+          oldName: string
+          newVariable: ValueVariableType
+        } = {
+          index: 0,
+          oldName: 'Water',
+          newVariable,
+        }
+        const newState = rootReducer(initState, {
+          type: 'editValueVariable',
+          payload,
+        })
+        expect(newState.experiment.valueVariables).toEqual([{ ...newVariable }])
+        expect(newState.experiment.dataPoints[0]?.data[0]?.name).toEqual(
+          'new name'
+        )
+      })
+    })
+
     describe('addCategorialVariable', () => {
       it('should add categorial variable', async () => {
         const payload: CategoricalVariableType = {
@@ -370,6 +399,86 @@ describe('experiment reducer', () => {
             .experimentSuggestionCount
         ).toEqual(3)
       })
+    })
+  })
+
+  describe('editCategoricalVariable', () => {
+    it('should edit categorical variable', () => {
+      const newVariable: CategoricalVariableType = {
+        name: 'new name',
+        description: 'new description',
+        options: ['a', 'b'],
+      }
+      const payload: {
+        index: number
+        oldName: string
+        newVariable: CategoricalVariableType
+      } = {
+        index: 0,
+        oldName: 'Icing',
+        newVariable,
+      }
+      const newState = rootReducer(initState, {
+        type: 'editCategoricalVariable',
+        payload,
+      })
+      expect(newState.experiment.categoricalVariables).toEqual([
+        { ...newVariable },
+      ])
+      expect(newState.experiment.dataPoints[0]?.data[1]?.name).toEqual(
+        'new name'
+      )
+    })
+    it('should update option in data points if it exists', () => {
+      const newVariable: CategoricalVariableType = {
+        name: 'new name',
+        description: 'new description',
+        options: ['a', 'Vanilla'],
+      }
+      const payload: {
+        index: number
+        oldName: string
+        newVariable: CategoricalVariableType
+      } = {
+        index: 0,
+        oldName: 'Icing',
+        newVariable,
+      }
+      const newState = rootReducer(initState, {
+        type: 'editCategoricalVariable',
+        payload,
+      })
+      expect(newState.experiment.categoricalVariables).toEqual([
+        { ...newVariable },
+      ])
+      expect(newState.experiment.dataPoints[0]?.data[1]?.value).toEqual(
+        'Vanilla'
+      )
+    })
+    it('should disable data point and set value to first option if option is removed from variable', () => {
+      const newVariable: CategoricalVariableType = {
+        name: 'new name',
+        description: 'new description',
+        options: ['a', 'b'],
+      }
+      const payload: {
+        index: number
+        oldName: string
+        newVariable: CategoricalVariableType
+      } = {
+        index: 0,
+        oldName: 'Icing',
+        newVariable,
+      }
+      const newState = rootReducer(initState, {
+        type: 'editCategoricalVariable',
+        payload,
+      })
+      expect(newState.experiment.categoricalVariables).toEqual([
+        { ...newVariable },
+      ])
+      expect(newState.experiment.dataPoints[0]?.data[1]?.value).toEqual('a')
+      expect(newState.experiment.dataPoints[0]?.meta.enabled).toBeFalsy()
     })
   })
 

@@ -71,13 +71,18 @@ export const ConfigurationTab = () => {
               payload: valueVariable,
             })
           }
-          editValueVariable={(valueVariable: {
-            index: number
-            variable: ValueVariableType
-          }) =>
+          editValueVariable={(
+            index: number,
+            oldName: string,
+            newVariable: ValueVariableType
+          ) =>
             dispatch({
               type: 'editValueVariable',
-              payload: valueVariable,
+              payload: {
+                index,
+                oldName,
+                newVariable,
+              },
             })
           }
           addCategoricalVariable={(
@@ -88,13 +93,18 @@ export const ConfigurationTab = () => {
               payload: categoricalVariable,
             })
           }
-          editCategoricalVariable={(categoricalVariable: {
-            index: number
-            variable: CategoricalVariableType
-          }) =>
+          editCategoricalVariable={(
+            index: number,
+            oldName: string,
+            newVariable: CategoricalVariableType
+          ) =>
             dispatch({
               type: 'editCategoricalVariable',
-              payload: categoricalVariable,
+              payload: {
+                index,
+                oldName,
+                newVariable,
+              },
             })
           }
         />

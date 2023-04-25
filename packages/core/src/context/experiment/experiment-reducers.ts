@@ -8,12 +8,15 @@ import {
   ValueVariableType,
   experimentSchema,
 } from '@core/common/types'
-import { produce } from 'immer'
+import { enableMapSet, produce } from 'immer'
 import md5 from 'md5'
 import { versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
 import { selectNextValues } from './experiment-selectors'
 import { createFetchExperimentResultRequest } from '@core/context/experiment/api'
+
+// TODO: Should this be somewhere else? Immer says "once when starting your application"
+enableMapSet()
 
 const calculateInitialPoints = (state: ExperimentType) =>
   Math.max(
@@ -58,7 +61,8 @@ export type ExperimentAction =
       type: 'editCategoricalVariable'
       payload: {
         index: number
-        variable: CategoricalVariableType
+        oldName: string
+        newVariable: CategoricalVariableType
       }
     }
   | {
@@ -73,7 +77,8 @@ export type ExperimentAction =
       type: 'editValueVariable'
       payload: {
         index: number
-        variable: ValueVariableType
+        oldName: string
+        newVariable: ValueVariableType
       }
     }
   | {
@@ -202,8 +207,13 @@ export const experimentReducer = produce(
       case 'editValueVariable':
         state.valueVariables[action.payload.index] =
           experimentSchema.shape.valueVariables.element.parse(
-            action.payload.variable
+            action.payload.newVariable
           )
+        state.dataPoints = updateDataPointNames(
+          state,
+          action.payload.oldName,
+          action.payload.newVariable.name
+        )
         break
       case 'deleteValueVariable': {
         state.valueVariables.splice(action.payload, 1)
@@ -227,8 +237,40 @@ export const experimentReducer = produce(
       case 'editCategoricalVariable':
         state.categoricalVariables[action.payload.index] =
           experimentSchema.shape.categoricalVariables.element.parse(
-            action.payload.variable
+            action.payload.newVariable
           )
+        state.dataPoints = updateDataPointNames(
+          state,
+          action.payload.oldName,
+          action.payload.newVariable.name
+        )
+        state.dataPoints = state.dataPoints.map(d => {
+          const data = d.data.map(point => {
+            if (
+              point.type === 'categorical' &&
+              point.name === action.payload.newVariable.name &&
+              action.payload.newVariable.options[0] !== undefined
+            ) {
+              return {
+                ...point,
+                // TODO: Delete data point if option does not exist instead of using first option in list?
+                value:
+                  action.payload.newVariable.options.find(
+                    o => o === point.value
+                  ) ?? action.payload.newVariable.options[0],
+              }
+            }
+            return point
+          })
+          return {
+            ...d,
+            meta: {
+              ...d.meta,
+              enabled: false,
+            },
+            data,
+          }
+        })
         break
       case 'deleteCategorialVariable': {
         state.categoricalVariables.splice(action.payload, 1)
@@ -310,3 +352,25 @@ export const experimentReducer = produce(
       md5(JSON.stringify(createFetchExperimentResultRequest(state)))
   }
 )
+
+const updateDataPointNames = (
+  state: ExperimentType,
+  oldVariableName: string,
+  newVariableName: string
+) => {
+  return state.dataPoints.map(d => {
+    const data = d.data.map(point => {
+      if (point.name === oldVariableName) {
+        return {
+          ...point,
+          name: newVariableName,
+        }
+      }
+      return point
+    })
+    return {
+      ...d,
+      data,
+    }
+  })
+}
