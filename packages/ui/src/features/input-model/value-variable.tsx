@@ -44,6 +44,7 @@ export default function ValueVariable(props: ValueVariableProps) {
     max: '',
     description: '',
     type: 'continuous',
+    enabled: true,
   }
   const values = editingVariable
     ? {
@@ -52,6 +53,7 @@ export default function ValueVariable(props: ValueVariableProps) {
         max: '' + editingVariable.variable.max,
         description: editingVariable.variable.description,
         type: editingVariable.variable.type,
+        enabled: editingVariable.variable.enabled,
       }
     : emptyValues
 

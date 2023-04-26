@@ -1,4 +1,4 @@
-import { DataPointType, ExperimentType } from '@core/common/types'
+import { DataPointType } from '@core/common/types'
 
 function isNumber(data: unknown | number): data is number {
   return (
@@ -15,7 +15,8 @@ function asNumber(data: unknown): number {
 }
 
 const convert = (
-  experiment: ExperimentType,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  experiment: any,
   dataPoint: DataPointType
 ): DataPointType => {
   if (experiment.valueVariables.find(v => v.name === dataPoint.name)) {
@@ -68,7 +69,8 @@ const convert = (
   throw new Error(`Could not migrate data point ${JSON.stringify(dataPoint)}`)
 }
 
-export const migrateToV13 = (json: ExperimentType): ExperimentType => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const migrateToV13 = (json: any) => {
   return {
     ...json,
     info: { ...json.info, dataFormatVersion: '13' },

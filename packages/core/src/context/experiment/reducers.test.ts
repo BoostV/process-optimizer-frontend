@@ -32,6 +32,7 @@ describe('experiment reducer', () => {
           name: 'Icing',
           description: 'Sugary',
           options: ['Vanilla', 'Chocolate'],
+          enabled: true,
         },
       ],
       valueVariables: [
@@ -41,6 +42,7 @@ describe('experiment reducer', () => {
           description: 'Wet',
           min: 100,
           max: 200,
+          enabled: true,
         },
       ],
       scoreVariables: [
@@ -116,6 +118,7 @@ describe('experiment reducer', () => {
             name: 'Not icing',
             description: 'Not sugary',
             options: [],
+            enabled: true,
           },
         ],
         valueVariables: [
@@ -125,6 +128,7 @@ describe('experiment reducer', () => {
             description: 'Not wet',
             min: 101,
             max: 201,
+            enabled: true,
           },
         ],
         scoreVariables: [],
@@ -221,6 +225,7 @@ describe('experiment reducer', () => {
           description: 'Wet',
           min: 300,
           max: 400,
+          enabled: true,
         }
 
         const action: ExperimentAction = {
@@ -237,6 +242,7 @@ describe('experiment reducer', () => {
             type: 'continuous',
             min: 100,
             max: 200,
+            enabled: true,
           },
           payload,
         ])
@@ -249,6 +255,7 @@ describe('experiment reducer', () => {
           description: 'Wet',
           min: 300,
           max: 400,
+          enabled: true,
         }
 
         const action: ExperimentAction = {
@@ -303,6 +310,7 @@ describe('experiment reducer', () => {
           description: 'new description',
           min: 1,
           max: 2,
+          enabled: true,
         }
         const payload: {
           index: number
@@ -330,6 +338,7 @@ describe('experiment reducer', () => {
           name: 'Fat',
           description: 'Fatty',
           options: [],
+          enabled: true,
         }
 
         const action: ExperimentAction = {
@@ -344,6 +353,7 @@ describe('experiment reducer', () => {
             name: 'Icing',
             description: 'Sugary',
             options: ['Vanilla', 'Chocolate'],
+            enabled: true,
           },
           payload,
         ])
@@ -354,6 +364,7 @@ describe('experiment reducer', () => {
           name: 'Fat',
           description: 'Fatty',
           options: [],
+          enabled: true,
         }
 
         const action: ExperimentAction = {
@@ -408,6 +419,7 @@ describe('experiment reducer', () => {
         name: 'new name',
         description: 'new description',
         options: ['a', 'b'],
+        enabled: true,
       }
       const payload: {
         index: number
@@ -434,6 +446,7 @@ describe('experiment reducer', () => {
         name: 'new name',
         description: 'new description',
         options: ['a', 'Vanilla'],
+        enabled: true,
       }
       const payload: {
         index: number
@@ -455,11 +468,12 @@ describe('experiment reducer', () => {
         'Vanilla'
       )
     })
-    it('should disable data point and set value to first option if option is removed from variable', () => {
+    it('should keep old value when categorical option is deleted', () => {
       const newVariable: CategoricalVariableType = {
         name: 'new name',
         description: 'new description',
         options: ['a', 'b'],
+        enabled: true,
       }
       const payload: {
         index: number
@@ -477,8 +491,9 @@ describe('experiment reducer', () => {
       expect(newState.experiment.categoricalVariables).toEqual([
         { ...newVariable },
       ])
-      expect(newState.experiment.dataPoints[0]?.data[1]?.value).toEqual('a')
-      expect(newState.experiment.dataPoints[0]?.meta.enabled).toBeFalsy()
+      expect(newState.experiment.dataPoints[0]?.data[1]?.value).toEqual(
+        'Vanilla'
+      )
     })
   })
 
@@ -638,11 +653,13 @@ describe('experiment reducer', () => {
             max: 100,
             min: 0,
             type: 'continuous',
+            enabled: true,
           }))
           draft.experiment.categoricalVariables = cats.map(name => ({
             name,
             description: '',
             options: ['test'],
+            enabled: true,
           }))
           draft.experiment.scoreVariables = scores.map(name => ({
             name,
