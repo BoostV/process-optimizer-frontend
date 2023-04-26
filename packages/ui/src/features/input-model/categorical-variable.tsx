@@ -49,7 +49,11 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
 
   const onSubmit = (data: CategoricalVariableType) => {
     if (isOptionsValid()) {
-      const newVariable: CategoricalVariableType = { ...data, options }
+      const newVariable: CategoricalVariableType = {
+        ...data,
+        options,
+        enabled: true,
+      }
       if (editingVariable !== undefined) {
         onEdit(editingVariable.variable.name, newVariable)
       } else {
