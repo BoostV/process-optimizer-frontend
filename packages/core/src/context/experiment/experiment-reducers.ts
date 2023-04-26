@@ -244,33 +244,6 @@ export const experimentReducer = produce(
           action.payload.oldName,
           action.payload.newVariable.name
         )
-        state.dataPoints = state.dataPoints.map(d => {
-          const data = d.data.map(point => {
-            if (
-              point.type === 'categorical' &&
-              point.name === action.payload.newVariable.name &&
-              action.payload.newVariable.options[0] !== undefined
-            ) {
-              return {
-                ...point,
-                // TODO: Delete data point if option does not exist instead of using first option in list?
-                value:
-                  action.payload.newVariable.options.find(
-                    o => o === point.value
-                  ) ?? action.payload.newVariable.options[0],
-              }
-            }
-            return point
-          })
-          return {
-            ...d,
-            meta: {
-              ...d.meta,
-              enabled: false,
-            },
-            data,
-          }
-        })
         break
       case 'deleteCategorialVariable': {
         state.categoricalVariables.splice(action.payload, 1)

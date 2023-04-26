@@ -27,12 +27,12 @@ export const isValidVariableName = (
   const valueFilter = type === 'value' ? filterSelf : () => true
   const categoricalFilter = type === 'categorical' ? filterSelf : () => true
 
-  let notInCategorical = !categoricalVariables
+  const notInCategorical = !categoricalVariables
     .filter(categoricalFilter)
     .map(c => c.name)
     .includes(newName.trim())
 
-  let notInValue = !valueVariables
+  const notInValue = !valueVariables
     .filter(valueFilter)
     .map(c => c.name)
     .includes(newName.trim())

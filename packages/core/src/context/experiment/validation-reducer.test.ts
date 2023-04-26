@@ -44,6 +44,7 @@ describe('validationReducer', () => {
       lowerBoundary: [],
       upperBoundary: [],
       duplicateDataPointIds: [],
+      categoricalValues: [],
     })
     expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeTruthy()
     expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
@@ -56,6 +57,7 @@ describe('validationReducer', () => {
       lowerBoundary: [],
       upperBoundary: [],
       duplicateDataPointIds: [],
+      categoricalValues: [],
     })
     expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
     expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
@@ -68,6 +70,7 @@ describe('validationReducer', () => {
       lowerBoundary: [1],
       upperBoundary: [],
       duplicateDataPointIds: [],
+      categoricalValues: [],
     })
     expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
     expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
@@ -80,6 +83,7 @@ describe('validationReducer', () => {
       lowerBoundary: [],
       upperBoundary: [1],
       duplicateDataPointIds: [],
+      categoricalValues: [],
     })
     expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
     expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
@@ -126,6 +130,7 @@ describe('validationReducer', () => {
         lowerBoundary: [],
         upperBoundary: [],
         duplicateDataPointIds: [1],
+        categoricalValues: [],
       }
     )
     expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
@@ -139,8 +144,22 @@ describe('validationReducer', () => {
       lowerBoundary: [],
       upperBoundary: [],
       duplicateDataPointIds: [1, 2],
+      categoricalValues: [],
     })
     expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
     expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeFalsy()
+  })
+
+  it('should invalidate data points with no corresponding categorical option', () => {
+    const validatedExperiment = validationReducer(exp, {
+      dataPointsUndefined: [],
+      duplicateVariableNames: [],
+      lowerBoundary: [],
+      upperBoundary: [],
+      duplicateDataPointIds: [],
+      categoricalValues: [1],
+    })
+    expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
+    expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
   })
 })

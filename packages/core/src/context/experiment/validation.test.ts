@@ -1,6 +1,7 @@
 import { ExperimentType } from 'common'
 import { emptyExperiment } from './store'
 import {
+  validateCategoricalValues,
   validateDataPointsUndefined,
   validateDuplicateDataPointIds,
   validateDuplicateVariableNames,
@@ -357,7 +358,7 @@ describe('validateDataPointsUndefined', () => {
     expect(validateDataPointsUndefined(exp)).toEqual([1])
   })
 
-  it('should return two data point with undefined properties', () => {
+  it('should return two data points with undefined properties', () => {
     const exp: ExperimentType = {
       ...emptyExperiment,
       valueVariables: [
@@ -532,5 +533,37 @@ describe('validateDuplicateDataPointIds', () => {
       ],
     }
     expect(validateDuplicateDataPointIds(exp)).toEqual([])
+  })
+})
+
+describe('validateCategoricalValues', () => {
+  it('should return data points with no corresponding categorical options', () => {
+    const exp: ExperimentType = {
+      ...emptyExperiment,
+      categoricalVariables: [
+        {
+          name: 'Berry',
+          description: '',
+          options: ['Blue', 'Green'],
+        },
+      ],
+      dataPoints: [
+        {
+          meta: {
+            enabled: true,
+            valid: true,
+            id: 1,
+          },
+          data: [
+            {
+              name: 'Berry',
+              type: 'categorical',
+              value: 'Red',
+            },
+          ],
+        },
+      ],
+    }
+    expect(validateCategoricalValues(exp)).toEqual([1])
   })
 })
