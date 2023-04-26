@@ -77,10 +77,10 @@ export const validateDataPointsUndefined = (
 ): number[] => {
   const dataPoints = experiment.dataPoints
   const enabledVariables = experiment.valueVariables
-    .filter(() => true)
+    .filter(v => v.enabled)
     .map(v => v.name)
     .concat(
-      experiment.categoricalVariables.filter(() => true).map(v => v.name),
+      experiment.categoricalVariables.filter(v => v.enabled).map(v => v.name),
       experiment.scoreVariables.filter(v => v.enabled).map(v => v.name)
     )
   const violations: number[] = []

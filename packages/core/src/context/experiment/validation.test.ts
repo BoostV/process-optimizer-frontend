@@ -20,6 +20,7 @@ describe('validateUpperBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -67,6 +68,7 @@ describe('validateUpperBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -93,6 +95,7 @@ describe('validateUpperBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -129,6 +132,7 @@ describe('validateLowerBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -170,6 +174,7 @@ describe('validateLowerBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -196,6 +201,7 @@ describe('validateLowerBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -232,6 +238,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
         {
           name: 'Cheese',
@@ -239,6 +246,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
       ],
     }
@@ -255,6 +263,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
         {
           name: 'Water',
@@ -262,6 +271,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
         {
           name: 'Water',
@@ -269,6 +279,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
         {
           name: 'Cheese',
@@ -276,6 +287,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
       ],
     }
@@ -292,6 +304,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
       ],
       categoricalVariables: [
@@ -299,6 +312,7 @@ describe('validateDuplicateVariableNames', () => {
           name: 'Water',
           options: [],
           description: '',
+          enabled: true,
         },
       ],
     }
@@ -368,6 +382,7 @@ describe('validateDataPointsUndefined', () => {
           description: '',
           min: 0,
           max: 100,
+          enabled: true,
         },
       ],
       scoreVariables: [
@@ -545,6 +560,7 @@ describe('validateCategoricalValues', () => {
           name: 'Berry',
           description: '',
           options: ['Blue', 'Green'],
+          enabled: true,
         },
       ],
       dataPoints: [
