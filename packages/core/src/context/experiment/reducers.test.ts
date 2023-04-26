@@ -280,9 +280,36 @@ describe('experiment reducer', () => {
           type: 'deleteValueVariable',
           payload: 0,
         }
-        expect(
-          rootReducer(initState, action).experiment.valueVariables
-        ).toEqual([])
+        const newState = rootReducer(initState, action)
+        expect(newState.experiment.valueVariables).toEqual([])
+        expect(newState.experiment.dataPoints[0]?.data).toEqual([
+          {
+            type: 'categorical',
+            name: 'Icing',
+            value: 'Vanilla',
+          },
+          {
+            type: 'score',
+            name: 'score',
+            value: 10,
+          },
+        ])
+      })
+
+      it('should delete data points if there are no variables', async () => {
+        const action: ExperimentAction = {
+          type: 'deleteValueVariable',
+          payload: 0,
+        }
+        const newState = rootReducer(
+          {
+            ...initState,
+            experiment: { ...initState.experiment, categoricalVariables: [] },
+          },
+          action
+        )
+        expect(newState.experiment.valueVariables).toEqual([])
+        expect(newState.experiment.dataPoints).toEqual([])
       })
 
       it('should reset initial points and suggestion', async () => {
@@ -389,10 +416,20 @@ describe('experiment reducer', () => {
           type: 'deleteCategorialVariable',
           payload: 0,
         }
-
-        expect(
-          rootReducer(initState, action).experiment.categoricalVariables
-        ).toEqual([])
+        const newState = rootReducer(initState, action)
+        expect(newState.experiment.categoricalVariables).toEqual([])
+        expect(newState.experiment.dataPoints[0]?.data).toEqual([
+          {
+            type: 'numeric',
+            name: 'Water',
+            value: 100,
+          },
+          {
+            type: 'score',
+            name: 'score',
+            value: 10,
+          },
+        ])
       })
 
       it('should reset suggestion count and initial points', async () => {

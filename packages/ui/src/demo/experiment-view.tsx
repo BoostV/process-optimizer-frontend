@@ -66,7 +66,6 @@ const Experiment = () => {
           />
           <ExperimentationGuide />
           <InputModel
-            isAddRemoveDisabled={false}
             categoricalVariables={experiment.categoricalVariables}
             valueVariables={experiment.valueVariables}
           />

@@ -22,7 +22,6 @@ import { useState } from 'react'
 import { EditControls } from './edit-controls'
 
 type InputModelProps = {
-  isAddRemoveDisabled: boolean
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   onDeleteValueVariable?: (index: number) => void
@@ -46,7 +45,6 @@ type InputModelProps = {
 
 export function InputModel(props: InputModelProps) {
   const {
-    isAddRemoveDisabled,
     valueVariables,
     categoricalVariables,
     onDeleteValueVariable,
@@ -138,7 +136,6 @@ export function InputModel(props: InputModelProps) {
                     <TableCell align="right">{valueVar.max}</TableCell>
                     <TableCell align="right">
                       <EditControls
-                        isAddRemoveDisabled={isAddRemoveDisabled}
                         onEdit={() => {
                           setEditingCategoricalVariable(undefined)
                           setEditingValueVariable({
@@ -186,7 +183,6 @@ export function InputModel(props: InputModelProps) {
                       </TableCell>
                       <TableCell align="right">
                         <EditControls
-                          isAddRemoveDisabled={isAddRemoveDisabled}
                           onEdit={() => {
                             setEditingValueVariable(undefined)
                             setEditingCategoricalVariable({
@@ -261,7 +257,6 @@ export function InputModel(props: InputModelProps) {
             color="primary"
             size="small"
             onClick={() => setEditorOpen(true)}
-            disabled={isAddRemoveDisabled}
             startIcon={<Add fontSize="small" />}
           >
             Add variable

@@ -216,10 +216,16 @@ export const experimentReducer = produce(
         )
         break
       case 'deleteValueVariable': {
+        const oldValueVariables = [...state.valueVariables]
         state.valueVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
+        state.dataPoints = removeDataPoints(
+          state,
+          action.payload,
+          oldValueVariables
+        )
         break
       }
       case 'addCategorialVariable':
@@ -246,10 +252,16 @@ export const experimentReducer = produce(
         )
         break
       case 'deleteCategorialVariable': {
+        const oldCategoricalVariables = [...state.categoricalVariables]
         state.categoricalVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
+        state.dataPoints = removeDataPoints(
+          state,
+          action.payload,
+          oldCategoricalVariables
+        )
         break
       }
       case 'updateConfiguration':
@@ -346,4 +358,22 @@ const updateDataPointNames = (
       data,
     }
   })
+}
+
+const removeDataPoints = (
+  state: ExperimentType,
+  index: number,
+  oldVariables: (CategoricalVariableType | ValueVariableType)[]
+) => {
+  if (
+    state.categoricalVariables.length === 0 &&
+    state.valueVariables.length === 0
+  ) {
+    return []
+  } else {
+    return state.dataPoints.map(dp => ({
+      ...dp,
+      data: dp.data.filter(d => d.name !== oldVariables[index]?.name),
+    }))
+  }
 }

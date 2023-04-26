@@ -198,7 +198,6 @@ const LegacyExperiment = () => {
 
                 <Grid item xs={12}>
                   <InputModel
-                    isAddRemoveDisabled={dataPoints.length > 0}
                     valueVariables={valueVariables}
                     categoricalVariables={categoricalVariables}
                     onDeleteValueVariable={(index: number) => {
