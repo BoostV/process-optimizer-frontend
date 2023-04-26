@@ -229,7 +229,6 @@ export const experimentReducer = produce(
         break
       }
       case 'addCategorialVariable':
-        console.log('add', action.payload)
         state.categoricalVariables.splice(
           state.categoricalVariables.length,
           0,
@@ -240,10 +239,6 @@ export const experimentReducer = produce(
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
-        // state.dataPoints = state.dataPoints.map(dp => ({
-        //   ...dp,
-        //   data: dp.data.map,
-        // }))
         break
       case 'editCategoricalVariable':
         state.categoricalVariables[action.payload.index] =
