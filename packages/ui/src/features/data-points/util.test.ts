@@ -8,6 +8,7 @@ describe('findDataPointViolations', () => {
     duplicateVariableNames: [],
     lowerBoundary: [1, 4],
     upperBoundary: [1, 2, 5, 6],
+    categoricalValues: [],
   }
   it('should return correct list of data point violations', () => {
     const dpViolations = findDataPointViolations(violations)
