@@ -19,16 +19,18 @@ export const findDataPointViolations = (
   ).forEach(e => {
     const messages: string[] = []
     if (pointsUndefined.includes(e)) {
-      messages.push('All properties must be defined to enable the data point.')
+      messages.push(
+        'All properties must be defined for the data point to be valid.'
+      )
     }
     if (upperBoundary.includes(e)) {
       messages.push(
-        'Values must be under input max values to enable the data point.'
+        'Values must be under input max values for the data point to be valid.'
       )
     }
     if (lowerBoundary.includes(e)) {
       messages.push(
-        'Values must be over input min values to enable the data point.'
+        'Values must be over input min values for the data point to be valid.'
       )
     }
     allViolations.push({

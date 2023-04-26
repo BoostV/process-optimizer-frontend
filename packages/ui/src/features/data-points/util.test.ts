@@ -15,34 +15,34 @@ describe('findDataPointViolations', () => {
       {
         rowMetaId: 1,
         messages: [
-          'All properties must be defined to enable the data point.',
-          'Values must be under input max values to enable the data point.',
-          'Values must be over input min values to enable the data point.',
+          'All properties must be defined for the data point to be valid.',
+          'Values must be under input max values for the data point to be valid.',
+          'Values must be over input min values for the data point to be valid.',
         ],
       },
       {
         rowMetaId: 2,
         messages: [
-          'All properties must be defined to enable the data point.',
-          'Values must be under input max values to enable the data point.',
+          'All properties must be defined for the data point to be valid.',
+          'Values must be under input max values for the data point to be valid.',
         ],
       },
       {
         rowMetaId: 4,
         messages: [
-          'Values must be over input min values to enable the data point.',
+          'Values must be over input min values for the data point to be valid.',
         ],
       },
       {
         rowMetaId: 5,
         messages: [
-          'Values must be under input max values to enable the data point.',
+          'Values must be under input max values for the data point to be valid.',
         ],
       },
       {
         rowMetaId: 6,
         messages: [
-          'Values must be under input max values to enable the data point.',
+          'Values must be under input max values for the data point to be valid.',
         ],
       },
     ]
