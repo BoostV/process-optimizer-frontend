@@ -66,6 +66,13 @@ export type ExperimentAction =
       }
     }
   | {
+      type: 'setCategoricalVariableEnabled'
+      payload: {
+        index: number
+        enabled: boolean
+      }
+    }
+  | {
       type: 'deleteCategorialVariable'
       payload: number
     }
@@ -79,6 +86,13 @@ export type ExperimentAction =
         index: number
         oldName: string
         newVariable: ValueVariableType
+      }
+    }
+  | {
+      type: 'setValueVariableEnabled'
+      payload: {
+        index: number
+        enabled: boolean
       }
     }
   | {
@@ -228,6 +242,16 @@ export const experimentReducer = produce(
         )
         break
       }
+      case 'setValueVariableEnabled': {
+        const valueVariable = state.valueVariables[action.payload.index]
+        if (valueVariable !== undefined) {
+          state.valueVariables[action.payload.index] = {
+            ...valueVariable,
+            enabled: action.payload.enabled,
+          }
+        }
+        break
+      }
       case 'addCategorialVariable':
         state.categoricalVariables.splice(
           state.categoricalVariables.length,
@@ -262,6 +286,16 @@ export const experimentReducer = produce(
           action.payload,
           oldCategoricalVariables
         )
+        break
+      }
+      case 'setCategoricalVariableEnabled': {
+        const catVariable = state.categoricalVariables[action.payload.index]
+        if (catVariable !== undefined) {
+          state.categoricalVariables[action.payload.index] = {
+            ...catVariable,
+            enabled: action.payload.enabled,
+          }
+        }
         break
       }
       case 'updateConfiguration':
@@ -303,6 +337,7 @@ export const experimentReducer = produce(
           state.scoreVariables,
           action.payload
         )
+        console.log('updateDataPoints', state.dataPoints)
         break
       case 'experiment/toggleMultiObjective':
         state.scoreVariables = state.scoreVariables.map((it, idx) => ({

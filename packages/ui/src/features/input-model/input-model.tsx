@@ -10,7 +10,7 @@ import {
   Button,
 } from '@mui/material'
 import VariableEditor from './variable-editor'
-import useStyles from './input-model.style'
+import useStyles, { disabledCell } from './input-model.style'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
 import { Lens, Add, PanoramaFishEye } from '@mui/icons-material'
 import {
@@ -25,13 +25,14 @@ type InputModelProps = {
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   onDeleteValueVariable?: (index: number) => void
-  onDeleteCategoricalVariable?: (index: number) => void
   addValueVariable?: (valueVariable: ValueVariableType) => void
   editValueVariable?: (
     index: number,
     oldName: string,
     newVariable: ValueVariableType
   ) => void
+  setValueVariableEnabled: (index: number, enabled: boolean) => void
+  onDeleteCategoricalVariable?: (index: number) => void
   addCategoricalVariable?: (
     categoricalVariable: CategoricalVariableType
   ) => void
@@ -40,6 +41,7 @@ type InputModelProps = {
     oldName: string,
     newVariable: CategoricalVariableType
   ) => void
+  setCategoricalVariableEnabled: (index: number, enabled: boolean) => void
   violations?: ValidationViolations
 }
 
@@ -53,6 +55,8 @@ export function InputModel(props: InputModelProps) {
     editValueVariable,
     addCategoricalVariable,
     editCategoricalVariable,
+    setValueVariableEnabled,
+    setCategoricalVariableEnabled,
     violations,
   } = props
 
@@ -128,14 +132,37 @@ export function InputModel(props: InputModelProps) {
                         </Tooltip>
                       )}
                     </TableCell>
-                    <TableCell component="th" scope="row">
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      style={valueVar.enabled ? {} : disabledCell}
+                    >
                       {valueVar.name}
                     </TableCell>
-                    <TableCell align="left">{valueVar.description}</TableCell>
-                    <TableCell align="right">{valueVar.min}</TableCell>
-                    <TableCell align="right">{valueVar.max}</TableCell>
+                    <TableCell
+                      align="left"
+                      style={valueVar.enabled ? {} : disabledCell}
+                    >
+                      {valueVar.description}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      style={valueVar.enabled ? {} : disabledCell}
+                    >
+                      {valueVar.min}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      style={valueVar.enabled ? {} : disabledCell}
+                    >
+                      {valueVar.max}
+                    </TableCell>
                     <TableCell align="right">
                       <EditControls
+                        onEnabledToggled={enabled =>
+                          setValueVariableEnabled(valueIndex, enabled)
+                        }
+                        enabled={valueVar.enabled}
                         onEdit={() => {
                           setEditingCategoricalVariable(undefined)
                           setEditingValueVariable({
@@ -170,11 +197,23 @@ export function InputModel(props: InputModelProps) {
                 <TableBody>
                   {categoricalVariables.map((catVar, catIndex) => (
                     <TableRow key={catIndex}>
-                      <TableCell component="th" scope="row">
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        style={catVar.enabled ? {} : disabledCell}
+                      >
                         {catVar.name}
                       </TableCell>
-                      <TableCell align="left">{catVar.description}</TableCell>
-                      <TableCell align="left">
+                      <TableCell
+                        align="left"
+                        style={catVar.enabled ? {} : disabledCell}
+                      >
+                        {catVar.description}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        style={catVar.enabled ? {} : disabledCell}
+                      >
                         {catVar.options.map((option, optionIndex) => (
                           <div key={optionIndex}>
                             <Typography variant="body2">{option}</Typography>
@@ -183,6 +222,10 @@ export function InputModel(props: InputModelProps) {
                       </TableCell>
                       <TableCell align="right">
                         <EditControls
+                          enabled={catVar.enabled}
+                          onEnabledToggled={enabled =>
+                            setCategoricalVariableEnabled(catIndex, enabled)
+                          }
                           onEdit={() => {
                             setEditingValueVariable(undefined)
                             setEditingCategoricalVariable({

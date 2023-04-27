@@ -200,18 +200,6 @@ const LegacyExperiment = () => {
                   <InputModel
                     valueVariables={valueVariables}
                     categoricalVariables={categoricalVariables}
-                    onDeleteValueVariable={(index: number) => {
-                      dispatch({
-                        type: 'deleteValueVariable',
-                        payload: index,
-                      })
-                    }}
-                    onDeleteCategoricalVariable={(index: number) => {
-                      dispatch({
-                        type: 'deleteCategorialVariable',
-                        payload: index,
-                      })
-                    }}
                     addValueVariable={(valueVariable: ValueVariableType) =>
                       dispatch({
                         type: 'addValueVariable',
@@ -229,6 +217,24 @@ const LegacyExperiment = () => {
                           index,
                           oldName,
                           newVariable,
+                        },
+                      })
+                    }
+                    onDeleteValueVariable={(index: number) => {
+                      dispatch({
+                        type: 'deleteValueVariable',
+                        payload: index,
+                      })
+                    }}
+                    setValueVariableEnabled={(
+                      index: number,
+                      enabled: boolean
+                    ) =>
+                      dispatch({
+                        type: 'setValueVariableEnabled',
+                        payload: {
+                          index,
+                          enabled,
                         },
                       })
                     }
@@ -251,6 +257,24 @@ const LegacyExperiment = () => {
                           index,
                           oldName,
                           newVariable,
+                        },
+                      })
+                    }
+                    onDeleteCategoricalVariable={(index: number) => {
+                      dispatch({
+                        type: 'deleteCategorialVariable',
+                        payload: index,
+                      })
+                    }}
+                    setCategoricalVariableEnabled={(
+                      index: number,
+                      enabled: boolean
+                    ) =>
+                      dispatch({
+                        type: 'setCategoricalVariableEnabled',
+                        payload: {
+                          index,
+                          enabled,
                         },
                       })
                     }

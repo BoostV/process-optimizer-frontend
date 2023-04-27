@@ -44,9 +44,13 @@ export function DataPoints(props: DataPointProps) {
     violations,
   } = props
   const { classes } = useStyles()
+  const enabledValueVariables = valueVariables.filter(v => v.enabled)
+  const enabledCategoricalVariables = categoricalVariables.filter(
+    v => v.enabled
+  )
   const { state, addRow, deleteRow, editRow, setEnabledState } = useDatapoints(
-    valueVariables,
-    categoricalVariables,
+    enabledValueVariables,
+    enabledCategoricalVariables,
     scoreVariables,
     dataPoints
   )
@@ -100,8 +104,10 @@ export function DataPoints(props: DataPointProps) {
   const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
     onUpdateDataPoints(setEnabledState(rowIndex, enabled))
 
-  const rowEdited = (rowIndex: number, row: TableDataRow) =>
+  const rowEdited = (rowIndex: number, row: TableDataRow) => {
+    console.log('rowdp', row)
     onUpdateDataPoints(editRow(rowIndex, row))
+  }
 
   return (
     <TitleCard
@@ -124,8 +130,8 @@ export function DataPoints(props: DataPointProps) {
                 onUpload={(dataPoints: DataEntry[]) =>
                   onUpdateDataPoints(dataPoints)
                 }
-                categoricalVariables={categoricalVariables}
-                valueVariables={valueVariables}
+                categoricalVariables={enabledCategoricalVariables}
+                valueVariables={enabledValueVariables}
                 scoreVariables={scoreVariables}
               />
               <Tooltip disableInteractive title="Reverse order">
@@ -143,11 +149,11 @@ export function DataPoints(props: DataPointProps) {
       }
       infoBoxes={getGeneralViolations()}
     >
-      {valueVariables.length + categoricalVariables.length === 0 &&
-        'Data points will appear here'}
-      {valueVariables.length + categoricalVariables.length > 0 &&
+      {enabledValueVariables.length + enabledCategoricalVariables.length ===
+        0 && 'Data points will appear here'}
+      {enabledValueVariables.length + enabledCategoricalVariables.length > 0 &&
         isLoadingState && <CircularProgress size={24} />}
-      {valueVariables.length + categoricalVariables.length > 0 &&
+      {enabledValueVariables.length + enabledCategoricalVariables.length > 0 &&
         !isLoadingState && (
           <Box className={classes.tableContainer}>
             <EditableTable

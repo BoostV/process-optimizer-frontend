@@ -45,15 +45,21 @@ export const calculateSpace = (experiment: ExperimentType): SpaceType => {
  * @returns
  */
 export const calculateData = (
-  _categoricalValues: CategoricalVariableType[],
-  numericValues: ValueVariableType[],
-  scoreValues: ScoreVariableType[],
+  categoricalVariables: CategoricalVariableType[],
+  valueVariables: ValueVariableType[],
+  scoreVariables: ScoreVariableType[],
   dataPoints: DataEntry[]
 ): ExperimentData[] => {
-  const scoreNames = scoreValues.map(it => it.name)
-  const enabledScoreNames = scoreValues
+  const enabledVariableNames = valueVariables
+    .filter(v => v.enabled)
+    .map(v => v.name)
+    .concat(categoricalVariables.filter(v => v.enabled).map(v => v.name))
+
+  const scoreNames = scoreVariables.map(it => it.name)
+  const enabledScoreNames = scoreVariables
     .filter(it => it.enabled)
     .map(it => it.name)
+
   return dataPoints
     .filter(dp => dp.meta.enabled && dp.meta.valid)
     .map(dp => dp.data)
@@ -61,10 +67,9 @@ export const calculateData = (
       (run): ExperimentData => ({
         xi: run
           .filter(it => !scoreNames.includes(it.name))
+          .filter(it => enabledVariableNames.includes(it.name))
           .map(it =>
-            numericValues.find(p => p.name === it.name)
-              ? Number(it.value)
-              : it.value
+            it.type === 'numeric' ? Number(it.value) : it.value
           ) as Array<string | number>, // This type cast is valid here because only scores can be number[] and they are filtered out
         yi: run
           .filter(it => enabledScoreNames.includes(it.name))
