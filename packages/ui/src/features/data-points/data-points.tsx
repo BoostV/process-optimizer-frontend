@@ -104,10 +104,8 @@ export function DataPoints(props: DataPointProps) {
   const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
     onUpdateDataPoints(setEnabledState(rowIndex, enabled))
 
-  const rowEdited = (rowIndex: number, row: TableDataRow) => {
-    console.log('rowdp', row)
+  const rowEdited = (rowIndex: number, row: TableDataRow) =>
     onUpdateDataPoints(editRow(rowIndex, row))
-  }
 
   return (
     <TitleCard

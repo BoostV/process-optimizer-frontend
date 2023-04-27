@@ -334,7 +334,6 @@ export const experimentReducer = produce(
           state.scoreVariables,
           action.payload
         )
-        console.log('updateDataPoints', state.dataPoints)
         break
       case 'experiment/toggleMultiObjective':
         state.scoreVariables = state.scoreVariables.map((it, idx) => ({
