@@ -66,6 +66,24 @@ const Experiment = () => {
           />
           <ExperimentationGuide />
           <InputModel
+            setValueVariableEnabled={(index: number, enabled: boolean) =>
+              dispatch({
+                type: 'setValueVariableEnabled',
+                payload: {
+                  index,
+                  enabled,
+                },
+              })
+            }
+            setCategoricalVariableEnabled={(index: number, enabled: boolean) =>
+              dispatch({
+                type: 'setCategoricalVariableEnabled',
+                payload: {
+                  index,
+                  enabled,
+                },
+              })
+            }
             categoricalVariables={experiment.categoricalVariables}
             valueVariables={experiment.valueVariables}
           />
