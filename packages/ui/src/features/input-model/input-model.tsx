@@ -31,7 +31,7 @@ type InputModelProps = {
     oldName: string,
     newVariable: ValueVariableType
   ) => void
-  setValueVariableEnabled: (index: number, enabled: boolean) => void
+  setValueVariableEnabled?: (index: number, enabled: boolean) => void
   onDeleteCategoricalVariable?: (index: number) => void
   addCategoricalVariable?: (
     categoricalVariable: CategoricalVariableType
@@ -41,7 +41,7 @@ type InputModelProps = {
     oldName: string,
     newVariable: CategoricalVariableType
   ) => void
-  setCategoricalVariableEnabled: (index: number, enabled: boolean) => void
+  setCategoricalVariableEnabled?: (index: number, enabled: boolean) => void
   violations?: ValidationViolations
 }
 
@@ -160,7 +160,7 @@ export function InputModel(props: InputModelProps) {
                     <TableCell align="right">
                       <EditControls
                         onEnabledToggled={enabled =>
-                          setValueVariableEnabled(valueIndex, enabled)
+                          setValueVariableEnabled?.(valueIndex, enabled)
                         }
                         enabled={valueVar.enabled}
                         onEdit={() => {
@@ -224,7 +224,7 @@ export function InputModel(props: InputModelProps) {
                         <EditControls
                           enabled={catVar.enabled}
                           onEnabledToggled={enabled =>
-                            setCategoricalVariableEnabled(catIndex, enabled)
+                            setCategoricalVariableEnabled?.(catIndex, enabled)
                           }
                           onEdit={() => {
                             setEditingValueVariable(undefined)

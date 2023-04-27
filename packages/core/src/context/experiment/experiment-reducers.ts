@@ -375,15 +375,11 @@ const updateDataPointNames = (
   newVariableName: string
 ) => {
   return state.dataPoints.map(d => {
-    const data = d.data.map(point => {
-      if (point.name === oldVariableName) {
-        return {
-          ...point,
-          name: newVariableName,
-        }
-      }
-      return point
-    })
+    const data = d.data.map(point =>
+      point.name === oldVariableName
+        ? { ...point, name: newVariableName }
+        : point
+    )
     return {
       ...d,
       data,
