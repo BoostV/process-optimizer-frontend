@@ -30,7 +30,6 @@ export const migrate = (json: any): ExperimentType => {
   throw new Error('Error migrating json to experiment')
 }
 
-//TODO: Compare json to current ExperimentType and set missing fields to default values?
 export const _migrate = (
   json: any,
   stopAtVersion = MIGRATIONS[MIGRATIONS.length - 1]?.version ?? '0'

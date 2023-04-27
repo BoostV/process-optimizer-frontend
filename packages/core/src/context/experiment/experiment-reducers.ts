@@ -8,15 +8,12 @@ import {
   ValueVariableType,
   experimentSchema,
 } from '@core/common/types'
-import { enableMapSet, produce } from 'immer'
+import { produce } from 'immer'
 import md5 from 'md5'
 import { versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
 import { selectNextValues } from './experiment-selectors'
 import { createFetchExperimentResultRequest } from '@core/context/experiment/api'
-
-// TODO: Should this be somewhere else? Immer says "once when starting your application"
-enableMapSet()
 
 const calculateInitialPoints = (state: ExperimentType) =>
   Math.max(
