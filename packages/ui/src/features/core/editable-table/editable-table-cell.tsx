@@ -54,7 +54,7 @@ export function EditableTableCell({
                 displayEmpty
                 inputProps={{ 'aria-label': 'select value' }}
                 renderValue={val => val}
-                error={value === undefined ? true : !options.includes(value)}
+                error={!options.includes(categoricalValue)}
               >
                 {options.map((item, i) => (
                   <MenuItem key={i} value={item}>
