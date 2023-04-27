@@ -26,7 +26,6 @@ export const ConfigurationTab = () => {
 
   const valueVariables = experiment.valueVariables
   const categoricalVariables = experiment.categoricalVariables
-  const dataPoints = experiment.dataPoints
 
   return (
     <Grid container spacing={3}>
