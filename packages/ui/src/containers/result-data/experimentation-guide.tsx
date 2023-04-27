@@ -20,6 +20,7 @@ import { CopySuggested } from '@ui/features/result-data/copy-suggested'
 
 interface ResultDataProps {
   isUIBig?: boolean
+  loading?: boolean
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
   onMouseLeaveExpand?: () => void
@@ -28,6 +29,7 @@ interface ResultDataProps {
 export const ExperimentationGuide = (props: ResultDataProps) => {
   const {
     isUIBig = false,
+    loading = false,
     toggleUISize = () => {},
     onMouseEnterExpand,
     onMouseLeaveExpand,
@@ -66,6 +68,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   )
   return (
     <TitleCard
+      loading={loading}
       padding={0}
       title={
         <>

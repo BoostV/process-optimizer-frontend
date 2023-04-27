@@ -1,4 +1,4 @@
-import { Box, Card, CardContent } from '@mui/material'
+import { Box, Card, CardContent, LinearProgress } from '@mui/material'
 import { Error, Warning, Info } from '@mui/icons-material'
 import { ReactNode } from 'react'
 import useStyles from './title-card.style'
@@ -14,11 +14,12 @@ type TitleCardProps = {
   title: ReactNode
   padding?: number
   infoBoxes?: InfoBox[]
-  children: any
+  loading?: boolean
+  children: ReactNode
 }
 
 export const TitleCard = (props: TitleCardProps) => {
-  const { title, padding, infoBoxes, children } = props
+  const { title, padding, infoBoxes, loading = false, children } = props
   const { classes } = useStyles()
 
   const getInfoStyling = (info: InfoType) => {
@@ -46,7 +47,10 @@ export const TitleCard = (props: TitleCardProps) => {
   return (
     <Card>
       <CardContent className={classes.content}>
-        <Box className={classes.title}>{title}</Box>
+        <Box className={classes.title}>
+          {title}
+          {loading && <LinearProgress className={classes.loading} />}
+        </Box>
         {infoBoxes !== undefined &&
           infoBoxes.map((b, i) => (
             <Box
