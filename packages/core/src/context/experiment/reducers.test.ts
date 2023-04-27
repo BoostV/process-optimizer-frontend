@@ -259,11 +259,11 @@ describe('experiment reducer', () => {
         expect(
           rootReducer(initState, action).experiment.optimizerConfig
             .initialPoints
-        ).toEqual(9)
+        ).toEqual(5)
         expect(
           rootReducer(initState, action).experiment.extras
             .experimentSuggestionCount
-        ).toEqual(9)
+        ).toEqual(5)
       })
     })
 
@@ -287,11 +287,11 @@ describe('experiment reducer', () => {
         expect(
           rootReducer(initState, action).experiment.optimizerConfig
             .initialPoints
-        ).toEqual(3)
+        ).toEqual(5)
         expect(
           rootReducer(initState, action).experiment.extras
             .experimentSuggestionCount
-        ).toEqual(3)
+        ).toEqual(5)
       })
     })
 
@@ -335,11 +335,11 @@ describe('experiment reducer', () => {
         expect(
           rootReducer(initState, action).experiment.optimizerConfig
             .initialPoints
-        ).toEqual(9)
+        ).toEqual(5)
         expect(
           rootReducer(initState, action).experiment.extras
             .experimentSuggestionCount
-        ).toEqual(9)
+        ).toEqual(5)
       })
     })
 
@@ -364,11 +364,11 @@ describe('experiment reducer', () => {
         expect(
           rootReducer(initState, action).experiment.optimizerConfig
             .initialPoints
-        ).toEqual(3)
+        ).toEqual(5)
         expect(
           rootReducer(initState, action).experiment.extras
             .experimentSuggestionCount
-        ).toEqual(3)
+        ).toEqual(5)
       })
     })
   })
