@@ -78,14 +78,12 @@ const Experiment = () => {
             }
             editValueVariable={(
               index: number,
-              oldName: string,
               newVariable: ValueVariableType
             ) =>
               dispatch({
                 type: 'editValueVariable',
                 payload: {
                   index,
-                  oldName,
                   newVariable,
                 },
               })
@@ -115,14 +113,12 @@ const Experiment = () => {
             }
             editCategoricalVariable={(
               index: number,
-              oldName: string,
               newVariable: CategoricalVariableType
             ) =>
               dispatch({
                 type: 'editCategoricalVariable',
                 payload: {
                   index,
-                  oldName,
                   newVariable,
                 },
               })

@@ -18,7 +18,7 @@ type CategoricalVariableProps = {
     variable: CategoricalVariableType
   }
   onAdd: (data: CategoricalVariableType) => void
-  onEdit: (oldName: string, newVariable: CategoricalVariableType) => void
+  onEdit: (newVariable: CategoricalVariableType) => void
   onCancel: () => void
 }
 
@@ -55,7 +55,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
         enabled: true,
       }
       if (editingVariable !== undefined) {
-        onEdit(editingVariable.variable.name, newVariable)
+        onEdit(newVariable)
       } else {
         onAdd(newVariable)
       }

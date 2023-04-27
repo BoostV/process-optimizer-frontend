@@ -208,14 +208,12 @@ const LegacyExperiment = () => {
                     }
                     editValueVariable={(
                       index: number,
-                      oldName: string,
                       newVariable: ValueVariableType
                     ) =>
                       dispatch({
                         type: 'editValueVariable',
                         payload: {
                           index,
-                          oldName,
                           newVariable,
                         },
                       })
@@ -248,14 +246,12 @@ const LegacyExperiment = () => {
                     }
                     editCategoricalVariable={(
                       index: number,
-                      oldName: string,
                       newVariable: CategoricalVariableType
                     ) =>
                       dispatch({
                         type: 'editCategoricalVariable',
                         payload: {
                           index,
-                          oldName,
                           newVariable,
                         },
                       })

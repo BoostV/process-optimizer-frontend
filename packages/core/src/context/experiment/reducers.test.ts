@@ -341,11 +341,9 @@ describe('experiment reducer', () => {
         }
         const payload: {
           index: number
-          oldName: string
           newVariable: ValueVariableType
         } = {
           index: 0,
-          oldName: 'Water',
           newVariable,
         }
         const newState = rootReducer(initState, {
@@ -460,11 +458,9 @@ describe('experiment reducer', () => {
       }
       const payload: {
         index: number
-        oldName: string
         newVariable: CategoricalVariableType
       } = {
         index: 0,
-        oldName: 'Icing',
         newVariable,
       }
       const newState = rootReducer(initState, {
@@ -487,11 +483,9 @@ describe('experiment reducer', () => {
       }
       const payload: {
         index: number
-        oldName: string
         newVariable: CategoricalVariableType
       } = {
         index: 0,
-        oldName: 'Icing',
         newVariable,
       }
       const newState = rootReducer(initState, {
@@ -514,11 +508,9 @@ describe('experiment reducer', () => {
       }
       const payload: {
         index: number
-        oldName: string
         newVariable: CategoricalVariableType
       } = {
         index: 0,
-        oldName: 'Icing',
         newVariable,
       }
       const newState = rootReducer(initState, {

@@ -26,11 +26,7 @@ type InputModelProps = {
   categoricalVariables: CategoricalVariableType[]
   onDeleteValueVariable?: (index: number) => void
   addValueVariable?: (valueVariable: ValueVariableType) => void
-  editValueVariable?: (
-    index: number,
-    oldName: string,
-    newVariable: ValueVariableType
-  ) => void
+  editValueVariable?: (index: number, newVariable: ValueVariableType) => void
   setValueVariableEnabled?: (index: number, enabled: boolean) => void
   onDeleteCategoricalVariable?: (index: number) => void
   addCategoricalVariable?: (
@@ -38,7 +34,6 @@ type InputModelProps = {
   ) => void
   editCategoricalVariable?: (
     index: number,
-    oldName: string,
     newVariable: CategoricalVariableType
   ) => void
   setCategoricalVariableEnabled?: (index: number, enabled: boolean) => void
@@ -257,14 +252,10 @@ export function InputModel(props: InputModelProps) {
             addCategoricalVariable={(
               categoricalVariable: CategoricalVariableType
             ) => addCategoricalVariable?.(categoricalVariable)}
-            editCategoricalVariable={(
-              oldName: string,
-              newVariable: CategoricalVariableType
-            ) => {
+            editCategoricalVariable={(newVariable: CategoricalVariableType) => {
               if (editingCategoricalVariable !== undefined) {
                 editCategoricalVariable?.(
                   editingCategoricalVariable.index,
-                  oldName,
                   newVariable
                 )
                 resetEditor()
@@ -273,16 +264,9 @@ export function InputModel(props: InputModelProps) {
             addValueVariable={(valueVariable: ValueVariableType) =>
               addValueVariable?.(valueVariable)
             }
-            editValueVariable={(
-              oldName: string,
-              newVariable: ValueVariableType
-            ) => {
+            editValueVariable={(newVariable: ValueVariableType) => {
               if (editingValueVariable !== undefined) {
-                editValueVariable?.(
-                  editingValueVariable.index,
-                  oldName,
-                  newVariable
-                )
+                editValueVariable?.(editingValueVariable.index, newVariable)
                 resetEditor()
               }
             }}

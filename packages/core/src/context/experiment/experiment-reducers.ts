@@ -58,7 +58,6 @@ export type ExperimentAction =
       type: 'editCategoricalVariable'
       payload: {
         index: number
-        oldName: string
         newVariable: CategoricalVariableType
       }
     }
@@ -81,7 +80,6 @@ export type ExperimentAction =
       type: 'editValueVariable'
       payload: {
         index: number
-        oldName: string
         newVariable: ValueVariableType
       }
     }
@@ -215,17 +213,21 @@ export const experimentReducer = produce(
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
-      case 'editValueVariable':
+      case 'editValueVariable': {
+        const oldVariableName = state.valueVariables[action.payload.index]?.name
         state.valueVariables[action.payload.index] =
           experimentSchema.shape.valueVariables.element.parse(
             action.payload.newVariable
           )
-        state.dataPoints = updateDataPointNames(
-          state,
-          action.payload.oldName,
-          action.payload.newVariable.name
-        )
+        if (oldVariableName !== undefined) {
+          state.dataPoints = updateDataPointNames(
+            state,
+            oldVariableName,
+            action.payload.newVariable.name
+          )
+        }
         break
+      }
       case 'deleteValueVariable': {
         const oldValueVariables = [...state.valueVariables]
         state.valueVariables.splice(action.payload, 1)
@@ -261,17 +263,22 @@ export const experimentReducer = produce(
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
-      case 'editCategoricalVariable':
+      case 'editCategoricalVariable': {
+        const oldVariableName =
+          state.categoricalVariables[action.payload.index]?.name
         state.categoricalVariables[action.payload.index] =
           experimentSchema.shape.categoricalVariables.element.parse(
             action.payload.newVariable
           )
-        state.dataPoints = updateDataPointNames(
-          state,
-          action.payload.oldName,
-          action.payload.newVariable.name
-        )
+        if (oldVariableName !== undefined) {
+          state.dataPoints = updateDataPointNames(
+            state,
+            oldVariableName,
+            action.payload.newVariable.name
+          )
+        }
         break
+      }
       case 'deleteCategorialVariable': {
         const oldCategoricalVariables = [...state.categoricalVariables]
         state.categoricalVariables.splice(action.payload, 1)

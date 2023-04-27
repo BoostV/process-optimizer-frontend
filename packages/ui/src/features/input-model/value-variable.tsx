@@ -17,7 +17,7 @@ type ValueVariableProps = {
     variable: ValueVariableType
   }
   onAdd: (data: ValueVariableType) => void
-  onEdit: (oldName: string, newVariable: ValueVariableType) => void
+  onEdit: (newVariable: ValueVariableType) => void
   onCancel: () => void
 }
 
@@ -79,7 +79,7 @@ export default function ValueVariable(props: ValueVariableProps) {
           : parseFloat(noCommaMax),
     }
     if (editingVariable !== undefined) {
-      onEdit(values.name, newVariable)
+      onEdit(newVariable)
     } else {
       onAdd(newVariable)
     }

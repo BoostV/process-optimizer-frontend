@@ -55,7 +55,6 @@ export const calculateData = (
     .map(v => v.name)
     .concat(categoricalVariables.filter(v => v.enabled).map(v => v.name))
 
-  const scoreNames = scoreVariables.map(it => it.name)
   const enabledScoreNames = scoreVariables
     .filter(it => it.enabled)
     .map(it => it.name)
@@ -66,7 +65,6 @@ export const calculateData = (
     .map(
       (run): ExperimentData => ({
         xi: run
-          .filter(it => !scoreNames.includes(it.name))
           .filter(it => enabledVariableNames.includes(it.name))
           .map(it =>
             it.type === 'numeric' ? Number(it.value) : it.value
