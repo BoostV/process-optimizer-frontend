@@ -85,6 +85,18 @@ const dataEntrySchema = z.object({
   data: z.array(dataPointSchema),
 })
 
+const spaceSchema = z.object({
+  type: z.union([
+    z.literal('category'),
+    z.literal('discrete'),
+    z.literal('continuous'),
+  ]),
+  name: z.string(),
+  from: z.number().optional(),
+  to: z.number().optional(),
+  categories: z.array(z.string()).optional(),
+})
+
 export const experimentSchema = z.object({
   id: z.string(),
   lastEvaluationHash: z.string().optional(),
@@ -105,13 +117,7 @@ export type ValueDataPointType = z.infer<typeof numericDataPoint>
 export type ScoreDataPointType = z.infer<typeof scoreDataPoint>
 export type DataPointType = z.infer<typeof dataPointSchema>
 export type DataEntry = z.infer<typeof dataEntrySchema>
-export type SpaceType = {
-  type: string
-  name: string
-  from?: number
-  to?: number
-  categories?: string[]
-}[]
+export type SpaceType = z.infer<typeof spaceSchema>
 export type CombinedVariableType = {
   name: string
   description: string
