@@ -27,7 +27,11 @@ export const calculateSpace = (experiment: ExperimentType): SpaceType => {
     }
   })
   const categorical: SpaceType = experiment.categoricalVariables.map(v => {
-    return { type: 'category', name: v.name, categories: v.options }
+    return {
+      type: 'category',
+      name: v.name,
+      categories: v.options,
+    }
   })
   return numerical.concat(categorical)
 }

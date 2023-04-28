@@ -85,17 +85,19 @@ const dataEntrySchema = z.object({
   data: z.array(dataPointSchema),
 })
 
-const spaceSchema = z.object({
-  type: z.union([
-    z.literal('category'),
-    z.literal('discrete'),
-    z.literal('continuous'),
-  ]),
-  name: z.string(),
-  from: z.number().optional(),
-  to: z.number().optional(),
-  categories: z.array(z.string()).optional(),
-})
+const spaceSchema = z
+  .object({
+    type: z.union([
+      z.literal('category'),
+      z.literal('discrete'),
+      z.literal('continuous'),
+    ]),
+    name: z.string(),
+    from: z.number().optional(),
+    to: z.number().optional(),
+    categories: z.array(z.string()).optional(),
+  })
+  .array()
 
 export const experimentSchema = z.object({
   id: z.string(),
