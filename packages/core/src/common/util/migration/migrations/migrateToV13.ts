@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DataPointType, ExperimentType } from '@core/common/types'
 
 function isNumber(data: unknown | number): data is number {
@@ -68,11 +69,11 @@ const convert = (
   throw new Error(`Could not migrate data point ${JSON.stringify(dataPoint)}`)
 }
 
-export const migrateToV13 = (json: ExperimentType): ExperimentType => {
+export const migrateToV13 = (json: any): any => {
   return {
     ...json,
     info: { ...json.info, dataFormatVersion: '13' },
-    dataPoints: json.dataPoints.map(dp => ({
+    dataPoints: json.dataPoints.map((dp: { data: any[] }) => ({
       ...dp,
       data: dp.data
         .filter(d => d.value !== undefined && d.value !== null)

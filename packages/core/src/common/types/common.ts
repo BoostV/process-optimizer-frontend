@@ -3,7 +3,7 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '13'
+export const currentVersion = '15'
 
 const infoSchema = z.object({
   name: z.string(),
@@ -99,6 +99,12 @@ const spaceSchema = z
   })
   .array()
 
+const constraintSchema = z.object({
+  type: z.literal('sum'),
+  value: z.number(),
+  dimensions: z.string().array(),
+})
+
 export const experimentSchema = z.object({
   id: z.string(),
   lastEvaluationHash: z.string().optional(),
@@ -108,6 +114,7 @@ export const experimentSchema = z.object({
   categoricalVariables: z.array(categorialVariableSchema),
   valueVariables: z.array(valueVariableSchema),
   scoreVariables: z.array(scoreVariableSchema),
+  constraints: z.array(constraintSchema),
   optimizerConfig: optimizerSchema,
   results: experimentResultSchema,
   dataPoints: z.array(dataEntrySchema),

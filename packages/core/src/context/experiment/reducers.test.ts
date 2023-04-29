@@ -128,6 +128,7 @@ describe('experiment reducer', () => {
           },
         ],
         scoreVariables: [],
+        constraints: [],
         optimizerConfig: {
           baseEstimator: 'GP',
           acqFunc: 'gp_hedge',
