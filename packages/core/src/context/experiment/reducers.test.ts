@@ -274,6 +274,42 @@ describe('experiment reducer', () => {
       })
     })
 
+    it('should set only include enabled variables in calculation of initial points and suggestion', async () => {
+      const stateWithManyDisabledValues = produce(initState, draft => {
+        const variables = ['name1', 'name2', 'name3', 'name4'].map(
+          name =>
+            ({
+              type: 'continuous',
+              name: name,
+              description: '',
+              min: 0,
+              max: 0,
+              enabled: false,
+            } satisfies ValueVariableType)
+        )
+        variables.forEach(v => draft.experiment.valueVariables.push(v))
+      })
+
+      const payload: ValueVariableType = {
+        type: 'continuous',
+        name: 'Flour',
+        description: 'Wet',
+        min: 300,
+        max: 400,
+        enabled: true,
+      }
+
+      const action: ExperimentAction = {
+        type: 'addValueVariable',
+        payload,
+      }
+
+      const actual = rootReducer(stateWithManyDisabledValues, action).experiment
+
+      expect(actual.optimizerConfig.initialPoints).toEqual(5)
+      expect(actual.extras.experimentSuggestionCount).toEqual(5)
+    })
+
     describe('deleteValueVariable', () => {
       it('should delete value variable', async () => {
         const action: ExperimentAction = {

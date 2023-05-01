@@ -18,7 +18,9 @@ import { createFetchExperimentResultRequest } from '@core/context/experiment/api
 const calculateInitialPoints = (state: ExperimentType) =>
   Math.max(
     5,
-    state.categoricalVariables.length + state.valueVariables.length + 1
+    state.categoricalVariables.filter(v => v.enabled).length +
+      state.valueVariables.filter(v => v.enabled).length +
+      1
   )
 
 const defaultSorted = (
