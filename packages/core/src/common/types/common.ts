@@ -25,6 +25,7 @@ const categorialVariableSchema = z.object({
   name: z.string(),
   description: z.string(),
   options: z.array(z.string()),
+  enabled: z.boolean(),
 })
 
 const valueVariableSchema = z.object({
@@ -33,6 +34,7 @@ const valueVariableSchema = z.object({
   description: z.string().default(''),
   min: z.number(),
   max: z.number(),
+  enabled: z.boolean(),
 })
 
 const scoreVariableSchema = z.object({

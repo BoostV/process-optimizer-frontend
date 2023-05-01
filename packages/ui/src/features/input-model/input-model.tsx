@@ -10,7 +10,7 @@ import {
   Button,
 } from '@mui/material'
 import VariableEditor from './variable-editor'
-import useStyles from './input-model.style'
+import useStyles, { disabledCell } from './input-model.style'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
 import { Lens, Add, PanoramaFishEye } from '@mui/icons-material'
 import {
@@ -22,29 +22,26 @@ import { useState } from 'react'
 import { EditControls } from './edit-controls'
 
 type InputModelProps = {
-  isAddRemoveDisabled: boolean
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   onDeleteValueVariable?: (index: number) => void
-  onDeleteCategoricalVariable?: (index: number) => void
   addValueVariable?: (valueVariable: ValueVariableType) => void
-  editValueVariable?: (editValueVariable: {
-    index: number
-    variable: ValueVariableType
-  }) => void
+  editValueVariable?: (index: number, newVariable: ValueVariableType) => void
+  setValueVariableEnabled?: (index: number, enabled: boolean) => void
+  onDeleteCategoricalVariable?: (index: number) => void
   addCategoricalVariable?: (
     categoricalVariable: CategoricalVariableType
   ) => void
-  editCategoricalVariable?: (editCategoricalVariable: {
-    index: number
-    variable: CategoricalVariableType
-  }) => void
+  editCategoricalVariable?: (
+    index: number,
+    newVariable: CategoricalVariableType
+  ) => void
+  setCategoricalVariableEnabled?: (index: number, enabled: boolean) => void
   violations?: ValidationViolations
 }
 
 export function InputModel(props: InputModelProps) {
   const {
-    isAddRemoveDisabled,
     valueVariables,
     categoricalVariables,
     onDeleteValueVariable,
@@ -53,6 +50,8 @@ export function InputModel(props: InputModelProps) {
     editValueVariable,
     addCategoricalVariable,
     editCategoricalVariable,
+    setValueVariableEnabled,
+    setCategoricalVariableEnabled,
     violations,
   } = props
 
@@ -128,15 +127,37 @@ export function InputModel(props: InputModelProps) {
                         </Tooltip>
                       )}
                     </TableCell>
-                    <TableCell component="th" scope="row">
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      style={valueVar.enabled ? {} : disabledCell}
+                    >
                       {valueVar.name}
                     </TableCell>
-                    <TableCell align="left">{valueVar.description}</TableCell>
-                    <TableCell align="right">{valueVar.min}</TableCell>
-                    <TableCell align="right">{valueVar.max}</TableCell>
+                    <TableCell
+                      align="left"
+                      style={valueVar.enabled ? {} : disabledCell}
+                    >
+                      {valueVar.description}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      style={valueVar.enabled ? {} : disabledCell}
+                    >
+                      {valueVar.min}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      style={valueVar.enabled ? {} : disabledCell}
+                    >
+                      {valueVar.max}
+                    </TableCell>
                     <TableCell align="right">
                       <EditControls
-                        isAddRemoveDisabled={isAddRemoveDisabled}
+                        onEnabledToggled={enabled =>
+                          setValueVariableEnabled?.(valueIndex, enabled)
+                        }
+                        enabled={valueVar.enabled}
                         onEdit={() => {
                           setEditingCategoricalVariable(undefined)
                           setEditingValueVariable({
@@ -171,11 +192,23 @@ export function InputModel(props: InputModelProps) {
                 <TableBody>
                   {categoricalVariables.map((catVar, catIndex) => (
                     <TableRow key={catIndex}>
-                      <TableCell component="th" scope="row">
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        style={catVar.enabled ? {} : disabledCell}
+                      >
                         {catVar.name}
                       </TableCell>
-                      <TableCell align="left">{catVar.description}</TableCell>
-                      <TableCell align="left">
+                      <TableCell
+                        align="left"
+                        style={catVar.enabled ? {} : disabledCell}
+                      >
+                        {catVar.description}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        style={catVar.enabled ? {} : disabledCell}
+                      >
                         {catVar.options.map((option, optionIndex) => (
                           <div key={optionIndex}>
                             <Typography variant="body2">{option}</Typography>
@@ -184,7 +217,10 @@ export function InputModel(props: InputModelProps) {
                       </TableCell>
                       <TableCell align="right">
                         <EditControls
-                          isAddRemoveDisabled={isAddRemoveDisabled}
+                          enabled={catVar.enabled}
+                          onEnabledToggled={enabled =>
+                            setCategoricalVariableEnabled?.(catIndex, enabled)
+                          }
                           onEdit={() => {
                             setEditingValueVariable(undefined)
                             setEditingCategoricalVariable({
@@ -216,26 +252,21 @@ export function InputModel(props: InputModelProps) {
             addCategoricalVariable={(
               categoricalVariable: CategoricalVariableType
             ) => addCategoricalVariable?.(categoricalVariable)}
-            editCategoricalVariable={(
-              categoricalVariable: CategoricalVariableType
-            ) => {
+            editCategoricalVariable={(newVariable: CategoricalVariableType) => {
               if (editingCategoricalVariable !== undefined) {
-                editCategoricalVariable?.({
-                  index: editingCategoricalVariable.index,
-                  variable: categoricalVariable,
-                })
+                editCategoricalVariable?.(
+                  editingCategoricalVariable.index,
+                  newVariable
+                )
                 resetEditor()
               }
             }}
             addValueVariable={(valueVariable: ValueVariableType) =>
               addValueVariable?.(valueVariable)
             }
-            editValueVariable={(valueVariable: ValueVariableType) => {
+            editValueVariable={(newVariable: ValueVariableType) => {
               if (editingValueVariable !== undefined) {
-                editValueVariable?.({
-                  index: editingValueVariable.index,
-                  variable: valueVariable,
-                })
+                editValueVariable?.(editingValueVariable.index, newVariable)
                 resetEditor()
               }
             }}
@@ -253,7 +284,6 @@ export function InputModel(props: InputModelProps) {
             color="primary"
             size="small"
             onClick={() => setEditorOpen(true)}
-            disabled={isAddRemoveDisabled}
             startIcon={<Add fontSize="small" />}
           >
             Add variable

@@ -1,7 +1,7 @@
 {
-  "$ref": "#/definitions/experiment-v15",
+  "$ref": "#/definitions/experiment-v14",
   "definitions": {
-    "experiment-v15": {
+    "experiment-v14": {
       "type": "object",
       "properties": {
         "id": {
@@ -27,7 +27,7 @@
             },
             "dataFormatVersion": {
               "type": "string",
-              "const": "15"
+              "const": "14"
             }
           },
           "required": [
@@ -130,33 +130,6 @@
               "name",
               "description",
               "enabled"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "constraints": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "const": "sum"
-              },
-              "value": {
-                "type": "number"
-              },
-              "dimensions": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "required": [
-              "type",
-              "value",
-              "dimensions"
             ],
             "additionalProperties": false
           }
@@ -376,7 +349,6 @@
         "categoricalVariables",
         "valueVariables",
         "scoreVariables",
-        "constraints",
         "optimizerConfig",
         "results",
         "dataPoints"

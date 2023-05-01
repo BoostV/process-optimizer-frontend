@@ -17,8 +17,10 @@ import { createFetchExperimentResultRequest } from '@core/context/experiment/api
 
 const calculateInitialPoints = (state: ExperimentType) =>
   Math.max(
-    3,
-    (state.categoricalVariables.length + state.valueVariables.length) * 3
+    5,
+    state.categoricalVariables.filter(v => v.enabled).length +
+      state.valueVariables.filter(v => v.enabled).length +
+      1
   )
 
 const defaultSorted = (
@@ -58,7 +60,14 @@ export type ExperimentAction =
       type: 'editCategoricalVariable'
       payload: {
         index: number
-        variable: CategoricalVariableType
+        newVariable: CategoricalVariableType
+      }
+    }
+  | {
+      type: 'setCategoricalVariableEnabled'
+      payload: {
+        index: number
+        enabled: boolean
       }
     }
   | {
@@ -73,7 +82,14 @@ export type ExperimentAction =
       type: 'editValueVariable'
       payload: {
         index: number
-        variable: ValueVariableType
+        newVariable: ValueVariableType
+      }
+    }
+  | {
+      type: 'setValueVariableEnabled'
+      payload: {
+        index: number
+        enabled: boolean
       }
     }
   | {
@@ -199,17 +215,51 @@ export const experimentReducer = produce(
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
-      case 'editValueVariable':
+      case 'editValueVariable': {
+        const oldVariable = state.valueVariables[action.payload.index]
+        const newVariable = action.payload.newVariable
         state.valueVariables[action.payload.index] =
-          experimentSchema.shape.valueVariables.element.parse(
-            action.payload.variable
+          experimentSchema.shape.valueVariables.element.parse({
+            ...newVariable,
+            min:
+              newVariable.type === 'discrete'
+                ? Math.round(newVariable.min)
+                : newVariable.min,
+            max:
+              newVariable.type === 'discrete'
+                ? Math.round(newVariable.max)
+                : newVariable.max,
+          })
+        if (oldVariable !== undefined) {
+          state.dataPoints = updateDataPointNamesAndValues(
+            state,
+            oldVariable,
+            action.payload.newVariable
           )
+        }
         break
+      }
       case 'deleteValueVariable': {
+        const oldValueVariables = [...state.valueVariables]
         state.valueVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
+        state.dataPoints = removeDataPoints(
+          state,
+          action.payload,
+          oldValueVariables
+        )
+        break
+      }
+      case 'setValueVariableEnabled': {
+        const valueVariable = state.valueVariables[action.payload.index]
+        if (valueVariable !== undefined) {
+          state.valueVariables[action.payload.index] = {
+            ...valueVariable,
+            enabled: action.payload.enabled,
+          }
+        }
         break
       }
       case 'addCategorialVariable':
@@ -224,17 +274,43 @@ export const experimentReducer = produce(
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
         break
-      case 'editCategoricalVariable':
+      case 'editCategoricalVariable': {
+        const oldVariableName =
+          state.categoricalVariables[action.payload.index]?.name
         state.categoricalVariables[action.payload.index] =
           experimentSchema.shape.categoricalVariables.element.parse(
-            action.payload.variable
+            action.payload.newVariable
           )
+        if (oldVariableName !== undefined) {
+          state.dataPoints = updateDataPointNames(
+            state,
+            oldVariableName,
+            action.payload.newVariable.name
+          )
+        }
         break
+      }
       case 'deleteCategorialVariable': {
+        const oldCategoricalVariables = [...state.categoricalVariables]
         state.categoricalVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
           state.optimizerConfig.initialPoints
+        state.dataPoints = removeDataPoints(
+          state,
+          action.payload,
+          oldCategoricalVariables
+        )
+        break
+      }
+      case 'setCategoricalVariableEnabled': {
+        const catVariable = state.categoricalVariables[action.payload.index]
+        if (catVariable !== undefined) {
+          state.categoricalVariables[action.payload.index] = {
+            ...catVariable,
+            enabled: action.payload.enabled,
+          }
+        }
         break
       }
       case 'updateConfiguration':
@@ -310,3 +386,67 @@ export const experimentReducer = produce(
       md5(JSON.stringify(createFetchExperimentResultRequest(state)))
   }
 )
+
+const updateDataPointNames = (
+  state: ExperimentType,
+  oldVariableName: string,
+  newVariableName: string
+) => {
+  return state.dataPoints.map(d => {
+    const data = d.data.map(point =>
+      point.name === oldVariableName
+        ? { ...point, name: newVariableName }
+        : point
+    )
+    return {
+      ...d,
+      data,
+    }
+  })
+}
+
+const updateDataPointNamesAndValues = (
+  state: ExperimentType,
+  oldVariable: ValueVariableType,
+  newVariable: ValueVariableType
+) => {
+  return state.dataPoints.map(d => {
+    const data = d.data.map(point => {
+      if (point.type === 'numeric') {
+        return oldVariable.name === point.name
+          ? {
+              ...point,
+              name: newVariable.name,
+              value:
+                newVariable.type === 'discrete'
+                  ? Math.round(Number(point.value))
+                  : point.value,
+            }
+          : point
+      }
+      return point
+    })
+    return {
+      ...d,
+      data,
+    }
+  })
+}
+
+const removeDataPoints = (
+  state: ExperimentType,
+  index: number,
+  oldVariables: (CategoricalVariableType | ValueVariableType)[]
+) => {
+  if (
+    state.categoricalVariables.length === 0 &&
+    state.valueVariables.length === 0
+  ) {
+    return []
+  } else {
+    return state.dataPoints.map(dp => ({
+      ...dp,
+      data: dp.data.filter(d => d.name !== oldVariables[index]?.name),
+    }))
+  }
+}

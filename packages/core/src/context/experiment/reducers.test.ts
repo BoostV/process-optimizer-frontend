@@ -32,6 +32,7 @@ describe('experiment reducer', () => {
           name: 'Icing',
           description: 'Sugary',
           options: ['Vanilla', 'Chocolate'],
+          enabled: true,
         },
       ],
       valueVariables: [
@@ -41,6 +42,7 @@ describe('experiment reducer', () => {
           description: 'Wet',
           min: 100,
           max: 200,
+          enabled: true,
         },
       ],
       scoreVariables: [
@@ -116,6 +118,7 @@ describe('experiment reducer', () => {
             name: 'Not icing',
             description: 'Not sugary',
             options: [],
+            enabled: true,
           },
         ],
         valueVariables: [
@@ -125,6 +128,7 @@ describe('experiment reducer', () => {
             description: 'Not wet',
             min: 101,
             max: 201,
+            enabled: true,
           },
         ],
         scoreVariables: [],
@@ -222,6 +226,7 @@ describe('experiment reducer', () => {
           description: 'Wet',
           min: 300,
           max: 400,
+          enabled: true,
         }
 
         const action: ExperimentAction = {
@@ -238,6 +243,7 @@ describe('experiment reducer', () => {
             type: 'continuous',
             min: 100,
             max: 200,
+            enabled: true,
           },
           payload,
         ])
@@ -250,6 +256,7 @@ describe('experiment reducer', () => {
           description: 'Wet',
           min: 300,
           max: 400,
+          enabled: true,
         }
 
         const action: ExperimentAction = {
@@ -260,12 +267,48 @@ describe('experiment reducer', () => {
         expect(
           rootReducer(initState, action).experiment.optimizerConfig
             .initialPoints
-        ).toEqual(9)
+        ).toEqual(5)
         expect(
           rootReducer(initState, action).experiment.extras
             .experimentSuggestionCount
-        ).toEqual(9)
+        ).toEqual(5)
       })
+    })
+
+    it('should set only include enabled variables in calculation of initial points and suggestion', async () => {
+      const stateWithManyDisabledValues = produce(initState, draft => {
+        const variables = ['name1', 'name2', 'name3', 'name4'].map(
+          name =>
+            ({
+              type: 'continuous',
+              name: name,
+              description: '',
+              min: 0,
+              max: 0,
+              enabled: false,
+            } satisfies ValueVariableType)
+        )
+        variables.forEach(v => draft.experiment.valueVariables.push(v))
+      })
+
+      const payload: ValueVariableType = {
+        type: 'continuous',
+        name: 'Flour',
+        description: 'Wet',
+        min: 300,
+        max: 400,
+        enabled: true,
+      }
+
+      const action: ExperimentAction = {
+        type: 'addValueVariable',
+        payload,
+      }
+
+      const actual = rootReducer(stateWithManyDisabledValues, action).experiment
+
+      expect(actual.optimizerConfig.initialPoints).toEqual(5)
+      expect(actual.extras.experimentSuggestionCount).toEqual(5)
     })
 
     describe('deleteValueVariable', () => {
@@ -274,9 +317,36 @@ describe('experiment reducer', () => {
           type: 'deleteValueVariable',
           payload: 0,
         }
-        expect(
-          rootReducer(initState, action).experiment.valueVariables
-        ).toEqual([])
+        const newState = rootReducer(initState, action)
+        expect(newState.experiment.valueVariables).toEqual([])
+        expect(newState.experiment.dataPoints[0]?.data).toEqual([
+          {
+            type: 'categorical',
+            name: 'Icing',
+            value: 'Vanilla',
+          },
+          {
+            type: 'score',
+            name: 'score',
+            value: 10,
+          },
+        ])
+      })
+
+      it('should delete data points if there are no variables', async () => {
+        const action: ExperimentAction = {
+          type: 'deleteValueVariable',
+          payload: 0,
+        }
+        const newState = rootReducer(
+          {
+            ...initState,
+            experiment: { ...initState.experiment, categoricalVariables: [] },
+          },
+          action
+        )
+        expect(newState.experiment.valueVariables).toEqual([])
+        expect(newState.experiment.dataPoints).toEqual([])
       })
 
       it('should reset initial points and suggestion', async () => {
@@ -288,11 +358,111 @@ describe('experiment reducer', () => {
         expect(
           rootReducer(initState, action).experiment.optimizerConfig
             .initialPoints
-        ).toEqual(3)
+        ).toEqual(5)
         expect(
           rootReducer(initState, action).experiment.extras
             .experimentSuggestionCount
-        ).toEqual(3)
+        ).toEqual(5)
+      })
+    })
+
+    describe('editValueVariable', () => {
+      it('should edit value variable', () => {
+        const newVariable: ValueVariableType = {
+          type: 'continuous',
+          name: 'new name',
+          description: 'new description',
+          min: 1,
+          max: 2,
+          enabled: true,
+        }
+        const payload: {
+          index: number
+          newVariable: ValueVariableType
+        } = {
+          index: 0,
+          newVariable,
+        }
+        const newState = rootReducer(initState, {
+          type: 'editValueVariable',
+          payload,
+        })
+        expect(newState.experiment.valueVariables).toEqual([{ ...newVariable }])
+        expect(newState.experiment.dataPoints[0]?.data[0]?.name).toEqual(
+          'new name'
+        )
+      })
+
+      it('should edit value variable from continous to discrete', () => {
+        const newVariable: ValueVariableType = {
+          type: 'discrete',
+          name: 'new name',
+          description: 'new description',
+          min: 101.25,
+          max: 202.89,
+          enabled: true,
+        }
+        const payload: {
+          index: number
+          newVariable: ValueVariableType
+        } = {
+          index: 0,
+          newVariable,
+        }
+        const oldVariable: ValueVariableType = {
+          name: 'Water',
+          type: 'continuous',
+          description: 'oldDesc',
+          min: 100.56,
+          max: 200.89,
+          enabled: true,
+        }
+        const newState = rootReducer(
+          {
+            ...initState,
+            experiment: {
+              ...initState.experiment,
+              valueVariables: [oldVariable],
+              dataPoints: [
+                {
+                  meta: {
+                    enabled: true,
+                    valid: true,
+                    id: 1,
+                  },
+                  data: [
+                    {
+                      type: 'numeric',
+                      name: 'Water',
+                      value: 117.45,
+                    },
+                    {
+                      type: 'categorical',
+                      name: 'Icing',
+                      value: 'Vanilla',
+                    },
+                    {
+                      type: 'score',
+                      name: 'score',
+                      value: 10,
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            type: 'editValueVariable',
+            payload,
+          }
+        )
+        expect(newState.experiment.valueVariables).toEqual([
+          { ...newVariable, min: 101, max: 203 },
+        ])
+        expect(newState.experiment.dataPoints[0]?.data[0]?.name).toEqual(
+          'new name'
+        )
+        expect(newState.experiment.dataPoints[0]?.data[0]?.value).toEqual(117)
       })
     })
 
@@ -302,6 +472,7 @@ describe('experiment reducer', () => {
           name: 'Fat',
           description: 'Fatty',
           options: [],
+          enabled: true,
         }
 
         const action: ExperimentAction = {
@@ -316,6 +487,7 @@ describe('experiment reducer', () => {
             name: 'Icing',
             description: 'Sugary',
             options: ['Vanilla', 'Chocolate'],
+            enabled: true,
           },
           payload,
         ])
@@ -326,6 +498,7 @@ describe('experiment reducer', () => {
           name: 'Fat',
           description: 'Fatty',
           options: [],
+          enabled: true,
         }
 
         const action: ExperimentAction = {
@@ -336,11 +509,11 @@ describe('experiment reducer', () => {
         expect(
           rootReducer(initState, action).experiment.optimizerConfig
             .initialPoints
-        ).toEqual(9)
+        ).toEqual(5)
         expect(
           rootReducer(initState, action).experiment.extras
             .experimentSuggestionCount
-        ).toEqual(9)
+        ).toEqual(5)
       })
     })
 
@@ -350,10 +523,20 @@ describe('experiment reducer', () => {
           type: 'deleteCategorialVariable',
           payload: 0,
         }
-
-        expect(
-          rootReducer(initState, action).experiment.categoricalVariables
-        ).toEqual([])
+        const newState = rootReducer(initState, action)
+        expect(newState.experiment.categoricalVariables).toEqual([])
+        expect(newState.experiment.dataPoints[0]?.data).toEqual([
+          {
+            type: 'numeric',
+            name: 'Water',
+            value: 100,
+          },
+          {
+            type: 'score',
+            name: 'score',
+            value: 10,
+          },
+        ])
       })
 
       it('should reset suggestion count and initial points', async () => {
@@ -365,12 +548,90 @@ describe('experiment reducer', () => {
         expect(
           rootReducer(initState, action).experiment.optimizerConfig
             .initialPoints
-        ).toEqual(3)
+        ).toEqual(5)
         expect(
           rootReducer(initState, action).experiment.extras
             .experimentSuggestionCount
-        ).toEqual(3)
+        ).toEqual(5)
       })
+    })
+  })
+
+  describe('editCategoricalVariable', () => {
+    it('should edit categorical variable', () => {
+      const newVariable: CategoricalVariableType = {
+        name: 'new name',
+        description: 'new description',
+        options: ['a', 'b'],
+        enabled: true,
+      }
+      const payload: {
+        index: number
+        newVariable: CategoricalVariableType
+      } = {
+        index: 0,
+        newVariable,
+      }
+      const newState = rootReducer(initState, {
+        type: 'editCategoricalVariable',
+        payload,
+      })
+      expect(newState.experiment.categoricalVariables).toEqual([
+        { ...newVariable },
+      ])
+      expect(newState.experiment.dataPoints[0]?.data[1]?.name).toEqual(
+        'new name'
+      )
+    })
+    it('should update option in data points if it exists', () => {
+      const newVariable: CategoricalVariableType = {
+        name: 'new name',
+        description: 'new description',
+        options: ['a', 'Vanilla'],
+        enabled: true,
+      }
+      const payload: {
+        index: number
+        newVariable: CategoricalVariableType
+      } = {
+        index: 0,
+        newVariable,
+      }
+      const newState = rootReducer(initState, {
+        type: 'editCategoricalVariable',
+        payload,
+      })
+      expect(newState.experiment.categoricalVariables).toEqual([
+        { ...newVariable },
+      ])
+      expect(newState.experiment.dataPoints[0]?.data[1]?.value).toEqual(
+        'Vanilla'
+      )
+    })
+    it('should keep old value when categorical option is deleted', () => {
+      const newVariable: CategoricalVariableType = {
+        name: 'new name',
+        description: 'new description',
+        options: ['a', 'b'],
+        enabled: true,
+      }
+      const payload: {
+        index: number
+        newVariable: CategoricalVariableType
+      } = {
+        index: 0,
+        newVariable,
+      }
+      const newState = rootReducer(initState, {
+        type: 'editCategoricalVariable',
+        payload,
+      })
+      expect(newState.experiment.categoricalVariables).toEqual([
+        { ...newVariable },
+      ])
+      expect(newState.experiment.dataPoints[0]?.data[1]?.value).toEqual(
+        'Vanilla'
+      )
     })
   })
 
@@ -530,11 +791,13 @@ describe('experiment reducer', () => {
             max: 100,
             min: 0,
             type: 'continuous',
+            enabled: true,
           }))
           draft.experiment.categoricalVariables = cats.map(name => ({
             name,
             description: '',
             options: ['test'],
+            enabled: true,
           }))
           draft.experiment.scoreVariables = scores.map(name => ({
             name,

@@ -3,7 +3,7 @@
   "changedSinceLastEvaluation": true,
   "lastEvaluationHash": "never-calculated",
   "info": {
-    "dataFormatVersion": "15",
+    "dataFormatVersion": "14",
     "swVersion": "v1.2.0-16",
     "name": "Cake",
     "description": "Yummy"
@@ -41,7 +41,6 @@
       "enabled": true
     }
   ],
-  "constraints": [],
   "optimizerConfig": {
     "baseEstimator": "GP",
     "acqFunc": "EI",

@@ -18,7 +18,7 @@ type CategoricalVariableProps = {
     variable: CategoricalVariableType
   }
   onAdd: (data: CategoricalVariableType) => void
-  onEdit: (data: CategoricalVariableType) => void
+  onEdit: (newVariable: CategoricalVariableType) => void
   onCancel: () => void
 }
 
@@ -49,7 +49,11 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
 
   const onSubmit = (data: CategoricalVariableType) => {
     if (isOptionsValid()) {
-      const newVariable: CategoricalVariableType = { ...data, options }
+      const newVariable: CategoricalVariableType = {
+        ...data,
+        options,
+        enabled: true,
+      }
       if (editingVariable !== undefined) {
         onEdit(newVariable)
       } else {

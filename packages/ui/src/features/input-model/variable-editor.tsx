@@ -15,18 +15,14 @@ type VariableEditorProps = {
     index: number
     variable: ValueVariableType
   }
-
   editingCategoricalVariable?: {
     index: number
     variable: CategoricalVariableType
   }
-
   addValueVariable: (valueVariable: ValueVariableType) => void
-  editValueVariable: (valueVariable: ValueVariableType) => void
+  editValueVariable: (newVariable: ValueVariableType) => void
   addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
-  editCategoricalVariable: (
-    categoricalVariable: CategoricalVariableType
-  ) => void
+  editCategoricalVariable: (newVariable: CategoricalVariableType) => void
   onCancel: () => void
 }
 
@@ -99,8 +95,8 @@ function VariableEditorInner(props: VariableEditorProps) {
             onAdd={(valueVariable: ValueVariableType) =>
               addValueVariable(valueVariable)
             }
-            onEdit={(valueVariable: ValueVariableType) =>
-              editValueVariable(valueVariable)
+            onEdit={(newVariable: ValueVariableType) =>
+              editValueVariable(newVariable)
             }
             onCancel={onCancel}
           />
@@ -113,8 +109,8 @@ function VariableEditorInner(props: VariableEditorProps) {
             onAdd={(categoricalVariable: CategoricalVariableType) =>
               addCategoricalVariable(categoricalVariable)
             }
-            onEdit={(categoricalVariable: CategoricalVariableType) =>
-              editCategoricalVariable(categoricalVariable)
+            onEdit={(newVariable: CategoricalVariableType) =>
+              editCategoricalVariable(newVariable)
             }
             onCancel={onCancel}
           />

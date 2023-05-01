@@ -71,6 +71,7 @@ describe('converters', () => {
         name: 'Kunde',
         description: '',
         options: ['Mus', 'Ræv'],
+        enabled: true,
       },
     ],
     valueVariables: [
@@ -80,6 +81,7 @@ describe('converters', () => {
         description: '',
         min: 0,
         max: 1000,
+        enabled: true,
       },
       {
         type: 'discrete',
@@ -87,6 +89,7 @@ describe('converters', () => {
         description: '',
         min: 0,
         max: 1000,
+        enabled: true,
       },
       {
         type: 'continuous',
@@ -94,8 +97,16 @@ describe('converters', () => {
         description: '',
         min: 0.0,
         max: 1000.8,
+        enabled: true,
       },
-      { type: 'discrete', name: 'Mælk', description: '', min: 1, max: 999 },
+      {
+        type: 'discrete',
+        name: 'Mælk',
+        description: '',
+        min: 1,
+        max: 999,
+        enabled: true,
+      },
     ],
     optimizerConfig: {
       baseEstimator: 'GP',
@@ -133,6 +144,7 @@ describe('converters', () => {
             description: '',
             min: 1.2,
             max: 5.4,
+            enabled: true,
           },
         ],
       }
@@ -495,6 +507,7 @@ describe('converters', () => {
         name: 'Kunde',
         description: '',
         options: ['Mus', 'Ræv'],
+        enabled: true,
       },
     ]
     const valueVariables: ValueVariableType[] = [
@@ -504,6 +517,7 @@ describe('converters', () => {
         min: 0,
         max: 1000,
         type: 'discrete',
+        enabled: true,
       },
       {
         name: 'Peber',
@@ -511,6 +525,7 @@ describe('converters', () => {
         min: 0,
         max: 1000,
         type: 'continuous',
+        enabled: true,
       },
       {
         name: 'Hvedemel',
@@ -518,6 +533,7 @@ describe('converters', () => {
         min: 0,
         max: 1000,
         type: 'continuous',
+        enabled: true,
       },
     ]
     const scoreVariables: ScoreVariableType[] = [

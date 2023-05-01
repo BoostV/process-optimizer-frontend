@@ -17,7 +17,7 @@ type ValueVariableProps = {
     variable: ValueVariableType
   }
   onAdd: (data: ValueVariableType) => void
-  onEdit: (data: ValueVariableType) => void
+  onEdit: (newVariable: ValueVariableType) => void
   onCancel: () => void
 }
 
@@ -44,6 +44,7 @@ export default function ValueVariable(props: ValueVariableProps) {
     max: '',
     description: '',
     type: 'continuous',
+    enabled: true,
   }
   const values = editingVariable
     ? {
@@ -52,6 +53,7 @@ export default function ValueVariable(props: ValueVariableProps) {
         max: '' + editingVariable.variable.max,
         description: editingVariable.variable.description,
         type: editingVariable.variable.type,
+        enabled: editingVariable.variable.enabled,
       }
     : emptyValues
 
@@ -67,14 +69,8 @@ export default function ValueVariable(props: ValueVariableProps) {
     const noCommaMax = data.max.replace(',', '.')
     const newVariable: ValueVariableType = {
       ...data,
-      min:
-        data.type === 'discrete'
-          ? Math.floor(parseFloat(noCommaMin))
-          : parseFloat(noCommaMin),
-      max:
-        data.type === 'discrete'
-          ? Math.floor(parseFloat(noCommaMax))
-          : parseFloat(noCommaMax),
+      min: Number(noCommaMin),
+      max: Number(noCommaMax),
     }
     if (editingVariable !== undefined) {
       onEdit(newVariable)

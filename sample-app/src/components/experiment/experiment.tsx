@@ -198,34 +198,42 @@ const LegacyExperiment = () => {
 
                 <Grid item xs={12}>
                   <InputModel
-                    isAddRemoveDisabled={dataPoints.length > 0}
                     valueVariables={valueVariables}
                     categoricalVariables={categoricalVariables}
-                    onDeleteValueVariable={(index: number) => {
-                      dispatch({
-                        type: 'deleteValueVariable',
-                        payload: index,
-                      })
-                    }}
-                    onDeleteCategoricalVariable={(index: number) => {
-                      dispatch({
-                        type: 'deleteCategorialVariable',
-                        payload: index,
-                      })
-                    }}
                     addValueVariable={(valueVariable: ValueVariableType) =>
                       dispatch({
                         type: 'addValueVariable',
                         payload: valueVariable,
                       })
                     }
-                    editValueVariable={(valueVariable: {
-                      index: number
-                      variable: ValueVariableType
-                    }) =>
+                    editValueVariable={(
+                      index: number,
+                      newVariable: ValueVariableType
+                    ) =>
                       dispatch({
                         type: 'editValueVariable',
-                        payload: valueVariable,
+                        payload: {
+                          index,
+                          newVariable,
+                        },
+                      })
+                    }
+                    onDeleteValueVariable={(index: number) => {
+                      dispatch({
+                        type: 'deleteValueVariable',
+                        payload: index,
+                      })
+                    }}
+                    setValueVariableEnabled={(
+                      index: number,
+                      enabled: boolean
+                    ) =>
+                      dispatch({
+                        type: 'setValueVariableEnabled',
+                        payload: {
+                          index,
+                          enabled,
+                        },
                       })
                     }
                     addCategoricalVariable={(
@@ -236,13 +244,34 @@ const LegacyExperiment = () => {
                         payload: categoricalVariable,
                       })
                     }
-                    editCategoricalVariable={(categoricalVariable: {
-                      index: number
-                      variable: CategoricalVariableType
-                    }) =>
+                    editCategoricalVariable={(
+                      index: number,
+                      newVariable: CategoricalVariableType
+                    ) =>
                       dispatch({
                         type: 'editCategoricalVariable',
-                        payload: categoricalVariable,
+                        payload: {
+                          index,
+                          newVariable,
+                        },
+                      })
+                    }
+                    onDeleteCategoricalVariable={(index: number) => {
+                      dispatch({
+                        type: 'deleteCategorialVariable',
+                        payload: index,
+                      })
+                    }}
+                    setCategoricalVariableEnabled={(
+                      index: number,
+                      enabled: boolean
+                    ) =>
+                      dispatch({
+                        type: 'setCategoricalVariableEnabled',
+                        payload: {
+                          index,
+                          enabled,
+                        },
                       })
                     }
                     violations={validationViolations}
