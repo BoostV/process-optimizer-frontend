@@ -27,7 +27,10 @@ export const rootReducer = (state: State, action: Action) => {
     case 'registerResult':
     case 'updateDataPoints':
     case 'copySuggestedToDataPoints':
-    case 'experiment/toggleMultiObjective': {
+    case 'experiment/toggleMultiObjective':
+    case 'experiment/setConstraintSum':
+    case 'experiment/addVariableToConstraintSum':
+    case 'experiment/removeVariableFromConstraintSum': {
       const experiment = experimentReducer(state.experiment, action)
       const validationViolations: ValidationViolations =
         validateExperiment(experiment)

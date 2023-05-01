@@ -127,6 +127,18 @@ export type ExperimentAction =
   | {
       type: 'experiment/toggleMultiObjective'
     }
+  | {
+      type: 'experiment/setConstraintSum'
+      payload: number
+    }
+  | {
+      type: 'experiment/addVariableToConstraintSum'
+      payload: string
+    }
+  | {
+      type: 'experiment/removeVariableFromConstraintSum'
+      payload: string
+    }
 
 export const experimentReducer = produce(
   (state: ExperimentType, action: ExperimentAction): void | ExperimentType => {
@@ -377,6 +389,10 @@ export const experimentReducer = produce(
             })
           })
         }
+        break
+      case 'experiment/setConstraintSum':
+      case 'experiment/addVariableToConstraintSum':
+      case 'experiment/removeVariableFromConstraintSum':
         break
       default:
         assertUnreachable(action)
