@@ -1,5 +1,19 @@
 # @process-optimizer-frontend/sample-app
 
+## 1.11.0
+
+### Minor Changes
+
+- ebfff31: Add / remove / edit input model variables
+
+### Patch Changes
+
+- Updated dependencies [aafdfa2]
+- Updated dependencies [d927e77]
+- Updated dependencies [ebfff31]
+  - @boostv/process-optimizer-frontend-core@2.1.0
+  - @boostv/process-optimizer-frontend-ui@1.4.0
+
 ## 1.10.0
 
 ### Minor Changes
