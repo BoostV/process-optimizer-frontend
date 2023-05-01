@@ -14,18 +14,21 @@ type Props = {
   isUIBig?: boolean
   onSizeToggle?: () => void
   experiment: ExperimentType
+  loading?: boolean
 }
 
 export const Plots: FC<Props> = ({
   isUIBig = false,
   onSizeToggle,
   experiment,
+  loading = false,
 }) => {
   const { classes } = useStyles()
 
   return (
     <>
       <TitleCard
+        loading={loading}
         title={
           <>
             Plots
