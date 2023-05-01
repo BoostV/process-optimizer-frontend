@@ -30,6 +30,10 @@ describe('findDataPointViolations', () => {
         ],
       },
       {
+        rowMetaId: 3,
+        messages: ['Discrete values must be integers.'],
+      },
+      {
         rowMetaId: 4,
         messages: [
           'Values must be over input min values for the data point to be valid.',
@@ -46,10 +50,6 @@ describe('findDataPointViolations', () => {
         messages: [
           'Values must be under input max values for the data point to be valid.',
         ],
-      },
-      {
-        rowMetaId: 3,
-        messages: ['Discrete values must be integers.'],
       },
     ]
     expect(dpViolations.sort((a, b) => a.rowMetaId - b.rowMetaId)).toEqual(
