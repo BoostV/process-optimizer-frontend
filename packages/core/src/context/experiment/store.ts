@@ -21,7 +21,13 @@ export const emptyExperiment: ExperimentType = {
       enabled: true,
     },
   ],
-  constraints: [],
+  constraints: [
+    {
+      type: 'sum',
+      dimensions: [],
+      value: 0,
+    },
+  ],
   optimizerConfig: {
     baseEstimator: 'GP',
     acqFunc: 'EI',

@@ -204,6 +204,64 @@ describe('experiment reducer', () => {
     })
   })
 
+  describe('Constraints', () => {
+    describe('setConstraintSum', () => {
+      it('should set the value of the sum constraint', () => {
+        const actual = rootReducer(initState, {
+          type: 'experiment/setConstraintSum',
+          payload: 42,
+        }).experiment.constraints.find(c => c.type === 'sum')
+        expect(actual?.value).toEqual(42)
+      })
+
+      it('should add new constraint if one does not exist', () => {
+        const stateWithoutConstraint = produce(initState, draft => {
+          draft.experiment.constraints = []
+        })
+        const actual = rootReducer(stateWithoutConstraint, {
+          type: 'experiment/setConstraintSum',
+          payload: 42,
+        }).experiment.constraints.find(c => c.type === 'sum')
+        expect(actual?.value).toEqual(42)
+      })
+    })
+
+    describe('addVariableToConstraintSum', () => {
+      it('should add varialbe to dimension of constraint', () => {
+        const actual = rootReducer(initState, {
+          type: 'experiment/addVariableToConstraintSum',
+          payload: 'name',
+        }).experiment.constraints.find(c => c.type === 'sum')
+        expect(actual?.dimensions).toContain('name')
+      })
+
+      it('should add new constraint if one does not exist', () => {
+        const stateWithoutConstraint = produce(initState, draft => {
+          draft.experiment.constraints = []
+        })
+        const actual = rootReducer(stateWithoutConstraint, {
+          type: 'experiment/addVariableToConstraintSum',
+          payload: 'name',
+        }).experiment.constraints.find(c => c.type === 'sum')
+        expect(actual?.dimensions).toContain('name')
+      })
+    })
+
+    describe('removeVariableToConstraintSum', () => {
+      it('should add varialbe to dimension of constraint', () => {
+        const stateWithConstraint = rootReducer(initState, {
+          type: 'experiment/addVariableToConstraintSum',
+          payload: 'name',
+        })
+        const actual = rootReducer(stateWithConstraint, {
+          type: 'experiment/removeVariableFromConstraintSum',
+          payload: 'name',
+        }).experiment.constraints.find(c => c.type === 'sum')
+        expect(actual?.dimensions).not.toContain('name')
+      })
+    })
+  })
+
   describe('Variables', () => {
     describe('addValueVariable', () => {
       it('should add value variable', async () => {
@@ -425,6 +483,32 @@ describe('experiment reducer', () => {
           'new name'
         )
         expect(newState.experiment.dataPoints[0]?.data[0]?.value).toEqual(117)
+      })
+
+      it('should rename constraint dimensions if needed', () => {
+        const variable = createValueVariable({ name: 'value1' })
+        const renamedVariable = createValueVariable({ name: 'renamedValue1' })
+        const stateWithConstraintAndVariable = (
+          [
+            { type: 'addValueVariable', payload: variable },
+            {
+              type: 'experiment/addVariableToConstraintSum',
+              payload: 'value1',
+            },
+          ] satisfies ExperimentAction[]
+        ).reduce(rootReducer, initState)
+
+        const actual = rootReducer(stateWithConstraintAndVariable, {
+          type: 'editValueVariable',
+          payload: {
+            index:
+              stateWithConstraintAndVariable.experiment.valueVariables.findIndex(
+                v => v.name === 'value1'
+              ),
+            newVariable: renamedVariable,
+          },
+        }).experiment.constraints.find(c => c.type === 'sum')
+        expect(actual?.dimensions).toContain('renamedValue1')
       })
     })
 

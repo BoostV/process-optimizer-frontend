@@ -304,11 +304,6 @@ export const experimentReducer = produce(
             oldVariableName,
             action.payload.newVariable.name
           )
-          state.constraints = updateNamesInConstraints(
-            state,
-            oldVariableName,
-            action.payload.newVariable.name
-          )
         }
         break
       }
@@ -407,8 +402,8 @@ export const experimentReducer = produce(
         } else {
           state.constraints.push({
             type: 'sum',
-            dimensions: [],
             value: action.payload,
+            dimensions: [],
           })
         }
         break
@@ -417,6 +412,12 @@ export const experimentReducer = produce(
         const constraint = state.constraints.find(c => c.type === 'sum')
         if (constraint !== undefined) {
           constraint.dimensions.push(action.payload)
+        } else {
+          state.constraints.push({
+            type: 'sum',
+            value: 0,
+            dimensions: [action.payload],
+          })
         }
         break
       }
