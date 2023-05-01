@@ -14,6 +14,7 @@ import {
   migrateToV11,
   migrateToV12,
   migrateToV13,
+  migrateToV14,
 } from './migrations'
 
 export const migrate = (json: any): ExperimentType => {
@@ -29,7 +30,6 @@ export const migrate = (json: any): ExperimentType => {
   throw new Error('Error migrating json to experiment')
 }
 
-//TODO: Compare json to current ExperimentType and set missing fields to default values?
 export const _migrate = (
   json: any,
   stopAtVersion = MIGRATIONS[MIGRATIONS.length - 1]?.version ?? '0'
@@ -93,4 +93,5 @@ export const MIGRATIONS: Migration[] = [
   { version: '11', converter: migrateToV11 },
   { version: '12', converter: migrateToV12 },
   { version: '13', converter: migrateToV13 },
+  { version: '14', converter: migrateToV14 },
 ]

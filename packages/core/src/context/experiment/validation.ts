@@ -6,6 +6,8 @@ export type ValidationViolations = {
   duplicateVariableNames: string[]
   dataPointsUndefined: number[]
   duplicateDataPointIds: number[]
+  categoricalValues: number[]
+  dataPointsNumericType: number[]
 }
 
 export const validateExperiment = (
@@ -17,6 +19,8 @@ export const validateExperiment = (
     duplicateVariableNames: validateDuplicateVariableNames(experiment),
     dataPointsUndefined: validateDataPointsUndefined(experiment),
     duplicateDataPointIds: validateDuplicateDataPointIds(experiment),
+    categoricalValues: validateCategoricalValues(experiment),
+    dataPointsNumericType: validateDataPointsNumericType(experiment),
   }
 }
 
@@ -75,10 +79,10 @@ export const validateDataPointsUndefined = (
 ): number[] => {
   const dataPoints = experiment.dataPoints
   const enabledVariables = experiment.valueVariables
-    .filter(() => true)
+    .filter(v => v.enabled)
     .map(v => v.name)
     .concat(
-      experiment.categoricalVariables.filter(() => true).map(v => v.name),
+      experiment.categoricalVariables.filter(v => v.enabled).map(v => v.name),
       experiment.scoreVariables.filter(v => v.enabled).map(v => v.name)
     )
   const violations: number[] = []
@@ -87,6 +91,26 @@ export const validateDataPointsUndefined = (
     if (!enabledVariables.every(v => names.includes(v))) {
       violations.push(dp.meta.id)
     }
+  })
+  return violations
+}
+
+export const validateDataPointsNumericType = (experiment: ExperimentType) => {
+  const violations: number[] = []
+  experiment.dataPoints.forEach(dp => {
+    dp.data.forEach(d => {
+      const pointVariable = experiment.valueVariables
+        .filter(v => v.enabled)
+        .find(v => v.name === d.name)
+      if (
+        pointVariable !== undefined &&
+        pointVariable.type === 'discrete' &&
+        d.type === 'numeric' &&
+        !Number.isInteger(d.value)
+      ) {
+        violations.push(dp.meta.id)
+      }
+    })
   })
   return violations
 }
@@ -103,3 +127,18 @@ export const findUniqueDuplicates = <T extends number[] | string[]>(
     // @ts-ignore - https://github.com/microsoft/TypeScript/issues/44373
     .filter((val: T, i: number, arr: T[]) => arr.indexOf(val) !== i)
     .filter((val: T, i: number, arr: T[]) => arr.indexOf(val) === i)
+
+export const validateCategoricalValues = (experiment: ExperimentType) => {
+  const dataPoints = experiment.dataPoints
+  const categoricalVars = experiment.categoricalVariables
+  const violations: number[] = []
+  dataPoints.forEach(dp => {
+    dp.data.forEach(d => {
+      const catVar = categoricalVars.find(c => c.name === d.name)
+      if (catVar !== undefined && !catVar.options.includes('' + d.value)) {
+        violations.push(dp.meta.id)
+      }
+    })
+  })
+  return violations
+}

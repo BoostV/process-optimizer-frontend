@@ -18,9 +18,11 @@ export const rootReducer = (state: State, action: Action) => {
     case 'addCategorialVariable':
     case 'editCategoricalVariable':
     case 'deleteCategorialVariable':
+    case 'setCategoricalVariableEnabled':
     case 'addValueVariable':
     case 'editValueVariable':
     case 'deleteValueVariable':
+    case 'setValueVariableEnabled':
     case 'updateConfiguration':
     case 'registerResult':
     case 'updateDataPoints':

@@ -52,7 +52,7 @@ export const EditableTableExpandedRow = ({
           n === idx
             ? {
                 ...d,
-                value,
+                value: value === '' ? undefined : value,
               }
             : d
         ),

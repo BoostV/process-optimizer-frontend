@@ -1,4 +1,6 @@
-import { DataPointType, ExperimentType } from '@core/common/types'
+import { DataPointType } from '@core/common/types'
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 
 function isNumber(data: unknown | number): data is number {
   return (
@@ -14,25 +16,24 @@ function asNumber(data: unknown): number {
   return 0
 }
 
-const convert = (
-  experiment: ExperimentType,
-  dataPoint: DataPointType
-): DataPointType => {
-  if (experiment.valueVariables.find(v => v.name === dataPoint.name)) {
+const convert = (experiment: any, dataPoint: DataPointType): DataPointType => {
+  if (experiment.valueVariables.find((v: any) => v.name === dataPoint.name)) {
     return {
       type: 'numeric',
       name: dataPoint.name,
       value: asNumber(dataPoint.value),
     }
   }
-  if (experiment.categoricalVariables.find(v => v.name === dataPoint.name)) {
+  if (
+    experiment.categoricalVariables.find((v: any) => v.name === dataPoint.name)
+  ) {
     return {
       type: 'categorical',
       name: dataPoint.name,
       value: String(dataPoint.value),
     }
   }
-  if (experiment.scoreVariables.find(v => v.name === dataPoint.name)) {
+  if (experiment.scoreVariables.find((v: any) => v.name === dataPoint.name)) {
     return {
       type: 'score',
       name: dataPoint.name,
@@ -68,15 +69,15 @@ const convert = (
   throw new Error(`Could not migrate data point ${JSON.stringify(dataPoint)}`)
 }
 
-export const migrateToV13 = (json: ExperimentType): ExperimentType => {
+export const migrateToV13 = (json: any) => {
   return {
     ...json,
     info: { ...json.info, dataFormatVersion: '13' },
-    dataPoints: json.dataPoints.map(dp => ({
+    dataPoints: json.dataPoints.map((dp: any) => ({
       ...dp,
       data: dp.data
-        .filter(d => d.value !== undefined && d.value !== null)
-        .map(d => convert(json, d)),
+        .filter((d: any) => d.value !== undefined && d.value !== null)
+        .map((d: any) => convert(json, d)),
     })),
   }
 }

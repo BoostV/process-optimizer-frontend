@@ -1,6 +1,8 @@
 import { ExperimentType } from 'common'
 import { emptyExperiment } from './store'
 import {
+  validateCategoricalValues,
+  validateDataPointsNumericType,
   validateDataPointsUndefined,
   validateDuplicateDataPointIds,
   validateDuplicateVariableNames,
@@ -19,6 +21,7 @@ describe('validateUpperBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -66,6 +69,7 @@ describe('validateUpperBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -92,6 +96,7 @@ describe('validateUpperBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -128,6 +133,7 @@ describe('validateLowerBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -169,6 +175,7 @@ describe('validateLowerBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -195,6 +202,7 @@ describe('validateLowerBoundary', () => {
           max: 100,
           type: 'discrete',
           description: '',
+          enabled: true,
         },
       ],
       dataPoints: [
@@ -231,6 +239,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
         {
           name: 'Cheese',
@@ -238,6 +247,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
       ],
     }
@@ -254,6 +264,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
         {
           name: 'Water',
@@ -261,6 +272,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
         {
           name: 'Water',
@@ -268,6 +280,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
         {
           name: 'Cheese',
@@ -275,6 +288,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
       ],
     }
@@ -291,6 +305,7 @@ describe('validateDuplicateVariableNames', () => {
           max: 100,
           type: 'continuous',
           description: '',
+          enabled: true,
         },
       ],
       categoricalVariables: [
@@ -298,6 +313,7 @@ describe('validateDuplicateVariableNames', () => {
           name: 'Water',
           options: [],
           description: '',
+          enabled: true,
         },
       ],
     }
@@ -357,7 +373,7 @@ describe('validateDataPointsUndefined', () => {
     expect(validateDataPointsUndefined(exp)).toEqual([1])
   })
 
-  it('should return two data point with undefined properties', () => {
+  it('should return two data points with undefined properties', () => {
     const exp: ExperimentType = {
       ...emptyExperiment,
       valueVariables: [
@@ -367,6 +383,7 @@ describe('validateDataPointsUndefined', () => {
           description: '',
           min: 0,
           max: 100,
+          enabled: true,
         },
       ],
       scoreVariables: [
@@ -532,5 +549,105 @@ describe('validateDuplicateDataPointIds', () => {
       ],
     }
     expect(validateDuplicateDataPointIds(exp)).toEqual([])
+  })
+})
+
+describe('validateCategoricalValues', () => {
+  it('should return data points with no corresponding categorical options', () => {
+    const exp: ExperimentType = {
+      ...emptyExperiment,
+      categoricalVariables: [
+        {
+          name: 'Berry',
+          description: '',
+          options: ['Blue', 'Green'],
+          enabled: true,
+        },
+      ],
+      dataPoints: [
+        {
+          meta: {
+            enabled: true,
+            valid: true,
+            id: 1,
+          },
+          data: [
+            {
+              name: 'Berry',
+              type: 'categorical',
+              value: 'Red',
+            },
+          ],
+        },
+      ],
+    }
+    expect(validateCategoricalValues(exp)).toEqual([1])
+  })
+})
+
+describe('validateDataPointsNumericType', () => {
+  it('should return discrete data points with continuous values', () => {
+    const exp: ExperimentType = {
+      ...emptyExperiment,
+      valueVariables: [
+        {
+          name: 'Water',
+          min: 100,
+          max: 200,
+          description: '',
+          enabled: true,
+          type: 'discrete',
+        },
+      ],
+      dataPoints: [
+        {
+          meta: {
+            enabled: true,
+            valid: true,
+            id: 1,
+          },
+          data: [
+            {
+              name: 'Water',
+              type: 'numeric',
+              value: 128.49,
+            },
+          ],
+        },
+      ],
+    }
+    expect(validateDataPointsNumericType(exp)).toEqual([1])
+  })
+  it('should not return continuous data points with continuous values', () => {
+    const exp: ExperimentType = {
+      ...emptyExperiment,
+      valueVariables: [
+        {
+          name: 'Water',
+          min: 100,
+          max: 200,
+          description: '',
+          enabled: true,
+          type: 'continuous',
+        },
+      ],
+      dataPoints: [
+        {
+          meta: {
+            enabled: true,
+            valid: true,
+            id: 1,
+          },
+          data: [
+            {
+              name: 'Water',
+              type: 'numeric',
+              value: 128.49,
+            },
+          ],
+        },
+      ],
+    }
+    expect(validateDataPointsNumericType(exp)).toEqual([])
   })
 })

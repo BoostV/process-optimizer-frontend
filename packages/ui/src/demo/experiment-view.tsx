@@ -7,6 +7,8 @@ import {
   DataEntry,
   migrate,
   selectIsMultiObjective,
+  CategoricalVariableType,
+  ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
 
 import catapult from '@ui/testing/sample-data/catapult.json'
@@ -66,9 +68,76 @@ const Experiment = () => {
           />
           <ExperimentationGuide />
           <InputModel
-            isAddRemoveDisabled={false}
-            categoricalVariables={experiment.categoricalVariables}
             valueVariables={experiment.valueVariables}
+            categoricalVariables={experiment.categoricalVariables}
+            addValueVariable={(valueVariable: ValueVariableType) =>
+              dispatch({
+                type: 'addValueVariable',
+                payload: valueVariable,
+              })
+            }
+            editValueVariable={(
+              index: number,
+              newVariable: ValueVariableType
+            ) =>
+              dispatch({
+                type: 'editValueVariable',
+                payload: {
+                  index,
+                  newVariable,
+                },
+              })
+            }
+            onDeleteValueVariable={(index: number) => {
+              dispatch({
+                type: 'deleteValueVariable',
+                payload: index,
+              })
+            }}
+            setValueVariableEnabled={(index: number, enabled: boolean) =>
+              dispatch({
+                type: 'setValueVariableEnabled',
+                payload: {
+                  index,
+                  enabled,
+                },
+              })
+            }
+            addCategoricalVariable={(
+              categoricalVariable: CategoricalVariableType
+            ) =>
+              dispatch({
+                type: 'addCategorialVariable',
+                payload: categoricalVariable,
+              })
+            }
+            editCategoricalVariable={(
+              index: number,
+              newVariable: CategoricalVariableType
+            ) =>
+              dispatch({
+                type: 'editCategoricalVariable',
+                payload: {
+                  index,
+                  newVariable,
+                },
+              })
+            }
+            onDeleteCategoricalVariable={(index: number) => {
+              dispatch({
+                type: 'deleteCategorialVariable',
+                payload: index,
+              })
+            }}
+            setCategoricalVariableEnabled={(index: number, enabled: boolean) =>
+              dispatch({
+                type: 'setCategoricalVariableEnabled',
+                payload: {
+                  index,
+                  enabled,
+                },
+              })
+            }
           />
         </Stack>
         <Stack spacing={2} direction="row">
