@@ -275,7 +275,7 @@ describe('experiment reducer', () => {
       })
     })
 
-    it('should set only include enabled variables in calculation of initial points and suggestion', async () => {
+    it('should use only enabled variables in calculation of initial points and suggestion', async () => {
       const stateWithManyDisabledValues = produce(initState, draft => {
         const variables = ['name1', 'name2', 'name3', 'name4'].map(
           name =>
@@ -555,83 +555,83 @@ describe('experiment reducer', () => {
         ).toEqual(5)
       })
     })
-  })
 
-  describe('editCategoricalVariable', () => {
-    it('should edit categorical variable', () => {
-      const newVariable: CategoricalVariableType = {
-        name: 'new name',
-        description: 'new description',
-        options: ['a', 'b'],
-        enabled: true,
-      }
-      const payload: {
-        index: number
-        newVariable: CategoricalVariableType
-      } = {
-        index: 0,
-        newVariable,
-      }
-      const newState = rootReducer(initState, {
-        type: 'editCategoricalVariable',
-        payload,
+    describe('editCategoricalVariable', () => {
+      it('should edit categorical variable', () => {
+        const newVariable: CategoricalVariableType = {
+          name: 'new name',
+          description: 'new description',
+          options: ['a', 'b'],
+          enabled: true,
+        }
+        const payload: {
+          index: number
+          newVariable: CategoricalVariableType
+        } = {
+          index: 0,
+          newVariable,
+        }
+        const newState = rootReducer(initState, {
+          type: 'editCategoricalVariable',
+          payload,
+        })
+        expect(newState.experiment.categoricalVariables).toEqual([
+          { ...newVariable },
+        ])
+        expect(newState.experiment.dataPoints[0]?.data[1]?.name).toEqual(
+          'new name'
+        )
       })
-      expect(newState.experiment.categoricalVariables).toEqual([
-        { ...newVariable },
-      ])
-      expect(newState.experiment.dataPoints[0]?.data[1]?.name).toEqual(
-        'new name'
-      )
-    })
-    it('should update option in data points if it exists', () => {
-      const newVariable: CategoricalVariableType = {
-        name: 'new name',
-        description: 'new description',
-        options: ['a', 'Vanilla'],
-        enabled: true,
-      }
-      const payload: {
-        index: number
-        newVariable: CategoricalVariableType
-      } = {
-        index: 0,
-        newVariable,
-      }
-      const newState = rootReducer(initState, {
-        type: 'editCategoricalVariable',
-        payload,
+      it('should update option in data points if it exists', () => {
+        const newVariable: CategoricalVariableType = {
+          name: 'new name',
+          description: 'new description',
+          options: ['a', 'Vanilla'],
+          enabled: true,
+        }
+        const payload: {
+          index: number
+          newVariable: CategoricalVariableType
+        } = {
+          index: 0,
+          newVariable,
+        }
+        const newState = rootReducer(initState, {
+          type: 'editCategoricalVariable',
+          payload,
+        })
+        expect(newState.experiment.categoricalVariables).toEqual([
+          { ...newVariable },
+        ])
+        expect(newState.experiment.dataPoints[0]?.data[1]?.value).toEqual(
+          'Vanilla'
+        )
       })
-      expect(newState.experiment.categoricalVariables).toEqual([
-        { ...newVariable },
-      ])
-      expect(newState.experiment.dataPoints[0]?.data[1]?.value).toEqual(
-        'Vanilla'
-      )
-    })
-    it('should keep old value when categorical option is deleted', () => {
-      const newVariable: CategoricalVariableType = {
-        name: 'new name',
-        description: 'new description',
-        options: ['a', 'b'],
-        enabled: true,
-      }
-      const payload: {
-        index: number
-        newVariable: CategoricalVariableType
-      } = {
-        index: 0,
-        newVariable,
-      }
-      const newState = rootReducer(initState, {
-        type: 'editCategoricalVariable',
-        payload,
+      it('should keep old value when categorical option is deleted', () => {
+        const newVariable: CategoricalVariableType = {
+          name: 'new name',
+          description: 'new description',
+          options: ['a', 'b'],
+          enabled: true,
+        }
+        const payload: {
+          index: number
+          newVariable: CategoricalVariableType
+        } = {
+          index: 0,
+          newVariable,
+        }
+        const newState = rootReducer(initState, {
+          type: 'editCategoricalVariable',
+          payload,
+        })
+        expect(newState.experiment.categoricalVariables).toEqual([
+          { ...newVariable },
+        ])
+        expect(newState.experiment.dataPoints[0]?.data[1]?.value).toEqual(
+          'Vanilla'
+        )
       })
-      expect(newState.experiment.categoricalVariables).toEqual([
-        { ...newVariable },
-      ])
-      expect(newState.experiment.dataPoints[0]?.data[1]?.value).toEqual(
-        'Vanilla'
-      )
     })
   })
 
