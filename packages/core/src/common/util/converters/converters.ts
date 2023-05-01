@@ -78,6 +78,20 @@ export const calculateData = (
     )
 }
 /**
+ * Calculate the constraints parameter to send to the API.
+ *
+ * @param experiment
+ * @returns
+ */
+export const calculateConstraints = (experiment: ExperimentType) =>
+  experiment.constraints.map(c => ({
+    type: c.type,
+    value: c.value,
+    dimensions: c.dimensions
+      .map(d => experiment.valueVariables.findIndex(v => d === v.name))
+      .sort(),
+  }))
+/**
  * Converts a list of DataEntry objects into a CSV string.
  * The output format:
  *

@@ -12,7 +12,10 @@ import {
   calculateData,
   dataPointsToCSV,
   csvToDataPoints,
+  calculateConstraints,
 } from './converters'
+import { createContinuousVariable } from '@core/context/experiment/test-utils'
+import produce from 'immer'
 
 describe('converters', () => {
   const sampleDataPoints: DataEntry[] = [
@@ -236,6 +239,30 @@ describe('converters', () => {
       )
       expect(actualData).toEqual(expectedData)
     })
+  })
+
+  describe('calculateConstraints', () => {
+    it('should convert names to sorted array of indices', () => {
+      const experiment = produce(initialState.experiment, draft => {
+        draft.valueVariables = [
+          createContinuousVariable('name1'),
+          createContinuousVariable('name2'),
+          createContinuousVariable('name3'),
+          createContinuousVariable('name4'),
+        ]
+        draft.constraints = [
+          { type: 'sum', dimensions: ['name3', 'name1'], value: 42 },
+        ]
+      })
+      const actual = calculateConstraints(experiment)
+      expect(actual[0]).toMatchObject({
+        dimensions: [0, 2],
+        type: 'sum',
+        value: 42,
+      })
+    })
+
+    it.todo('should only include enabled variables')
   })
 
   describe('dataPointsToCSV', () => {
