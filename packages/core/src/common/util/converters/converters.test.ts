@@ -318,6 +318,23 @@ describe('converters', () => {
         value: 42,
       })
     })
+
+    it('should return empty list if resulting dimension is less than 2', () => {
+      const experiment = produce(initialState.experiment, draft => {
+        draft.valueVariables = ['name1'].map(name =>
+          createValueVariable({ name })
+        )
+        draft.constraints = [
+          {
+            type: 'sum',
+            dimensions: ['name1'],
+            value: 42,
+          },
+        ]
+      })
+      const actual = calculateConstraints(experiment)
+      expect(actual).toHaveLength(0)
+    })
   })
 
   describe('dataPointsToCSV', () => {
