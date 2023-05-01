@@ -14,7 +14,7 @@ import {
   csvToDataPoints,
   calculateConstraints,
 } from './converters'
-import { createContinuousVariable } from '@core/context/experiment/test-utils'
+import { createValueVariable } from '@core/context/experiment/test-utils'
 import produce from 'immer'
 
 describe('converters', () => {
@@ -257,7 +257,7 @@ describe('converters', () => {
     it('should convert names to sorted array of indices', () => {
       const experiment = produce(initialState.experiment, draft => {
         draft.valueVariables = ['name1', 'name2', 'name3', 'name4'].map(name =>
-          createContinuousVariable({ name })
+          createValueVariable({ name })
         )
         draft.constraints = [
           { type: 'sum', dimensions: ['name3', 'name1'], value: 42 },
