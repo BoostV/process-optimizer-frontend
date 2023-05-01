@@ -1,5 +1,15 @@
 # @process-optimizer-frontend/core
 
+## 2.1.0
+
+### Minor Changes
+
+- ebfff31: Add / remove / edit input model variables
+
+### Patch Changes
+
+- aafdfa2: Change calculation of initial points
+
 ## 2.0.0
 
 ### Major Changes

@@ -1,5 +1,18 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 1.4.0
+
+### Minor Changes
+
+- d927e77: Add loading state to cards
+- ebfff31: Add / remove / edit input model variables
+
+### Patch Changes
+
+- Updated dependencies [aafdfa2]
+- Updated dependencies [ebfff31]
+  - @boostv/process-optimizer-frontend-core@2.1.0
+
 ## 1.3.1
 
 ### Patch Changes
