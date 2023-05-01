@@ -1,10 +1,11 @@
 import { ValueVariableType } from '@core/common'
 
-export const createContinuousVariable = (name: string, min = 0, max = 100) =>
+export const createContinuousVariable = (input: Partial<ValueVariableType>) =>
   ({
-    type: 'continuous',
-    name: name,
-    description: '',
-    min,
-    max,
+    type: input.type ?? 'continuous',
+    name: input.name ?? 'name',
+    description: input.description ?? '',
+    min: input.min ?? 0,
+    max: input.max ?? 100,
+    enabled: input.enabled ?? true,
   } satisfies ValueVariableType)

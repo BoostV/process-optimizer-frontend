@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DataPointType, ExperimentType } from '@core/common/types'
+import { DataPointType } from '@core/common/types'
 
 function isNumber(data: unknown | number): data is number {
   return (
