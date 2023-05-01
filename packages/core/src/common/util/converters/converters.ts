@@ -92,6 +92,7 @@ export const calculateConstraints = (experiment: ExperimentType) =>
     value: c.value,
     dimensions: c.dimensions
       .map(d => experiment.valueVariables.findIndex(v => d === v.name))
+      .filter(idx => idx !== -1)
       .sort(),
   }))
 /**

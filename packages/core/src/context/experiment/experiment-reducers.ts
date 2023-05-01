@@ -248,6 +248,11 @@ export const experimentReducer = produce(
             oldVariable,
             action.payload.newVariable
           )
+          state.constraints = updateNamesInConstraints(
+            state,
+            oldVariable.name,
+            action.payload.newVariable.name
+          )
         }
         break
       }
@@ -295,6 +300,11 @@ export const experimentReducer = produce(
           )
         if (oldVariableName !== undefined) {
           state.dataPoints = updateDataPointNames(
+            state,
+            oldVariableName,
+            action.payload.newVariable.name
+          )
+          state.constraints = updateNamesInConstraints(
             state,
             oldVariableName,
             action.payload.newVariable.name
@@ -390,10 +400,35 @@ export const experimentReducer = produce(
           })
         }
         break
-      case 'experiment/setConstraintSum':
-      case 'experiment/addVariableToConstraintSum':
-      case 'experiment/removeVariableFromConstraintSum':
+      case 'experiment/setConstraintSum': {
+        const constraint = state.constraints.find(c => c.type === 'sum')
+        if (constraint !== undefined) {
+          constraint.value = action.payload
+        } else {
+          state.constraints.push({
+            type: 'sum',
+            dimensions: [],
+            value: action.payload,
+          })
+        }
         break
+      }
+      case 'experiment/addVariableToConstraintSum': {
+        const constraint = state.constraints.find(c => c.type === 'sum')
+        if (constraint !== undefined) {
+          constraint.dimensions.push(action.payload)
+        }
+        break
+      }
+      case 'experiment/removeVariableFromConstraintSum': {
+        const constraint = state.constraints.find(c => c.type === 'sum')
+        if (constraint !== undefined) {
+          constraint.dimensions = constraint.dimensions.filter(
+            d => d !== action.payload
+          )
+        }
+        break
+      }
       default:
         assertUnreachable(action)
     }
@@ -402,7 +437,18 @@ export const experimentReducer = produce(
       md5(JSON.stringify(createFetchExperimentResultRequest(state)))
   }
 )
-
+const updateNamesInConstraints = (
+  state: ExperimentType,
+  oldVariableName: string,
+  newVariableName: string
+) => {
+  return state.constraints.map(c => ({
+    ...c,
+    dimensions: c.dimensions.map(d =>
+      d === oldVariableName ? newVariableName : d
+    ),
+  }))
+}
 const updateDataPointNames = (
   state: ExperimentType,
   oldVariableName: string,
