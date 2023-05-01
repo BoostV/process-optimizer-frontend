@@ -214,16 +214,25 @@ export const experimentReducer = produce(
           state.optimizerConfig.initialPoints
         break
       case 'editValueVariable': {
-        const oldVariableName = state.valueVariables[action.payload.index]?.name
+        const oldVariable = state.valueVariables[action.payload.index]
+        const newVariable = action.payload.newVariable
         state.valueVariables[action.payload.index] =
-          experimentSchema.shape.valueVariables.element.parse(
-            action.payload.newVariable
-          )
-        if (oldVariableName !== undefined) {
-          state.dataPoints = updateDataPointNames(
+          experimentSchema.shape.valueVariables.element.parse({
+            ...newVariable,
+            min:
+              newVariable.type === 'discrete'
+                ? Math.round(newVariable.min)
+                : newVariable.min,
+            max:
+              newVariable.type === 'discrete'
+                ? Math.round(newVariable.max)
+                : newVariable.max,
+          })
+        if (oldVariable !== undefined) {
+          state.dataPoints = updateDataPointNamesAndValues(
             state,
-            oldVariableName,
-            action.payload.newVariable.name
+            oldVariable,
+            action.payload.newVariable
           )
         }
         break
@@ -387,6 +396,34 @@ const updateDataPointNames = (
         ? { ...point, name: newVariableName }
         : point
     )
+    return {
+      ...d,
+      data,
+    }
+  })
+}
+
+const updateDataPointNamesAndValues = (
+  state: ExperimentType,
+  oldVariable: ValueVariableType,
+  newVariable: ValueVariableType
+) => {
+  return state.dataPoints.map(d => {
+    const data = d.data.map(point => {
+      if (point.type === 'numeric') {
+        return oldVariable.name === point.name
+          ? {
+              ...point,
+              name: newVariable.name,
+              value:
+                newVariable.type === 'discrete'
+                  ? Math.round(Number(point.value))
+                  : point.value,
+            }
+          : point
+      }
+      return point
+    })
     return {
       ...d,
       data,

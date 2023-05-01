@@ -69,14 +69,8 @@ export default function ValueVariable(props: ValueVariableProps) {
     const noCommaMax = data.max.replace(',', '.')
     const newVariable: ValueVariableType = {
       ...data,
-      min:
-        data.type === 'discrete'
-          ? Math.floor(parseFloat(noCommaMin))
-          : parseFloat(noCommaMin),
-      max:
-        data.type === 'discrete'
-          ? Math.floor(parseFloat(noCommaMax))
-          : parseFloat(noCommaMax),
+      min: Number(noCommaMin),
+      max: Number(noCommaMax),
     }
     if (editingVariable !== undefined) {
       onEdit(newVariable)

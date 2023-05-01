@@ -7,6 +7,7 @@ export type ValidationViolations = {
   dataPointsUndefined: number[]
   duplicateDataPointIds: number[]
   categoricalValues: number[]
+  dataPointsNumericType: number[]
 }
 
 export const validateExperiment = (
@@ -19,6 +20,7 @@ export const validateExperiment = (
     dataPointsUndefined: validateDataPointsUndefined(experiment),
     duplicateDataPointIds: validateDuplicateDataPointIds(experiment),
     categoricalValues: validateCategoricalValues(experiment),
+    dataPointsNumericType: validateDataPointsNumericType(experiment),
   }
 }
 
@@ -89,6 +91,26 @@ export const validateDataPointsUndefined = (
     if (!enabledVariables.every(v => names.includes(v))) {
       violations.push(dp.meta.id)
     }
+  })
+  return violations
+}
+
+export const validateDataPointsNumericType = (experiment: ExperimentType) => {
+  const violations: number[] = []
+  experiment.dataPoints.forEach(dp => {
+    dp.data.forEach(d => {
+      const pointVariable = experiment.valueVariables
+        .filter(v => v.enabled)
+        .find(v => v.name === d.name)
+      if (
+        pointVariable !== undefined &&
+        pointVariable.type === 'discrete' &&
+        d.type === 'numeric' &&
+        !Number.isInteger(d.value)
+      ) {
+        violations.push(dp.meta.id)
+      }
+    })
   })
   return violations
 }

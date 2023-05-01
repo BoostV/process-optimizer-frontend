@@ -9,6 +9,7 @@ describe('findDataPointViolations', () => {
     lowerBoundary: [1, 4],
     upperBoundary: [1, 2, 5, 6],
     categoricalValues: [],
+    dataPointsNumericType: [3],
   }
   it('should return correct list of data point violations', () => {
     const dpViolations = findDataPointViolations(violations)
@@ -45,6 +46,10 @@ describe('findDataPointViolations', () => {
         messages: [
           'Values must be under input max values for the data point to be valid.',
         ],
+      },
+      {
+        rowMetaId: 3,
+        messages: ['Discrete values must be integers.'],
       },
     ]
     expect(dpViolations.sort((a, b) => a.rowMetaId - b.rowMetaId)).toEqual(

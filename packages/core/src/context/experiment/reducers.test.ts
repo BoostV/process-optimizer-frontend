@@ -355,6 +355,78 @@ describe('experiment reducer', () => {
           'new name'
         )
       })
+
+      it('should edit value variable from continous to discrete', () => {
+        const newVariable: ValueVariableType = {
+          type: 'discrete',
+          name: 'new name',
+          description: 'new description',
+          min: 101.25,
+          max: 202.89,
+          enabled: true,
+        }
+        const payload: {
+          index: number
+          newVariable: ValueVariableType
+        } = {
+          index: 0,
+          newVariable,
+        }
+        const oldVariable: ValueVariableType = {
+          name: 'Water',
+          type: 'continuous',
+          description: 'oldDesc',
+          min: 100.56,
+          max: 200.89,
+          enabled: true,
+        }
+        const newState = rootReducer(
+          {
+            ...initState,
+            experiment: {
+              ...initState.experiment,
+              valueVariables: [oldVariable],
+              dataPoints: [
+                {
+                  meta: {
+                    enabled: true,
+                    valid: true,
+                    id: 1,
+                  },
+                  data: [
+                    {
+                      type: 'numeric',
+                      name: 'Water',
+                      value: 117.45,
+                    },
+                    {
+                      type: 'categorical',
+                      name: 'Icing',
+                      value: 'Vanilla',
+                    },
+                    {
+                      type: 'score',
+                      name: 'score',
+                      value: 10,
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            type: 'editValueVariable',
+            payload,
+          }
+        )
+        expect(newState.experiment.valueVariables).toEqual([
+          { ...newVariable, min: 101, max: 203 },
+        ])
+        expect(newState.experiment.dataPoints[0]?.data[0]?.name).toEqual(
+          'new name'
+        )
+        expect(newState.experiment.dataPoints[0]?.data[0]?.value).toEqual(117)
+      })
     })
 
     describe('addCategorialVariable', () => {

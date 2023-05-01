@@ -14,8 +14,12 @@ export const findDataPointViolations = (
   const pointsUndefined = violations.dataPointsUndefined
   const upperBoundary = violations.upperBoundary
   const lowerBoundary = violations.lowerBoundary
+  const numericType = violations.dataPointsNumericType
   findUniqueEntries(
-    pointsUndefined.concat(upperBoundary).concat(lowerBoundary)
+    pointsUndefined
+      .concat(upperBoundary)
+      .concat(lowerBoundary)
+      .concat(numericType)
   ).forEach(e => {
     const messages: string[] = []
     if (pointsUndefined.includes(e)) {
@@ -32,6 +36,9 @@ export const findDataPointViolations = (
       messages.push(
         'Values must be over input min values for the data point to be valid.'
       )
+    }
+    if (numericType.includes(e)) {
+      messages.push('Discrete values must be integers.')
     }
     allViolations.push({
       rowMetaId: e,

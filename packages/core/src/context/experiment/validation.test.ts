@@ -2,6 +2,7 @@ import { ExperimentType } from 'common'
 import { emptyExperiment } from './store'
 import {
   validateCategoricalValues,
+  validateDataPointsNumericType,
   validateDataPointsUndefined,
   validateDuplicateDataPointIds,
   validateDuplicateVariableNames,
@@ -581,5 +582,72 @@ describe('validateCategoricalValues', () => {
       ],
     }
     expect(validateCategoricalValues(exp)).toEqual([1])
+  })
+})
+
+describe('validateDataPointsNumericType', () => {
+  it('should return discrete data points with continuous values', () => {
+    const exp: ExperimentType = {
+      ...emptyExperiment,
+      valueVariables: [
+        {
+          name: 'Water',
+          min: 100,
+          max: 200,
+          description: '',
+          enabled: true,
+          type: 'discrete',
+        },
+      ],
+      dataPoints: [
+        {
+          meta: {
+            enabled: true,
+            valid: true,
+            id: 1,
+          },
+          data: [
+            {
+              name: 'Water',
+              type: 'numeric',
+              value: 128.49,
+            },
+          ],
+        },
+      ],
+    }
+    expect(validateDataPointsNumericType(exp)).toEqual([1])
+  })
+  it('should not return continuous data points with continuous values', () => {
+    const exp: ExperimentType = {
+      ...emptyExperiment,
+      valueVariables: [
+        {
+          name: 'Water',
+          min: 100,
+          max: 200,
+          description: '',
+          enabled: true,
+          type: 'continuous',
+        },
+      ],
+      dataPoints: [
+        {
+          meta: {
+            enabled: true,
+            valid: true,
+            id: 1,
+          },
+          data: [
+            {
+              name: 'Water',
+              type: 'numeric',
+              value: 128.49,
+            },
+          ],
+        },
+      ],
+    }
+    expect(validateDataPointsNumericType(exp)).toEqual([])
   })
 })
