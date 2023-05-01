@@ -39,6 +39,9 @@ export function EditableTableCell({
     />
   )
 
+  // Value is undefined when new categorical variable is added to existing dataPoints
+  const categoricalValue = value === undefined ? '' : value
+
   return (
     <>
       {isEditMode ? (
@@ -46,10 +49,12 @@ export function EditableTableCell({
           {options && options.length > 0 ? (
             <FormControl>
               <Select
-                value={value}
+                value={categoricalValue}
                 onChange={(e: SelectChangeEvent) => onChange?.(e.target.value)}
                 displayEmpty
                 inputProps={{ 'aria-label': 'select value' }}
+                renderValue={val => val}
+                error={!options.includes(categoricalValue)}
               >
                 {options.map((item, i) => (
                   <MenuItem key={i} value={item}>

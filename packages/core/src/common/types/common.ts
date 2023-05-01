@@ -3,7 +3,7 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '13'
+export const currentVersion = '14'
 
 const infoSchema = z.object({
   name: z.string(),
@@ -25,6 +25,7 @@ const categorialVariableSchema = z.object({
   name: z.string(),
   description: z.string(),
   options: z.array(z.string()),
+  enabled: z.boolean(),
 })
 
 const valueVariableSchema = z.object({
@@ -33,6 +34,7 @@ const valueVariableSchema = z.object({
   description: z.string().default(''),
   min: z.number(),
   max: z.number(),
+  enabled: z.boolean(),
 })
 
 const scoreVariableSchema = z.object({

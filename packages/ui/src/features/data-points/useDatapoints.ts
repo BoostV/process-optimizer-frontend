@@ -87,32 +87,34 @@ const convertToDataEntry = (
   scoreVariables: ScoreVariableType[],
   row: TableDataRow
 ) => {
-  const data = row.dataPoints.map(dp => {
-    if (dp.value === undefined) {
-      throw new Error(
-        'Undefined values must be filtered away before convertion to data points'
-      )
-    }
-    if (categoricalVariables.find(cv => cv.name === dp.name) !== undefined) {
-      return {
-        name: dp.name,
-        value: String(dp.value),
-        type: 'categorical',
+  const data = row.dataPoints
+    .filter(d => d.value !== undefined)
+    .map(dp => {
+      if (dp.value === undefined) {
+        throw new Error(
+          'Undefined values must be filtered away before conversion to data points'
+        )
       }
-    } else if (valueVariables.find(cv => cv.name === dp.name) !== undefined) {
-      return {
-        name: dp.name,
-        value: Number(dp.value.replaceAll(',', '.')),
-        type: 'numeric',
+      if (categoricalVariables.find(cv => cv.name === dp.name) !== undefined) {
+        return {
+          name: dp.name,
+          value: String(dp.value),
+          type: 'categorical',
+        }
+      } else if (valueVariables.find(cv => cv.name === dp.name) !== undefined) {
+        return {
+          name: dp.name,
+          value: Number(dp.value.replaceAll(',', '.')),
+          type: 'numeric',
+        }
+      } else {
+        return {
+          name: dp.name,
+          value: Number(dp.value.replaceAll(',', '.')),
+          type: 'score',
+        }
       }
-    } else {
-      return {
-        name: dp.name,
-        value: Number(dp.value.replaceAll(',', '.')),
-        type: 'score',
-      }
-    }
-  }) satisfies DataEntry['data']
+    }) satisfies DataEntry['data']
   const meta = {
     enabled: row.enabled ?? true,
     id: row.metaId ?? 0,
@@ -150,17 +152,18 @@ const _editRow = (original: DataEntry[], rowIndex: number, row: DataEntry) =>
       originalRow.meta.enabled = row.meta.enabled ?? originalRow.meta.enabled
       originalRow.meta.id = row.meta.id ?? originalRow.meta.id
       row.data.forEach(dp => {
-        if (dp.value !== undefined) {
-          const originalDataPoint = originalRow.data.find(
-            odp => odp.name === dp.name
-          )
-          if (originalDataPoint !== undefined) {
-            originalDataPoint.value = dp.value
-          } else {
-            originalRow.data.push(dp)
-          }
+        const originalDataPoint = originalRow.data.find(
+          odp => odp.name === dp.name
+        )
+        if (originalDataPoint !== undefined) {
+          originalDataPoint.value = dp.value
+        } else {
+          originalRow.data.push(dp)
         }
       })
+      originalRow.data = originalRow.data.filter(d =>
+        row.data.map(r => r.name).includes(d.name)
+      )
     }
   })
 
