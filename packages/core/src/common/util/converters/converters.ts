@@ -93,6 +93,8 @@ export const calculateConstraints = (experiment: ExperimentType) =>
     dimensions: c.dimensions
       .map(d => experiment.valueVariables.findIndex(v => d === v.name))
       .filter(idx => idx !== -1)
+      .filter(idx => experiment.valueVariables[idx]?.enabled)
+      .filter(idx => experiment.valueVariables[idx]?.type === 'continuous')
       .sort(),
   }))
 /**

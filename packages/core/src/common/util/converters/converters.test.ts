@@ -271,7 +271,53 @@ describe('converters', () => {
       })
     })
 
-    it.todo('should only include enabled variables')
+    it('should only include enabled variables', () => {
+      const experiment = produce(initialState.experiment, draft => {
+        draft.valueVariables = ['name1', 'name2', 'name3', 'name4'].map(name =>
+          createValueVariable({ name })
+        )
+        draft.valueVariables.push(
+          createValueVariable({ name: 'disabled', enabled: false })
+        )
+        draft.constraints = [
+          {
+            type: 'sum',
+            dimensions: ['name3', 'name1', 'disabled'],
+            value: 42,
+          },
+        ]
+      })
+      const actual = calculateConstraints(experiment)
+      expect(actual[0]).toMatchObject({
+        dimensions: [0, 2],
+        type: 'sum',
+        value: 42,
+      })
+    })
+
+    it('should only include continuous variables', () => {
+      const experiment = produce(initialState.experiment, draft => {
+        draft.valueVariables = ['name1', 'name2', 'name3', 'name4'].map(name =>
+          createValueVariable({ name })
+        )
+        draft.valueVariables.push(
+          createValueVariable({ name: 'discrete', type: 'discrete' })
+        )
+        draft.constraints = [
+          {
+            type: 'sum',
+            dimensions: ['name3', 'name1', 'discrete'],
+            value: 42,
+          },
+        ]
+      })
+      const actual = calculateConstraints(experiment)
+      expect(actual[0]).toMatchObject({
+        dimensions: [0, 2],
+        type: 'sum',
+        value: 42,
+      })
+    })
   })
 
   describe('dataPointsToCSV', () => {
