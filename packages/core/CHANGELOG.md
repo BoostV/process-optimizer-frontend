@@ -1,5 +1,17 @@
 # @process-optimizer-frontend/core
 
+## 2.2.0
+
+### Minor Changes
+
+- a1079a4: Support constraints
+
+### Patch Changes
+
+- Updated dependencies [a1079a4]
+- Updated dependencies [4ae497f]
+  - @boostv/process-optimizer-frontend-api@1.2.0
+
 ## 2.1.0
 
 ### Minor Changes
