@@ -384,6 +384,28 @@ describe('experiment reducer', () => {
             .experimentSuggestionCount
         ).toEqual(5)
       })
+
+      it('should remove variable from constraint dimensions', () => {
+        const variable = createValueVariable({ name: 'value1' })
+        const stateWithConstraintAndVariable = (
+          [
+            { type: 'addValueVariable', payload: variable },
+            {
+              type: 'experiment/addVariableToConstraintSum',
+              payload: 'value1',
+            },
+          ] satisfies ExperimentAction[]
+        ).reduce(rootReducer, initState)
+
+        const actual = rootReducer(stateWithConstraintAndVariable, {
+          type: 'deleteValueVariable',
+          payload:
+            stateWithConstraintAndVariable.experiment.valueVariables.findIndex(
+              v => v.name === 'value1'
+            ),
+        }).experiment.constraints.find(c => c.type === 'sum')
+        expect(actual?.dimensions).not.toContain('value1')
+      })
     })
 
     describe('editValueVariable', () => {

@@ -267,6 +267,12 @@ export const experimentReducer = produce(
           action.payload,
           oldValueVariables
         )
+        state.constraints = state.constraints.map(c => ({
+          ...c,
+          dimensions: c.dimensions.filter(
+            d => d !== oldValueVariables[action.payload]?.name
+          ),
+        }))
         break
       }
       case 'setValueVariableEnabled': {
