@@ -3,7 +3,7 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '14'
+export const currentVersion = '15'
 
 const infoSchema = z.object({
   name: z.string(),
@@ -87,6 +87,26 @@ const dataEntrySchema = z.object({
   data: z.array(dataPointSchema),
 })
 
+const spaceSchema = z
+  .object({
+    type: z.union([
+      z.literal('category'),
+      z.literal('discrete'),
+      z.literal('continuous'),
+    ]),
+    name: z.string(),
+    from: z.number().optional(),
+    to: z.number().optional(),
+    categories: z.array(z.string()).optional(),
+  })
+  .array()
+
+const constraintSchema = z.object({
+  type: z.literal('sum'),
+  value: z.number(),
+  dimensions: z.string().array(),
+})
+
 export const experimentSchema = z.object({
   id: z.string(),
   lastEvaluationHash: z.string().optional(),
@@ -96,6 +116,7 @@ export const experimentSchema = z.object({
   categoricalVariables: z.array(categorialVariableSchema),
   valueVariables: z.array(valueVariableSchema),
   scoreVariables: z.array(scoreVariableSchema),
+  constraints: z.array(constraintSchema),
   optimizerConfig: optimizerSchema,
   results: experimentResultSchema,
   dataPoints: z.array(dataEntrySchema),
@@ -107,13 +128,7 @@ export type ValueDataPointType = z.infer<typeof numericDataPoint>
 export type ScoreDataPointType = z.infer<typeof scoreDataPoint>
 export type DataPointType = z.infer<typeof dataPointSchema>
 export type DataEntry = z.infer<typeof dataEntrySchema>
-export type SpaceType = {
-  type: string
-  name: string
-  from?: number
-  to?: number
-  categories?: string[]
-}[]
+export type SpaceType = z.infer<typeof spaceSchema>
 export type CombinedVariableType = {
   name: string
   description: string

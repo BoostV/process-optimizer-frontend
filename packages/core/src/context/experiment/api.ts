@@ -4,6 +4,7 @@ import {
 } from '@boostv/process-optimizer-frontend-api'
 import {
   ExperimentType,
+  calculateConstraints,
   calculateData,
   calculateSpace,
   experimentResultSchema,
@@ -32,6 +33,7 @@ export const createFetchExperimentResultRequest = (
         kappa: Number(cfg.kappa),
         xi: Number(cfg.xi),
         space: space,
+        constraints: calculateConstraints(experiment),
       },
     },
   }

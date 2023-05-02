@@ -12,7 +12,10 @@ import {
   calculateData,
   dataPointsToCSV,
   csvToDataPoints,
+  calculateConstraints,
 } from './converters'
+import { createValueVariable } from '@core/context/experiment/test-utils'
+import produce from 'immer'
 
 describe('converters', () => {
   const sampleDataPoints: DataEntry[] = [
@@ -247,6 +250,90 @@ describe('converters', () => {
         sampleMultiObjectiveDataPoints
       )
       expect(actualData).toEqual(expectedData)
+    })
+  })
+
+  describe('calculateConstraints', () => {
+    it('should convert names to sorted array of indices', () => {
+      const experiment = produce(initialState.experiment, draft => {
+        draft.valueVariables = ['name1', 'name2', 'name3', 'name4'].map(name =>
+          createValueVariable({ name })
+        )
+        draft.constraints = [
+          { type: 'sum', dimensions: ['name3', 'name1'], value: 42 },
+        ]
+      })
+      const actual = calculateConstraints(experiment)
+      expect(actual[0]).toMatchObject({
+        dimensions: [0, 2],
+        type: 'sum',
+        value: 42,
+      })
+    })
+
+    it('should only include enabled variables', () => {
+      const experiment = produce(initialState.experiment, draft => {
+        draft.valueVariables = ['name1', 'name2', 'name3', 'name4'].map(name =>
+          createValueVariable({ name })
+        )
+        draft.valueVariables.push(
+          createValueVariable({ name: 'disabled', enabled: false })
+        )
+        draft.constraints = [
+          {
+            type: 'sum',
+            dimensions: ['name3', 'name1', 'disabled'],
+            value: 42,
+          },
+        ]
+      })
+      const actual = calculateConstraints(experiment)
+      expect(actual[0]).toMatchObject({
+        dimensions: [0, 2],
+        type: 'sum',
+        value: 42,
+      })
+    })
+
+    it('should only include continuous variables', () => {
+      const experiment = produce(initialState.experiment, draft => {
+        draft.valueVariables = ['name1', 'name2', 'name3', 'name4'].map(name =>
+          createValueVariable({ name })
+        )
+        draft.valueVariables.push(
+          createValueVariable({ name: 'discrete', type: 'discrete' })
+        )
+        draft.constraints = [
+          {
+            type: 'sum',
+            dimensions: ['name3', 'name1', 'discrete'],
+            value: 42,
+          },
+        ]
+      })
+      const actual = calculateConstraints(experiment)
+      expect(actual[0]).toMatchObject({
+        dimensions: [0, 2],
+        type: 'sum',
+        value: 42,
+      })
+    })
+
+    it('should return empty list if resulting dimension is less than 2', () => {
+      const experiment = produce(initialState.experiment, draft => {
+        draft.valueVariables = ['name1'].map(name =>
+          createValueVariable({ name })
+        )
+        draft.constraints = [
+          {
+            type: 'sum',
+            dimensions: ['name1'],
+            value: 42,
+          },
+        ]
+      })
+      const actual = calculateConstraints(experiment)
+      expect(actual).toHaveLength(0)
     })
   })
 

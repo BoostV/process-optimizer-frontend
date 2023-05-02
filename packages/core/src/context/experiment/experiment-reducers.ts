@@ -127,6 +127,18 @@ export type ExperimentAction =
   | {
       type: 'experiment/toggleMultiObjective'
     }
+  | {
+      type: 'experiment/setConstraintSum'
+      payload: number
+    }
+  | {
+      type: 'experiment/addVariableToConstraintSum'
+      payload: string
+    }
+  | {
+      type: 'experiment/removeVariableFromConstraintSum'
+      payload: string
+    }
 
 export const experimentReducer = produce(
   (state: ExperimentType, action: ExperimentAction): void | ExperimentType => {
@@ -236,6 +248,11 @@ export const experimentReducer = produce(
             oldVariable,
             action.payload.newVariable
           )
+          state.constraints = updateNamesInConstraints(
+            state,
+            oldVariable.name,
+            action.payload.newVariable.name
+          )
         }
         break
       }
@@ -250,6 +267,12 @@ export const experimentReducer = produce(
           action.payload,
           oldValueVariables
         )
+        state.constraints = state.constraints.map(c => ({
+          ...c,
+          dimensions: c.dimensions.filter(
+            d => d !== oldValueVariables[action.payload]?.name
+          ),
+        }))
         break
       }
       case 'setValueVariableEnabled': {
@@ -378,6 +401,41 @@ export const experimentReducer = produce(
           })
         }
         break
+      case 'experiment/setConstraintSum': {
+        const constraint = state.constraints.find(c => c.type === 'sum')
+        if (constraint !== undefined) {
+          constraint.value = action.payload
+        } else {
+          state.constraints.push({
+            type: 'sum',
+            value: action.payload,
+            dimensions: [],
+          })
+        }
+        break
+      }
+      case 'experiment/addVariableToConstraintSum': {
+        const constraint = state.constraints.find(c => c.type === 'sum')
+        if (constraint !== undefined) {
+          constraint.dimensions.push(action.payload)
+        } else {
+          state.constraints.push({
+            type: 'sum',
+            value: 0,
+            dimensions: [action.payload],
+          })
+        }
+        break
+      }
+      case 'experiment/removeVariableFromConstraintSum': {
+        const constraint = state.constraints.find(c => c.type === 'sum')
+        if (constraint !== undefined) {
+          constraint.dimensions = constraint.dimensions.filter(
+            d => d !== action.payload
+          )
+        }
+        break
+      }
       default:
         assertUnreachable(action)
     }
@@ -386,7 +444,18 @@ export const experimentReducer = produce(
       md5(JSON.stringify(createFetchExperimentResultRequest(state)))
   }
 )
-
+const updateNamesInConstraints = (
+  state: ExperimentType,
+  oldVariableName: string,
+  newVariableName: string
+) => {
+  return state.constraints.map(c => ({
+    ...c,
+    dimensions: c.dimensions.map(d =>
+      d === oldVariableName ? newVariableName : d
+    ),
+  }))
+}
 const updateDataPointNames = (
   state: ExperimentType,
   oldVariableName: string,

@@ -13,12 +13,18 @@
  */
 
 import { exists, mapValues } from '../runtime'
-import type { ExperimentOptimizerConfigSpaceInner } from './ExperimentOptimizerConfigSpaceInner'
+import type { Constraint } from './Constraint'
 import {
-  ExperimentOptimizerConfigSpaceInnerFromJSON,
-  ExperimentOptimizerConfigSpaceInnerFromJSONTyped,
-  ExperimentOptimizerConfigSpaceInnerToJSON,
-} from './ExperimentOptimizerConfigSpaceInner'
+  ConstraintFromJSON,
+  ConstraintFromJSONTyped,
+  ConstraintToJSON,
+} from './Constraint'
+import type { SpaceInner } from './SpaceInner'
+import {
+  SpaceInnerFromJSON,
+  SpaceInnerFromJSONTyped,
+  SpaceInnerToJSON,
+} from './SpaceInner'
 
 /**
  *
@@ -58,10 +64,16 @@ export interface ExperimentOptimizerConfig {
   xi?: number
   /**
    *
-   * @type {Array<ExperimentOptimizerConfigSpaceInner>}
+   * @type {Array<SpaceInner>}
    * @memberof ExperimentOptimizerConfig
    */
-  space?: Array<ExperimentOptimizerConfigSpaceInner>
+  space?: Array<SpaceInner>
+  /**
+   *
+   * @type {Array<Constraint>}
+   * @memberof ExperimentOptimizerConfig
+   */
+  constraints?: Array<Constraint>
 }
 
 /**
@@ -98,9 +110,10 @@ export function ExperimentOptimizerConfigFromJSONTyped(
     xi: !exists(json, 'xi') ? undefined : json['xi'],
     space: !exists(json, 'space')
       ? undefined
-      : (json['space'] as Array<any>).map(
-          ExperimentOptimizerConfigSpaceInnerFromJSON
-        ),
+      : (json['space'] as Array<any>).map(SpaceInnerFromJSON),
+    constraints: !exists(json, 'constraints')
+      ? undefined
+      : (json['constraints'] as Array<any>).map(ConstraintFromJSON),
   }
 }
 
@@ -122,8 +135,10 @@ export function ExperimentOptimizerConfigToJSON(
     space:
       value.space === undefined
         ? undefined
-        : (value.space as Array<any>).map(
-            ExperimentOptimizerConfigSpaceInnerToJSON
-          ),
+        : (value.space as Array<any>).map(SpaceInnerToJSON),
+    constraints:
+      value.constraints === undefined
+        ? undefined
+        : (value.constraints as Array<any>).map(ConstraintToJSON),
   }
 }

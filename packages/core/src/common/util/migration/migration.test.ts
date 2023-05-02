@@ -1,6 +1,6 @@
 import { JSONSchemaFaker } from 'json-schema-faker'
 import { migrate, _migrate, MIGRATIONS } from './migration'
-import version11 from './data-formats/11.json'
+import version15 from './data-formats/15.json'
 import version3 from './data-formats/3.json'
 import version2 from './data-formats/2.json'
 import version1 from './data-formats/1.json'
@@ -137,10 +137,10 @@ describe('Migration of data format', () => {
     //TODO: More/better tests - maybe this can be mabe obsolete by schema testing
     it('newest data format json should match default empty experiment', () => {
       expect(Object.keys(emptyExperiment).length).toBe(
-        Object.keys(version11).length
+        Object.keys(version15).length
       )
       Object.keys(emptyExperiment).forEach(p =>
-        expect(version11).toHaveProperty(p)
+        expect(version15).toHaveProperty(p)
       )
     })
   })

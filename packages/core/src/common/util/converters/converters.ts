@@ -27,7 +27,11 @@ export const calculateSpace = (experiment: ExperimentType): SpaceType => {
     }
   })
   const categorical: SpaceType = experiment.categoricalVariables.map(v => {
-    return { type: 'category', name: v.name, categories: v.options }
+    return {
+      type: 'category',
+      name: v.name,
+      categories: v.options,
+    }
   })
   return numerical.concat(categorical)
 }
@@ -76,6 +80,25 @@ export const calculateData = (
       })
     )
 }
+/**
+ * Calculate the constraints parameter to send to the API.
+ *
+ * @param experiment
+ * @returns
+ */
+export const calculateConstraints = (experiment: ExperimentType) =>
+  experiment.constraints
+    .map(c => ({
+      type: c.type,
+      value: c.value,
+      dimensions: c.dimensions
+        .map(d => experiment.valueVariables.findIndex(v => d === v.name))
+        .filter(idx => idx !== -1)
+        .filter(idx => experiment.valueVariables[idx]?.enabled)
+        .filter(idx => experiment.valueVariables[idx]?.type === 'continuous')
+        .sort(),
+    }))
+    .filter(c => (c.type === 'sum' ? c.dimensions.length > 1 : true))
 /**
  * Converts a list of DataEntry objects into a CSV string.
  * The output format:

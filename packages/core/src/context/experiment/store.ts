@@ -4,6 +4,7 @@ import { ExperimentType } from '@core/common/types'
 
 export const emptyExperiment: ExperimentType = {
   id: '',
+  lastEvaluationHash: '',
   changedSinceLastEvaluation: true,
   info: {
     name: '',
@@ -18,6 +19,13 @@ export const emptyExperiment: ExperimentType = {
       name: 'score',
       description: 'score',
       enabled: true,
+    },
+  ],
+  constraints: [
+    {
+      type: 'sum',
+      dimensions: [],
+      value: 0,
     },
   ],
   optimizerConfig: {
