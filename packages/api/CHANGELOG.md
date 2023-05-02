@@ -1,5 +1,12 @@
 # @process-optimizer-frontend/api
 
+## 1.2.0
+
+### Minor Changes
+
+- a1079a4: Support constraints
+- 4ae497f: Update API to v3.2.0
+
 ## 1.1.4
 
 ### Patch Changes
