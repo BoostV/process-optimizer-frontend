@@ -19,6 +19,7 @@ import {
 import { CopySuggested } from '@ui/features/result-data/copy-suggested'
 
 interface ResultDataProps {
+  id?: string
   isUIBig?: boolean
   loading?: boolean
   toggleUISize?: () => void
@@ -28,6 +29,7 @@ interface ResultDataProps {
 
 export const ExperimentationGuide = (props: ResultDataProps) => {
   const {
+    id,
     isUIBig = false,
     loading = false,
     toggleUISize = () => {},
@@ -68,6 +70,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   )
   return (
     <TitleCard
+      id={id}
       loading={loading}
       padding={0}
       title={

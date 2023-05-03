@@ -20,6 +20,7 @@ import { findDataPointViolations } from './util'
 import { useDatapoints } from './useDatapoints'
 
 type DataPointProps = {
+  id?: string
   experimentId: string
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
@@ -33,6 +34,7 @@ type DataPointProps = {
 
 export function DataPoints(props: DataPointProps) {
   const {
+    id,
     experimentId,
     valueVariables,
     categoricalVariables,
@@ -109,6 +111,7 @@ export function DataPoints(props: DataPointProps) {
 
   return (
     <TitleCard
+      id={id}
       title={
         <>
           <Box display="flex" justifyContent="space-between">

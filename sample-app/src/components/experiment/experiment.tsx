@@ -328,6 +328,7 @@ const LegacyExperiment = () => {
                     </Grid>
                     <Grid item xs={12}>
                       <DataPoints
+                        id="data-points"
                         experimentId={experiment.id}
                         valueVariables={experiment.valueVariables}
                         categoricalVariables={experiment.categoricalVariables}

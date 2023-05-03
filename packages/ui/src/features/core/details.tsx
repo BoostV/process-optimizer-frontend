@@ -3,16 +3,17 @@ import { TextField } from '@mui/material'
 import { TitleCard } from './title-card/title-card'
 
 type DetailsProps = {
+  id?: string
   info: Info
   updateName: (name: string) => void
   updateDescription: (description: string) => void
 }
 
 export function Details(props: DetailsProps) {
-  const { info, updateName, updateDescription } = props
+  const { id, info, updateName, updateDescription } = props
 
   return (
-    <TitleCard title="Details">
+    <TitleCard id={id} title="Details">
       <form>
         <TextField
           fullWidth

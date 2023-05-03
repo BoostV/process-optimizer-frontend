@@ -1,9 +1,11 @@
 import produce from 'immer'
 import { ReactNode, createContext, useContext, useState } from 'react'
 
+export type MessageType = 'info' | 'warning' | 'error' | 'custom'
+
 type Message = {
-  type: 'info' | 'warning' | 'error' | 'custom'
-  message: string
+  type: MessageType
+  text: string
   enabled?: boolean
   component?: ReactNode
 }
@@ -16,14 +18,25 @@ const MessageContext = createContext<
   | undefined
 >(undefined)
 
-export const useMessages = (id: string) => {
+export const useMessages = (id: string | undefined) => {
   const context = useContext(MessageContext)
-  if (context === undefined) {
-    throw new Error('useMessages must be used within a MessageProvider')
+  if (context === undefined || id === undefined) {
+    return {
+      messages: undefined,
+    }
   }
   return {
     messages: context.messages.get(id) ?? [],
-    setMessage: (message: Message) => context.setMessage(id, message),
+  }
+}
+
+export const useMessageController = () => {
+  const context = useContext(MessageContext)
+  if (context === undefined) {
+    throw new Error('useSetMessage must be used within MessageProvider')
+  }
+  return {
+    setMessage: context.setMessage,
   }
 }
 
@@ -36,17 +49,21 @@ export const MessageProvider = ({ children }: MessageProviderProps) => {
 
   const value = {
     messages,
-    setMessage: produce((id: string, message: Message) => {
-      const messagesWithId = messages.get(id)
-      if (messagesWithId !== undefined) {
-        if (!messagesWithId?.map(m => m.message).includes(message.message)) {
-          messagesWithId.push(message)
-          setMessages(messages.set(id, messagesWithId))
-        }
-      } else {
-        setMessages(messages.set(id, [message]))
-      }
-    }),
+    setMessage: (id: string, message: Message) => {
+      setMessages(
+        produce(messages, draft => {
+          const messagesWithId = draft.get(id)
+          if (messagesWithId !== undefined) {
+            if (!messagesWithId?.map(m => m.text).includes(message.text)) {
+              messagesWithId.push(message)
+              draft.set(id, messagesWithId)
+            }
+          } else {
+            draft.set(id, [message])
+          }
+        })
+      )
+    },
   }
 
   return (

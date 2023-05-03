@@ -11,6 +11,7 @@ import { FC } from 'react'
 import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
+  id?: string
   isUIBig?: boolean
   onSizeToggle?: () => void
   experiment: ExperimentType
@@ -18,6 +19,7 @@ type Props = {
 }
 
 export const Plots: FC<Props> = ({
+  id,
   isUIBig = false,
   onSizeToggle,
   experiment,
@@ -28,6 +30,7 @@ export const Plots: FC<Props> = ({
   return (
     <>
       <TitleCard
+        id={id}
         loading={loading}
         title={
           <>

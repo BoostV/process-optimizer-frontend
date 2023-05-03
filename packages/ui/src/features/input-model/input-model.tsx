@@ -22,6 +22,7 @@ import { useState } from 'react'
 import { EditControls } from './edit-controls'
 
 type InputModelProps = {
+  id?: string
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   onDeleteValueVariable?: (index: number) => void
@@ -42,6 +43,7 @@ type InputModelProps = {
 
 export function InputModel(props: InputModelProps) {
   const {
+    id,
     valueVariables,
     categoricalVariables,
     onDeleteValueVariable,
@@ -83,6 +85,7 @@ export function InputModel(props: InputModelProps) {
 
   return (
     <TitleCard
+      id={id}
       title="Input model"
       padding={0}
       infoBoxes={
