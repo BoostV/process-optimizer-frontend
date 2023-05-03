@@ -11,6 +11,7 @@ export type InfoBox = {
 }
 
 type TitleCardProps = {
+  id?: string
   title: ReactNode
   padding?: number
   infoBoxes?: InfoBox[]
@@ -19,7 +20,7 @@ type TitleCardProps = {
 }
 
 export const TitleCard = (props: TitleCardProps) => {
-  const { title, padding, infoBoxes, loading = false, children } = props
+  const { id, title, padding, infoBoxes, loading = false, children } = props
   const { classes } = useStyles()
 
   const getInfoStyling = (info: InfoType) => {

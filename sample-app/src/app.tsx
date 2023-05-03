@@ -5,7 +5,10 @@ import createEmotionCache from './createEmotionCache'
 import { CacheProvider } from '@emotion/react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from '@sample/components/home/home'
-import { ApiProvider } from '@boostv/process-optimizer-frontend-core'
+import {
+  ApiProvider,
+  MessageProvider,
+} from '@boostv/process-optimizer-frontend-core'
 import { enableMapSet } from 'immer'
 
 const router = createBrowserRouter(
@@ -37,7 +40,9 @@ export default function MyApp() {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <ApiProvider config={apiConfig}>
-          <RouterProvider router={router} />
+          <MessageProvider>
+            <RouterProvider router={router} />
+          </MessageProvider>
         </ApiProvider>
       </GlobalStateProvider>
     </CacheProvider>
