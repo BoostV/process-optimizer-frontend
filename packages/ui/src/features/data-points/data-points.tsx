@@ -1,12 +1,11 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
-import { useMemo } from 'react'
 import { EditableTable } from '../core'
 import { SwapVert } from '@mui/icons-material'
-import { InfoBox, TitleCard } from '../core/title-card/title-card'
+import { TitleCard } from '../core/title-card/title-card'
 import DownloadCSVButton from './download-csv-button'
 import useStyles from './data-points.style'
 import UploadCSVButton from './upload-csv-button'
-import { EditableTableViolation, TableDataRow } from '../core/editable-table'
+import { TableDataRow } from '../core/editable-table'
 import {
   saveCSVToLocalFile,
   dataPointsToCSV,
@@ -14,9 +13,8 @@ import {
   DataEntry,
   ScoreVariableType,
   ValueVariableType,
-  ValidationViolations,
+  EditableTableViolation,
 } from '@boostv/process-optimizer-frontend-core'
-import { findDataPointViolations } from './util'
 import { useDatapoints } from './useDatapoints'
 
 type DataPointProps = {
@@ -27,9 +25,10 @@ type DataPointProps = {
   scoreVariables: ScoreVariableType[]
   dataPoints: DataEntry[]
   newestFirst: boolean
+  isEditingDisabled?: boolean
+  violationsInTable?: EditableTableViolation[]
   onToggleNewestFirst: () => void
   onUpdateDataPoints: (dataPoints: DataEntry[]) => void
-  violations?: ValidationViolations
 }
 
 export function DataPoints(props: DataPointProps) {
@@ -41,9 +40,10 @@ export function DataPoints(props: DataPointProps) {
     scoreVariables,
     dataPoints,
     newestFirst,
+    isEditingDisabled,
+    violationsInTable,
     onToggleNewestFirst,
     onUpdateDataPoints,
-    violations,
   } = props
   const { classes } = useStyles()
   const enabledValueVariables = valueVariables.filter(v => v.enabled)
@@ -58,39 +58,6 @@ export function DataPoints(props: DataPointProps) {
   )
 
   const isLoadingState = state.rows.length === 0
-  const isDuplicateVariableNames = useMemo(
-    () =>
-      violations !== undefined && violations?.duplicateVariableNames.length > 0,
-    [violations]
-  )
-
-  const getGeneralViolations = (): InfoBox[] => {
-    const infoBoxes: InfoBox[] = []
-    if (violations !== undefined) {
-      if (isDuplicateVariableNames) {
-        infoBoxes.push({
-          text: `All data points disabled because of duplicate variable names: ${violations.duplicateVariableNames.join(
-            ', '
-          )}.`,
-          type: 'error',
-        })
-      }
-      if (violations?.duplicateDataPointIds.length > 0) {
-        infoBoxes.push({
-          text: `Data points with duplicate meta-ids have been disabled: ${violations.duplicateDataPointIds.join(
-            ', '
-          )}.`,
-          type: 'warning',
-        })
-      }
-    }
-    return infoBoxes
-  }
-
-  const violationsInTable: EditableTableViolation[] | undefined = useMemo(
-    () => findDataPointViolations(violations),
-    [violations]
-  )
 
   const rowAdded = (row: TableDataRow) =>
     onUpdateDataPoints(
@@ -148,7 +115,6 @@ export function DataPoints(props: DataPointProps) {
           </Box>
         </>
       }
-      infoBoxes={getGeneralViolations()}
     >
       {enabledValueVariables.length + enabledCategoricalVariables.length ===
         0 && 'Data points will appear here'}
@@ -171,7 +137,7 @@ export function DataPoints(props: DataPointProps) {
               }
               violations={violationsInTable}
               order={newestFirst ? 'ascending' : 'descending'}
-              isEditingDisabled={isDuplicateVariableNames}
+              isEditingDisabled={isEditingDisabled}
               onRowEnabledToggled={(index, enabled) =>
                 rowEnabledToggled(index, enabled)
               }

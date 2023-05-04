@@ -1,13 +1,11 @@
 import produce from 'immer'
 import { ReactNode, createContext, useContext, useState } from 'react'
 
-export type MessageType = 'info' | 'warning' | 'error' | 'custom'
-
 type Message = {
-  type: MessageType
+  type: 'info' | 'warning' | 'error' | 'custom'
   text: string
   enabled?: boolean
-  component?: ReactNode
+  customComponent?: ReactNode
 }
 
 const MessageContext = createContext<
@@ -47,6 +45,7 @@ type MessageProviderProps = {
 export const MessageProvider = ({ children }: MessageProviderProps) => {
   const [messages, setMessages] = useState<Map<string, Message[]>>(new Map())
 
+  // TODO: wrap in useMemo?
   const value = {
     messages,
     setMessage: (id: string, message: Message) => {

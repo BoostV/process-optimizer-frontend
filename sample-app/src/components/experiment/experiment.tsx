@@ -36,8 +36,9 @@ import {
   DataEntry,
   OptimizerConfig,
   ValueVariableType,
-  ValidationViolations,
   validateExperiment,
+  useMessageController,
+  findDataPointViolations,
 } from '@boostv/process-optimizer-frontend-core'
 
 type SnackbarMessage = {
@@ -62,14 +63,44 @@ const LegacyExperiment = () => {
     },
     dispatch: globalDispatch,
   } = useGlobal()
+  const { setMessage } = useMessageController()
 
-  const validationViolations: ValidationViolations = useMemo(
-    () => validateExperiment(experiment),
-    [experiment]
-  )
+  const violations = useMemo(() => validateExperiment(experiment), [experiment])
+  const go = () => {
+    console.log('go', violations)
+    if (violations !== undefined) {
+      if (violations?.duplicateVariableNames.length > 0) {
+        console.log('yes')
+        setMessage('data-points', {
+          text: `All data points disabled because of duplicate variable names: ${violations.duplicateVariableNames.join(
+            ', '
+          )}.`,
+          type: 'error',
+        })
+        setMessage('input-model', {
+          text: `Please remove duplicate variable names: ${violations.duplicateVariableNames.join(
+            ', '
+          )}.`,
+          type: 'error',
+        })
+      }
+      if (violations?.duplicateDataPointIds.length > 0) {
+        setMessage('data-points', {
+          text: `Data points with duplicate meta-ids have been disabled: ${violations.duplicateDataPointIds.join(
+            ', '
+          )}.`,
+          type: 'warning',
+        })
+      }
+    }
+  }
+
+  const dataPointsEditingDisabled =
+    violations?.duplicateVariableNames.length > 0
 
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
+  const violationsInTable = findDataPointViolations(violations)
 
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
@@ -164,6 +195,7 @@ const LegacyExperiment = () => {
                   >
                     Download
                   </Button>
+                  <button onClick={() => go()}>go</button>
                   <LoadingButton
                     disabled={!experiment.changedSinceLastEvaluation && !debug}
                     onClick={onRun}
@@ -198,6 +230,7 @@ const LegacyExperiment = () => {
 
                 <Grid item xs={12}>
                   <InputModel
+                    id="input-model"
                     valueVariables={valueVariables}
                     categoricalVariables={categoricalVariables}
                     addValueVariable={(valueVariable: ValueVariableType) =>
@@ -274,7 +307,6 @@ const LegacyExperiment = () => {
                         },
                       })
                     }
-                    violations={validationViolations}
                   />
                 </Grid>
 
@@ -347,7 +379,8 @@ const LegacyExperiment = () => {
                             payload: dataPoints,
                           })
                         }
-                        violations={validationViolations}
+                        isEditingDisabled={dataPointsEditingDisabled}
+                        violationsInTable={violationsInTable}
                       />
                     </Grid>
                   </Grid>
