@@ -20,7 +20,7 @@ import {
 } from '@boostv/process-optimizer-frontend-ui'
 import { Alert } from '@mui/material'
 import { useStyles } from './experiment.style'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { LoadingExperiment } from './loading-experiment'
 import { useGlobal } from '@sample/context/global'
 import { UISizeValue } from '@sample/context/global'
@@ -71,31 +71,34 @@ const LegacyExperiment = () => {
     [experiment]
   )
 
-  if (violations.duplicateVariableNames.length > 0) {
-    setMessage('data-points', {
-      id: 'data-points-duplicateVariableNames',
-      text: `All data points disabled because of duplicate variable names: ${violations.duplicateVariableNames.join(
-        ', '
-      )}.`,
-      type: 'error',
-    })
-    setMessage('input-model', {
-      id: 'input-model-duplicateVariableNames',
-      text: `Please remove duplicate variable names: ${violations.duplicateVariableNames.join(
-        ', '
-      )}.`,
-      type: 'error',
-    })
-  }
-  if (violations.duplicateDataPointIds.length > 0) {
-    setMessage('data-points', {
-      id: 'data-points-duplicateDataPointIds',
-      text: `Data points with duplicate meta-ids have been disabled: ${violations.duplicateDataPointIds.join(
-        ', '
-      )}.`,
-      type: 'warning',
-    })
-  }
+  // TODO: Can useEffect be avoided without the "cannot update this while rendering a different..." error?
+  useEffect(() => {
+    if (violations.duplicateVariableNames.length > 0) {
+      setMessage('data-points', {
+        id: 'data-points-duplicateVariableNames',
+        text: `All data points disabled because of duplicate variable names: ${violations.duplicateVariableNames.join(
+          ', '
+        )}.`,
+        type: 'error',
+      })
+      setMessage('input-model', {
+        id: 'input-model-duplicateVariableNames',
+        text: `Please remove duplicate variable names: ${violations.duplicateVariableNames.join(
+          ', '
+        )}.`,
+        type: 'error',
+      })
+    }
+    if (violations.duplicateDataPointIds.length > 0) {
+      setMessage('data-points', {
+        id: 'data-points-duplicateDataPointIds',
+        text: `Data points with duplicate meta-ids have been disabled: ${violations.duplicateDataPointIds.join(
+          ', '
+        )}.`,
+        type: 'warning',
+      })
+    }
+  }, [violations])
 
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
