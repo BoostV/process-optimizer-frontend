@@ -31,15 +31,16 @@ export const TitleCard = (props: TitleCardProps) => {
           {title}
           {loading && <LinearProgress className={classes.loading} />}
         </Box>
-        {/* TODO: data point boxes not showing */}
-        {messages?.map((m, i) => (
-          <InfoBox
-            key={i}
-            text={m.text}
-            type={m.type}
-            customBox={m?.customComponent}
-          />
-        ))}
+        {messages
+          ?.filter(f => !f.disabled)
+          .map((m, i) => (
+            <InfoBox
+              key={i}
+              text={m.text}
+              type={m.type}
+              customBox={m?.customComponent}
+            />
+          ))}
         <Box p={padding !== undefined ? padding : 2}>{children}</Box>
       </CardContent>
     </Card>

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Warning } from '@mui/icons-material'
 import * as R from 'remeda'
 import useStyles from './editable-table-expanded-row.style'
 import {
@@ -14,6 +13,7 @@ import {
 } from '@mui/material'
 import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
+import { InfoBox } from '../info-box/info-box'
 
 interface EditableTableExpandedRowProps {
   colSpan: number
@@ -113,16 +113,11 @@ export const EditableTableExpandedRow = ({
             </Box>
           </Box>
 
-          {violations !== undefined && violations.length > 0 && (
-            <Box p={1} mt={1} className={classes.violations}>
-              <Warning fontSize="small" />
-              <ul>
-                {violations?.map((v, i) => (
-                  <li key={i}>{v}</li>
-                ))}
-              </ul>
-            </Box>
-          )}
+          {violations !== undefined &&
+            violations.length > 0 &&
+            violations.map((v, i) => (
+              <InfoBox key={i} text={v} type="warning" />
+            ))}
 
           <Box display="flex" justifyContent="end" mt={2}>
             <Button

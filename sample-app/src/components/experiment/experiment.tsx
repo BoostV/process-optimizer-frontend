@@ -39,6 +39,7 @@ import {
   validateExperiment,
   useMessageController,
   findDataPointViolations,
+  ValidationViolations,
 } from '@boostv/process-optimizer-frontend-core'
 
 type SnackbarMessage = {
@@ -65,41 +66,42 @@ const LegacyExperiment = () => {
   } = useGlobal()
   const { setMessage } = useMessageController()
 
-  const violations = useMemo(() => validateExperiment(experiment), [experiment])
-  const go = () => {
-    console.log('go', violations)
-    if (violations !== undefined) {
-      if (violations?.duplicateVariableNames.length > 0) {
-        console.log('yes')
-        setMessage('data-points', {
-          text: `All data points disabled because of duplicate variable names: ${violations.duplicateVariableNames.join(
-            ', '
-          )}.`,
-          type: 'error',
-        })
-        setMessage('input-model', {
-          text: `Please remove duplicate variable names: ${violations.duplicateVariableNames.join(
-            ', '
-          )}.`,
-          type: 'error',
-        })
-      }
-      if (violations?.duplicateDataPointIds.length > 0) {
-        setMessage('data-points', {
-          text: `Data points with duplicate meta-ids have been disabled: ${violations.duplicateDataPointIds.join(
-            ', '
-          )}.`,
-          type: 'warning',
-        })
-      }
-    }
-  }
+  const violations: ValidationViolations = useMemo(
+    () => validateExperiment(experiment),
+    [experiment]
+  )
 
-  const dataPointsEditingDisabled =
-    violations?.duplicateVariableNames.length > 0
+  if (violations.duplicateVariableNames.length > 0) {
+    setMessage('data-points', {
+      id: 'data-points-duplicateVariableNames',
+      text: `All data points disabled because of duplicate variable names: ${violations.duplicateVariableNames.join(
+        ', '
+      )}.`,
+      type: 'error',
+    })
+    setMessage('input-model', {
+      id: 'input-model-duplicateVariableNames',
+      text: `Please remove duplicate variable names: ${violations.duplicateVariableNames.join(
+        ', '
+      )}.`,
+      type: 'error',
+    })
+  }
+  if (violations.duplicateDataPointIds.length > 0) {
+    setMessage('data-points', {
+      id: 'data-points-duplicateDataPointIds',
+      text: `Data points with duplicate meta-ids have been disabled: ${violations.duplicateDataPointIds.join(
+        ', '
+      )}.`,
+      type: 'warning',
+    })
+  }
 
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
+
+  const dataPointsEditingDisabled =
+    violations?.duplicateVariableNames.length > 0
   const violationsInTable = findDataPointViolations(violations)
 
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
@@ -195,7 +197,6 @@ const LegacyExperiment = () => {
                   >
                     Download
                   </Button>
-                  <button onClick={() => go()}>go</button>
                   <LoadingButton
                     disabled={!experiment.changedSinceLastEvaluation && !debug}
                     onClick={onRun}
@@ -212,6 +213,7 @@ const LegacyExperiment = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Details
+                    id="details"
                     info={experiment.info}
                     updateName={(name: string) =>
                       dispatch({
@@ -343,6 +345,7 @@ const LegacyExperiment = () => {
                   >
                     <Grid item xs={12}>
                       <ExperimentationGuide
+                        id="experimentation-guide"
                         isUIBig={isUIBig(uiSizes, 'result-data')}
                         toggleUISize={() =>
                           globalDispatch({
@@ -387,6 +390,7 @@ const LegacyExperiment = () => {
                 </Grid>
                 <Grid item xs={UISizeValue.Big} xl={getSize(uiSizes, 'plots')}>
                   <Plots
+                    id="plots"
                     isUIBig={isUIBig(uiSizes, 'plots')}
                     experiment={experiment}
                     onSizeToggle={() =>

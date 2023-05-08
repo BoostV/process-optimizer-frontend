@@ -1,7 +1,7 @@
 import { makeStyles } from 'tss-react/mui'
 import { colors } from './styles'
 
-export const useStyles = makeStyles()(theme => ({
+export const useStyles = makeStyles()(() => ({
   row: {
     '& + tr': {
       '& td': {
@@ -40,17 +40,6 @@ export const useStyles = makeStyles()(theme => ({
     fontWeight: 400,
     border: 'none',
     paddingRight: 16,
-  },
-  violations: {
-    display: 'flex',
-    alignItems: 'center',
-    borderRadius: '4px',
-    backgroundColor: theme.palette.warning.main,
-    fontSize: 14,
-    '& ul': {
-      margin: 0,
-      padding: '0 0 0 24px',
-    },
   },
 }))
 
