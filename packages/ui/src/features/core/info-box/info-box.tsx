@@ -1,6 +1,10 @@
 import { Box } from '@mui/material'
 import { ReactNode } from 'react'
-import { Error, Warning, Info } from '@mui/icons-material'
+import {
+  WarningAmberOutlined,
+  HelpOutlineOutlined,
+  ErrorOutlineOutlined,
+} from '@mui/icons-material'
 import useStyles from './info-box.style'
 
 type InfoType = 'info' | 'warning' | 'error' | 'custom'
@@ -30,11 +34,11 @@ export const InfoBox = ({ text, type, customBox }: InfoBoxProps) => {
   const getIcon = (type: InfoType) => {
     switch (type) {
       case 'info':
-        return <Info fontSize="small" />
+        return <HelpOutlineOutlined fontSize="small" />
       case 'warning':
-        return <Warning fontSize="small" />
+        return <WarningAmberOutlined fontSize="small" />
       case 'error':
-        return <Error fontSize="small" />
+        return <ErrorOutlineOutlined fontSize="small" />
       case 'custom':
         return <></>
     }

@@ -38,6 +38,7 @@ import {
   ValueVariableType,
   validateExperiment,
   useMessageController,
+  Message,
   findDataPointViolations,
   ValidationViolations,
 } from '@boostv/process-optimizer-frontend-core'
@@ -64,25 +65,24 @@ const LegacyExperiment = () => {
     },
     dispatch: globalDispatch,
   } = useGlobal()
-  const { setMessage } = useMessageController()
+  const { setMessages } = useMessageController()
 
   const violations: ValidationViolations = useMemo(
     () => validateExperiment(experiment),
     [experiment]
   )
 
-  // TODO: Can useEffect be avoided without the "cannot update this while rendering a different..." error?
   useEffect(() => {
+    const dataPointsMessages: Message[] = []
+    const inputModelMessages: Message[] = []
     if (violations.duplicateVariableNames.length > 0) {
-      setMessage('data-points', {
-        id: 'data-points-duplicateVariableNames',
+      dataPointsMessages.push({
         text: `All data points disabled because of duplicate variable names: ${violations.duplicateVariableNames.join(
           ', '
         )}.`,
         type: 'error',
       })
-      setMessage('input-model', {
-        id: 'input-model-duplicateVariableNames',
+      inputModelMessages.push({
         text: `Please remove duplicate variable names: ${violations.duplicateVariableNames.join(
           ', '
         )}.`,
@@ -90,14 +90,19 @@ const LegacyExperiment = () => {
       })
     }
     if (violations.duplicateDataPointIds.length > 0) {
-      setMessage('data-points', {
-        id: 'data-points-duplicateDataPointIds',
+      dataPointsMessages.push({
         text: `Data points with duplicate meta-ids have been disabled: ${violations.duplicateDataPointIds.join(
           ', '
         )}.`,
         type: 'warning',
       })
     }
+    setMessages(
+      new Map<string, Message[]>([
+        ['data-points', dataPointsMessages],
+        ['input-model', inputModelMessages],
+      ])
+    )
   }, [violations])
 
   const isInitializing = useSelector(selectIsInitializing)

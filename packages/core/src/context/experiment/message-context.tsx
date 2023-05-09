@@ -4,8 +4,7 @@ import { ReactNode, createContext, useContext, useMemo, useState } from 'react'
 /**
  * To use messages, wrap the UI components in a MessageProvider. UI components (e.g. DataPoints and InputModel)
  * can be given an id, and messages can be shown in these components by using these ids with the useMessageController
- * hook. Messages are given ids to facilitate mapping multiple messages to the same id (e.g. for errors of
- * the same type).
+ * hook.
  *
  * Example - setting an error message on InputModel:
  *
@@ -13,14 +12,12 @@ import { ReactNode, createContext, useContext, useMemo, useState } from 'react'
  *
  * const { setMessage } = useMessageController()
  * setMessage('input-model', {
- *    id: 'input-model-duplicate-ids',
  *    text: 'Input model cannot have duplicate ids.',
  *    type: 'error
  * })
  */
 
-type Message = {
-  id: string
+export type Message = {
   type: 'info' | 'warning' | 'error' | 'custom'
   text: string
   disabled?: boolean
@@ -31,6 +28,8 @@ const MessageContext = createContext<
   | {
       messages: Map<string, Message[]>
       setMessage: (id: string, message: Message) => void
+      setMessages: (messages: Map<string, Message[]>) => void
+      clearMessages: () => void
     }
   | undefined
 >(undefined)
@@ -54,6 +53,8 @@ export const useMessageController = () => {
   }
   return {
     setMessage: context.setMessage,
+    setMessages: context.setMessages,
+    clearMessages: context.clearMessages,
   }
 }
 
@@ -65,24 +66,26 @@ export const MessageProvider = ({ children }: MessageProviderProps) => {
   enableMapSet()
   const [messages, setMessages] = useState<Map<string, Message[]>>(new Map())
 
+  const setMessage = (id: string, message: Message) => {
+    setMessages(
+      produce(draft => {
+        const messagesWithId = draft.get(id)
+        if (messagesWithId !== undefined) {
+          messagesWithId.push(message)
+          draft.set(id, messagesWithId)
+        } else {
+          draft.set(id, [message])
+        }
+      })
+    )
+  }
+
   const value = useMemo(
     () => ({
       messages,
-      setMessage: (id: string, message: Message) => {
-        setMessages(
-          produce(draft => {
-            const messagesWithId = draft.get(id)
-            if (messagesWithId !== undefined) {
-              if (!messagesWithId.map(m => m.id).includes(message.id)) {
-                messagesWithId.push(message)
-                draft.set(id, messagesWithId)
-              }
-            } else {
-              draft.set(id, [message])
-            }
-          })
-        )
-      },
+      setMessage,
+      setMessages,
+      clearMessages: () => setMessages(new Map()),
     }),
     [messages]
   )

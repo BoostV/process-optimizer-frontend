@@ -3,13 +3,7 @@ import { ReactNode } from 'react'
 import useStyles from './title-card.style'
 import { useMessages } from '@boostv/process-optimizer-frontend-core'
 import { InfoBox } from '../info-box/info-box'
-
-type InfoType = 'info' | 'warning' | 'error'
-
-export type InfoBox = {
-  text: string
-  type: InfoType
-}
+import { sortMessages } from './util'
 
 type TitleCardProps = {
   id?: string
@@ -33,6 +27,7 @@ export const TitleCard = (props: TitleCardProps) => {
         </Box>
         {messages
           ?.filter(f => !f.disabled)
+          .sort(sortMessages)
           .map((m, i) => (
             <InfoBox
               key={i}

@@ -7,41 +7,47 @@ import {
 import { render, screen } from '@testing-library/react'
 
 describe('MessageProvider', () => {
-  const Tester: FC<{ num: number }> = ({ num }) => {
+  const Tester: FC = () => {
     const { messages } = useMessages('test')
-    const { setMessage } = useMessageController()
+    const { setMessages } = useMessageController()
     useEffect(() => {
-      const arrayOfLength = [...Array(num)]
-      arrayOfLength.forEach((_, i) =>
-        setMessage('test', {
-          id: 'msg' + i,
-          text: 'hello' + i,
-          type: 'error',
-        })
+      setMessages(
+        new Map([
+          [
+            'test',
+            [
+              {
+                type: 'error',
+                text: 'hello',
+              },
+              {
+                type: 'error',
+                text: 'hello',
+              },
+              {
+                type: 'error',
+                text: 'hello',
+              },
+            ],
+          ],
+        ])
       )
-    }, [num, setMessage])
+    }, [setMessages])
     return (
       <>
         {messages?.map((m, i) => (
-          <div key={i}>{m?.text}</div>
+          <span key={i}>{m?.text}</span>
         ))}
       </>
     )
   }
-
-  it('sets and shows multiple messages with same id', async () => {
+  it('sets and shows messages', async () => {
     render(
       <MessageProvider>
-        <Tester num={3} />
+        <Tester />
       </MessageProvider>
     )
-    const messages = await screen.findAllByText(/hello/, { exact: false })
-    const message1 = await screen.findAllByText(/hello0/)
-    const message2 = await screen.findAllByText(/hello1/)
-    const message3 = await screen.findAllByText(/hello2/)
+    const messages = await screen.findAllByText(/hello/)
     expect(messages).toHaveLength(3)
-    expect(message1).not.toBeNull()
-    expect(message2).not.toBeNull()
-    expect(message3).not.toBeNull()
   })
 })
