@@ -2,8 +2,8 @@ import produce, { enableMapSet } from 'immer'
 import { ReactNode, createContext, useContext, useMemo, useState } from 'react'
 
 /**
- * To use messages, wrap the UI components in a MessageProvider. UI components (e.g. DataPoints and InputModel)
- * can be given an id, and messages can be shown in these components by using these ids with the useMessageController
+ * To use messages, wrap the UI components in a MessageProvider. UI components (e.g. DataPoints and InputModel) can
+ * be given an id, and messages can be shown in these components by using the given ids with the useMessageController
  * hook.
  *
  * Example - setting an error message on InputModel:
