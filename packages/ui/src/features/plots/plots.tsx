@@ -32,35 +32,19 @@ export const Plots: FC<Props> = ({
   const { classes } = useStyles()
 
   const defaultLoadingView = (
-    <Stack spacing={2}>
-      <Stack direction="row" spacing={2}>
-        <Skeleton
-          animation="wave"
-          variant="rectangular"
-          width="50%"
-          height={300}
-        />
-        <Skeleton
-          animation="wave"
-          variant="rectangular"
-          width="50%"
-          height={300}
-        />
-      </Stack>
-      <Stack direction="row" spacing={2}>
-        <Skeleton
-          animation="wave"
-          variant="rectangular"
-          width="50%"
-          height={300}
-        />
-        <Skeleton
-          animation="wave"
-          variant="rectangular"
-          width="50%"
-          height={300}
-        />
-      </Stack>
+    <Stack direction="column" spacing={2}>
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width="100%"
+        height={600}
+      />
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width="100%"
+        height={800}
+      />
     </Stack>
   )
   const plotsLoadingView = loadingView ? loadingView : defaultLoadingView
