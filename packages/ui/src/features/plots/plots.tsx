@@ -19,7 +19,7 @@ type Props = {
 }
 
 export const Plots: FC<Props> = ({
-  id,
+  id = 'plots',
   isUIBig = false,
   onSizeToggle,
   experiment,

@@ -10,7 +10,7 @@ type DetailsProps = {
 }
 
 export function Details(props: DetailsProps) {
-  const { id, info, updateName, updateDescription } = props
+  const { id = 'details', info, updateName, updateDescription } = props
 
   return (
     <TitleCard id={id} title="Details">

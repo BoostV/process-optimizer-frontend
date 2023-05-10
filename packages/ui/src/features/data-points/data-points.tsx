@@ -33,7 +33,7 @@ type DataPointProps = {
 
 export function DataPoints(props: DataPointProps) {
   const {
-    id,
+    id = 'data-points',
     experimentId,
     valueVariables,
     categoricalVariables,

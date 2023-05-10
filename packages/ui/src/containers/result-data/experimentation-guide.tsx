@@ -29,7 +29,7 @@ interface ResultDataProps {
 
 export const ExperimentationGuide = (props: ResultDataProps) => {
   const {
-    id,
+    id = 'experimentation-guide',
     isUIBig = false,
     loading = false,
     toggleUISize,

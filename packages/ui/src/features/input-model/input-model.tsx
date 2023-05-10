@@ -41,7 +41,7 @@ type InputModelProps = {
 
 export function InputModel(props: InputModelProps) {
   const {
-    id,
+    id = 'input-model',
     valueVariables,
     categoricalVariables,
     onDeleteValueVariable,
