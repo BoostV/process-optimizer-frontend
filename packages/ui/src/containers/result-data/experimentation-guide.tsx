@@ -19,6 +19,7 @@ import {
 import { CopySuggested } from '@ui/features/result-data/copy-suggested'
 
 interface ResultDataProps {
+  id?: string
   isUIBig?: boolean
   loading?: boolean
   toggleUISize?: () => void
@@ -28,9 +29,10 @@ interface ResultDataProps {
 
 export const ExperimentationGuide = (props: ResultDataProps) => {
   const {
+    id = 'experimentation-guide',
     isUIBig = false,
     loading = false,
-    toggleUISize = () => {},
+    toggleUISize,
     onMouseEnterExpand,
     onMouseLeaveExpand,
   } = props
@@ -68,30 +70,33 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   )
   return (
     <TitleCard
+      id={id}
       loading={loading}
       padding={0}
       title={
         <>
           Experimentation guide
-          <Hidden xlDown>
-            <Tooltip
-              disableInteractive
-              title={
-                (isUIBig ? 'Collapse' : 'Expand') +
-                " 'Result data' and 'Data points'"
-              }
-            >
-              <IconButton
-                size="small"
-                className={classes.titleButton}
-                onClick={toggleUISize}
-                onMouseEnter={() => onMouseEnterExpand?.()}
-                onMouseLeave={() => onMouseLeaveExpand?.()}
+          {toggleUISize !== undefined && (
+            <Hidden xlDown>
+              <Tooltip
+                disableInteractive
+                title={
+                  (isUIBig ? 'Collapse' : 'Expand') +
+                  " 'Result data' and 'Data points'"
+                }
               >
-                <ZoomOutMap fontSize="small" className={classes.titleIcon} />
-              </IconButton>
-            </Tooltip>
-          </Hidden>
+                <IconButton
+                  size="small"
+                  className={classes.titleButton}
+                  onClick={toggleUISize}
+                  onMouseEnter={() => onMouseEnterExpand?.()}
+                  onMouseLeave={() => onMouseLeaveExpand?.()}
+                >
+                  <ZoomOutMap fontSize="small" className={classes.titleIcon} />
+                </IconButton>
+              </Tooltip>
+            </Hidden>
+          )}
         </>
       }
     >

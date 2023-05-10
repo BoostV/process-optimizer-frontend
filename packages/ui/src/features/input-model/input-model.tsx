@@ -15,13 +15,13 @@ import { TitleCard } from '@ui/features/core/title-card/title-card'
 import { Lens, Add, PanoramaFishEye } from '@mui/icons-material'
 import {
   CategoricalVariableType,
-  ValidationViolations,
   ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
 import { useState } from 'react'
 import { EditControls } from './edit-controls'
 
 type InputModelProps = {
+  id?: string
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   onDeleteValueVariable?: (index: number) => void
@@ -37,11 +37,11 @@ type InputModelProps = {
     newVariable: CategoricalVariableType
   ) => void
   setCategoricalVariableEnabled?: (index: number, enabled: boolean) => void
-  violations?: ValidationViolations
 }
 
 export function InputModel(props: InputModelProps) {
   const {
+    id = 'input-model',
     valueVariables,
     categoricalVariables,
     onDeleteValueVariable,
@@ -52,7 +52,6 @@ export function InputModel(props: InputModelProps) {
     editCategoricalVariable,
     setValueVariableEnabled,
     setCategoricalVariableEnabled,
-    violations,
   } = props
 
   const { classes } = useStyles()
@@ -82,23 +81,7 @@ export function InputModel(props: InputModelProps) {
   }
 
   return (
-    <TitleCard
-      title="Input model"
-      padding={0}
-      infoBoxes={
-        violations !== undefined &&
-        violations?.duplicateVariableNames.length > 0
-          ? [
-              {
-                text: `Please remove duplicate variable names: ${violations.duplicateVariableNames.join(
-                  ', '
-                )}.`,
-                type: 'error',
-              },
-            ]
-          : undefined
-      }
-    >
+    <TitleCard id={id} title="Input model" padding={0}>
       {(valueVariables.length > 0 || categoricalVariables.length > 0) && (
         <Box p={2}>
           {valueVariables.length > 0 && (

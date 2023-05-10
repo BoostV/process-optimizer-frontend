@@ -11,6 +11,7 @@ import { FC } from 'react'
 import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
+  id?: string
   isUIBig?: boolean
   onSizeToggle?: () => void
   experiment: ExperimentType
@@ -18,6 +19,7 @@ type Props = {
 }
 
 export const Plots: FC<Props> = ({
+  id = 'plots',
   isUIBig = false,
   onSizeToggle,
   experiment,
@@ -28,24 +30,30 @@ export const Plots: FC<Props> = ({
   return (
     <>
       <TitleCard
+        id={id}
         loading={loading}
         title={
           <>
             Plots
-            <Hidden xlDown>
-              <Tooltip
-                disableInteractive
-                title={(isUIBig ? 'Collapse' : 'Expand') + " 'Plots'"}
-              >
-                <IconButton
-                  size="small"
-                  className={classes.titleButton}
-                  onClick={onSizeToggle}
+            {onSizeToggle !== undefined && (
+              <Hidden xlDown>
+                <Tooltip
+                  disableInteractive
+                  title={(isUIBig ? 'Collapse' : 'Expand') + " 'Plots'"}
                 >
-                  <ZoomOutMap fontSize="small" className={classes.titleIcon} />
-                </IconButton>
-              </Tooltip>
-            </Hidden>
+                  <IconButton
+                    size="small"
+                    className={classes.titleButton}
+                    onClick={onSizeToggle}
+                  >
+                    <ZoomOutMap
+                      fontSize="small"
+                      className={classes.titleIcon}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </Hidden>
+            )}
           </>
         }
       >

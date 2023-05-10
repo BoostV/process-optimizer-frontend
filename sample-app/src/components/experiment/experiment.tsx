@@ -20,7 +20,7 @@ import {
 } from '@boostv/process-optimizer-frontend-ui'
 import { Alert } from '@mui/material'
 import { useStyles } from './experiment.style'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { LoadingExperiment } from './loading-experiment'
 import { useGlobal } from '@sample/context/global'
 import { UISizeValue } from '@sample/context/global'
@@ -36,8 +36,11 @@ import {
   DataEntry,
   OptimizerConfig,
   ValueVariableType,
-  ValidationViolations,
   validateExperiment,
+  useMessageController,
+  Message,
+  findDataPointViolations,
+  ValidationViolations,
 } from '@boostv/process-optimizer-frontend-core'
 
 type SnackbarMessage = {
@@ -62,14 +65,52 @@ const LegacyExperiment = () => {
     },
     dispatch: globalDispatch,
   } = useGlobal()
+  const { setMessages } = useMessageController()
 
-  const validationViolations: ValidationViolations = useMemo(
+  const violations: ValidationViolations = useMemo(
     () => validateExperiment(experiment),
     [experiment]
   )
 
+  useEffect(() => {
+    const dataPointsMessages: Message[] = []
+    const inputModelMessages: Message[] = []
+    if (violations.duplicateVariableNames.length > 0) {
+      dataPointsMessages.push({
+        text: `All data points disabled because of duplicate variable names: ${violations.duplicateVariableNames.join(
+          ', '
+        )}.`,
+        type: 'error',
+      })
+      inputModelMessages.push({
+        text: `Please remove duplicate variable names: ${violations.duplicateVariableNames.join(
+          ', '
+        )}.`,
+        type: 'error',
+      })
+    }
+    if (violations.duplicateDataPointIds.length > 0) {
+      dataPointsMessages.push({
+        text: `Data points with duplicate meta-ids have been disabled: ${violations.duplicateDataPointIds.join(
+          ', '
+        )}.`,
+        type: 'warning',
+      })
+    }
+    setMessages(
+      new Map<string, Message[]>([
+        ['data-points', dataPointsMessages],
+        ['input-model', inputModelMessages],
+      ])
+    )
+  }, [violations])
+
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
+
+  const dataPointsEditingDisabled =
+    violations?.duplicateVariableNames.length > 0
+  const violationsInTable = findDataPointViolations(violations)
 
   const [isSnackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>()
@@ -180,6 +221,7 @@ const LegacyExperiment = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Details
+                    id="details"
                     info={experiment.info}
                     updateName={(name: string) =>
                       dispatch({
@@ -198,6 +240,7 @@ const LegacyExperiment = () => {
 
                 <Grid item xs={12}>
                   <InputModel
+                    id="input-model"
                     valueVariables={valueVariables}
                     categoricalVariables={categoricalVariables}
                     addValueVariable={(valueVariable: ValueVariableType) =>
@@ -274,7 +317,6 @@ const LegacyExperiment = () => {
                         },
                       })
                     }
-                    violations={validationViolations}
                   />
                 </Grid>
 
@@ -311,6 +353,7 @@ const LegacyExperiment = () => {
                   >
                     <Grid item xs={12}>
                       <ExperimentationGuide
+                        id="experimentation-guide"
                         isUIBig={isUIBig(uiSizes, 'result-data')}
                         toggleUISize={() =>
                           globalDispatch({
@@ -328,6 +371,7 @@ const LegacyExperiment = () => {
                     </Grid>
                     <Grid item xs={12}>
                       <DataPoints
+                        id="data-points"
                         experimentId={experiment.id}
                         valueVariables={experiment.valueVariables}
                         categoricalVariables={experiment.categoricalVariables}
@@ -346,13 +390,15 @@ const LegacyExperiment = () => {
                             payload: dataPoints,
                           })
                         }
-                        violations={validationViolations}
+                        isEditingDisabled={dataPointsEditingDisabled}
+                        violationsInTable={violationsInTable}
                       />
                     </Grid>
                   </Grid>
                 </Grid>
                 <Grid item xs={UISizeValue.Big} xl={getSize(uiSizes, 'plots')}>
                   <Plots
+                    id="plots"
                     isUIBig={isUIBig(uiSizes, 'plots')}
                     experiment={experiment}
                     onSizeToggle={() =>

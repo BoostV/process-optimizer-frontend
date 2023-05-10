@@ -10,11 +10,7 @@ import { EditableTableRow } from './editable-table-row'
 import { getRowIndex, getRowId } from './editable-table-util'
 import useStyles from './editable-table.style'
 import { TableDataRow } from './types'
-
-export type EditableTableViolation = {
-  rowMetaId: number
-  messages: string[]
-}
+import { EditableTableViolation } from '@boostv/process-optimizer-frontend-core'
 
 export type TableOrder = 'ascending' | 'descending'
 
