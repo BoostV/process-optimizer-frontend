@@ -1,5 +1,16 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.0.0
+
+### Major Changes
+
+- 6a09b4a: Add provider for info and error messages
+
+### Patch Changes
+
+- Updated dependencies [6a09b4a]
+  - @boostv/process-optimizer-frontend-core@2.3.0
+
 ## 1.4.0
 
 ### Minor Changes
