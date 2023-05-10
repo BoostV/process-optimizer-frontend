@@ -355,24 +355,7 @@ const LegacyExperiment = () => {
                   >
                     <Grid item xs={12}>
                       <ExperimentationGuide
-                        loading={
-                          experiment.changedSinceLastEvaluation ? (
-                            <Stack direction="column" spacing={2} m={2}>
-                              <Skeleton
-                                animation="wave"
-                                variant="rectangular"
-                                width="100%"
-                                height={200}
-                              />
-                              <Skeleton
-                                animation="wave"
-                                variant="rectangular"
-                                width="100%"
-                                height={100}
-                              />
-                            </Stack>
-                          ) : undefined
-                        }
+                        loading={experiment.changedSinceLastEvaluation}
                         warning={
                           experiment.changedSinceLastEvaluation
                             ? 'Out of sync - optimizer must run again'
@@ -432,24 +415,7 @@ const LegacyExperiment = () => {
                         payload: 'plots',
                       })
                     }
-                    loading={
-                      experiment.changedSinceLastEvaluation ? (
-                        <Stack direction="row" spacing={2}>
-                          <Skeleton
-                            animation="wave"
-                            variant="rectangular"
-                            width="50%"
-                            height={300}
-                          />
-                          <Skeleton
-                            animation="wave"
-                            variant="rectangular"
-                            width="50%"
-                            height={300}
-                          />
-                        </Stack>
-                      ) : undefined
-                    }
+                    loading={experiment.changedSinceLastEvaluation}
                     warning={
                       experiment.changedSinceLastEvaluation
                         ? 'Out of sync - optimizer must run again'

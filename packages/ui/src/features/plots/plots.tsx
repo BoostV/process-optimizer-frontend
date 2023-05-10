@@ -1,5 +1,5 @@
 import useStyles from './plots.style'
-import { Tooltip, IconButton, Hidden } from '@mui/material'
+import { Tooltip, IconButton, Hidden, Stack, Skeleton } from '@mui/material'
 import { ZoomOutMap } from '@mui/icons-material'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
@@ -7,7 +7,7 @@ import { isPNG } from '@boostv/process-optimizer-frontend-core'
 import { BokehPlot } from '@boostv/process-optimizer-frontend-plots'
 import { PNGPlot } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
-import { FC, ReactNode } from 'react'
+import { FC, ReactNode, isValidElement } from 'react'
 import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
   isUIBig?: boolean
   onSizeToggle?: () => void
   experiment: ExperimentType
-  loading?: ReactNode
+  loading?: boolean | ReactNode
   warning?: string
 }
 
@@ -28,12 +28,33 @@ export const Plots: FC<Props> = ({
   warning,
 }) => {
   const { classes } = useStyles()
+  const defaultLoadingView = (
+    <Stack direction="row" spacing={2}>
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width="50%"
+        height={300}
+      />
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width="50%"
+        height={300}
+      />
+    </Stack>
+  )
+  const loadingView = isValidElement(loading)
+    ? loading
+    : loading
+    ? defaultLoadingView
+    : undefined
 
   return (
     <>
       <TitleCard
         id={id}
-        loading={loading}
+        loading={loadingView}
         warning={warning}
         title={
           <>

@@ -6,7 +6,14 @@ import {
   selectNextExperimentValues,
   selectIsInitializing,
 } from '@boostv/process-optimizer-frontend-core'
-import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
+import {
+  Tooltip,
+  IconButton,
+  Hidden,
+  Box,
+  Stack,
+  Skeleton,
+} from '@mui/material'
 import { ZoomOutMap } from '@mui/icons-material'
 import useStyles from './experimentation-guide.style'
 import {
@@ -17,12 +24,12 @@ import {
   TitleCard,
 } from '@ui/features'
 import { CopySuggested } from '@ui/features/result-data/copy-suggested'
-import { ReactNode } from 'react'
+import { ReactNode, isValidElement } from 'react'
 
 interface ResultDataProps {
   id?: string
   isUIBig?: boolean
-  loading?: ReactNode
+  loading?: boolean | ReactNode
   warning?: string
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
@@ -50,6 +57,28 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   const expectedMinimum = useSelector(selectExpectedMinimum)
   const isInitializing = useSelector(selectIsInitializing)
 
+  const defaultLoadingView = (
+    <Stack direction="column" spacing={2} m={2}>
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width="100%"
+        height={200}
+      />
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width="100%"
+        height={100}
+      />
+    </Stack>
+  )
+  const loadingView = isValidElement(loading)
+    ? loading
+    : loading
+    ? defaultLoadingView
+    : undefined
+
   const summary = isInitializing ? (
     <InitializationProgress
       experiment={experiment}
@@ -74,7 +103,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   return (
     <TitleCard
       id={id}
-      loading={loading}
+      loading={loadingView}
       warning={warning}
       padding={0}
       title={
