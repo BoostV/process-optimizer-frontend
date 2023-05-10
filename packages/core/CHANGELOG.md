@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 2.3.0
+
+### Minor Changes
+
+- 6a09b4a: Add provider for info and error messages
+
 ## 2.2.0
 
 ### Minor Changes
