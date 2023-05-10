@@ -7,7 +7,7 @@ import { isPNG } from '@boostv/process-optimizer-frontend-core'
 import { BokehPlot } from '@boostv/process-optimizer-frontend-plots'
 import { PNGPlot } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
-import { FC, ReactNode, isValidElement } from 'react'
+import { FC, ReactNode } from 'react'
 import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
@@ -15,7 +15,8 @@ type Props = {
   isUIBig?: boolean
   onSizeToggle?: () => void
   experiment: ExperimentType
-  loading?: boolean | ReactNode
+  loading?: boolean
+  loadingView?: ReactNode
   warning?: string
 }
 
@@ -25,36 +26,51 @@ export const Plots: FC<Props> = ({
   onSizeToggle,
   experiment,
   loading,
+  loadingView,
   warning,
 }) => {
   const { classes } = useStyles()
+
   const defaultLoadingView = (
-    <Stack direction="row" spacing={2}>
-      <Skeleton
-        animation="wave"
-        variant="rectangular"
-        width="50%"
-        height={300}
-      />
-      <Skeleton
-        animation="wave"
-        variant="rectangular"
-        width="50%"
-        height={300}
-      />
+    <Stack spacing={2}>
+      <Stack direction="row" spacing={2}>
+        <Skeleton
+          animation="wave"
+          variant="rectangular"
+          width="50%"
+          height={300}
+        />
+        <Skeleton
+          animation="wave"
+          variant="rectangular"
+          width="50%"
+          height={300}
+        />
+      </Stack>
+      <Stack direction="row" spacing={2}>
+        <Skeleton
+          animation="wave"
+          variant="rectangular"
+          width="50%"
+          height={300}
+        />
+        <Skeleton
+          animation="wave"
+          variant="rectangular"
+          width="50%"
+          height={300}
+        />
+      </Stack>
     </Stack>
   )
-  const loadingView = isValidElement(loading)
-    ? loading
-    : loading
-    ? defaultLoadingView
-    : undefined
+  const plotsLoadingView = loadingView ? loadingView : defaultLoadingView
 
   return (
     <>
       <TitleCard
         id={id}
-        loading={loadingView}
+        loading={loading}
+        loadingView={plotsLoadingView}
         warning={warning}
         title={
           <>

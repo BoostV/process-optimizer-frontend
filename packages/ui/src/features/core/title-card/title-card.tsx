@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Tooltip } from '@mui/material'
+import { Box, Card, CardContent, Skeleton, Tooltip } from '@mui/material'
 import { ReactNode } from 'react'
 import useStyles from './title-card.style'
 import { useMessages } from '@boostv/process-optimizer-frontend-core'
@@ -10,15 +10,31 @@ type TitleCardProps = {
   id?: string
   title: ReactNode
   padding?: number
-  loading?: ReactNode
+  loading?: boolean
+  loadingView?: ReactNode
   warning?: string
   children: ReactNode
 }
 
 export const TitleCard = (props: TitleCardProps) => {
-  const { id, title, padding, loading, warning, children } = props
+  const { id, title, padding, loading, loadingView, warning, children } = props
   const { classes } = useStyles()
   const { messages } = useMessages(id)
+
+  const defaultLoadingView = (
+    <Skeleton
+      animation="wave"
+      variant="rectangular"
+      width="100%"
+      height={500}
+    />
+  )
+  const cardView =
+    loading && loadingView
+      ? loadingView
+      : loading
+      ? defaultLoadingView
+      : children
 
   return (
     <Card>
@@ -44,9 +60,7 @@ export const TitleCard = (props: TitleCardProps) => {
               customBox={m?.customComponent}
             />
           ))}
-        <Box p={padding !== undefined ? padding : 2}>
-          {loading ? loading : children}
-        </Box>
+        <Box p={padding !== undefined ? padding : 2}>{cardView}</Box>
       </CardContent>
     </Card>
   )

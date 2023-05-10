@@ -24,12 +24,13 @@ import {
   TitleCard,
 } from '@ui/features'
 import { CopySuggested } from '@ui/features/result-data/copy-suggested'
-import { ReactNode, isValidElement } from 'react'
+import { ReactNode } from 'react'
 
 interface ResultDataProps {
   id?: string
   isUIBig?: boolean
-  loading?: boolean | ReactNode
+  loading?: boolean
+  loadingView?: ReactNode
   warning?: string
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
@@ -41,6 +42,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     id = 'experimentation-guide',
     isUIBig = false,
     loading,
+    loadingView,
     warning,
     toggleUISize,
     onMouseEnterExpand,
@@ -73,11 +75,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       />
     </Stack>
   )
-  const loadingView = isValidElement(loading)
-    ? loading
-    : loading
-    ? defaultLoadingView
-    : undefined
+  const guideLoadingView = loadingView ? loadingView : defaultLoadingView
 
   const summary = isInitializing ? (
     <InitializationProgress
@@ -103,7 +101,8 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   return (
     <TitleCard
       id={id}
-      loading={loadingView}
+      loading={loading}
+      loadingView={guideLoadingView}
       warning={warning}
       padding={0}
       title={
