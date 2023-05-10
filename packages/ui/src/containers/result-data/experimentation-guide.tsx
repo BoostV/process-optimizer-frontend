@@ -17,11 +17,13 @@ import {
   TitleCard,
 } from '@ui/features'
 import { CopySuggested } from '@ui/features/result-data/copy-suggested'
+import { ReactNode } from 'react'
 
 interface ResultDataProps {
   id?: string
   isUIBig?: boolean
-  loading?: boolean
+  loading?: ReactNode
+  warning?: string
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
   onMouseLeaveExpand?: () => void
@@ -31,7 +33,8 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   const {
     id = 'experimentation-guide',
     isUIBig = false,
-    loading = false,
+    loading,
+    warning,
     toggleUISize,
     onMouseEnterExpand,
     onMouseLeaveExpand,
@@ -72,6 +75,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     <TitleCard
       id={id}
       loading={loading}
+      warning={warning}
       padding={0}
       title={
         <>

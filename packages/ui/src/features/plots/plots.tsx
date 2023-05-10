@@ -7,7 +7,7 @@ import { isPNG } from '@boostv/process-optimizer-frontend-core'
 import { BokehPlot } from '@boostv/process-optimizer-frontend-plots'
 import { PNGPlot } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
@@ -15,7 +15,8 @@ type Props = {
   isUIBig?: boolean
   onSizeToggle?: () => void
   experiment: ExperimentType
-  loading?: boolean
+  loading?: ReactNode
+  warning?: string
 }
 
 export const Plots: FC<Props> = ({
@@ -23,7 +24,8 @@ export const Plots: FC<Props> = ({
   isUIBig = false,
   onSizeToggle,
   experiment,
-  loading = false,
+  loading,
+  warning,
 }) => {
   const { classes } = useStyles()
 
@@ -32,6 +34,7 @@ export const Plots: FC<Props> = ({
       <TitleCard
         id={id}
         loading={loading}
+        warning={warning}
         title={
           <>
             Plots

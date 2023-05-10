@@ -1,7 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
 
 export const useStyles = makeStyles()(theme => ({
-  title: {
+  titleContainer: {
+    display: 'flex',
     background: theme.palette.primary.main,
     color: 'white',
     paddingLeft: theme.spacing(2),
@@ -10,6 +11,10 @@ export const useStyles = makeStyles()(theme => ({
     paddingBottom: theme.spacing(1),
     fontSize: theme.typography.pxToRem(18),
     position: 'relative',
+    alignItems: 'center',
+  },
+  title: {
+    flex: 1,
   },
   loading: {
     position: 'absolute',

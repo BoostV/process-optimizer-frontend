@@ -3,7 +3,9 @@ import {
   Card,
   CardContent,
   Grid,
+  Skeleton,
   Snackbar,
+  Stack,
   Switch,
   Tooltip,
   Typography,
@@ -353,6 +355,29 @@ const LegacyExperiment = () => {
                   >
                     <Grid item xs={12}>
                       <ExperimentationGuide
+                        loading={
+                          experiment.changedSinceLastEvaluation ? (
+                            <Stack direction="column" spacing={2} m={2}>
+                              <Skeleton
+                                animation="wave"
+                                variant="rectangular"
+                                width="100%"
+                                height={200}
+                              />
+                              <Skeleton
+                                animation="wave"
+                                variant="rectangular"
+                                width="100%"
+                                height={100}
+                              />
+                            </Stack>
+                          ) : undefined
+                        }
+                        warning={
+                          experiment.changedSinceLastEvaluation
+                            ? 'Out of sync - optimizer must run again'
+                            : undefined
+                        }
                         id="experimentation-guide"
                         isUIBig={isUIBig(uiSizes, 'result-data')}
                         toggleUISize={() =>
@@ -406,6 +431,29 @@ const LegacyExperiment = () => {
                         type: 'toggleUISize',
                         payload: 'plots',
                       })
+                    }
+                    loading={
+                      experiment.changedSinceLastEvaluation ? (
+                        <Stack direction="row" spacing={2}>
+                          <Skeleton
+                            animation="wave"
+                            variant="rectangular"
+                            width="50%"
+                            height={300}
+                          />
+                          <Skeleton
+                            animation="wave"
+                            variant="rectangular"
+                            width="50%"
+                            height={300}
+                          />
+                        </Stack>
+                      ) : undefined
+                    }
+                    warning={
+                      experiment.changedSinceLastEvaluation
+                        ? 'Out of sync - optimizer must run again'
+                        : undefined
                     }
                   />
                 </Grid>
