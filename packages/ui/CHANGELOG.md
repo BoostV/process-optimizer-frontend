@@ -1,5 +1,17 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.1.0
+
+### Minor Changes
+
+- 29211f1: Add loading skeletons and warnings to cards
+
+### Patch Changes
+
+- 15a6c5e: Add optional external state to message provider, adjust loading skeletons, add missing export
+- Updated dependencies [15a6c5e]
+  - @boostv/process-optimizer-frontend-core@2.4.0
+
 ## 2.0.0
 
 ### Major Changes
