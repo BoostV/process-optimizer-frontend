@@ -61,18 +61,8 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
 
   const defaultLoadingView = (
     <Stack direction="column" spacing={2} m={2}>
-      <Skeleton
-        animation="wave"
-        variant="rectangular"
-        width="100%"
-        height={200}
-      />
-      <Skeleton
-        animation="wave"
-        variant="rectangular"
-        width="100%"
-        height={100}
-      />
+      <Skeleton variant="rectangular" width="100%" height={200} />
+      <Skeleton variant="rectangular" width="100%" height={100} />
     </Stack>
   )
   const guideLoadingView = loadingView ? loadingView : defaultLoadingView

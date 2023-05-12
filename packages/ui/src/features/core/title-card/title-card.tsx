@@ -22,12 +22,7 @@ export const TitleCard = (props: TitleCardProps) => {
   const { messages } = useMessages(id)
 
   const defaultLoadingView = (
-    <Skeleton
-      animation="wave"
-      variant="rectangular"
-      width="100%"
-      height={500}
-    />
+    <Skeleton variant="rectangular" width="100%" height={500} />
   )
   const cardView =
     loading && loadingView
