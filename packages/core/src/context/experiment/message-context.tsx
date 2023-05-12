@@ -18,6 +18,7 @@ import { ReactNode, createContext, useContext, useMemo, useState } from 'react'
  */
 
 export type Message = {
+  id?: string
   type: 'info' | 'warning' | 'error' | 'custom'
   text: string
   disabled?: boolean
@@ -27,9 +28,10 @@ export type Message = {
 const MessageContext = createContext<
   | {
       messages: Map<string, Message[]>
-      setMessage: (id: string, message: Message) => void
+      setMessage: (key: string, message: Message) => void
       setMessages: (messages: Map<string, Message[]>) => void
-      clearMessages: () => void
+      clearAllMessages: () => void
+      clearMessagesWithId: (messageId: string) => void
     }
   | undefined
 >(undefined)
@@ -54,40 +56,59 @@ export const useMessageController = () => {
   return {
     setMessage: context.setMessage,
     setMessages: context.setMessages,
-    clearMessages: context.clearMessages,
+    clearAllMessages: context.clearAllMessages,
+    clearMessagesWithId: context.clearMessagesWithId,
   }
 }
 
 type MessageProviderProps = {
+  messages?: Map<string, Message[]>
   children?: React.ReactNode
 }
 
-export const MessageProvider = ({ children }: MessageProviderProps) => {
+export const MessageProvider = ({
+  children,
+  messages: externalMessages,
+}: MessageProviderProps) => {
   enableMapSet()
   const [messages, setMessages] = useState<Map<string, Message[]>>(new Map())
 
-  const setMessage = (id: string, message: Message) => {
+  const setMessage = (key: string, message: Message) => {
     setMessages(
       produce(draft => {
-        const messagesWithId = draft.get(id)
-        if (messagesWithId !== undefined) {
-          messagesWithId.push(message)
-          draft.set(id, messagesWithId)
+        const messagesWithKey = draft.get(key)
+        if (messagesWithKey !== undefined) {
+          messagesWithKey.push(message)
+          draft.set(key, messagesWithKey)
         } else {
-          draft.set(id, [message])
+          draft.set(key, [message])
         }
+      })
+    )
+  }
+
+  const clearMessagesWithId = (messageId: string) => {
+    setMessages(
+      produce(draft => {
+        draft.forEach((v, k) =>
+          draft.set(
+            k,
+            v.filter(m => m.id !== messageId)
+          )
+        )
       })
     )
   }
 
   const value = useMemo(
     () => ({
-      messages,
+      messages: externalMessages ?? messages,
       setMessage,
       setMessages,
-      clearMessages: () => setMessages(new Map()),
+      clearAllMessages: () => setMessages(new Map()),
+      clearMessagesWithId,
     }),
-    [messages]
+    [externalMessages, messages]
   )
 
   return (
