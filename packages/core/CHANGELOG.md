@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 2.4.0
+
+### Minor Changes
+
+- 15a6c5e: Add optional external state to message provider, adjust loading skeletons, add missing export
+
 ## 2.3.0
 
 ### Minor Changes

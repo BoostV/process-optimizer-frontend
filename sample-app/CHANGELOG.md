@@ -1,5 +1,18 @@
 # @process-optimizer-frontend/sample-app
 
+## 1.13.0
+
+### Minor Changes
+
+- 29211f1: Add loading skeletons and warnings to cards
+
+### Patch Changes
+
+- Updated dependencies [29211f1]
+- Updated dependencies [15a6c5e]
+  - @boostv/process-optimizer-frontend-ui@2.1.0
+  - @boostv/process-optimizer-frontend-core@2.4.0
+
 ## 1.12.0
 
 ### Minor Changes
