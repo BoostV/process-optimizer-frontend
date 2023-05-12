@@ -1,5 +1,5 @@
 import useStyles from './plots.style'
-import { Tooltip, IconButton, Hidden } from '@mui/material'
+import { Tooltip, IconButton, Hidden, Stack, Skeleton } from '@mui/material'
 import { ZoomOutMap } from '@mui/icons-material'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
@@ -7,7 +7,7 @@ import { isPNG } from '@boostv/process-optimizer-frontend-core'
 import { BokehPlot } from '@boostv/process-optimizer-frontend-plots'
 import { PNGPlot } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
@@ -16,6 +16,8 @@ type Props = {
   onSizeToggle?: () => void
   experiment: ExperimentType
   loading?: boolean
+  loadingView?: ReactNode
+  warning?: string
 }
 
 export const Plots: FC<Props> = ({
@@ -23,15 +25,37 @@ export const Plots: FC<Props> = ({
   isUIBig = false,
   onSizeToggle,
   experiment,
-  loading = false,
+  loading,
+  loadingView,
+  warning,
 }) => {
   const { classes } = useStyles()
+
+  const defaultLoadingView = (
+    <Stack direction="column" spacing={2}>
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width="100%"
+        height={600}
+      />
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width="100%"
+        height={800}
+      />
+    </Stack>
+  )
+  const plotsLoadingView = loadingView ? loadingView : defaultLoadingView
 
   return (
     <>
       <TitleCard
         id={id}
         loading={loading}
+        loadingView={plotsLoadingView}
+        warning={warning}
         title={
           <>
             Plots

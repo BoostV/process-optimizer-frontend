@@ -353,6 +353,12 @@ const LegacyExperiment = () => {
                   >
                     <Grid item xs={12}>
                       <ExperimentationGuide
+                        loading={experiment.changedSinceLastEvaluation}
+                        warning={
+                          experiment.changedSinceLastEvaluation
+                            ? 'Out of sync - optimizer must run again'
+                            : undefined
+                        }
                         id="experimentation-guide"
                         isUIBig={isUIBig(uiSizes, 'result-data')}
                         toggleUISize={() =>
@@ -406,6 +412,12 @@ const LegacyExperiment = () => {
                         type: 'toggleUISize',
                         payload: 'plots',
                       })
+                    }
+                    loading={experiment.changedSinceLastEvaluation}
+                    warning={
+                      experiment.changedSinceLastEvaluation
+                        ? 'Out of sync - optimizer must run again'
+                        : undefined
                     }
                   />
                 </Grid>

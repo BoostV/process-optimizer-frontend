@@ -6,7 +6,14 @@ import {
   selectNextExperimentValues,
   selectIsInitializing,
 } from '@boostv/process-optimizer-frontend-core'
-import { Tooltip, IconButton, Hidden, Box } from '@mui/material'
+import {
+  Tooltip,
+  IconButton,
+  Hidden,
+  Box,
+  Stack,
+  Skeleton,
+} from '@mui/material'
 import { ZoomOutMap } from '@mui/icons-material'
 import useStyles from './experimentation-guide.style'
 import {
@@ -17,11 +24,14 @@ import {
   TitleCard,
 } from '@ui/features'
 import { CopySuggested } from '@ui/features/result-data/copy-suggested'
+import { ReactNode } from 'react'
 
 interface ResultDataProps {
   id?: string
   isUIBig?: boolean
   loading?: boolean
+  loadingView?: ReactNode
+  warning?: string
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
   onMouseLeaveExpand?: () => void
@@ -31,7 +41,9 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   const {
     id = 'experimentation-guide',
     isUIBig = false,
-    loading = false,
+    loading,
+    loadingView,
+    warning,
     toggleUISize,
     onMouseEnterExpand,
     onMouseLeaveExpand,
@@ -46,6 +58,24 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   const headers = useSelector(selectVariableNames)
   const expectedMinimum = useSelector(selectExpectedMinimum)
   const isInitializing = useSelector(selectIsInitializing)
+
+  const defaultLoadingView = (
+    <Stack direction="column" spacing={2} m={2}>
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width="100%"
+        height={200}
+      />
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        width="100%"
+        height={100}
+      />
+    </Stack>
+  )
+  const guideLoadingView = loadingView ? loadingView : defaultLoadingView
 
   const summary = isInitializing ? (
     <InitializationProgress
@@ -72,6 +102,8 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     <TitleCard
       id={id}
       loading={loading}
+      loadingView={guideLoadingView}
+      warning={warning}
       padding={0}
       title={
         <>

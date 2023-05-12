@@ -27,6 +27,7 @@ type DataPointProps = {
   newestFirst: boolean
   isEditingDisabled?: boolean
   violationsInTable?: EditableTableViolation[]
+  warning?: string
   onToggleNewestFirst: () => void
   onUpdateDataPoints: (dataPoints: DataEntry[]) => void
 }
@@ -42,6 +43,7 @@ export function DataPoints(props: DataPointProps) {
     newestFirst,
     isEditingDisabled,
     violationsInTable,
+    warning,
     onToggleNewestFirst,
     onUpdateDataPoints,
   } = props
@@ -79,6 +81,7 @@ export function DataPoints(props: DataPointProps) {
   return (
     <TitleCard
       id={id}
+      warning={warning}
       title={
         <>
           <Box display="flex" justifyContent="space-between">
