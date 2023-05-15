@@ -1,4 +1,11 @@
-import { Box, Card, CardContent, Skeleton, Tooltip } from '@mui/material'
+import {
+  Box,
+  Card,
+  CardContent,
+  CircularProgress,
+  Skeleton,
+  Tooltip,
+} from '@mui/material'
 import { ReactNode } from 'react'
 import useStyles from './title-card.style'
 import { useMessages } from '@boostv/process-optimizer-frontend-core'
@@ -11,25 +18,49 @@ type TitleCardProps = {
   title: ReactNode
   padding?: number
   loading?: boolean
+  loadingMode?: 'skeleton' | 'overlay' | 'custom'
   loadingView?: ReactNode
+  overlayWhenLoading?: boolean
   warning?: string
   children: ReactNode
 }
 
 export const TitleCard = (props: TitleCardProps) => {
-  const { id, title, padding, loading, loadingView, warning, children } = props
+  const {
+    id,
+    title,
+    padding,
+    loading,
+    loadingView,
+    loadingMode = 'skeleton',
+    warning,
+    children,
+  } = props
   const { classes } = useStyles()
   const { messages } = useMessages(id)
 
-  const defaultLoadingView = (
+  const loadingSkeleton = (
     <Skeleton variant="rectangular" width="100%" height={500} />
   )
-  const cardView =
-    loading && loadingView
-      ? loadingView
-      : loading
-      ? defaultLoadingView
-      : children
+  const loadingOverlay = (
+    <Box className={classes.loadingOverlayContainer}>
+      <Box className={classes.loadingOverlay}>
+        <Box>
+          <CircularProgress size={42} />
+        </Box>
+      </Box>
+      {children}
+    </Box>
+  )
+
+  const loadingComponent =
+    loadingMode === 'skeleton'
+      ? loadingSkeleton
+      : loadingMode === 'overlay'
+      ? loadingOverlay
+      : loadingView
+
+  const cardView = loading ? loadingComponent : children
 
   return (
     <Card>

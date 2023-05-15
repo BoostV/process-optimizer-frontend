@@ -31,7 +31,9 @@ interface ResultDataProps {
   isUIBig?: boolean
   loading?: boolean
   loadingView?: ReactNode
+  loadingMode?: 'skeleton' | 'overlay' | 'custom'
   warning?: string
+  padding?: number
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
   onMouseLeaveExpand?: () => void
@@ -44,6 +46,8 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     loading,
     loadingView,
     warning,
+    padding,
+    loadingMode,
     toggleUISize,
     onMouseEnterExpand,
     onMouseLeaveExpand,
@@ -65,7 +69,15 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       <Skeleton variant="rectangular" width="100%" height={100} />
     </Stack>
   )
-  const guideLoadingView = loadingView ? loadingView : defaultLoadingView
+
+  const guideLoadingMode = loadingMode === 'overlay' ? 'overlay' : 'custom'
+
+  const guideLoadingView =
+    loadingMode === 'overlay'
+      ? undefined
+      : loadingMode === 'custom'
+      ? loadingView
+      : defaultLoadingView
 
   const summary = isInitializing ? (
     <InitializationProgress
@@ -93,8 +105,9 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       id={id}
       loading={loading}
       loadingView={guideLoadingView}
+      loadingMode={guideLoadingMode}
       warning={warning}
-      padding={0}
+      padding={padding ?? 0}
       title={
         <>
           Experimentation guide

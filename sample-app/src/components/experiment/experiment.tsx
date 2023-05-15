@@ -17,6 +17,7 @@ import {
   OptimizerConfigurator,
   DataPoints,
   ExperimentationGuide,
+  TitleCard,
 } from '@boostv/process-optimizer-frontend-ui'
 import { Alert } from '@mui/material'
 import { useStyles } from './experiment.style'
