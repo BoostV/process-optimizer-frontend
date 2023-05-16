@@ -32,7 +32,6 @@ interface ResultDataProps {
   loading?: boolean
   loadingView?: ReactNode
   loadingMode?: 'skeleton' | 'overlay' | 'custom'
-  showSettingsWhileLoading?: boolean
   warning?: string
   padding?: number
   toggleUISize?: () => void
@@ -49,7 +48,6 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     warning,
     padding,
     loadingMode,
-    showSettingsWhileLoading,
     toggleUISize,
     onMouseEnterExpand,
     onMouseLeaveExpand,
@@ -129,7 +127,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       loading={loading}
       loadingView={
         <>
-          {showSettingsWhileLoading && !isInitializing ? (
+          {!isInitializing ? (
             <Box pl={2} pr={2} pt={2}>
               {settings}
             </Box>
