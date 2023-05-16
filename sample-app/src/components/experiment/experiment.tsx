@@ -354,6 +354,7 @@ const LegacyExperiment = () => {
                     <Grid item xs={12}>
                       <ExperimentationGuide
                         loading={experiment.changedSinceLastEvaluation}
+                        showSettingsWhileLoading
                         warning={
                           experiment.changedSinceLastEvaluation
                             ? 'Out of sync - optimizer must run again'

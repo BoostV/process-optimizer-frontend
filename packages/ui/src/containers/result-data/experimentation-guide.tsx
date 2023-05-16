@@ -32,6 +32,7 @@ interface ResultDataProps {
   loading?: boolean
   loadingView?: ReactNode
   loadingMode?: 'skeleton' | 'overlay' | 'custom'
+  showSettingsWhileLoading?: boolean
   warning?: string
   padding?: number
   toggleUISize?: () => void
@@ -48,6 +49,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     warning,
     padding,
     loadingMode,
+    showSettingsWhileLoading,
     toggleUISize,
     onMouseEnterExpand,
     onMouseLeaveExpand,
@@ -68,6 +70,27 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       <Skeleton variant="rectangular" width="100%" height={200} />
       <Skeleton variant="rectangular" width="100%" height={100} />
     </Stack>
+  )
+
+  const settings = (
+    <NextExperiments
+      experiment={experiment}
+      onSuggestionChange={suggestionCount =>
+        dispatchExperiment({
+          type: 'updateSuggestionCount',
+          payload: suggestionCount,
+        })
+      }
+      onXiChange={xi =>
+        dispatchExperiment({
+          type: 'updateConfiguration',
+          payload: {
+            ...experiment.optimizerConfig,
+            xi,
+          },
+        })
+      }
+    />
   )
 
   const guideLoadingMode = loadingMode === 'overlay' ? 'overlay' : 'custom'
@@ -104,7 +127,16 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     <TitleCard
       id={id}
       loading={loading}
-      loadingView={guideLoadingView}
+      loadingView={
+        <>
+          {showSettingsWhileLoading && !isInitializing ? (
+            <Box p={2}>{settings}</Box>
+          ) : (
+            <></>
+          )}
+          {guideLoadingView}
+        </>
+      }
       loadingMode={guideLoadingMode}
       warning={warning}
       padding={padding ?? 0}
@@ -136,26 +168,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       }
     >
       <Box p={2}>
-        {!isInitializing && (
-          <NextExperiments
-            experiment={experiment}
-            onSuggestionChange={suggestionCount =>
-              dispatchExperiment({
-                type: 'updateSuggestionCount',
-                payload: suggestionCount,
-              })
-            }
-            onXiChange={xi =>
-              dispatchExperiment({
-                type: 'updateConfiguration',
-                payload: {
-                  ...experiment.optimizerConfig,
-                  xi,
-                },
-              })
-            }
-          />
-        )}
+        {!isInitializing && settings}
         {!nextValues ||
           (nextValues.length === 0 && (
             <Box p={2}>Please run experiment to calculate suggestions</Box>
