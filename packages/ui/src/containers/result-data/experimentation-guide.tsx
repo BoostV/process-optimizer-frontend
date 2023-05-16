@@ -130,7 +130,9 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       loadingView={
         <>
           {showSettingsWhileLoading && !isInitializing ? (
-            <Box p={2}>{settings}</Box>
+            <Box pl={2} pr={2} pt={2}>
+              {settings}
+            </Box>
           ) : (
             <></>
           )}
