@@ -20,7 +20,6 @@ type TitleCardProps = {
   loading?: boolean
   loadingMode?: 'skeleton' | 'overlay' | 'custom'
   loadingView?: ReactNode
-  overlayWhenLoading?: boolean
   warning?: string
   children: ReactNode
 }
