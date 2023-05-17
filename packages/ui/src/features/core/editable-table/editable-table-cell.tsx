@@ -9,10 +9,12 @@ import {
 } from '@mui/material'
 import { ChangeEvent, CSSProperties } from 'react'
 import useStyles from './editable-table-cell.style'
+import { RatingInput } from '@ui/common'
 
 type EditableTableCellProps = {
   value?: string
   isEditMode: boolean
+  isRatingInput?: boolean
   options?: string[]
   onChange?: (value: string) => void
   tooltip?: string
@@ -22,6 +24,7 @@ type EditableTableCellProps = {
 export function EditableTableCell({
   value,
   isEditMode,
+  isRatingInput,
   options,
   onChange,
   tooltip,
@@ -29,7 +32,9 @@ export function EditableTableCell({
 }: EditableTableCellProps) {
   const { classes } = useStyles()
 
-  const textField = (
+  const textField = isRatingInput ? (
+    <RatingInput value={value} onChange={val => onChange?.(val)} />
+  ) : (
     <TextField
       size="small"
       value={value ?? ''}
