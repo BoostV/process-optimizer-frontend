@@ -1,5 +1,11 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.2.0
+
+### Minor Changes
+
+- 460b9b2: Add overlay loading mode
+
 ## 2.1.0
 
 ### Minor Changes
