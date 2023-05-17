@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material'
 import { ChangeEvent, MouseEvent, useState } from 'react'
-import StarIcon from '@mui/icons-material/Star'
+import { Star } from '@mui/icons-material'
 import { StarRating } from './star-rating'
 
 type RatingInputProps = {
@@ -60,7 +60,7 @@ export const RatingInput = ({ value, onChange }: RatingInputProps) => {
                   setAnchorEl(e.currentTarget)
                 }
               >
-                <StarIcon sx={{ color: '#faaf00' }} />
+                <Star sx={{ color: '#faaf00' }} />
               </IconButton>
             </InputAdornment>
           ),
