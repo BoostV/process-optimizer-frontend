@@ -5,15 +5,18 @@ import {
   Box,
   Button,
   ClickAwayListener,
+  Divider,
   InputAdornment,
   Paper,
   Popper,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
   TextField,
+  Typography,
 } from '@mui/material'
 import StarIcon from '@mui/icons-material/Star'
 import { TableDataRow } from './types'
@@ -50,6 +53,7 @@ export const EditableTableExpandedRow = ({
   const [editedRow, setEditedRow] = useState<TableDataRow>({ ...tableRow })
   const isModified = !R.equals(editedRow, tableRow)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [tempRating, setTempRating] = useState<string | undefined>(undefined)
 
   const handleEdit = (idx: number, value: string) => {
     setEditedRow({
@@ -65,6 +69,23 @@ export const EditableTableExpandedRow = ({
         ),
       ],
     })
+  }
+
+  const formatRating = (
+    rating: string | undefined,
+    value: string | undefined
+  ) => {
+    if (rating === undefined) {
+      return value === undefined
+        ? ''
+        : Number(value) % 1 === 0
+        ? value + '.0'
+        : value
+    }
+    if (Number(rating) % 1 === 0) {
+      return rating + '.0'
+    }
+    return rating
   }
 
   return (
@@ -115,47 +136,70 @@ export const EditableTableExpandedRow = ({
                               if (e.key === 'Enter') {
                                 d.value !== undefined && handleEdit(i, d.value)
                                 setAnchorEl(null)
+                                setTempRating(undefined)
                               }
-                            }}
-                            onMouseEnter={(e: MouseEvent<HTMLElement>) => {
-                              console.log('ent', e, e.currentTarget)
-                              setAnchorEl(anchorEl ? null : e.currentTarget)
-                            }}
-                            onClick={(e: MouseEvent<HTMLElement>) => {
-                              console.log('in', e, e.currentTarget)
-                              setAnchorEl(anchorEl ? null : e.currentTarget)
                             }}
                             InputProps={{
                               endAdornment: (
-                                <InputAdornment position="end">
+                                <InputAdornment
+                                  position="end"
+                                  onMouseEnter={(
+                                    e: MouseEvent<HTMLInputElement>
+                                  ) => {
+                                    setAnchorEl(e.currentTarget)
+                                  }}
+                                >
                                   <StarIcon sx={{ color: '#faaf00' }} />
                                 </InputAdornment>
                               ),
                             }}
                           />
-                          {/* TODO: mouseover should show value but not set it, show on click instead of hover? */}
                           <ClickAwayListener
-                            onClickAway={() => setAnchorEl(null)}
+                            onClickAway={() => {
+                              setAnchorEl(null)
+                              setTempRating(undefined)
+                            }}
                           >
                             <Popper
                               open={Boolean(anchorEl)}
                               anchorEl={anchorEl}
+                              placement="top"
                             >
                               <Paper>
-                                <Box pt={1} pl={1} pr={1}>
+                                <Stack
+                                  padding={1}
+                                  spacing={1}
+                                  divider={
+                                    <Divider orientation="vertical" flexItem />
+                                  }
+                                  direction="row"
+                                  alignItems="center"
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    width={24}
+                                    textAlign="center"
+                                    fontWeight={500}
+                                    color="#7a7a7a"
+                                  >
+                                    {formatRating(tempRating, d.value)}
+                                  </Typography>
                                   <StarRating
                                     value={Number(d.value) ?? 5}
                                     onChange={v => {
-                                      v !== null && handleEdit(i, '' + v)
+                                      v !== null &&
+                                        handleEdit(i, '' + tempRating)
                                       setAnchorEl(null)
+                                      setTempRating(undefined)
                                     }}
                                     onHover={v =>
-                                      v !== -1 && handleEdit(i, '' + v)
+                                      // v !== -1 && handleEdit(i, '' + v)
+                                      v !== -1 && setTempRating('' + v)
                                     }
                                     max={10}
                                     precision={0.1}
                                   />
-                                </Box>
+                                </Stack>
                               </Paper>
                             </Popper>
                           </ClickAwayListener>
