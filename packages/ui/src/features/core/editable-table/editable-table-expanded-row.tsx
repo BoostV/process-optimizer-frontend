@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent, MouseEvent, useState } from 'react'
+import { ChangeEvent, MouseEvent, useState } from 'react'
 import * as R from 'remeda'
 import useStyles from './editable-table-expanded-row.style'
 import {
@@ -6,6 +6,7 @@ import {
   Button,
   ClickAwayListener,
   Divider,
+  IconButton,
   InputAdornment,
   Paper,
   Popper,
@@ -124,7 +125,11 @@ export const EditableTableExpandedRow = ({
                       return d.name.includes('score') ? (
                         <TableCell
                           key={'scorecell' + i}
-                          style={{ border: 'none', fontSize: 14 }}
+                          style={{
+                            border: 'none',
+                            fontSize: 14,
+                            minWidth: 90,
+                          }}
                         >
                           <TextField
                             size="small"
@@ -132,38 +137,29 @@ export const EditableTableExpandedRow = ({
                             onChange={(e: ChangeEvent<HTMLInputElement>) =>
                               handleEdit?.(i, '' + e.target.value)
                             }
-                            onKeyDown={(e: KeyboardEvent) => {
-                              if (e.key === 'Enter') {
-                                d.value !== undefined && handleEdit(i, d.value)
-                                setAnchorEl(null)
-                                setTempRating(undefined)
-                              }
-                            }}
                             InputProps={{
+                              sx: {
+                                paddingRight: 0.5,
+                              },
                               endAdornment: (
-                                <InputAdornment
-                                  position="end"
-                                  onMouseEnter={(
-                                    e: MouseEvent<HTMLInputElement>
-                                  ) => {
-                                    setAnchorEl(e.currentTarget)
-                                  }}
-                                >
-                                  <StarIcon sx={{ color: '#faaf00' }} />
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    onClick={(e: MouseEvent<HTMLElement>) =>
+                                      setAnchorEl(e.currentTarget)
+                                    }
+                                  >
+                                    <StarIcon sx={{ color: '#faaf00' }} />
+                                  </IconButton>
                                 </InputAdornment>
                               ),
                             }}
                           />
-                          <ClickAwayListener
-                            onClickAway={() => {
-                              setAnchorEl(null)
-                              setTempRating(undefined)
-                            }}
-                          >
-                            <Popper
-                              open={Boolean(anchorEl)}
-                              anchorEl={anchorEl}
-                              placement="top"
+                          <Popper open={Boolean(anchorEl)} anchorEl={anchorEl}>
+                            <ClickAwayListener
+                              onClickAway={() => {
+                                setAnchorEl(null)
+                                setTempRating(undefined)
+                              }}
                             >
                               <Paper>
                                 <Stack
@@ -200,8 +196,8 @@ export const EditableTableExpandedRow = ({
                                   />
                                 </Stack>
                               </Paper>
-                            </Popper>
-                          </ClickAwayListener>
+                            </ClickAwayListener>
+                          </Popper>
                         </TableCell>
                       ) : (
                         <EditableTableCell
@@ -226,7 +222,7 @@ export const EditableTableExpandedRow = ({
           {violations !== undefined &&
             violations.length > 0 &&
             violations.map((v, i) => (
-              <InfoBox key={i} text={v} type="warning" />
+              <InfoBox key={'warning' + i} text={v} type="warning" />
             ))}
 
           <Box display="flex" justifyContent="end" mt={2}>
