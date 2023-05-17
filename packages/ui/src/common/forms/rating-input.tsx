@@ -43,9 +43,15 @@ export const RatingInput = ({ value, onChange }: RatingInputProps) => {
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           onChange(e.target.value)
         }
+        inputProps={{
+          sx: {
+            minWidth: 24,
+          },
+        }}
         InputProps={{
           sx: {
             paddingRight: 0.5,
+            minWidth: 80,
           },
           endAdornment: (
             <InputAdornment position="end">

@@ -265,7 +265,9 @@ const buildRows = (
         if (existingData !== undefined) {
           vars.push({
             ...existingData,
-            value: String(existingData.value),
+            value: existingData.value.toLocaleString('en-US', {
+              minimumFractionDigits: 1,
+            }),
           })
         } else {
           vars.push({
