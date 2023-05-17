@@ -193,7 +193,6 @@ export const EditableTableExpandedRow = ({
                                       setTempRating(undefined)
                                     }}
                                     onHover={v =>
-                                      // v !== -1 && handleEdit(i, '' + v)
                                       v !== -1 && setTempRating('' + v)
                                     }
                                     max={10}
