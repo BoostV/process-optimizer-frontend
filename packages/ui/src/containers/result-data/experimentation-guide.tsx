@@ -31,7 +31,9 @@ interface ResultDataProps {
   isUIBig?: boolean
   loading?: boolean
   loadingView?: ReactNode
+  loadingMode?: 'skeleton' | 'overlay' | 'custom'
   warning?: string
+  padding?: number
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
   onMouseLeaveExpand?: () => void
@@ -44,6 +46,8 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     loading,
     loadingView,
     warning,
+    padding,
+    loadingMode,
     toggleUISize,
     onMouseEnterExpand,
     onMouseLeaveExpand,
@@ -65,7 +69,36 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       <Skeleton variant="rectangular" width="100%" height={100} />
     </Stack>
   )
-  const guideLoadingView = loadingView ? loadingView : defaultLoadingView
+
+  const settings = (
+    <NextExperiments
+      experiment={experiment}
+      onSuggestionChange={suggestionCount =>
+        dispatchExperiment({
+          type: 'updateSuggestionCount',
+          payload: suggestionCount,
+        })
+      }
+      onXiChange={xi =>
+        dispatchExperiment({
+          type: 'updateConfiguration',
+          payload: {
+            ...experiment.optimizerConfig,
+            xi,
+          },
+        })
+      }
+    />
+  )
+
+  const guideLoadingMode = loadingMode === 'overlay' ? 'overlay' : 'custom'
+
+  const guideLoadingView =
+    loadingMode === 'overlay'
+      ? undefined
+      : loadingMode === 'custom'
+      ? loadingView
+      : defaultLoadingView
 
   const summary = isInitializing ? (
     <InitializationProgress
@@ -92,9 +125,21 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     <TitleCard
       id={id}
       loading={loading}
-      loadingView={guideLoadingView}
+      loadingView={
+        <>
+          {!isInitializing ? (
+            <Box pl={2} pr={2} pt={2}>
+              {settings}
+            </Box>
+          ) : (
+            <></>
+          )}
+          {guideLoadingView}
+        </>
+      }
+      loadingMode={guideLoadingMode}
       warning={warning}
-      padding={0}
+      padding={padding ?? 0}
       title={
         <>
           Experimentation guide
@@ -123,26 +168,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       }
     >
       <Box p={2}>
-        {!isInitializing && (
-          <NextExperiments
-            experiment={experiment}
-            onSuggestionChange={suggestionCount =>
-              dispatchExperiment({
-                type: 'updateSuggestionCount',
-                payload: suggestionCount,
-              })
-            }
-            onXiChange={xi =>
-              dispatchExperiment({
-                type: 'updateConfiguration',
-                payload: {
-                  ...experiment.optimizerConfig,
-                  xi,
-                },
-              })
-            }
-          />
-        )}
+        {!isInitializing && settings}
         {!nextValues ||
           (nextValues.length === 0 && (
             <Box p={2}>Please run experiment to calculate suggestions</Box>

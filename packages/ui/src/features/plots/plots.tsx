@@ -17,7 +17,9 @@ type Props = {
   experiment: ExperimentType
   loading?: boolean
   loadingView?: ReactNode
+  loadingMode?: 'skeleton' | 'overlay' | 'custom'
   warning?: string
+  padding?: number
 }
 
 export const Plots: FC<Props> = ({
@@ -27,7 +29,9 @@ export const Plots: FC<Props> = ({
   experiment,
   loading,
   loadingView,
+  loadingMode,
   warning,
+  padding,
 }) => {
   const { classes } = useStyles()
 
@@ -37,14 +41,24 @@ export const Plots: FC<Props> = ({
       <Skeleton variant="rectangular" width="100%" height={800} />
     </Stack>
   )
-  const plotsLoadingView = loadingView ? loadingView : defaultLoadingView
+
+  const plotsLoadingMode = loadingMode === 'overlay' ? 'overlay' : 'custom'
+
+  const plotsLoadingView =
+    loadingMode === 'overlay'
+      ? undefined
+      : loadingMode === 'custom'
+      ? loadingView
+      : defaultLoadingView
 
   return (
     <>
       <TitleCard
+        padding={padding}
         id={id}
         loading={loading}
         loadingView={plotsLoadingView}
+        loadingMode={plotsLoadingMode}
         warning={warning}
         title={
           <>
