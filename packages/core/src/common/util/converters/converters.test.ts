@@ -61,17 +61,17 @@ describe('converters', () => {
   }))
   const dataPointsWithScores: DataEntry[] = [
     [
-      { name: 'score', type: 'score', value: 0.7 },
+      { name: 'score', type: 'score', value: 1.7 },
       { name: 'score2', type: 'score', value: 17 },
       { name: 'test', type: 'numeric', value: 1 },
     ] satisfies DataPointType[],
     [
-      { name: 'score', type: 'score', value: 0.8 },
+      { name: 'score', type: 'score', value: 2.8 },
       { name: 'score2', type: 'score', value: 18 },
       { name: 'test', type: 'numeric', value: 2 },
     ] satisfies DataPointType[],
     [
-      { name: 'score', type: 'score', value: 0.6 },
+      { name: 'score', type: 'score', value: 3.6 },
       { name: 'score2', type: 'score', value: 16 },
       { name: 'test', type: 'numeric', value: 3 },
     ] satisfies DataPointType[],
@@ -276,13 +276,13 @@ describe('converters', () => {
     it('invertScore - for a given score, should return max score with the same name minus score', () => {
       const dataEntries = dataPointsWithScores.map(d => d.data)
 
-      // 'score', max: 0.8, score: 0.7
+      // 'score', max: 3.6, score: 1.7
       const score1 = dataPointsWithScores[0]?.data[0]
       if (score1 === undefined) {
         throw new Error('score 1 undefined')
       }
       const actual1 = invertScore(dataEntries, score1)
-      expect(actual1).toEqual(0.1)
+      expect(actual1).toEqual(1.9)
 
       // 'score2', max: 18, score: 16
       const score2 = dataPointsWithScores[0]?.data[2]
