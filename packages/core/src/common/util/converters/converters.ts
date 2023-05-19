@@ -63,6 +63,11 @@ export const calculateData = (
     .filter(it => it.enabled)
     .map(it => it.name)
 
+  const maxScores = getMaxScores(
+    dataPoints.filter(dp => dp.meta.enabled && dp.meta.valid),
+    enabledScoreNames
+  )
+
   return dataPoints
     .filter(dp => dp.meta.enabled && dp.meta.valid)
     .map(dp => dp.data)
@@ -75,11 +80,37 @@ export const calculateData = (
           ) as Array<string | number>, // This type cast is valid here because only scores can be number[] and they are filtered out
         yi: run
           .filter(it => enabledScoreNames.includes(it.name))
-          .map(it => it.value)
-          .map(Number),
+          .map(it => invertScore(maxScores, it)),
       })
     )
 }
+
+type MaxScore = { scoreName: string; value: number }
+
+// for each score name, returns maxScore - score
+// *100 removes floating point errors, e.g. 0.3 - 0.2 = 0.1999...
+export const invertScore = (maxScores: MaxScore[], score: DataPointType) => {
+  const maxScore = maxScores.find(s => s.scoreName === score.name)?.value
+  return maxScore ? (maxScore * 100 - Number(score.value) * 100) / 100 : 0
+}
+
+export const getMaxScores = (dataPoints: DataEntry[], scoreNames: string[]) => {
+  return scoreNames.map(s => ({
+    scoreName: s,
+    value: getMaxScore(dataPoints, s),
+  }))
+}
+
+const getMaxScore = (dataPoints: DataEntry[], scoreName: string) => {
+  return Math.max(
+    ...dataPoints
+      .map(dp => dp.data)
+      .flatMap(d => d.filter(d => d.name === scoreName))
+      .map(s => s.value)
+      .map(Number)
+  )
+}
+
 /**
  * Calculate the constraints parameter to send to the API.
  *
