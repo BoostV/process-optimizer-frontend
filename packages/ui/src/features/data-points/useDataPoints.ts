@@ -9,7 +9,7 @@ import { useCallback, useMemo } from 'react'
 import { TableDataPoint, TableDataRow } from '../core'
 import produce from 'immer'
 
-export const useDatapoints = (
+export const useDataPoints = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
   scoreVariables: ScoreVariableType[],
@@ -226,6 +226,13 @@ const buildEmptyRow = (
   } satisfies TableDataRow
 }
 
+export const formatScore = (value: number | string) =>
+  value
+    .toLocaleString('en-US', {
+      minimumFractionDigits: 1,
+    })
+    .replaceAll(',', '')
+
 const buildRows = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
@@ -265,11 +272,7 @@ const buildRows = (
         if (existingData !== undefined) {
           vars.push({
             ...existingData,
-            value: existingData.value
-              .toLocaleString('en-US', {
-                minimumFractionDigits: 1,
-              })
-              .replaceAll(',', ''),
+            value: formatScore(existingData.value),
           })
         } else {
           vars.push({

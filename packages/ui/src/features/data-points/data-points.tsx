@@ -15,7 +15,7 @@ import {
   ValueVariableType,
   EditableTableViolation,
 } from '@boostv/process-optimizer-frontend-core'
-import { useDatapoints } from './useDatapoints'
+import { useDataPoints } from './useDataPoints'
 
 type DataPointProps = {
   id?: string
@@ -52,7 +52,7 @@ export function DataPoints(props: DataPointProps) {
   const enabledCategoricalVariables = categoricalVariables.filter(
     v => v.enabled
   )
-  const { state, addRow, deleteRow, editRow, setEnabledState } = useDatapoints(
+  const { state, addRow, deleteRow, editRow, setEnabledState } = useDataPoints(
     enabledValueVariables,
     enabledCategoricalVariables,
     scoreVariables,

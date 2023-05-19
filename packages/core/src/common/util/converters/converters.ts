@@ -63,11 +63,6 @@ export const calculateData = (
     .filter(it => it.enabled)
     .map(it => it.name)
 
-  // const maxScores = getMaxScores(
-  //   dataPoints.filter(dp => dp.meta.enabled && dp.meta.valid),
-  //   enabledScoreNames
-  // )
-
   return dataPoints
     .filter(dp => dp.meta.enabled && dp.meta.valid)
     .map(dp => dp.data)
