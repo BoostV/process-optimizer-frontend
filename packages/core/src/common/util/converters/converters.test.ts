@@ -14,7 +14,6 @@ import {
   csvToDataPoints,
   calculateConstraints,
   invertScore,
-  getMaxScores,
 } from './converters'
 import { createValueVariable } from '@core/context/experiment/test-utils'
 import produce from 'immer'
@@ -274,38 +273,24 @@ describe('converters', () => {
       expect(actualData).toEqual(expectedData)
     })
 
-    it('getMaxScores', () => {
-      expect(getMaxScores(dataPointsWithScores, ['score', 'score2'])).toEqual([
-        {
-          scoreName: 'score',
-          value: 0.8,
-        },
-        {
-          scoreName: 'score2',
-          value: 18,
-        },
-      ])
-    })
+    it('invertScore - for a given score, should return max score with the same name minus score', () => {
+      const dataEntries = dataPointsWithScores.map(d => d.data)
 
-    it('invertScore', () => {
-      const actual = invertScore(
-        [
-          {
-            scoreName: 'score',
-            value: 0.8,
-          },
-          {
-            scoreName: 'score2',
-            value: 18,
-          },
-        ],
-        {
-          name: 'score',
-          type: 'score',
-          value: 0.5,
-        }
-      )
-      expect(actual).toEqual(0.3)
+      // 'score', max: 0.8, score: 0.7
+      const score1 = dataPointsWithScores[0]?.data[0]
+      if (score1 === undefined) {
+        throw new Error('score 1 undefined')
+      }
+      const actual1 = invertScore(dataEntries, score1)
+      expect(actual1).toEqual(0.1)
+
+      // 'score2', max: 18, score: 16
+      const score2 = dataPointsWithScores[0]?.data[2]
+      if (score2 === undefined) {
+        throw new Error('score 2 undefined')
+      }
+      const actual2 = invertScore(dataEntries, score2)
+      expect(actual2).toEqual(2)
     })
   })
 
