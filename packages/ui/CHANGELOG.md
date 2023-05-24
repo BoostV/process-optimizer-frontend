@@ -1,5 +1,11 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.3.0
+
+### Minor Changes
+
+- beceded: Add styling options and export InfoBox component
+
 ## 2.2.0
 
 ### Minor Changes
