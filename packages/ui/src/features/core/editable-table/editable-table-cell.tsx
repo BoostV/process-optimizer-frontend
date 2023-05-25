@@ -77,7 +77,7 @@ export function EditableTableCell({
         </TableCell>
       ) : (
         <TableCell className={classes.cell} style={{ ...style }}>
-          {value}
+          {value ?? ''}
         </TableCell>
       )}
     </>

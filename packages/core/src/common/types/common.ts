@@ -61,7 +61,7 @@ const dataEntryMetaDataSchema = z.object({
 const numericDataPoint = z.object({
   type: z.literal('numeric'),
   name: z.string(),
-  value: z.number(),
+  value: z.number().optional(),
 })
 
 const categoricalDataPoint = z.object({
@@ -73,7 +73,7 @@ const categoricalDataPoint = z.object({
 const scoreDataPoint = z.object({
   type: z.literal('score'),
   name: z.string(),
-  value: z.number(),
+  value: z.number().optional(),
 })
 
 export const dataPointSchema = z.discriminatedUnion('type', [

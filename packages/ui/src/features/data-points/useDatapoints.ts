@@ -87,34 +87,29 @@ const convertToDataEntry = (
   scoreVariables: ScoreVariableType[],
   row: TableDataRow
 ) => {
-  const data = row.dataPoints
-    .filter(d => d.value !== undefined)
-    .map(dp => {
-      if (dp.value === undefined) {
-        throw new Error(
-          'Undefined values must be filtered away before conversion to data points'
-        )
+  const data = row.dataPoints.map(dp => {
+    if (categoricalVariables.find(cv => cv.name === dp.name) !== undefined) {
+      return {
+        name: dp.name,
+        value: String(dp.value),
+        type: 'categorical',
       }
-      if (categoricalVariables.find(cv => cv.name === dp.name) !== undefined) {
-        return {
-          name: dp.name,
-          value: String(dp.value),
-          type: 'categorical',
-        }
-      } else if (valueVariables.find(cv => cv.name === dp.name) !== undefined) {
-        return {
-          name: dp.name,
-          value: Number(dp.value.replaceAll(',', '.')),
-          type: 'numeric',
-        }
-      } else {
-        return {
-          name: dp.name,
-          value: Number(dp.value.replaceAll(',', '.')),
-          type: 'score',
-        }
+    } else if (valueVariables.find(cv => cv.name === dp.name) !== undefined) {
+      const val = Number(dp.value?.replaceAll(',', '.'))
+      return {
+        name: dp.name,
+        type: 'numeric',
+        value: isNaN(val) ? undefined : val,
       }
-    }) satisfies DataEntry['data']
+    } else {
+      const val = Number(dp.value?.replaceAll(',', '.'))
+      return {
+        name: dp.name,
+        type: 'score',
+        value: isNaN(val) ? undefined : val,
+      }
+    }
+  }) satisfies DataEntry['data']
   const meta = {
     enabled: row.enabled ?? true,
     id: row.metaId ?? 0,
@@ -250,7 +245,10 @@ const buildRows = (
         if (existingData !== undefined) {
           vars.push({
             ...existingData,
-            value: String(existingData.value),
+            value:
+              existingData.value === undefined
+                ? undefined
+                : String(existingData.value),
             options: v?.options,
             tooltip: v?.tooltip,
           })
@@ -268,7 +266,10 @@ const buildRows = (
         if (existingData !== undefined) {
           vars.push({
             ...existingData,
-            value: String(existingData.value),
+            value:
+              existingData.value === undefined
+                ? undefined
+                : String(existingData.value),
           })
         } else {
           vars.push({
