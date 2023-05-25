@@ -140,7 +140,10 @@ const _addRow = (original: DataEntry[], newRow: DataEntry) =>
       data: newRow.data.filter(dp => dp.value !== undefined),
       meta: {
         ...newRow.meta,
-        id: original.reduce((id, curr) => Math.max(id + 1, curr.meta.id), 1),
+        id:
+          original.length === 0
+            ? 1
+            : Math.max(...original.map(o => o.meta.id)) + 1,
       },
     })
   })
