@@ -6,6 +6,7 @@ export const useStyles = makeStyles()(theme => ({
     alignItems: 'center',
     fontSize: 14,
     borderRadius: '4px',
+    color: 'black',
   },
   info: {
     backgroundColor: theme.palette.info.main,
