@@ -7,7 +7,7 @@ import {
 } from '@mui/icons-material'
 import useStyles from './info-box.style'
 
-type InfoType = 'info' | 'warning' | 'error' | 'custom'
+export type InfoType = 'info' | 'warning' | 'error' | 'custom'
 
 type InfoBoxProps = {
   text: string
