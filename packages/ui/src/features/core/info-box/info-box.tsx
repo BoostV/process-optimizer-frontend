@@ -7,15 +7,23 @@ import {
 } from '@mui/icons-material'
 import useStyles from './info-box.style'
 
-type InfoType = 'info' | 'warning' | 'error' | 'custom'
+export type InfoType = 'info' | 'warning' | 'error' | 'custom'
 
 type InfoBoxProps = {
   text: string
   type: InfoType
   customBox?: ReactNode
+  padding?: string | number
+  margin?: string | number
 }
 
-export const InfoBox = ({ text, type, customBox }: InfoBoxProps) => {
+export const InfoBox = ({
+  text,
+  type,
+  customBox,
+  padding = 1,
+  margin = 1,
+}: InfoBoxProps) => {
   const { classes } = useStyles()
 
   const getStyling = (type: InfoType) => {
@@ -49,8 +57,8 @@ export const InfoBox = ({ text, type, customBox }: InfoBoxProps) => {
         customBox
       ) : (
         <Box
-          p={1}
-          m={1}
+          p={padding}
+          m={margin}
           className={[classes.infoBox, getStyling(type)].join(' ')}
         >
           {getIcon(type)}

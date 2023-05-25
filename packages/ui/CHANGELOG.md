@@ -1,5 +1,23 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.4.0
+
+### Minor Changes
+
+- b5ee022: Export InfoBox component (fix for 2.3.0)
+
+## 2.3.0
+
+### Minor Changes
+
+- beceded: Add styling options and export InfoBox component
+
+## 2.2.0
+
+### Minor Changes
+
+- 460b9b2: Add overlay loading mode
+
 ## 2.1.0
 
 ### Minor Changes

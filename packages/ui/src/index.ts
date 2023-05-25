@@ -13,5 +13,6 @@ export {
   SingleDataPoint,
   Suggestions,
   TitleCard,
+  InfoBox,
 } from './features'
 export { ExperimentationGuide } from './containers'
