@@ -67,36 +67,19 @@ export const calculateData = (
     .filter(dp => dp.meta.enabled && dp.meta.valid)
     .map(dp => dp.data)
     .map(
-      (run, _, arr): ExperimentData => ({
+      (run): ExperimentData => ({
         xi: run
           .filter(it => enabledVariableNames.includes(it.name))
           .map(it =>
             it.type === 'numeric' ? Number(it.value) : it.value
           ) as Array<string | number>, // This type cast is valid here because only scores can be number[] and they are filtered out
         yi: run
+          // TODO: Invert score? See commit https://github.com/BoostV/process-optimizer-frontend/pull/289/commits/6da76a1e9b1936c71d0b78ff074ce52f3280d282
           .filter(it => enabledScoreNames.includes(it.name))
-          .map(it => invertScore(arr, it)),
+          .map(it => it.value)
+          .map(Number),
       })
     )
-}
-
-/** for a given score, returns ('max score with the same name' - score)
- * *100 removes floating point errors, e.g. 0.3 - 0.2 = 0.1999...
- * @param dataPoints to look through
- * @param score to invert
- * @returns inverted score (max - score)
- */
-export const invertScore = (
-  dataPoints: DataPointType[][],
-  score: DataPointType
-) => {
-  const max = Math.max(
-    ...dataPoints
-      .flatMap(d => d.filter(d => d.name === score.name))
-      .map(s => s.value)
-      .map(Number)
-  )
-  return (max * 100 - Number(score.value) * 100) / 100
 }
 
 /**

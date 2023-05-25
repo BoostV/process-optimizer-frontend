@@ -13,7 +13,6 @@ import {
   dataPointsToCSV,
   csvToDataPoints,
   calculateConstraints,
-  invertScore,
 } from './converters'
 import { createValueVariable } from '@core/context/experiment/test-utils'
 import produce from 'immer'
@@ -54,26 +53,6 @@ describe('converters', () => {
       { type: 'categorical', name: 'Kunde', value: 'Ræv' },
       { type: 'score', name: 'score', value: 0.2 },
       { type: 'score', name: 'score2', value: 0.4 },
-    ] satisfies DataPointType[],
-  ].map((data, idx) => ({
-    meta: { enabled: true, id: idx + 1, valid: true },
-    data,
-  }))
-  const dataPointsWithScores: DataEntry[] = [
-    [
-      { name: 'score', type: 'score', value: 1.7 },
-      { name: 'score2', type: 'score', value: 17 },
-      { name: 'test', type: 'numeric', value: 1 },
-    ] satisfies DataPointType[],
-    [
-      { name: 'score', type: 'score', value: 2.8 },
-      { name: 'score2', type: 'score', value: 18 },
-      { name: 'test', type: 'numeric', value: 2 },
-    ] satisfies DataPointType[],
-    [
-      { name: 'score', type: 'score', value: 3.6 },
-      { name: 'score2', type: 'score', value: 16 },
-      { name: 'test', type: 'numeric', value: 3 },
     ] satisfies DataPointType[],
   ].map((data, idx) => ({
     meta: { enabled: true, id: idx + 1, valid: true },
@@ -194,7 +173,7 @@ describe('converters', () => {
     it('should format data in proper output format', () => {
       const expectedData = [
         { xi: [23, 982, 632, 'Mus'], yi: [0.1] },
-        { xi: [15, 123, 324, 'Ræv'], yi: [0] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [0.2] },
       ]
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
@@ -208,7 +187,7 @@ describe('converters', () => {
     it('should skip disabled data entries', () => {
       const expectedData = [
         { xi: [23, 982, 632, 'Mus'], yi: [0.1] },
-        { xi: [15, 123, 324, 'Ræv'], yi: [0] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [0.2] },
       ]
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
@@ -225,7 +204,7 @@ describe('converters', () => {
     it('should skip invalid data entries', () => {
       const expectedData = [
         { xi: [23, 982, 632, 'Mus'], yi: [0.1] },
-        { xi: [15, 123, 324, 'Ræv'], yi: [0] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [0.2] },
       ]
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
@@ -241,8 +220,8 @@ describe('converters', () => {
 
     it('should include enabled score values', () => {
       const expectedData = [
-        { xi: [23, 982, 632, 'Mus'], yi: [0.1, 0.1] },
-        { xi: [15, 123, 324, 'Ræv'], yi: [0, 0] },
+        { xi: [23, 982, 632, 'Mus'], yi: [0.1, 0.3] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [0.2, 0.4] },
       ]
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
@@ -259,7 +238,7 @@ describe('converters', () => {
     it('should skip disabled score values', () => {
       const expectedData = [
         { xi: [23, 982, 632, 'Mus'], yi: [0.1] },
-        { xi: [15, 123, 324, 'Ræv'], yi: [0] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [0.2] },
       ]
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
@@ -271,26 +250,6 @@ describe('converters', () => {
         sampleMultiObjectiveDataPoints
       )
       expect(actualData).toEqual(expectedData)
-    })
-
-    it('invertScore - for a given score, should return max score with the same name minus score', () => {
-      const dataEntries = dataPointsWithScores.map(d => d.data)
-
-      // 'score', max: 3.6, score: 1.7
-      const score1 = dataPointsWithScores[0]?.data[0]
-      if (score1 === undefined) {
-        throw new Error('score 1 undefined')
-      }
-      const actual1 = invertScore(dataEntries, score1)
-      expect(actual1).toEqual(1.9)
-
-      // 'score2', max: 18, score: 16
-      const score2 = dataPointsWithScores[0]?.data[2]
-      if (score2 === undefined) {
-        throw new Error('score 2 undefined')
-      }
-      const actual2 = invertScore(dataEntries, score2)
-      expect(actual2).toEqual(2)
     })
   })
 
