@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DataPointType } from '@core/common/types'
-
-function isNumber(data: unknown | number): data is number {
-  return (
-    (typeof data === 'number' && !isNaN(data)) ||
-    (typeof data === 'string' && !isNaN(+data))
-  )
-}
+import { isNumber } from '@core/common/util'
 
 function asNumber(data: unknown): number {
   if (isNumber(data)) {

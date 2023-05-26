@@ -91,15 +91,6 @@ export const validateDataPointsUndefined = (
     if (!enabledVariables.every(v => names.includes(v))) {
       violations.push(dp.meta.id)
     }
-    dp.data.forEach(d => {
-      if (
-        enabledVariables.includes(d.name) &&
-        d.value === undefined &&
-        !violations.includes(dp.meta.id)
-      ) {
-        violations.push(dp.meta.id)
-      }
-    })
   })
   return violations
 }

@@ -309,7 +309,8 @@
                       },
                       "required": [
                         "type",
-                        "name"
+                        "name",
+                        "value"
                       ],
                       "additionalProperties": false
                     },
@@ -350,7 +351,8 @@
                       },
                       "required": [
                         "type",
-                        "name"
+                        "name",
+                        "value"
                       ],
                       "additionalProperties": false
                     }

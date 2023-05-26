@@ -429,39 +429,6 @@ describe('validateDataPointsUndefined', () => {
     expect(validateDataPointsUndefined(exp)).toEqual([1, 2])
   })
 
-  it('should return data point with undefined value', () => {
-    const exp: ExperimentType = {
-      ...emptyExperiment,
-      valueVariables: [
-        {
-          name: 'Water',
-          type: 'discrete',
-          description: '',
-          min: 0,
-          max: 100,
-          enabled: true,
-        },
-      ],
-      dataPoints: [
-        {
-          meta: {
-            id: 1,
-            enabled: true,
-            valid: true,
-          },
-          data: [
-            {
-              type: 'numeric',
-              name: 'Water',
-              value: undefined,
-            },
-          ],
-        },
-      ],
-    }
-    expect(validateDataPointsUndefined(exp)).toEqual([1])
-  })
-
   it('should return empty array if score is undefined but also disabled', () => {
     const exp: ExperimentType = {
       ...emptyExperiment,
