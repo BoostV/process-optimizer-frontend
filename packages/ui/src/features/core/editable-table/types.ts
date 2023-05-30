@@ -1,9 +1,4 @@
-import { CombinedVariableInputType } from '@boostv/process-optimizer-frontend-core'
-
-export type TableDataPointType = `${
-  | CombinedVariableInputType
-  | 'string'
-  | 'rating'}`
+export type TableDataPointType = 'numeric' | 'options' | 'string' | 'rating'
 
 export type TableDataPoint = {
   name: string
