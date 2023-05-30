@@ -208,10 +208,11 @@ export const csvToDataPoints = (
   const expectedHeader = valueHeaders
     .concat(categorialHeaders)
     .concat(scoreHeaders)
+    .map(e => e.trim())
   const lines = csv.split(newlinePattern)
   if ('' === csv || lines.length < 2) return []
   else {
-    const header = lines[0]?.split(separator) ?? []
+    const header = lines[0]?.split(separator).map(h => h.trim()) ?? []
     if (
       header.length >= expectedHeader.length &&
       expectedHeader.every(value => header.includes(value))

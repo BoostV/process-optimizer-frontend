@@ -16,3 +16,10 @@ export const errorMessage = (e: unknown) => {
 export function assertUnreachable(_x: never): never {
   throw new Error("Didn't expect to get here")
 }
+
+export function isNumber(data: unknown | number): data is number {
+  return (
+    (typeof data === 'number' && !isNaN(data)) ||
+    (typeof data === 'string' && !isNaN(+data))
+  )
+}

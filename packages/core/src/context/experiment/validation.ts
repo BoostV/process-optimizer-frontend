@@ -38,9 +38,9 @@ export const validateUpperBoundary = (experiment: ExperimentType): number[] => {
   const violations: number[] = []
   experiment.dataPoints.forEach(dp => {
     dp.data.forEach(d => {
-      const valueVarMax = experiment.valueVariables.find(
-        v => v.name === d.name
-      )?.max
+      const valueVarMax = experiment.valueVariables
+        .filter(v => v.enabled)
+        .find(v => v.name === d.name)?.max
       if (
         valueVarMax !== undefined &&
         d.value !== undefined &&
@@ -58,9 +58,9 @@ export const validateLowerBoundary = (experiment: ExperimentType): number[] => {
   const violations: number[] = []
   experiment.dataPoints.forEach(dp => {
     dp.data.forEach(d => {
-      const valueVarMin = experiment.valueVariables.find(
-        v => v.name === d.name
-      )?.min
+      const valueVarMin = experiment.valueVariables
+        .filter(v => v.enabled)
+        .find(v => v.name === d.name)?.min
       if (
         valueVarMin !== undefined &&
         d.value !== undefined &&
