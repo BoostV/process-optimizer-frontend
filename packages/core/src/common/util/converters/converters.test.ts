@@ -805,6 +805,19 @@ describe('converters', () => {
       expect(actual).toEqual(expected)
     })
 
+    it('should accept whitespace in headers', () => {
+      const input =
+        'id;Sukker ;Peber;Hvedemel;  Kunde;score;enabled;valid\n1;28;982;632;Mus;1;true;true\n2;15;986;5;Mus;2;false;true'
+      const expected = sampleDataPoints
+      const actual = csvToDataPoints(
+        input,
+        valueVariables,
+        categorialVariables,
+        scoreVariables
+      )
+      expect(actual).toEqual(expected)
+    })
+
     it('should add extra headers to meta', () => {
       const input =
         'Sukker;Peber;Hvedemel;Halm;Kunde;score;enabled;valid\n28;982;632;008;Mus;1;true;true\n15;986;5;008;Mus;2;false;true'
