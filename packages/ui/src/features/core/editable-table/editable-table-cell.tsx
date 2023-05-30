@@ -10,11 +10,12 @@ import {
 import { ChangeEvent, CSSProperties } from 'react'
 import useStyles from './editable-table-cell.style'
 import { RatingInput } from '@ui/common'
+import { TableDataPointType } from './types'
 
 type EditableTableCellProps = {
   value?: string
   isEditMode: boolean
-  isRatingInput?: boolean
+  type: TableDataPointType
   options?: string[]
   onChange?: (value: string) => void
   tooltip?: string
@@ -24,7 +25,7 @@ type EditableTableCellProps = {
 export function EditableTableCell({
   value,
   isEditMode,
-  isRatingInput,
+  type,
   options,
   onChange,
   tooltip,
@@ -32,17 +33,18 @@ export function EditableTableCell({
 }: EditableTableCellProps) {
   const { classes } = useStyles()
 
-  const textField = isRatingInput ? (
-    <RatingInput value={value} onChange={val => onChange?.(val)} />
-  ) : (
-    <TextField
-      size="small"
-      value={value ?? ''}
-      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-        onChange?.('' + e.target.value)
-      }
-    />
-  )
+  const textField =
+    type === 'rating' ? (
+      <RatingInput value={value} onChange={val => onChange?.(val)} />
+    ) : (
+      <TextField
+        size="small"
+        value={value ?? ''}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          onChange?.('' + e.target.value)
+        }
+      />
+    )
 
   // Value is undefined when new categorical variable is added to existing dataPoints
   const categoricalValue = value === undefined ? '' : value
@@ -51,7 +53,7 @@ export function EditableTableCell({
     <>
       {isEditMode ? (
         <TableCell className={classes.editCell} style={{ ...style }}>
-          {options && options.length > 0 ? (
+          {type === 'options' && options && options.length > 0 ? (
             <FormControl>
               <Select
                 value={categoricalValue}

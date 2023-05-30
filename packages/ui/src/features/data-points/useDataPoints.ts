@@ -7,7 +7,7 @@ import {
   isNumber,
 } from '@boostv/process-optimizer-frontend-core'
 import { useCallback, useMemo } from 'react'
-import { TableDataPoint, TableDataRow } from '../core'
+import { TableDataPoint, TableDataRow, TableDataPointType } from '../core'
 import { produce } from 'immer'
 
 export const useDataPoints = (
@@ -94,16 +94,15 @@ const convertToDataEntry = (
     .filter(d => d.value !== undefined)
     // replace , with . for value vars and scores
     .map(d => {
-      return categoricalVariables.map(c => c.name).includes(d.name)
-        ? d
-        : { ...d, value: d.value ? d.value.replaceAll(',', '.') : undefined }
+      const isNumeric = d.type === 'numeric' || d.type === 'rating'
+      return isNumeric
+        ? { ...d, value: d.value ? d.value.replaceAll(',', '.') : undefined }
+        : d
     })
     // filter out non-number value vars and scores
     .filter(d => {
-      const isCategorical = categoricalVariables
-        .map(c => c.name)
-        .includes(d.name)
-      return isCategorical || (!isCategorical && isNumber(d.value))
+      const isNumeric = d.type === 'numeric' || d.type === 'rating'
+      return !isNumeric || (isNumeric && isNumber(d.value))
     })
     // convert to data entry
     .map(dp => {
@@ -212,11 +211,13 @@ const buildCombinedVariables = (
     valueVariables.map(v => ({
       ...v,
       tooltip: `[${v.min}, ${v.max}] ${v.type === 'discrete' ? '●' : '○'}`,
+      type: 'numeric',
     })) as CombinedVariableType[]
   ).concat(
     categoricalVariables.map(v => ({
       ...v,
       tooltip: `${v.options.length} options`,
+      type: 'options',
     })) as CombinedVariableType[]
   )
 }
@@ -233,13 +234,15 @@ const buildEmptyRow = (
         value: variable.options?.[0],
         options: variable.options,
         tooltip: variable.tooltip,
+        type: variable.type as TableDataPointType,
       }))
       .concat(
-        scoreNames.map(s => ({
+        scoreNames.map((s, i) => ({
           name: s,
           value: undefined,
           options: undefined,
           tooltip: undefined,
+          type: i === 0 ? 'rating' : 'numeric',
         }))
       ),
     isNew: true,
@@ -277,6 +280,7 @@ const buildRows = (
             value: String(existingData.value),
             options: v?.options,
             tooltip: v?.tooltip,
+            type: v.type,
           })
         } else {
           vars.push({
@@ -284,20 +288,24 @@ const buildRows = (
             value: undefined,
             options: v?.options,
             tooltip: v?.tooltip,
+            type: v.type,
           })
         }
       })
-      scoreNames.forEach(v => {
+      scoreNames.forEach((v, i) => {
         const existingData = item.data.find(d => d.name === v)
+        const type = i === 0 ? 'rating' : 'numeric'
         if (existingData !== undefined) {
           vars.push({
             ...existingData,
             value: formatScore(existingData.value),
+            type,
           })
         } else {
           vars.push({
             name: v,
             value: undefined,
+            type,
           })
         }
       })

@@ -93,13 +93,11 @@ export const EditableTableExpandedRow = ({
                     ))}
                   </TableRow>
                   <TableRow>
-                    {editedRow.dataPoints.map((d, i, arr) => (
+                    {editedRow.dataPoints.map((d, i) => (
                       <EditableTableCell
                         key={'expandedvalues' + i}
                         value={d.value}
-                        isRatingInput={
-                          arr.findIndex(d => d.name.includes('score')) === i
-                        }
+                        type={d.type}
                         isEditMode
                         onChange={(value: string) => handleEdit(i, value)}
                         options={d.options}

@@ -72,6 +72,7 @@ export const EditableTableCollapsedRow = ({
               key={'editablecell' + itemIndex}
               value={item.value}
               isEditMode={false}
+              type={item.type}
               options={item.options}
               tooltip={item.tooltip}
               style={rowEnabled ? {} : disabledCell}

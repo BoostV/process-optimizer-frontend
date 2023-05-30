@@ -122,6 +122,8 @@ export const experimentSchema = z.object({
   dataPoints: z.array(dataEntrySchema),
 })
 
+export type CombinedVariableInputType = 'numeric' | 'options'
+
 export type DataPointTypeValue = z.infer<typeof dataPointSchema>['value']
 export type CategorialDataPointType = z.infer<typeof categoricalDataPoint>
 export type ValueDataPointType = z.infer<typeof numericDataPoint>
@@ -132,6 +134,7 @@ export type SpaceType = z.infer<typeof spaceSchema>
 export type CombinedVariableType = {
   name: string
   description: string
+  type: CombinedVariableInputType
   tooltip?: string
   options?: string[]
 }
