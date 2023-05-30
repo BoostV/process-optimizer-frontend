@@ -8,7 +8,7 @@ import {
 } from '@boostv/process-optimizer-frontend-core'
 import { useCallback, useMemo } from 'react'
 import { TableDataPoint, TableDataRow } from '../core'
-import produce from 'immer'
+import { produce } from 'immer'
 
 export const useDatapoints = (
   valueVariables: ValueVariableType[],
@@ -82,6 +82,7 @@ export const useDatapoints = (
   }
 }
 
+// undefined values (empty or filtered out) result in a validation error message
 const convertToDataEntry = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
@@ -89,16 +90,26 @@ const convertToDataEntry = (
   row: TableDataRow
 ) => {
   const data = row.dataPoints
+    // filter out undefined
     .filter(d => d.value !== undefined)
-    .filter(
-      d =>
-        !categoricalVariables.map(v => v.name).includes(d.name) &&
-        isNumber(d.value)
-    )
+    // replace , with . for value vars and scores
+    .map(d => {
+      return categoricalVariables.map(c => c.name).includes(d.name)
+        ? d
+        : { ...d, value: d.value ? d.value.replaceAll(',', '.') : undefined }
+    })
+    // filter out non-number value vars and scores
+    .filter(d => {
+      const isCategorical = categoricalVariables
+        .map(c => c.name)
+        .includes(d.name)
+      return isCategorical || (!isCategorical && isNumber(d.value))
+    })
+    // convert to data entry
     .map(dp => {
       if (dp.value === undefined) {
         throw new Error(
-          'Undefined values must be filtered away before conversion to data points'
+          'Undefined values must be filtered away before conversion to data entries'
         )
       }
       if (categoricalVariables.find(cv => cv.name === dp.name) !== undefined) {
@@ -110,13 +121,13 @@ const convertToDataEntry = (
       } else if (valueVariables.find(cv => cv.name === dp.name) !== undefined) {
         return {
           name: dp.name,
-          value: Number(dp.value.replaceAll(',', '.')),
+          value: Number(dp.value),
           type: 'numeric',
         }
       } else {
         return {
           name: dp.name,
-          value: Number(dp.value.replaceAll(',', '.')),
+          value: Number(dp.value),
           type: 'score',
         }
       }
