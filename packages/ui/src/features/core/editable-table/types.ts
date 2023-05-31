@@ -1,8 +1,11 @@
+export type TableDataPointType = 'numeric' | 'options' | 'string' | 'rating'
+
 export type TableDataPoint = {
   name: string
   value?: string
   tooltip?: string
   options?: string[] | undefined
+  type: TableDataPointType
 }
 
 export type TableDataRow = {

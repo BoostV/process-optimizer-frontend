@@ -74,12 +74,14 @@ export const calculateData = (
             it.type === 'numeric' ? Number(it.value) : it.value
           ) as Array<string | number>, // This type cast is valid here because only scores can be number[] and they are filtered out
         yi: run
+          // TODO: Invert score? See commit https://github.com/BoostV/process-optimizer-frontend/pull/289/commits/6da76a1e9b1936c71d0b78ff074ce52f3280d282
           .filter(it => enabledScoreNames.includes(it.name))
           .map(it => it.value)
           .map(Number),
       })
     )
 }
+
 /**
  * Calculate the constraints parameter to send to the API.
  *

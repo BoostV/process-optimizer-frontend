@@ -11,6 +11,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
+
 import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
 import { InfoBox } from '../info-box/info-box'
@@ -96,14 +97,13 @@ export const EditableTableExpandedRow = ({
                       <EditableTableCell
                         key={'expandedvalues' + i}
                         value={d.value}
+                        type={d.type}
                         isEditMode
                         onChange={(value: string) => handleEdit(i, value)}
                         options={d.options}
                         style={{
                           fontSize: 14,
                           border: 'none',
-                          paddingRight:
-                            editedRow.dataPoints.length - 1 === i ? 0 : 16,
                         }}
                       />
                     ))}
@@ -116,7 +116,7 @@ export const EditableTableExpandedRow = ({
           {violations !== undefined &&
             violations.length > 0 &&
             violations.map((v, i) => (
-              <InfoBox key={i} text={v} type="warning" />
+              <InfoBox key={'warning' + i} text={v} type="warning" />
             ))}
 
           <Box display="flex" justifyContent="end" mt={2}>
