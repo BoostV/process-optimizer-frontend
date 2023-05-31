@@ -81,7 +81,7 @@ export function InputModel(props: InputModelProps) {
   }
 
   return (
-    <TitleCard id={id} title="Input model" padding={0}>
+    <TitleCard id={id} title="Factor settings" padding={0}>
       {(valueVariables.length > 0 || categoricalVariables.length > 0) && (
         <Box p={2}>
           {valueVariables.length > 0 && (
@@ -269,7 +269,7 @@ export function InputModel(props: InputModelProps) {
             onClick={() => setEditorOpen(true)}
             startIcon={<Add fontSize="small" />}
           >
-            Add variable
+            Add factor
           </Button>
         </Box>
       )}
