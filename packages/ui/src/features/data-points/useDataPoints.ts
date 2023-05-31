@@ -4,6 +4,7 @@ import {
   ScoreVariableType,
   DataEntry,
   CombinedVariableType,
+  CombinedVariableInputType,
   isNumber,
 } from '@boostv/process-optimizer-frontend-core'
 import { useCallback, useMemo } from 'react'
@@ -222,6 +223,10 @@ const buildCombinedVariables = (
   )
 }
 
+const mapDataPointToTableType = (
+  dpType: CombinedVariableInputType
+): TableDataPointType => (dpType === 'options' ? 'options' : 'numeric')
+
 const buildEmptyRow = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
@@ -234,7 +239,7 @@ const buildEmptyRow = (
         value: variable.options?.[0],
         options: variable.options,
         tooltip: variable.tooltip,
-        type: variable.type as TableDataPointType,
+        type: mapDataPointToTableType(variable.type),
       }))
       .concat(
         scoreNames.map((s, i) => ({

@@ -129,10 +129,11 @@ export type ScoreDataPointType = z.infer<typeof scoreDataPoint>
 export type DataPointType = z.infer<typeof dataPointSchema>
 export type DataEntry = z.infer<typeof dataEntrySchema>
 export type SpaceType = z.infer<typeof spaceSchema>
+export type CombinedVariableInputType = 'numeric' | 'options'
 export type CombinedVariableType = {
   name: string
   description: string
-  type: 'numeric' | 'options'
+  type: CombinedVariableInputType
   tooltip?: string
   options?: string[]
 }
