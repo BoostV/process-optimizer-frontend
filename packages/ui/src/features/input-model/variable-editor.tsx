@@ -76,7 +76,7 @@ function VariableEditorInner(props: VariableEditorProps) {
         aria-label="variables"
       >
         <Tab
-          label="Value"
+          label="Numeric"
           className={classes.customTab}
           disabled={editingCategoricalVariable !== undefined}
         />
