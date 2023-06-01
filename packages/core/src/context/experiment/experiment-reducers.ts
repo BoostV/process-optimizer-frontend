@@ -425,6 +425,12 @@ export const experimentReducer = produce(
             dimensions: [action.payload],
           })
         }
+        if (
+          state.dataPoints.filter(d => d.meta.enabled && d.meta.valid).length >
+          state.optimizerConfig.initialPoints
+        ) {
+          state.extras.experimentSuggestionCount = 1
+        }
         break
       }
       case 'experiment/removeVariableFromConstraintSum': {
@@ -433,6 +439,11 @@ export const experimentReducer = produce(
           constraint.dimensions = constraint.dimensions.filter(
             d => d !== action.payload
           )
+        }
+        if (constraint?.dimensions && constraint.dimensions.length < 2) {
+          state.optimizerConfig.initialPoints = calculateInitialPoints(state)
+          state.extras.experimentSuggestionCount =
+            state.optimizerConfig.initialPoints
         }
         break
       }
