@@ -48,11 +48,7 @@ const calculateExperimentSuggestionCount = (state: ExperimentType) => {
     d => d.meta.enabled && d.meta.valid
   ).length
   const initialPoints = state.optimizerConfig.initialPoints
-  const constraintDimensions = state.constraints.find(
-    c => c.type === 'sum'
-  )?.dimensions
-  const constraints = constraintDimensions ? constraintDimensions.length : 0
-  if (dataPoints > initialPoints && constraints > 1) {
+  if (dataPoints >= initialPoints) {
     return 1
   }
   return initialPoints
@@ -352,11 +348,11 @@ export const experimentReducer = produce(
         break
       }
       case 'updateConfiguration':
-        state.extras.experimentSuggestionCount =
-          calculateExperimentSuggestionCount(state)
         state.optimizerConfig = experimentSchema.shape.optimizerConfig.parse(
           action.payload
         )
+        state.extras.experimentSuggestionCount =
+          calculateExperimentSuggestionCount(state)
         break
       case 'registerResult':
         state.lastEvaluationHash = md5(
@@ -424,8 +420,6 @@ export const experimentReducer = produce(
             dimensions: [action.payload],
           })
         }
-        state.extras.experimentSuggestionCount =
-          calculateExperimentSuggestionCount(state)
         break
       }
       case 'experiment/removeVariableFromConstraintSum': {
@@ -435,8 +429,6 @@ export const experimentReducer = produce(
             d => d !== action.payload
           )
         }
-        state.extras.experimentSuggestionCount =
-          calculateExperimentSuggestionCount(state)
         break
       }
       default:

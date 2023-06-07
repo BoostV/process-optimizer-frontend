@@ -13,10 +13,14 @@ export const NextExperiments: FC<Props> = ({
   onSuggestionChange,
   onXiChange,
 }) => {
-  const constraints = experiment.constraints.find(c => c.type === 'sum')
-    ?.dimensions.length
-
-  const isSuggestionCountDisabled = constraints === undefined || constraints > 1
+  const constraints =
+    experiment.constraints.find(c => c.type === 'sum')?.dimensions.length ?? 0
+  const dataPoints = experiment.dataPoints.filter(
+    d => d.meta.enabled && d.meta.valid
+  ).length
+  const initialPoints = experiment.optimizerConfig.initialPoints
+  const isSuggestionCountDisabled =
+    dataPoints >= initialPoints && constraints > 1
 
   const suggestionCount: number =
     (experiment.extras['experimentSuggestionCount'] as number) ?? 1
