@@ -1,0 +1,426 @@
+{
+  "id": "1d9dd5fc-5797-4342-9b11-8794ad9a08be",
+  "info": {
+    "name": "Broken version 9",
+    "description": "",
+    "swVersion": "@boostv/process-optimizer-frontend-ui@1.0.2-15-g1efe0bb",
+    "dataFormatVersion": "9"
+  },
+  "categoricalVariables": [
+    {
+      "name": "LED farvetema",
+      "description": "",
+      "options": ["Orange", "Hvid", "Blå", "Regnbue"]
+    }
+  ],
+  "valueVariables": [
+    {
+      "name": "Skeletter",
+      "description": "",
+      "min": 0,
+      "max": 10,
+      "type": "discrete"
+    },
+    {
+      "name": "Lydstyrke",
+      "description": "",
+      "min": 0,
+      "max": 110,
+      "type": "continuous"
+    }
+  ],
+  "optimizerConfig": {
+    "baseEstimator": "GP",
+    "acqFunc": "EI",
+    "initialPoints": "3",
+    "kappa": "1.0",
+    "xi": "0.01"
+  },
+  "results": {
+    "id": "1d9dd5fc-5797-4342-9b11-8794ad9a08be",
+    "plots": [],
+    "pickled": "",
+    "next": [
+      [4, 20.8, "Orange"],
+      [8, 77.8, "Hvid"],
+      [2, 45.8, "Blå"]
+    ],
+    "expectedMinimum": [[4, 19.6, "Orange"], 0.96],
+    "extras": {
+      "apiVersion": "main-56036eb5545b5cef55fc1bbd398aaf9bdb210b08",
+      "libraries": [
+        "attrs==20.3.0",
+        "bokeh==2.4.3",
+        "certifi==2020.12.5",
+        "cffi==1.14.5",
+        "chardet==4.0.0",
+        "click==7.1.2",
+        "clickclick==20.10.2",
+        "colorama==0.4.4",
+        "connexion==2.7.0",
+        "cryptography==3.4.7",
+        "cycler==0.10.0",
+        "deap==1.3.3",
+        "Deprecated==1.2.13",
+        "docopt==0.6.2",
+        "Flask==1.1.2",
+        "Flask-Cors==3.0.10",
+        "fonttools==4.38.0",
+        "idna==2.10",
+        "inflection==0.5.1",
+        "iniconfig==1.1.1",
+        "itsdangerous==1.1.0",
+        "Jinja2==2.11.3",
+        "joblib==1.0.1",
+        "json-tricks==3.15.5",
+        "jsonschema==3.2.0",
+        "kiwisolver==1.3.1",
+        "MarkupSafe==1.1.1",
+        "matplotlib==3.5.3",
+        "numpy==1.23.3",
+        "openapi-spec-validator==0.2.9",
+        "packaging==20.9",
+        "Pillow==9.0.1",
+        "pluggy==0.13.1",
+        "ProcessOptimizer[browniebee]==0.7.7",
+        "py==1.10.0",
+        "pycparser==2.20",
+        "pyparsing==2.4.7",
+        "pyrsistent==0.17.3",
+        "pytest==6.2.2",
+        "pytest-watch==4.2.0",
+        "python-dateutil==2.8.1",
+        "PyYAML==6.0",
+        "redis==4.0.2",
+        "requests==2.25.1",
+        "rq==1.10.0",
+        "scikit-learn==1.1.2",
+        "scipy==1.9.1",
+        "six==1.16.0",
+        "swagger-ui-bundle==0.0.8",
+        "threadpoolctl==2.1.0",
+        "toml==0.10.2",
+        "tornado==6.2",
+        "typing_extensions==4.4.0",
+        "urllib3==1.26.5",
+        "waitress==2.1.2",
+        "watchdog==2.0.2",
+        "Werkzeug==1.0.1",
+        "wrapt==1.13.3"
+      ],
+      "parameters": {
+        "Xi": [
+          [0, 55, "Blå"],
+          [5, 90, "Hvid"],
+          [10, 20, "Orange"],
+          [10, 95, "Orange"],
+          [4, 35, "Regnbue"],
+          [7, 6, "Hvid"],
+          [10, 20, "Orange"],
+          [3, 71, "Blå"],
+          [6, 60, "Regnbue"],
+          [8, 18, "Orange"],
+          [5, 19, "Orange"]
+        ],
+        "Yi": [10, 20, 3, 22, 10, 8, 3, 25, 18, 2, 1],
+        "dimensions": ["Skeletter", "Lydstyrke", "LED farvetema"],
+        "extras": {
+          "experimentSuggestionCount": 3
+        },
+        "hyperparams": {
+          "acq_func": "EI",
+          "acq_func_kwargs": {
+            "kappa": 1,
+            "xi": 0.01
+          },
+          "base_estimator": "GP",
+          "n_initial_points": 3
+        },
+        "space": [
+          [0, 10],
+          [0, 110],
+          ["Orange", "Hvid", "Blå", "Regnbue"]
+        ]
+      },
+      "pythonVersion": "3.9.15",
+      "timeOfExecution": "2023-01-20 10:31:19"
+    }
+  },
+  "dataPoints": [
+    {
+      "meta": {
+        "enabled": true,
+        "id": 1
+      },
+      "data": [
+        {
+          "name": "Skeletter",
+          "value": "0"
+        },
+        {
+          "name": "Lydstyrke",
+          "value": "55"
+        },
+        {
+          "name": "LED farvetema",
+          "value": "Blå"
+        },
+        {
+          "name": "score",
+          "value": "10"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 2
+      },
+      "data": [
+        {
+          "name": "Skeletter",
+          "value": "5"
+        },
+        {
+          "name": "Lydstyrke",
+          "value": "90"
+        },
+        {
+          "name": "LED farvetema",
+          "value": "Hvid"
+        },
+        {
+          "name": "score",
+          "value": "20"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 3
+      },
+      "data": [
+        {
+          "name": "Skeletter",
+          "value": "10"
+        },
+        {
+          "name": "Lydstyrke",
+          "value": "20"
+        },
+        {
+          "name": "LED farvetema",
+          "value": "Orange"
+        },
+        {
+          "name": "score",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 4
+      },
+      "data": [
+        {
+          "name": "Skeletter",
+          "value": "10"
+        },
+        {
+          "name": "Lydstyrke",
+          "value": "95"
+        },
+        {
+          "name": "LED farvetema",
+          "value": "Orange"
+        },
+        {
+          "name": "score",
+          "value": "22"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 5
+      },
+      "data": [
+        {
+          "name": "Skeletter",
+          "value": "4"
+        },
+        {
+          "name": "Lydstyrke",
+          "value": "35"
+        },
+        {
+          "name": "LED farvetema",
+          "value": "Regnbue"
+        },
+        {
+          "name": "score",
+          "value": "10"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 6
+      },
+      "data": [
+        {
+          "name": "Skeletter",
+          "value": "7"
+        },
+        {
+          "name": "Lydstyrke",
+          "value": "6"
+        },
+        {
+          "name": "LED farvetema",
+          "value": "Hvid"
+        },
+        {
+          "name": "score",
+          "value": "8"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 7
+      },
+      "data": [
+        {
+          "name": "Skeletter",
+          "value": "10"
+        },
+        {
+          "name": "Lydstyrke",
+          "value": "20"
+        },
+        {
+          "name": "LED farvetema",
+          "value": "Orange"
+        },
+        {
+          "name": "score",
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 8
+      },
+      "data": [
+        {
+          "name": "Skeletter",
+          "value": "3"
+        },
+        {
+          "name": "Lydstyrke",
+          "value": "71"
+        },
+        {
+          "name": "LED farvetema",
+          "value": "Blå"
+        },
+        {
+          "name": "score",
+          "value": "25"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 9
+      },
+      "data": [
+        {
+          "name": "Skeletter",
+          "value": "6"
+        },
+        {
+          "name": "Lydstyrke",
+          "value": "60"
+        },
+        {
+          "name": "LED farvetema",
+          "value": "Regnbue"
+        },
+        {
+          "name": "score",
+          "value": "18"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 10
+      },
+      "data": [
+        {
+          "name": "Skeletter",
+          "value": "8"
+        },
+        {
+          "name": "Lydstyrke",
+          "value": "18"
+        },
+        {
+          "name": "LED farvetema",
+          "value": "Orange"
+        },
+        {
+          "name": "score",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "id": 11
+      },
+      "data": [
+        {
+          "name": "Skeletter",
+          "value": "5"
+        },
+        {
+          "name": "Lydstyrke",
+          "value": "19"
+        },
+        {
+          "name": "LED farvetema",
+          "value": "Orange"
+        },
+        {
+          "name": "score",
+          "value": "1"
+        }
+      ]
+    }
+  ],
+  "extras": {
+    "experimentSuggestionCount": 3
+  },
+  "scoreVariables": [
+    {
+      "name": "score",
+      "description": "score",
+      "enabled": true
+    }
+  ],
+  "changedSinceLastEvaluation": false
+}
