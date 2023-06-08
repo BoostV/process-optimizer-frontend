@@ -420,6 +420,8 @@ export const experimentReducer = produce(
             dimensions: [action.payload],
           })
         }
+        state.extras.experimentSuggestionCount =
+          calculateExperimentSuggestionCount(state)
         break
       }
       case 'experiment/removeVariableFromConstraintSum': {
@@ -429,6 +431,8 @@ export const experimentReducer = produce(
             d => d !== action.payload
           )
         }
+        state.extras.experimentSuggestionCount =
+          calculateExperimentSuggestionCount(state)
         break
       }
       default:
