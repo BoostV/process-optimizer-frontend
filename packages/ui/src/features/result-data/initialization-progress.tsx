@@ -27,7 +27,10 @@ export const InitializationProgress: FC<Props> = ({
     () => setInitialPoints(optimizerConfig.initialPoints),
     [optimizerConfig.initialPoints]
   )
-  const progress = (dataPoints.length / optimizerConfig.initialPoints) * 100.0
+  const progress =
+    (dataPoints.filter(d => d.meta.enabled && d.meta.valid).length /
+      optimizerConfig.initialPoints) *
+    100.0
   const handleInitialPointsChanged = (newValue: number) =>
     onInitialPointsChange(newValue)
 
@@ -72,7 +75,7 @@ export const InitializationProgress: FC<Props> = ({
           sx={{ cursor: 'pointer' }}
           onClick={() => setEditActive(!editActive)}
         >
-          {dataPoints.filter(d => d.meta.enabled).length}/
+          {dataPoints.filter(d => d.meta.enabled && d.meta.valid).length}/
           {optimizerConfig.initialPoints}
         </Typography>
         <Typography variant="caption">data points added</Typography>

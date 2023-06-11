@@ -43,6 +43,17 @@ const defaultSorted = (
   }))
 }
 
+const calculateExperimentSuggestionCount = (state: ExperimentType) => {
+  const dataPoints = state.dataPoints.filter(
+    d => d.meta.enabled && d.meta.valid
+  ).length
+  const initialPoints = state.optimizerConfig.initialPoints
+  if (dataPoints >= initialPoints) {
+    return 1
+  }
+  return initialPoints
+}
+
 export type ExperimentAction =
   | {
       type: 'setSwVersion'
@@ -337,16 +348,11 @@ export const experimentReducer = produce(
         break
       }
       case 'updateConfiguration':
-        if (
-          action.payload.initialPoints !==
-            state.optimizerConfig.initialPoints &&
-          state.dataPoints.length < action.payload.initialPoints
-        ) {
-          state.extras.experimentSuggestionCount = action.payload.initialPoints
-        }
         state.optimizerConfig = experimentSchema.shape.optimizerConfig.parse(
           action.payload
         )
+        state.extras.experimentSuggestionCount =
+          calculateExperimentSuggestionCount(state)
         break
       case 'registerResult':
         state.lastEvaluationHash = md5(
@@ -356,25 +362,14 @@ export const experimentReducer = produce(
         break
       case 'updateDataPoints':
         experimentSchema.shape.dataPoints.parse(action.payload)
-        if (
-          action.payload.length < state.dataPoints.length &&
-          state.dataPoints.length === state.optimizerConfig.initialPoints
-        ) {
-          state.extras.experimentSuggestionCount =
-            state.optimizerConfig.initialPoints
-        }
-        if (
-          action.payload.length >= state.optimizerConfig.initialPoints &&
-          state.dataPoints.length < state.optimizerConfig.initialPoints
-        ) {
-          state.extras.experimentSuggestionCount = 1
-        }
         state.dataPoints = defaultSorted(
           state.valueVariables,
           state.categoricalVariables,
           state.scoreVariables,
           action.payload
         )
+        state.extras.experimentSuggestionCount =
+          calculateExperimentSuggestionCount(state)
         break
       case 'experiment/toggleMultiObjective':
         state.scoreVariables = state.scoreVariables.map((it, idx) => ({
@@ -425,6 +420,8 @@ export const experimentReducer = produce(
             dimensions: [action.payload],
           })
         }
+        state.extras.experimentSuggestionCount =
+          calculateExperimentSuggestionCount(state)
         break
       }
       case 'experiment/removeVariableFromConstraintSum': {
@@ -434,6 +431,8 @@ export const experimentReducer = produce(
             d => d !== action.payload
           )
         }
+        state.extras.experimentSuggestionCount =
+          calculateExperimentSuggestionCount(state)
         break
       }
       default:

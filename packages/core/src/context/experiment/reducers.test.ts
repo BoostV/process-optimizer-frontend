@@ -227,7 +227,7 @@ describe('experiment reducer', () => {
     })
 
     describe('addVariableToConstraintSum', () => {
-      it('should add varialbe to dimension of constraint', () => {
+      it('should add variable to dimension of constraint', () => {
         const actual = rootReducer(initState, {
           type: 'experiment/addVariableToConstraintSum',
           payload: 'name',
@@ -245,10 +245,34 @@ describe('experiment reducer', () => {
         }).experiment.constraints.find(c => c.type === 'sum')
         expect(actual?.dimensions).toContain('name')
       })
+
+      it('should set suggestion count to 1 when adding variable if data points >= initialPoints', () => {
+        const actual = rootReducer(
+          {
+            ...initState,
+            experiment: {
+              ...initState.experiment,
+              optimizerConfig: {
+                ...initState.experiment.optimizerConfig,
+                initialPoints: 1,
+              },
+              extras: {
+                ...initState.experiment.extras,
+                experimentSuggestionCount: 7,
+              },
+            },
+          },
+          {
+            type: 'experiment/addVariableToConstraintSum',
+            payload: 'name',
+          }
+        )
+        expect(actual.experiment.extras.experimentSuggestionCount).toBe(1)
+      })
     })
 
     describe('removeVariableToConstraintSum', () => {
-      it('should add varialbe to dimension of constraint', () => {
+      it('should remove variable from dimension of constraint', () => {
         const stateWithConstraint = rootReducer(initState, {
           type: 'experiment/addVariableToConstraintSum',
           payload: 'name',
@@ -258,6 +282,30 @@ describe('experiment reducer', () => {
           payload: 'name',
         }).experiment.constraints.find(c => c.type === 'sum')
         expect(actual?.dimensions).not.toContain('name')
+      })
+
+      it('should set suggestion count to 1 when removing variable if data points >= initialPoints', () => {
+        const actual = rootReducer(
+          {
+            ...initState,
+            experiment: {
+              ...initState.experiment,
+              optimizerConfig: {
+                ...initState.experiment.optimizerConfig,
+                initialPoints: 1,
+              },
+              extras: {
+                ...initState.experiment.extras,
+                experimentSuggestionCount: 7,
+              },
+            },
+          },
+          {
+            type: 'experiment/removeVariableFromConstraintSum',
+            payload: 'name',
+          }
+        )
+        expect(actual.experiment.extras.experimentSuggestionCount).toBe(1)
       })
     })
   })
