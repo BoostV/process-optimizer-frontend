@@ -1,5 +1,21 @@
 # @process-optimizer-frontend/sample-app
 
+## 1.14.0
+
+### Minor Changes
+
+- d78a230: Update and toggle suggested count based on data points and constraints
+
+### Patch Changes
+
+- Updated dependencies [d78a230]
+- Updated dependencies [d8188ce]
+- Updated dependencies [9657d33]
+- Updated dependencies [4779ca3]
+- Updated dependencies [a8bfdf4]
+  - @boostv/process-optimizer-frontend-core@2.5.0
+  - @boostv/process-optimizer-frontend-ui@2.5.0
+
 ## 1.13.0
 
 ### Minor Changes

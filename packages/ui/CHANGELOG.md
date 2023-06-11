@@ -1,5 +1,22 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.5.0
+
+### Minor Changes
+
+- d78a230: Update and toggle suggested count based on data points and constraints
+- 4779ca3: Validate data point inputs
+- a8bfdf4: Add star rating to data points
+
+### Patch Changes
+
+- 9657d33: Update texts for input model
+- Updated dependencies [d78a230]
+- Updated dependencies [d8188ce]
+- Updated dependencies [4779ca3]
+- Updated dependencies [a8bfdf4]
+  - @boostv/process-optimizer-frontend-core@2.5.0
+
 ## 2.4.0
 
 ### Minor Changes
