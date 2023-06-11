@@ -1,5 +1,17 @@
 # @process-optimizer-frontend/core
 
+## 2.5.0
+
+### Minor Changes
+
+- d78a230: Update and toggle suggested count based on data points and constraints
+- 4779ca3: Validate data point inputs
+
+### Patch Changes
+
+- d8188ce: Handle legacy data where numbers in optimizer config is represented as strings
+- a8bfdf4: Add star rating to data points
+
 ## 2.4.0
 
 ### Minor Changes
