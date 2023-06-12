@@ -25,6 +25,9 @@ import {
 } from '@ui/features'
 import { CopySuggested } from '@ui/features/result-data/copy-suggested'
 import { ReactNode } from 'react'
+import { experimentResultSchema } from '@boostv/process-optimizer-frontend-core'
+import { z } from 'zod'
+import { isArray } from 'remeda'
 
 interface ResultDataProps {
   id?: string
@@ -115,7 +118,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       <SingleDataPoint
         title="Expected minimum"
         headers={headers}
-        dataPoint={expectedMinimum ?? []}
+        dataPoint={[convertExpectedMinimumToDisplayValue(expectedMinimum)]}
       />
     </Box>
   ) : (
@@ -199,4 +202,29 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       {summary}
     </TitleCard>
   )
+}
+// value - 2 * std <-> value + 2 * std
+const convertScoreToString = (data: number[]) => {
+  const [value, stdDev] = data
+  if (value && stdDev) {
+    return `[${(value - 2 * stdDev).toFixed(2)}, ${(value + 2 * stdDev).toFixed(
+      2
+    )}]`
+  }
+  return ''
+}
+
+const convertExpectedMinimumToDisplayValue = (
+  expectedMinimum: z.infer<typeof experimentResultSchema.shape.expectedMinimum>
+) => {
+  if (
+    expectedMinimum.length === 2 &&
+    isArray(expectedMinimum[0]) &&
+    isArray(expectedMinimum[1])
+  ) {
+    return expectedMinimum[0].concat(
+      convertScoreToString(expectedMinimum[1] as number[])
+    )
+  }
+  return []
 }
