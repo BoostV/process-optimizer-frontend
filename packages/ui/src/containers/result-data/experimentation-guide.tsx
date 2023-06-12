@@ -222,9 +222,11 @@ const convertExpectedMinimumToDisplayValue = (
     isArray(expectedMinimum[0]) &&
     isArray(expectedMinimum[1])
   ) {
-    return expectedMinimum[0].concat([
-      convertScoreToString(expectedMinimum[1] as number[]),
-    ])
+    return [
+      expectedMinimum[0].concat(
+        convertScoreToString(expectedMinimum[1] as number[])
+      ),
+    ]
   }
   return expectedMinimum ?? []
 }
