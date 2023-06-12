@@ -118,7 +118,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       <SingleDataPoint
         title="Predicted best solution"
         headers={headers}
-        dataPoint={[convertExpectedMinimumToDisplayValue(expectedMinimum)]}
+        dataPoint={convertExpectedMinimumToDisplayValue(expectedMinimum)}
       />
     </Box>
   ) : (
@@ -222,9 +222,9 @@ const convertExpectedMinimumToDisplayValue = (
     isArray(expectedMinimum[0]) &&
     isArray(expectedMinimum[1])
   ) {
-    return expectedMinimum[0].concat(
-      convertScoreToString(expectedMinimum[1] as number[])
-    )
+    return expectedMinimum[0].concat([
+      convertScoreToString(expectedMinimum[1] as number[]),
+    ])
   }
-  return []
+  return expectedMinimum ?? []
 }
