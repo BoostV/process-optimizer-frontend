@@ -116,7 +116,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   ) : expectedMinimum && expectedMinimum.length > 0 ? (
     <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
       <SingleDataPoint
-        title="Expected minimum"
+        title="Predicted best solution"
         headers={headers}
         dataPoint={[convertExpectedMinimumToDisplayValue(expectedMinimum)]}
       />
