@@ -1,5 +1,16 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.6.0
+
+### Minor Changes
+
+- 6bb276e: Include standard deviation in expected minimum
+
+### Patch Changes
+
+- Updated dependencies [6bb276e]
+  - @boostv/process-optimizer-frontend-core@2.6.0
+
 ## 2.5.0
 
 ### Minor Changes

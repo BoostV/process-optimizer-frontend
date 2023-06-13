@@ -1,5 +1,12 @@
 # @process-optimizer-frontend/api
 
+## 1.3.0
+
+### Minor Changes
+
+- d925eae: Include standard deviation in expected minimum
+- 6bb276e: Include standard deviation in expected minimum
+
 ## 1.2.0
 
 ### Minor Changes
