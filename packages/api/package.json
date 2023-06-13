@@ -30,7 +30,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "prepublishOnly": "vite build",
-    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.2.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi"
+    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.3.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "2.5.2",

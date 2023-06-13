@@ -34,6 +34,12 @@ import {
 export interface ResultResult {
   /**
    *
+   * @type {Array<Array<ExperimentDataInnerXiInner>>}
+   * @memberof ResultResult
+   */
+  expectedMinimum?: Array<Array<ExperimentDataInnerXiInner>>
+  /**
+   *
    * @type {string}
    * @memberof ResultResult
    */
@@ -79,6 +85,9 @@ export function ResultResultFromJSONTyped(
     return json
   }
   return {
+    expectedMinimum: !exists(json, 'expected_minimum')
+      ? undefined
+      : json['expected_minimum'],
     pickled: !exists(json, 'pickled') ? undefined : json['pickled'],
     next: !exists(json, 'next') ? undefined : json['next'],
     models: !exists(json, 'models')
@@ -96,6 +105,7 @@ export function ResultResultToJSON(value?: ResultResult | null): any {
     return null
   }
   return {
+    expected_minimum: value.expectedMinimum,
     pickled: value.pickled,
     next: value.next,
     models:
