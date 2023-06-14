@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 2.6.1
+
+### Patch Changes
+
+- f907365: Don't include disabled variables in calculation of space
+
 ## 2.6.0
 
 ### Minor Changes
