@@ -43,7 +43,7 @@ const defaultSorted = (
   }))
 }
 
-// Note: This calculation assumes the correct order of scores ("score" before "score2") as sorted by the defaultSorted function
+// Note: This calculation assumes the correct order of scores ("score" as the first entry) as sorted by the defaultSorted function
 const calculateXi = (state: ExperimentType) => {
   const bestScore = Math.max(
     ...state.dataPoints
