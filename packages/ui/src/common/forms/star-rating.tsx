@@ -1,4 +1,5 @@
 import { Rating } from '@mui/material'
+import { settings } from '@boostv/process-optimizer-frontend-core'
 
 type RatingProps = {
   value: number
@@ -10,8 +11,8 @@ type RatingProps = {
 
 export const StarRating = ({
   value,
-  max = 5,
-  precision = 0.5,
+  max = settings.maxRating,
+  precision = settings.ratingPrecision,
   onHover = () => 0,
   onChange,
 }: RatingProps) => {

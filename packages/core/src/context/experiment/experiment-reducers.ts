@@ -10,7 +10,7 @@ import {
 } from '@core/common/types'
 import { produce } from 'immer'
 import md5 from 'md5'
-import { versionInfo } from '@core/common'
+import { settings, versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
 import { selectNextValues } from './experiment-selectors'
 import { createFetchExperimentResultRequest } from '@core/context/experiment/api'
@@ -41,6 +41,20 @@ const defaultSorted = (
         orderedNames.findIndex(n => n === b.name)
     ),
   }))
+}
+
+// Note: This calculation assumes the correct order of scores ("score" before "score2") as sorted by the defaultSorted function
+const calculateXi = (state: ExperimentType) => {
+  const bestScore = Math.max(
+    ...state.dataPoints
+      .filter(dp => dp.meta.valid && dp.meta.enabled)
+      .map(d => d.data.filter(fd => fd.type === 'score')[0])
+      .map(s => (s ? Number(s.value) : 1))
+  )
+  return (
+    // *1000 to avoid floating point errors, e.g. 5 - 4.8 = 0.20..18
+    Math.max(0.1, (settings.maxRating * 1000 - bestScore * 1000) / 1000)
+  )
 }
 
 export type ExperimentAction =
@@ -375,6 +389,7 @@ export const experimentReducer = produce(
           state.scoreVariables,
           action.payload
         )
+        state.optimizerConfig.xi = calculateXi(state)
         break
       case 'experiment/toggleMultiObjective':
         state.scoreVariables = state.scoreVariables.map((it, idx) => ({
