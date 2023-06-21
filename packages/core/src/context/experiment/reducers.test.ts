@@ -1,4 +1,4 @@
-import { ExperimentAction, experimentReducer } from './experiment-reducers'
+import { ExperimentAction } from './experiment-reducers'
 import { rootReducer } from './reducers'
 import {
   currentVersion,
