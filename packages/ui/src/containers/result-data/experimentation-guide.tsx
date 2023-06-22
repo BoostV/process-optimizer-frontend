@@ -195,7 +195,6 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   )
 }
 // value - 1.96 * std <-> value + 1.96 * std
-// value is inverted because scores are positive in the UI
 const convertScoreToString = (data: number[]) => {
   const [value, stdDev] = data
   if (value && stdDev) {
