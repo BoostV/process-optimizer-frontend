@@ -38,7 +38,8 @@ export const createDataPoints = (
   values = ['Water'],
   categorical = ['Icing'],
   scores = ['score'],
-  randomize = false
+  randomize = false,
+  scoreValues: number[] | undefined = undefined
 ): DataEntry[] => {
   const valueData: DataPointType[] = values.map(name => ({
     name,
@@ -55,8 +56,24 @@ export const createDataPoints = (
     type: 'score',
     value: randomize ? Math.random() * 10 : 2,
   }))
-  return [...Array(count)].map((_id, idx) => ({
+  const data = [...Array(count)].map((_id, idx) => ({
     meta: { enabled: true, id: idx + 1, valid: true },
     data: valueData.concat(categoricalData, scoreData),
   }))
+  if (scoreValues !== undefined) {
+    return data.map((dp, i) => ({
+      ...dp,
+      data: dp.data.map(d => {
+        if (d.type === 'score' && d.name === 'score') {
+          const score = scoreValues[i]
+          return {
+            ...d,
+            value: score !== undefined ? score : 0,
+          }
+        }
+        return d
+      }),
+    }))
+  }
+  return data
 }

@@ -98,8 +98,6 @@ export const RatingInput = ({ value, onChange }: RatingInputProps) => {
                   setTempRating(undefined)
                 }}
                 onHover={v => v !== -1 && setTempRating('' + v)}
-                max={5}
-                precision={0.1}
               />
             </Stack>
           </Paper>

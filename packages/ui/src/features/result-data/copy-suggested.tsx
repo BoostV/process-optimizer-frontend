@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material'
+import { Button } from '@mui/material'
 import { FC } from 'react'
 
 type Props = {
@@ -7,10 +7,8 @@ type Props = {
 
 export const CopySuggested: FC<Props> = ({ onClick }: Props) => {
   return (
-    <Box mb={2} mr={2} display="flex" justifyContent="right">
-      <Button size="small" variant="outlined" onClick={onClick}>
-        Transfer all to data points
-      </Button>
-    </Box>
+    <Button size="small" variant="outlined" onClick={onClick}>
+      Transfer all to data points
+    </Button>
   )
 }

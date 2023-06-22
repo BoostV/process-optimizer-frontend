@@ -73,27 +73,6 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     </Stack>
   )
 
-  const settings = (
-    <NextExperiments
-      experiment={experiment}
-      onSuggestionChange={suggestionCount =>
-        dispatchExperiment({
-          type: 'updateSuggestionCount',
-          payload: suggestionCount,
-        })
-      }
-      onXiChange={xi =>
-        dispatchExperiment({
-          type: 'updateConfiguration',
-          payload: {
-            ...experiment.optimizerConfig,
-            xi,
-          },
-        })
-      }
-    />
-  )
-
   const guideLoadingMode = loadingMode === 'overlay' ? 'overlay' : 'custom'
 
   const guideLoadingView =
@@ -128,18 +107,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     <TitleCard
       id={id}
       loading={loading}
-      loadingView={
-        <>
-          {!isInitializing ? (
-            <Box pl={2} pr={2} pt={2}>
-              {settings}
-            </Box>
-          ) : (
-            <></>
-          )}
-          {guideLoadingView}
-        </>
-      }
+      loadingView={guideLoadingView}
       loadingMode={guideLoadingMode}
       warning={warning}
       padding={padding ?? 0}
@@ -171,7 +139,6 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       }
     >
       <Box p={2}>
-        {!isInitializing && settings}
         {!nextValues ||
           (nextValues.length === 0 && (
             <Box p={2}>Please run experiment to calculate suggestions</Box>
@@ -187,18 +154,42 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           }
         />
       </Box>
-      {nextValues.length > 0 &&
-        nextValues[0] !== undefined &&
-        nextValues[0].length > 0 && (
-          <CopySuggested
-            onClick={() =>
-              dispatchExperiment({
-                type: 'copySuggestedToDataPoints',
-                payload: [...Array(nextValues.length)].map((_, i) => i),
-              })
-            }
-          />
+
+      <Box
+        p={2}
+        pt={1}
+        display="flex"
+        justifyContent={isInitializing ? 'right' : 'space-between'}
+      >
+        {!isInitializing && (
+          <Box width={160}>
+            <NextExperiments
+              experiment={experiment}
+              onSuggestionChange={suggestionCount =>
+                dispatchExperiment({
+                  type: 'updateSuggestionCount',
+                  payload: suggestionCount,
+                })
+              }
+            />
+          </Box>
         )}
+        {nextValues.length > 0 &&
+          nextValues[0] !== undefined &&
+          nextValues[0].length > 0 && (
+            <Box>
+              <CopySuggested
+                onClick={() =>
+                  dispatchExperiment({
+                    type: 'copySuggestedToDataPoints',
+                    payload: [...Array(nextValues.length)].map((_, i) => i),
+                  })
+                }
+              />
+            </Box>
+          )}
+      </Box>
+
       {summary}
     </TitleCard>
   )

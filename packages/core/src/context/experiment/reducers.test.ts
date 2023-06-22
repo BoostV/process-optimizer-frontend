@@ -825,7 +825,7 @@ describe('experiment reducer', () => {
       () => {
         const values = ['value1', 'value2', 'value3']
         const cats = ['cat1', 'cat2', 'cat3']
-        const scores = ['score1', 'score2']
+        const scores = ['score', 'score2']
 
         const testState = produce(initState, draft => {
           draft.experiment.valueVariables = values.map(name =>
@@ -868,7 +868,7 @@ describe('experiment reducer', () => {
           'cat1',
           'cat2',
           'cat3',
-          'score1',
+          'score',
           'score2',
         ]
         const actual = rootReducer(testState, action).experiment.dataPoints.map(
@@ -1003,5 +1003,81 @@ describe('experiment reducer', () => {
         value: 'Vanilla',
       },
     ])
+  })
+
+  it('should update xi when updating data points', () => {
+    //Xi = Max(0.1, maxPossibleScore (5) - bestScoreGiven)
+    const scores = [1.5, 4.4, 2.5]
+    const dp = createDataPoints(
+      scores.length,
+      ['Water'],
+      ['Icing'],
+      ['score', 'score2'],
+      true,
+      scores
+    )
+    const actual = rootReducer(
+      {
+        ...initState,
+        experiment: {
+          ...initState.experiment,
+          scoreVariables: [
+            {
+              name: 'score',
+              description: 'score',
+              enabled: true,
+            },
+            {
+              name: 'score2',
+              description: 'score 2',
+              enabled: true,
+            },
+          ],
+        },
+      },
+      {
+        type: 'updateDataPoints',
+        payload: dp,
+      }
+    )
+    expect(actual.experiment.optimizerConfig.xi).toBe(0.6)
+  })
+
+  it('should update xi when updating data points - should return 0.1 when best = max', () => {
+    //Xi = Max(0.1, maxPossibleScore (5) - bestScoreGiven)
+    const scores = [1.5, 4.4, 5]
+    const dp = createDataPoints(
+      scores.length,
+      ['Water'],
+      ['Icing'],
+      ['score', 'score2'],
+      true,
+      scores
+    )
+    const actual = rootReducer(
+      {
+        ...initState,
+        experiment: {
+          ...initState.experiment,
+          scoreVariables: [
+            {
+              name: 'score',
+              description: 'score',
+              enabled: true,
+            },
+            {
+              name: 'score2',
+              description: 'score 2',
+              enabled: true,
+            },
+          ],
+        },
+      },
+      {
+        type: 'updateDataPoints',
+        payload: dp,
+      }
+    )
+    expect(actual.experiment.optimizerConfig.xi).toBe(0.1)
   })
 })
