@@ -30,11 +30,13 @@ export const SingleDataPoint = ({
       <Table size="small">
         <TableHead>
           <TableRow>
-            {headers.concat(['95% credibility interval']).map((h, idx) => (
-              <TableCell className={classes.cell} key={idx}>
-                {h}
-              </TableCell>
-            ))}
+            {headers
+              .concat(['Score (95 % credibility interval)'])
+              .map((h, idx) => (
+                <TableCell className={classes.cell} key={idx}>
+                  {h}
+                </TableCell>
+              ))}
           </TableRow>
         </TableHead>
         <TableBody>

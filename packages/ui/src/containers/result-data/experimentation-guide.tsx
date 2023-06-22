@@ -194,13 +194,14 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     </TitleCard>
   )
 }
-// value - 2 * std <-> value + 2 * std
+// value - 1.96 * std <-> value + 1.96 * std
 const convertScoreToString = (data: number[]) => {
   const [value, stdDev] = data
   if (value && stdDev) {
-    return `[${(value - 2 * stdDev).toFixed(2)}, ${(value + 2 * stdDev).toFixed(
-      2
-    )}]`
+    return `[${(-value - 1.96 * stdDev).toFixed(2)}, ${(
+      -value +
+      1.96 * stdDev
+    ).toFixed(2)}]`
   }
   return ''
 }
