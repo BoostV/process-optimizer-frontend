@@ -191,8 +191,8 @@ describe('converters', () => {
   describe('calculateData', () => {
     it('should format data in proper output format', () => {
       const expectedData = [
-        { xi: [23, 982, 632, 'Mus'], yi: [0.1] },
-        { xi: [15, 123, 324, 'Ræv'], yi: [0.2] },
+        { xi: [23, 982, 632, 'Mus'], yi: [-0.1] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [-0.2] },
       ]
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
@@ -205,8 +205,8 @@ describe('converters', () => {
 
     it('should skip disabled data entries', () => {
       const expectedData = [
-        { xi: [23, 982, 632, 'Mus'], yi: [0.1] },
-        { xi: [15, 123, 324, 'Ræv'], yi: [0.2] },
+        { xi: [23, 982, 632, 'Mus'], yi: [-0.1] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [-0.2] },
       ]
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
@@ -222,8 +222,8 @@ describe('converters', () => {
 
     it('should skip invalid data entries', () => {
       const expectedData = [
-        { xi: [23, 982, 632, 'Mus'], yi: [0.1] },
-        { xi: [15, 123, 324, 'Ræv'], yi: [0.2] },
+        { xi: [23, 982, 632, 'Mus'], yi: [-0.1] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [-0.2] },
       ]
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
@@ -239,8 +239,8 @@ describe('converters', () => {
 
     it('should include enabled score values', () => {
       const expectedData = [
-        { xi: [23, 982, 632, 'Mus'], yi: [0.1, 0.3] },
-        { xi: [15, 123, 324, 'Ræv'], yi: [0.2, 0.4] },
+        { xi: [23, 982, 632, 'Mus'], yi: [-0.1, -0.3] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [-0.2, -0.4] },
       ]
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
@@ -256,8 +256,8 @@ describe('converters', () => {
 
     it('should skip disabled score values', () => {
       const expectedData = [
-        { xi: [23, 982, 632, 'Mus'], yi: [0.1] },
-        { xi: [15, 123, 324, 'Ræv'], yi: [0.2] },
+        { xi: [23, 982, 632, 'Mus'], yi: [-0.1] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [-0.2] },
       ]
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
