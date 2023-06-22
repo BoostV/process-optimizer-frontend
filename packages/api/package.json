@@ -1,7 +1,7 @@
 {
   "name": "@boostv/process-optimizer-frontend-api",
   "private": false,
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "API for process optimizer backend",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
@@ -30,7 +30,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "prepublishOnly": "vite build",
-    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.2.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi"
+    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.3.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "2.5.2",

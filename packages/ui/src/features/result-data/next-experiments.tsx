@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material'
+import { TextField, Tooltip } from '@mui/material'
 import { ChangeEvent, FC } from 'react'
 import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
 
@@ -11,6 +11,15 @@ export const NextExperiments: FC<Props> = ({
   experiment,
   onSuggestionChange,
 }) => {
+  const constraints =
+    experiment.constraints.find(c => c.type === 'sum')?.dimensions.length ?? 0
+  const dataPoints = experiment.dataPoints.filter(
+    d => d.meta.enabled && d.meta.valid
+  ).length
+  const initialPoints = experiment.optimizerConfig.initialPoints
+  const isSuggestionCountDisabled =
+    dataPoints >= initialPoints && constraints > 1
+
   const suggestionCount: number =
     (experiment.extras['experimentSuggestionCount'] as number) ?? 1
 
@@ -19,12 +28,23 @@ export const NextExperiments: FC<Props> = ({
   ) => onSuggestionChange(e.target.value)
 
   return (
-    <TextField
-      type="number"
-      value={suggestionCount}
-      name="numberOfSuggestions"
-      label="Number of suggestions"
-      onChange={handleSuggestionChange}
-    />
+    <Tooltip
+      title={
+        isSuggestionCountDisabled
+          ? 'Number of suggested experiments cannot be edited while there is a sum constraint.'
+          : ''
+      }
+      disableInteractive
+    >
+      <TextField
+        fullWidth
+        type="number"
+        value={suggestionCount}
+        name="numberOfSuggestions"
+        label="Number of suggestions"
+        onChange={handleSuggestionChange}
+        disabled={isSuggestionCountDisabled}
+      />
+    </Tooltip>
   )
 }

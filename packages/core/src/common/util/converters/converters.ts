@@ -18,21 +18,25 @@ import {
  * @returns the space parameters
  */
 export const calculateSpace = (experiment: ExperimentType): SpaceType => {
-  const numerical: SpaceType = experiment.valueVariables.map(v => {
-    return {
-      type: v.type,
-      name: v.name,
-      from: v.type === 'discrete' ? Math.floor(Number(v.min)) : Number(v.min),
-      to: v.type === 'discrete' ? Math.floor(Number(v.max)) : Number(v.max),
-    }
-  })
-  const categorical: SpaceType = experiment.categoricalVariables.map(v => {
-    return {
-      type: 'category',
-      name: v.name,
-      categories: v.options,
-    }
-  })
+  const numerical: SpaceType = experiment.valueVariables
+    .filter(v => v.enabled)
+    .map(v => {
+      return {
+        type: v.type,
+        name: v.name,
+        from: v.type === 'discrete' ? Math.floor(Number(v.min)) : Number(v.min),
+        to: v.type === 'discrete' ? Math.floor(Number(v.max)) : Number(v.max),
+      }
+    })
+  const categorical: SpaceType = experiment.categoricalVariables
+    .filter(v => v.enabled)
+    .map(v => {
+      return {
+        type: 'category',
+        name: v.name,
+        categories: v.options,
+      }
+    })
   return numerical.concat(categorical)
 }
 

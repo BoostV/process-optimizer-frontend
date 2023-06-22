@@ -167,6 +167,25 @@ describe('converters', () => {
       expect(space[3]?.name).toEqual('Mælk')
       expect(space[4]?.name).toEqual('Kunde')
     })
+
+    it('should omit disabled parameters', () => {
+      const experimentWithTwoParamtersDisabled = produce(
+        sampleExperiment,
+        draft => {
+          if (draft.categoricalVariables[0] !== undefined) {
+            draft.categoricalVariables[0].enabled = false
+          }
+          if (draft.valueVariables[0] !== undefined) {
+            draft.valueVariables[0].enabled = false
+          }
+        }
+      )
+      const space = calculateSpace(experimentWithTwoParamtersDisabled)
+      expect(space).toHaveLength(3)
+      expect(space[0]?.name).toEqual('Peber')
+      expect(space[1]?.name).toEqual('Hvedemel')
+      expect(space[2]?.name).toEqual('Mælk')
+    })
   })
 
   describe('calculateData', () => {

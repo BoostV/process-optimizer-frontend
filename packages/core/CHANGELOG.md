@@ -1,5 +1,35 @@
 # @process-optimizer-frontend/core
 
+## 2.6.1
+
+### Patch Changes
+
+- f907365: Don't include disabled variables in calculation of space
+
+## 2.6.0
+
+### Minor Changes
+
+- 6bb276e: Include standard deviation in expected minimum
+
+### Patch Changes
+
+- Updated dependencies [d925eae]
+- Updated dependencies [6bb276e]
+  - @boostv/process-optimizer-frontend-api@1.3.0
+
+## 2.5.0
+
+### Minor Changes
+
+- d78a230: Update and toggle suggested count based on data points and constraints
+- 4779ca3: Validate data point inputs
+
+### Patch Changes
+
+- d8188ce: Handle legacy data where numbers in optimizer config is represented as strings
+- a8bfdf4: Add star rating to data points
+
 ## 2.4.0
 
 ### Minor Changes
