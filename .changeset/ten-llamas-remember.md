@@ -3,4 +3,4 @@
 '@boostv/process-optimizer-frontend-ui': minor
 ---
 
-Invert scores for backend
+Invert scores to and from backend
