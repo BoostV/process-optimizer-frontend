@@ -1,5 +1,17 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.7.0
+
+### Minor Changes
+
+- ebe872e: Show single plots in experimentation guide
+- f6db4b9: Invert scores to and from backend
+
+### Patch Changes
+
+- Updated dependencies [f6db4b9]
+  - @boostv/process-optimizer-frontend-core@2.7.0
+
 ## 2.6.0
 
 ### Minor Changes

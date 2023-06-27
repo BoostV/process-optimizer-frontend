@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/api
 
+## 1.4.0
+
+### Minor Changes
+
+- d9b45b8: Update backend API version
+
 ## 1.3.0
 
 ### Minor Changes
