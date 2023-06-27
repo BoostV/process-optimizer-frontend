@@ -19,14 +19,14 @@ interface SingleDataPointProps {
   title: string
   headers: string[]
   dataPoint: (number | (string | number)[])[]
-  plot: string
+  plots?: string[]
 }
 
 export const SingleDataPoint = ({
   title,
   headers,
   dataPoint,
-  plot,
+  plots,
 }: SingleDataPointProps) => {
   const { classes } = useStyles()
   const [isDialogOpen, setDialogOpen] = useState(false)
@@ -52,30 +52,32 @@ export const SingleDataPoint = ({
         <TableBody>
           <TableRow>
             {dataPoint.flat().map((dp, idx) => (
-              <TableCell className={classes.cell} key={idx}>
+              <TableCell className={classes.cell} key={'dp' + idx}>
                 {dp}
               </TableCell>
             ))}
           </TableRow>
-          <TableRow>
-            {dataPoint.flat().map((_, idx) => (
-              <TableCell className={classes.cell} key={idx}>
-                <Box
-                  onClick={() => {
-                    setDialogOpen(true)
-                    setBigPlot(plot)
-                  }}
-                >
-                  <PNGPlot plot={plot} width={80} />
-                </Box>
-              </TableCell>
-            ))}
-          </TableRow>
+          {plots && plots.length > 0 && (
+            <TableRow>
+              {plots.map((p, idx) => (
+                <TableCell className={classes.cell} key={'plot' + idx}>
+                  <Box
+                    onClick={() => {
+                      setDialogOpen(true)
+                      setBigPlot(p)
+                    }}
+                  >
+                    <PNGPlot plot={p} width={80} />
+                  </Box>
+                </TableCell>
+              ))}
+            </TableRow>
+          )}
         </TableBody>
       </Table>
       <Dialog open={isDialogOpen}>
         <DialogContent>
-          <PNGPlot plot={bigPlot ?? ''} width={500} />
+          <PNGPlot plot={bigPlot ?? ''} width={400} />
         </DialogContent>
         <DialogActions>
           <Button
