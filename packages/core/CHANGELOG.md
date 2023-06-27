@@ -1,5 +1,16 @@
 # @process-optimizer-frontend/core
 
+## 2.7.0
+
+### Minor Changes
+
+- f6db4b9: Invert scores to and from backend
+
+### Patch Changes
+
+- Updated dependencies [d9b45b8]
+  - @boostv/process-optimizer-frontend-api@1.4.0
+
 ## 2.6.1
 
 ### Patch Changes
