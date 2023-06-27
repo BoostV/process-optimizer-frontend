@@ -32,6 +32,11 @@ export const SingleDataPoint = ({
   const [isDialogOpen, setDialogOpen] = useState(false)
   const [bigPlot, setBigPlot] = useState<undefined | string>(undefined)
 
+  const handleDialogClose = () => {
+    setDialogOpen(false)
+    setBigPlot(undefined)
+  }
+
   return (
     <Box className={classes.tableContainer} pb={2}>
       <Typography variant="caption" className={classes.title}>
@@ -75,19 +80,12 @@ export const SingleDataPoint = ({
           )}
         </TableBody>
       </Table>
-      <Dialog open={isDialogOpen}>
+      <Dialog onClose={handleDialogClose} open={isDialogOpen}>
         <DialogContent>
           <PNGPlot plot={bigPlot ?? ''} width={400} />
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => {
-              setDialogOpen(false)
-              setBigPlot(undefined)
-            }}
-          >
-            Close
-          </Button>
+          <Button onClick={handleDialogClose}>Close</Button>
         </DialogActions>
       </Dialog>
     </Box>
