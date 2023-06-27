@@ -98,6 +98,9 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         title="Predicted best solution"
         headers={headers}
         dataPoint={convertExpectedMinimumToDisplayValue(expectedMinimum)}
+        plots={experiment.results.plots
+          .filter(p => p.id.includes('single'))
+          .map(p => p.plot)}
       />
     </Box>
   ) : (

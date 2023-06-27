@@ -37,11 +37,11 @@ export const NextExperiments: FC<Props> = ({
       disableInteractive
     >
       <TextField
-        fullWidth
         type="number"
         value={suggestionCount}
         name="numberOfSuggestions"
-        label="Number of suggestions"
+        label="Suggestions"
+        size="small"
         onChange={handleSuggestionChange}
         disabled={isSuggestionCountDisabled}
       />

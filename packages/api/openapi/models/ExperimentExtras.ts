@@ -38,6 +38,18 @@ export interface ExperimentExtras {
    * @memberof ExperimentExtras
    */
   experimentSuggestionCount?: number
+  /**
+   *
+   * @type {number}
+   * @memberof ExperimentExtras
+   */
+  maxQuality?: number
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ExperimentExtras
+   */
+  graphs?: Array<string>
 }
 
 /**
@@ -79,6 +91,8 @@ export function ExperimentExtrasFromJSONTyped(
     experimentSuggestionCount: !exists(json, 'experimentSuggestionCount')
       ? undefined
       : json['experimentSuggestionCount'],
+    maxQuality: !exists(json, 'maxQuality') ? undefined : json['maxQuality'],
+    graphs: !exists(json, 'graphs') ? undefined : json['graphs'],
   }
 }
 
@@ -94,5 +108,7 @@ export function ExperimentExtrasToJSON(value?: ExperimentExtras | null): any {
     objectivePars: value.objectivePars,
     graphFormat: value.graphFormat,
     experimentSuggestionCount: value.experimentSuggestionCount,
+    maxQuality: value.maxQuality,
+    graphs: value.graphs,
   }
 }

@@ -6,21 +6,36 @@ import {
   TableCell,
   Typography,
   Box,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  Button,
 } from '@mui/material'
 import useStyles from './single-data-point.style'
+import { PNGPlot } from '@boostv/process-optimizer-frontend-plots'
+import { useState } from 'react'
 
 interface SingleDataPointProps {
   title: string
   headers: string[]
   dataPoint: (number | (string | number)[])[]
+  plots?: string[]
 }
 
 export const SingleDataPoint = ({
   title,
   headers,
   dataPoint,
+  plots,
 }: SingleDataPointProps) => {
   const { classes } = useStyles()
+  const [isDialogOpen, setDialogOpen] = useState(false)
+  const [bigPlot, setBigPlot] = useState<undefined | string>(undefined)
+
+  const handleDialogClose = () => {
+    setDialogOpen(false)
+    setBigPlot(undefined)
+  }
 
   return (
     <Box className={classes.tableContainer} pb={2}>
@@ -42,13 +57,37 @@ export const SingleDataPoint = ({
         <TableBody>
           <TableRow>
             {dataPoint.flat().map((dp, idx) => (
-              <TableCell className={classes.cell} key={idx}>
+              <TableCell className={classes.cell} key={'dp' + idx}>
                 {dp}
               </TableCell>
             ))}
           </TableRow>
+          {plots && plots.length > 0 && (
+            <TableRow>
+              {plots.map((p, idx) => (
+                <TableCell className={classes.cell} key={'plot' + idx}>
+                  <Box
+                    onClick={() => {
+                      setDialogOpen(true)
+                      setBigPlot(p)
+                    }}
+                  >
+                    <PNGPlot plot={p} width={80} />
+                  </Box>
+                </TableCell>
+              ))}
+            </TableRow>
+          )}
         </TableBody>
       </Table>
+      <Dialog onClose={handleDialogClose} open={isDialogOpen}>
+        <DialogContent>
+          <PNGPlot plot={bigPlot ?? ''} width={400} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }
