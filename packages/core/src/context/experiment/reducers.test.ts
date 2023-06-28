@@ -1104,7 +1104,6 @@ describe('experiment reducer', () => {
       { type: 'updateExperiment', payload: initState.experiment },
     ]
     actions.forEach(action => {
-      console.log()
       expect(rootReducer(initState, action).experiment.info.version).toEqual(
         initState.experiment.info.version
       )
