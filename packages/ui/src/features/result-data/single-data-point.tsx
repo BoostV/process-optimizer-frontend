@@ -72,7 +72,7 @@ export const SingleDataPoint = ({
                       setBigPlot(p)
                     }}
                   >
-                    <PNGPlot plot={p} width={80} />
+                    <PNGPlot plot={p} width={'100%'} maxWidth={160} />
                   </Box>
                 </TableCell>
               ))}
