@@ -83,6 +83,11 @@ export const createDataPoints = (
 
 type AllExperimentActions = ExperimentAction['type']
 
+/**
+ * An object containing a dummy payload for all experiment actions.
+ * If new action types are added, the type checker should cause a compile time
+ * error indicating that the type should be added to this object.
+ */
 export const allExperimentActions: Record<AllExperimentActions, unknown> = {
   setSwVersion: '123',
   registerResult: {
