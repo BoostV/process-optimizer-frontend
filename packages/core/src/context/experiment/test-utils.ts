@@ -5,7 +5,6 @@ import {
   ExperimentResultType,
   ScoreVariableType,
   ValueVariableType,
-  OptimizerConfig,
 } from '@core/common'
 import { ExperimentAction } from './experiment-reducers'
 import { initialState } from './store'
