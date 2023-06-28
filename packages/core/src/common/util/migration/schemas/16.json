@@ -1,7 +1,7 @@
 {
-  "$ref": "#/definitions/experiment-v15",
+  "$ref": "#/definitions/experiment-v16",
   "definitions": {
-    "experiment-v15": {
+    "experiment-v16": {
       "type": "object",
       "properties": {
         "id": {
@@ -27,7 +27,7 @@
             },
             "dataFormatVersion": {
               "type": "string",
-              "const": "15"
+              "const": "16"
             },
             "version": {
               "type": "number"

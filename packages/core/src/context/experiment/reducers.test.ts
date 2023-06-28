@@ -30,6 +30,7 @@ describe('experiment reducer', () => {
         name: 'Cake',
         description: 'Yummy',
         dataFormatVersion: currentVersion,
+        version: 2,
       },
       categoricalVariables: [
         {
@@ -116,6 +117,7 @@ describe('experiment reducer', () => {
           name: 'Not cake',
           description: 'Not yummy',
           dataFormatVersion: currentVersion,
+          version: 42,
         },
         categoricalVariables: [
           {
@@ -1079,5 +1081,39 @@ describe('experiment reducer', () => {
       }
     )
     expect(actual.experiment.optimizerConfig.xi).toBe(0.1)
+  })
+
+  it('should increment version for all actions except updateExperiment', () => {
+    const actions: ExperimentAction[] = [
+      { type: 'setSwVersion', payload: '' },
+      {
+        type: 'registerResult',
+        payload: {
+          id: 'myExperiment',
+          next: [[1, 2, 3, 'Red']],
+          pickled: 'pickled',
+          expectedMinimum: [],
+          extras: {},
+          plots: [{ id: 'sample', plot: 'base64encodedData' }],
+        },
+      },
+      { type: 'updateExperimentDescription', payload: 'New description' },
+    ]
+    actions.forEach(action => {
+      expect(rootReducer(initState, action).experiment.info.version).toEqual(
+        initState.experiment.info.version + 1
+      )
+    })
+  })
+
+  it('should not increment version for updateExperiment', () => {
+    const actions: ExperimentAction[] = [
+      { type: 'updateExperiment', payload: initState.experiment },
+    ]
+    actions.forEach(action => {
+      expect(rootReducer(initState, action).experiment.info.version).toEqual(
+        initState.experiment.info.version
+      )
+    })
   })
 })
