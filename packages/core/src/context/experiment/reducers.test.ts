@@ -8,7 +8,7 @@ import {
   OptimizerConfig,
   ValueVariableType,
 } from '@core/common/types'
-import { emptyExperiment, State } from '@core/context/experiment'
+import { emptyExperiment, initialState, State } from '@core/context/experiment'
 import { versionInfo } from '@core/common'
 import { expect } from 'vitest'
 import _ from 'lodash'
@@ -1100,13 +1100,15 @@ describe('experiment reducer', () => {
   })
 
   it('should not increment version for updateExperiment', () => {
-    const actions: ExperimentAction[] = [
-      { type: 'updateExperiment', payload: initState.experiment },
-    ]
-    actions.forEach(action => {
-      expect(rootReducer(initState, action).experiment.info.version).toEqual(
-        initState.experiment.info.version
-      )
-    })
+    Object.entries(dummyPayloads)
+      .filter(([k]) => k === 'updateExperiment')
+      .forEach(([k, v]) => {
+        expect(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          rootReducer(initState, { type: k, payload: v }).experiment.info
+            .version
+        ).toEqual(dummyPayloads.updateExperiment.info.version)
+      })
   })
 })
