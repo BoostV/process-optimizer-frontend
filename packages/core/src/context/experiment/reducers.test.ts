@@ -32,6 +32,7 @@ describe('experiment reducer', () => {
         description: 'Yummy',
         dataFormatVersion: currentVersion,
         version: 2,
+        extras: {},
       },
       categoricalVariables: [
         {
@@ -119,6 +120,7 @@ describe('experiment reducer', () => {
           description: 'Not yummy',
           dataFormatVersion: currentVersion,
           version: 42,
+          extras: {},
         },
         categoricalVariables: [
           {

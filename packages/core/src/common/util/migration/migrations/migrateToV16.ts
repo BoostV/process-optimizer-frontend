@@ -5,5 +5,6 @@ export const migrateToV16 = (json: ExperimentType): ExperimentType => {
   return produce(json, draft => {
     draft.info.dataFormatVersion = '16'
     draft.info.version = 0
+    draft.info.extras = {}
   })
 }

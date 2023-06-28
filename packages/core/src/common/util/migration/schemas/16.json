@@ -31,6 +31,10 @@
             },
             "version": {
               "type": "number"
+            },
+            "extras": {
+              "type": "object",
+              "additionalProperties": {}
             }
           },
           "required": [
@@ -38,7 +42,8 @@
             "description",
             "swVersion",
             "dataFormatVersion",
-            "version"
+            "version",
+            "extras"
           ],
           "additionalProperties": false
         },

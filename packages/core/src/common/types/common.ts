@@ -11,6 +11,7 @@ const infoSchema = z.object({
   swVersion: z.string(),
   dataFormatVersion: z.literal(currentVersion),
   version: z.number(),
+  extras: z.record(z.unknown()),
 })
 
 export const experimentResultSchema = z.object({
