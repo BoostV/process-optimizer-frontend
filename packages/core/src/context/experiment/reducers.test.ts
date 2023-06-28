@@ -18,7 +18,7 @@ import {
   createDataPoints,
   createScoreVariable,
   createValueVariable,
-  allExperimentActions,
+  dummyPayloads,
 } from '@core/context/experiment/test-utils'
 
 describe('experiment reducer', () => {
@@ -1087,7 +1087,7 @@ describe('experiment reducer', () => {
   })
 
   it('should increment version for all actions except updateExperiment', () => {
-    Object.entries(allExperimentActions)
+    Object.entries(dummyPayloads)
       .filter(([k]) => k !== 'updateExperiment')
       .forEach(([k, v]) => {
         expect(

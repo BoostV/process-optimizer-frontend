@@ -81,14 +81,21 @@ export const createDataPoints = (
   return data
 }
 
-type AllExperimentActions = ExperimentAction['type']
+type Payloads = {
+  [key in ExperimentAction['type']]: key extends 'experiment/toggleMultiObjective'
+    ? undefined
+    : Extract<
+        Exclude<ExperimentAction, { type: 'experiment/toggleMultiObjective' }>,
+        { type: key }
+      >['payload']
+}
 
 /**
  * An object containing a dummy payload for all experiment actions.
  * If new action types are added, the type checker should cause a compile time
  * error indicating that the type should be added to this object.
  */
-export const allExperimentActions: Record<AllExperimentActions, unknown> = {
+export const dummyPayloads: Payloads = {
   setSwVersion: '123',
   registerResult: {
     id: 'myExperiment',
@@ -98,45 +105,21 @@ export const allExperimentActions: Record<AllExperimentActions, unknown> = {
     extras: {},
     plots: [{ id: 'sample', plot: 'base64encodedData' }],
   } satisfies ExperimentResultType,
-  addCategorialVariable: {
-    description: '',
-    enabled: false,
-    name: 'test',
-    options: [],
-  } satisfies CategoricalVariableType,
+  addCategorialVariable: createCategoricalVariable({}),
   editCategoricalVariable: {
     index: 0,
-    newVariable: {
-      description: '',
-      enabled: false,
-      name: 'test',
-      options: [],
-    } satisfies CategoricalVariableType,
+    newVariable: createCategoricalVariable({}),
   },
   setCategoricalVariableEnabled: { index: 0, enabled: true },
   deleteCategorialVariable: 0,
-  addValueVariable: {
-    description: '',
-    enabled: true,
-    name: '',
-    max: 0,
-    min: 0,
-    type: 'continuous',
-  } satisfies ValueVariableType,
+  addValueVariable: createValueVariable({}),
   editValueVariable: {
     index: 0,
-    newVariable: {
-      description: '',
-      enabled: true,
-      name: '',
-      max: 0,
-      min: 0,
-      type: 'continuous',
-    } satisfies ValueVariableType,
+    newVariable: createValueVariable({}),
   },
   setValueVariableEnabled: { index: 0, enabled: true },
   deleteValueVariable: 0,
-  updateExperiment: {},
+  updateExperiment: initialState.experiment,
   updateExperimentName: '',
   updateExperimentDescription: '',
   updateConfiguration: initialState.experiment.optimizerConfig,
