@@ -2,9 +2,13 @@ import {
   CategoricalVariableType,
   DataEntry,
   DataPointType,
+  ExperimentResultType,
   ScoreVariableType,
   ValueVariableType,
+  OptimizerConfig,
 } from '@core/common'
+import { ExperimentAction } from './experiment-reducers'
+import { initialState } from './store'
 
 export const createValueVariable = (input: Partial<ValueVariableType>) =>
   ({
@@ -76,4 +80,67 @@ export const createDataPoints = (
     }))
   }
   return data
+}
+
+type AllExperimentActions = ExperimentAction['type']
+
+export const allExperimentActions: Record<AllExperimentActions, unknown> = {
+  setSwVersion: '123',
+  registerResult: {
+    id: 'myExperiment',
+    next: [[1, 2, 3, 'Red']],
+    pickled: 'pickled',
+    expectedMinimum: [],
+    extras: {},
+    plots: [{ id: 'sample', plot: 'base64encodedData' }],
+  } satisfies ExperimentResultType,
+  addCategorialVariable: {
+    description: '',
+    enabled: false,
+    name: 'test',
+    options: [],
+  } satisfies CategoricalVariableType,
+  editCategoricalVariable: {
+    index: 0,
+    newVariable: {
+      description: '',
+      enabled: false,
+      name: 'test',
+      options: [],
+    } satisfies CategoricalVariableType,
+  },
+  setCategoricalVariableEnabled: { index: 0, enabled: true },
+  deleteCategorialVariable: 0,
+  addValueVariable: {
+    description: '',
+    enabled: true,
+    name: '',
+    max: 0,
+    min: 0,
+    type: 'continuous',
+  } satisfies ValueVariableType,
+  editValueVariable: {
+    index: 0,
+    newVariable: {
+      description: '',
+      enabled: true,
+      name: '',
+      max: 0,
+      min: 0,
+      type: 'continuous',
+    } satisfies ValueVariableType,
+  },
+  setValueVariableEnabled: { index: 0, enabled: true },
+  deleteValueVariable: 0,
+  updateExperiment: {},
+  updateExperimentName: '',
+  updateExperimentDescription: '',
+  updateConfiguration: initialState.experiment.optimizerConfig,
+  updateDataPoints: initialState.experiment.dataPoints,
+  updateSuggestionCount: '',
+  copySuggestedToDataPoints: [],
+  'experiment/toggleMultiObjective': undefined,
+  'experiment/setConstraintSum': 0,
+  'experiment/addVariableToConstraintSum': '',
+  'experiment/removeVariableFromConstraintSum': '',
 }

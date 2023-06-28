@@ -18,6 +18,7 @@ import {
   createDataPoints,
   createScoreVariable,
   createValueVariable,
+  allExperimentActions,
 } from '@core/context/experiment/test-utils'
 
 describe('experiment reducer', () => {
@@ -1084,26 +1085,16 @@ describe('experiment reducer', () => {
   })
 
   it('should increment version for all actions except updateExperiment', () => {
-    const actions: ExperimentAction[] = [
-      { type: 'setSwVersion', payload: '' },
-      {
-        type: 'registerResult',
-        payload: {
-          id: 'myExperiment',
-          next: [[1, 2, 3, 'Red']],
-          pickled: 'pickled',
-          expectedMinimum: [],
-          extras: {},
-          plots: [{ id: 'sample', plot: 'base64encodedData' }],
-        },
-      },
-      { type: 'updateExperimentDescription', payload: 'New description' },
-    ]
-    actions.forEach(action => {
-      expect(rootReducer(initState, action).experiment.info.version).toEqual(
-        initState.experiment.info.version + 1
-      )
-    })
+    Object.entries(allExperimentActions)
+      .filter(([k]) => k !== 'updateExperiment')
+      .forEach(([k, v]) => {
+        expect(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          rootReducer(initState, { type: k, payload: v }).experiment.info
+            .version
+        ).toEqual(initState.experiment.info.version + 1)
+      })
   })
 
   it('should not increment version for updateExperiment', () => {
@@ -1111,6 +1102,7 @@ describe('experiment reducer', () => {
       { type: 'updateExperiment', payload: initState.experiment },
     ]
     actions.forEach(action => {
+      console.log()
       expect(rootReducer(initState, action).experiment.info.version).toEqual(
         initState.experiment.info.version
       )
