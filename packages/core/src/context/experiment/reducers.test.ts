@@ -8,7 +8,7 @@ import {
   OptimizerConfig,
   ValueVariableType,
 } from '@core/common/types'
-import { emptyExperiment, initialState, State } from '@core/context/experiment'
+import { emptyExperiment, State } from '@core/context/experiment'
 import { versionInfo } from '@core/common'
 import { expect } from 'vitest'
 import _ from 'lodash'
