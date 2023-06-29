@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 2.8.1
+
+### Patch Changes
+
+- 70fd96c: Update Immer to v10
+
 ## 2.8.0
 
 ### Minor Changes
