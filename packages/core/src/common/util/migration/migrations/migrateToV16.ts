@@ -1,5 +1,5 @@
 import { ExperimentType } from '@core/common/types'
-import produce from 'immer'
+import { produce } from 'immer'
 
 export const migrateToV16 = (json: ExperimentType): ExperimentType => {
   return produce(json, draft => {

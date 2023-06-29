@@ -15,7 +15,7 @@ import {
   calculateConstraints,
 } from './converters'
 import { createValueVariable } from '@core/context/experiment/test-utils'
-import produce from 'immer'
+import { produce } from 'immer'
 
 describe('converters', () => {
   const sampleDataPoints: DataEntry[] = [

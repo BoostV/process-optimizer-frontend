@@ -20,7 +20,7 @@
     "@boostv/process-optimizer-frontend-plots": "*",
     "@boostv/process-optimizer-frontend-ui": "*",
     "@types/recharts": "^1.8.24",
-    "immer": "^9.0.19",
+    "immer": "^10.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",

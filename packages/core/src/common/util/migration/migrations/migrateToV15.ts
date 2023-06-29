@@ -1,5 +1,5 @@
 import { ExperimentType } from '@core/common/types'
-import produce from 'immer'
+import { produce } from 'immer'
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export const migrateToV15 = (json: any): ExperimentType =>
   produce(
