@@ -1,5 +1,13 @@
 # @process-optimizer-frontend/sample-app
 
+## 1.14.1
+
+### Patch Changes
+
+- 70fd96c: Update Immer to v10
+- Updated dependencies [70fd96c]
+  - @boostv/process-optimizer-frontend-core@2.8.1
+
 ## 1.14.0
 
 ### Minor Changes
