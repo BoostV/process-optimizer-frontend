@@ -38,7 +38,7 @@
   "dependencies": {
     "@boostv/process-optimizer-frontend-api": "*",
     "compare-versions": "^4.1.3",
-    "immer": "^9.0.21",
+    "immer": "^10.0.2",
     "md5": "^2.3.0",
     "zod": "^3.21.4"
   },
