@@ -28,17 +28,13 @@
             "dataFormatVersion": {
               "type": "string",
               "const": "15"
-            },
-            "version": {
-              "type": "number"
             }
           },
           "required": [
             "name",
             "description",
             "swVersion",
-            "dataFormatVersion",
-            "version"
+            "dataFormatVersion"
           ],
           "additionalProperties": false
         },
