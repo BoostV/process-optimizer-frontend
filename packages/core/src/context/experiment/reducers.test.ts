@@ -12,7 +12,7 @@ import { emptyExperiment, State } from '@core/context/experiment'
 import { versionInfo } from '@core/common'
 import { expect } from 'vitest'
 import _ from 'lodash'
-import produce from 'immer'
+import { produce } from 'immer'
 import {
   createCategoricalVariable,
   createDataPoints,
