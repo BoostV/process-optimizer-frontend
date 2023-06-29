@@ -1,5 +1,13 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.7.1
+
+### Patch Changes
+
+- dd74832: Resize plots
+- Updated dependencies [4ae01df]
+  - @boostv/process-optimizer-frontend-core@2.8.0
+
 ## 2.7.0
 
 ### Minor Changes

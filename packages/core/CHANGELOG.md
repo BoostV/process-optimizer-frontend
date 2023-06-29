@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 2.8.0
+
+### Minor Changes
+
+- 4ae01df: Add version and extras data to info
+
 ## 2.7.0
 
 ### Minor Changes
