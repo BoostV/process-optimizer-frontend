@@ -2,9 +2,12 @@ import {
   CategoricalVariableType,
   DataEntry,
   DataPointType,
+  ExperimentResultType,
   ScoreVariableType,
   ValueVariableType,
 } from '@core/common'
+import { ExperimentAction } from './experiment-reducers'
+import { initialState } from './store'
 
 export const createValueVariable = (input: Partial<ValueVariableType>) =>
   ({
@@ -76,4 +79,55 @@ export const createDataPoints = (
     }))
   }
   return data
+}
+
+type Payloads = {
+  [key in ExperimentAction['type']]: key extends 'experiment/toggleMultiObjective'
+    ? undefined
+    : Extract<
+        Exclude<ExperimentAction, { type: 'experiment/toggleMultiObjective' }>,
+        { type: key }
+      >['payload']
+}
+
+/**
+ * An object containing a dummy payload for all experiment actions.
+ * If new action types are added, the type checker should cause a compile time
+ * error indicating that the type should be added to this object.
+ */
+export const dummyPayloads: Payloads = {
+  setSwVersion: '123',
+  registerResult: {
+    id: 'myExperiment',
+    next: [[1, 2, 3, 'Red']],
+    pickled: 'pickled',
+    expectedMinimum: [],
+    extras: {},
+    plots: [{ id: 'sample', plot: 'base64encodedData' }],
+  } satisfies ExperimentResultType,
+  addCategorialVariable: createCategoricalVariable({}),
+  editCategoricalVariable: {
+    index: 0,
+    newVariable: createCategoricalVariable({}),
+  },
+  setCategoricalVariableEnabled: { index: 0, enabled: true },
+  deleteCategorialVariable: 0,
+  addValueVariable: createValueVariable({}),
+  editValueVariable: {
+    index: 0,
+    newVariable: createValueVariable({}),
+  },
+  setValueVariableEnabled: { index: 0, enabled: true },
+  deleteValueVariable: 0,
+  updateExperiment: initialState.experiment,
+  updateExperimentName: '',
+  updateExperimentDescription: '',
+  updateConfiguration: initialState.experiment.optimizerConfig,
+  updateDataPoints: initialState.experiment.dataPoints,
+  updateSuggestionCount: '',
+  copySuggestedToDataPoints: [],
+  'experiment/toggleMultiObjective': undefined,
+  'experiment/setConstraintSum': 0,
+  'experiment/addVariableToConstraintSum': '',
+  'experiment/removeVariableFromConstraintSum': '',
 }

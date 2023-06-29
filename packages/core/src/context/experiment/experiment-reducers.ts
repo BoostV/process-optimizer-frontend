@@ -456,6 +456,7 @@ export const experimentReducer = produce(
     state.changedSinceLastEvaluation =
       state.lastEvaluationHash !==
       md5(JSON.stringify(createFetchExperimentResultRequest(state)))
+    state.info.version = state.info.version + 1
   }
 )
 const updateNamesInConstraints = (

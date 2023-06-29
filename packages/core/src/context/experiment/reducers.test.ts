@@ -18,6 +18,7 @@ import {
   createDataPoints,
   createScoreVariable,
   createValueVariable,
+  dummyPayloads,
 } from '@core/context/experiment/test-utils'
 
 describe('experiment reducer', () => {
@@ -30,6 +31,8 @@ describe('experiment reducer', () => {
         name: 'Cake',
         description: 'Yummy',
         dataFormatVersion: currentVersion,
+        version: 2,
+        extras: {},
       },
       categoricalVariables: [
         {
@@ -116,6 +119,8 @@ describe('experiment reducer', () => {
           name: 'Not cake',
           description: 'Not yummy',
           dataFormatVersion: currentVersion,
+          version: 42,
+          extras: {},
         },
         categoricalVariables: [
           {
@@ -1079,5 +1084,31 @@ describe('experiment reducer', () => {
       }
     )
     expect(actual.experiment.optimizerConfig.xi).toBe(0.1)
+  })
+
+  it('should increment version for all actions except updateExperiment', () => {
+    Object.entries(dummyPayloads)
+      .filter(([k]) => k !== 'updateExperiment')
+      .forEach(([k, v]) => {
+        expect(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          rootReducer(initState, { type: k, payload: v }).experiment.info
+            .version
+        ).toEqual(initState.experiment.info.version + 1)
+      })
+  })
+
+  it('should not increment version for updateExperiment', () => {
+    Object.entries(dummyPayloads)
+      .filter(([k]) => k === 'updateExperiment')
+      .forEach(([k, v]) => {
+        expect(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          rootReducer(initState, { type: k, payload: v }).experiment.info
+            .version
+        ).toEqual(dummyPayloads.updateExperiment.info.version)
+      })
   })
 })
