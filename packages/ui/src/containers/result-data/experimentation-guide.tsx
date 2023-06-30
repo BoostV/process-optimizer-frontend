@@ -2,9 +2,9 @@ import {
   useSelector,
   useExperiment,
   selectExpectedMinimum,
-  selectVariableNames,
   selectNextExperimentValues,
   selectIsInitializing,
+  selectActiveVariableNames,
 } from '@boostv/process-optimizer-frontend-core'
 import {
   Tooltip,
@@ -62,7 +62,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   } = useExperiment()
 
   const nextValues = useSelector(selectNextExperimentValues)
-  const headers = useSelector(selectVariableNames)
+  const headers = useSelector(selectActiveVariableNames)
   const expectedMinimum = useSelector(selectExpectedMinimum)
   const isInitializing = useSelector(selectIsInitializing)
 
