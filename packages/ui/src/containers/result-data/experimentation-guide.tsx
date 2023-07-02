@@ -104,7 +104,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       />
     </Box>
   ) : (
-    <Box p={2}>Please run experiment</Box>
+    <Box p={2}>Please run optimizer</Box>
   )
   return (
     <TitleCard
@@ -144,7 +144,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       <Box p={2}>
         {!nextValues ||
           (nextValues.length === 0 && (
-            <Box p={2}>Please run experiment to calculate suggestions</Box>
+            <Box p={2}>Please run optimizer to calculate suggestions</Box>
           ))}
         <Suggestions
           values={nextValues}
