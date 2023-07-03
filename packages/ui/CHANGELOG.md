@@ -1,5 +1,16 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.8.0
+
+### Minor Changes
+
+- 3e2da20: Fix experimentation guide state and xi calculation
+
+### Patch Changes
+
+- Updated dependencies [3e2da20]
+  - @boostv/process-optimizer-frontend-core@2.9.0
+
 ## 2.7.1
 
 ### Patch Changes
