@@ -7,7 +7,11 @@ import {
 } from '@mui/material'
 import { Check } from '@mui/icons-material'
 import { FC, useEffect, useState } from 'react'
-import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
+import {
+  ExperimentType,
+  selectActiveDataPoints,
+  useSelector,
+} from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
   experiment: ExperimentType
@@ -18,7 +22,7 @@ export const InitializationProgress: FC<Props> = ({
   experiment,
   onInitialPointsChange,
 }) => {
-  const { optimizerConfig, dataPoints } = experiment
+  const { optimizerConfig } = experiment
   const [editActive, setEditActive] = useState(false)
   const [initialPoints, setInitialPoints] = useState(
     optimizerConfig.initialPoints
@@ -27,10 +31,8 @@ export const InitializationProgress: FC<Props> = ({
     () => setInitialPoints(optimizerConfig.initialPoints),
     [optimizerConfig.initialPoints]
   )
-  const progress =
-    (dataPoints.filter(d => d.meta.enabled && d.meta.valid).length /
-      optimizerConfig.initialPoints) *
-    100.0
+  const dataPoints = useSelector(selectActiveDataPoints)
+  const progress = (dataPoints.length / optimizerConfig.initialPoints) * 100.0
   const handleInitialPointsChanged = (newValue: number) =>
     onInitialPointsChange(newValue)
 
@@ -75,8 +77,7 @@ export const InitializationProgress: FC<Props> = ({
           sx={{ cursor: 'pointer' }}
           onClick={() => setEditActive(!editActive)}
         >
-          {dataPoints.filter(d => d.meta.enabled && d.meta.valid).length}/
-          {optimizerConfig.initialPoints}
+          {dataPoints.length}/{optimizerConfig.initialPoints}
         </Typography>
         <Typography variant="caption">data points added</Typography>
       </Box>

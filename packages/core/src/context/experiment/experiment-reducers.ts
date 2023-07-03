@@ -12,7 +12,10 @@ import { produce } from 'immer'
 import md5 from 'md5'
 import { settings, versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
-import { selectNextValues } from './experiment-selectors'
+import {
+  selectActiveDataPoints,
+  selectNextValues,
+} from './experiment-selectors'
 import { createFetchExperimentResultRequest } from '@core/context/experiment/api'
 
 const calculateInitialPoints = (state: ExperimentType) =>
@@ -45,12 +48,15 @@ const defaultSorted = (
 
 // Note: This calculation assumes the correct order of scores ("score" as the first entry) as sorted by the defaultSorted function
 const calculateXi = (state: ExperimentType) => {
-  const bestScore = Math.max(
-    ...state.dataPoints
-      .filter(dp => dp.meta.valid && dp.meta.enabled)
-      .map(d => d.data.filter(fd => fd.type === 'score')[0])
-      .map(s => (s ? Number(s.value) : 0))
-  )
+  const dataPoints = selectActiveDataPoints({ experiment: state })
+  const bestScore =
+    dataPoints.length === 0
+      ? 0
+      : Math.max(
+          ...dataPoints
+            .map(d => d.data.filter(fd => fd.type === 'score')[0])
+            .map(s => (s ? Number(s.value) : 0))
+        )
   return (
     // *1000 to avoid floating point errors, e.g. 5 - 4.8 = 0.20..18
     Math.max(0.1, (settings.maxRating * 1000 - bestScore * 1000) / 1000)
