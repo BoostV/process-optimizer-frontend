@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 2.9.0
+
+### Minor Changes
+
+- 3e2da20: Fix experimentation guide state and xi calculation
+
 ## 2.8.1
 
 ### Patch Changes
