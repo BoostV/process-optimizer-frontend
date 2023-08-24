@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ExperimentType, experimentSchema } from '@core/common/types'
 
-import compareVersions from 'compare-versions'
+import { compareVersions } from 'compare-versions'
 import {
   migrateToV3,
   migrateToV4,
