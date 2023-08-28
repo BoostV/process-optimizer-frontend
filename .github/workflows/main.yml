@@ -62,10 +62,10 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           # generate Docker tags based on the following events/attributes
           tags: |
+            type=match,pattern=.+process-optimizer-frontend-sample-app@(.*),group=1
             type=schedule
             type=ref,event=branch
             type=ref,event=pr
-            type=match,pattern=@boostv/process-optimizer-frontend-sample-app@(.*),group=1
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}.{{minor}}
