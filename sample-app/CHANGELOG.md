@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/sample-app
 
+## 2.0.2
+
+### Patch Changes
+
+- 8472fd4: Tag release
+
 ## 2.0.1
 
 ### Patch Changes
