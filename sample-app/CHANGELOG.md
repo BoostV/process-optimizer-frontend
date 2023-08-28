@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/sample-app
 
+## 2.0.0
+
+### Major Changes
+
+- 2ba665c: Promote sample app to main UI branch
+
 ## 1.14.1
 
 ### Patch Changes
