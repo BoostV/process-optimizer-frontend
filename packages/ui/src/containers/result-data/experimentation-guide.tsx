@@ -103,6 +103,8 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           .map(p => p.plot)}
       />
     </Box>
+  ) : loading ? (
+    <></>
   ) : (
     <Box p={2}>Please run optimizer</Box>
   )
