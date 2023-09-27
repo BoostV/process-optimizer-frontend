@@ -1,8 +1,8 @@
 import { initialState, State } from '@core/context/experiment/store'
 import {
   selectCalculatedSuggestionCount,
-  selectCalculatedSuggestionCountFromExperiment,
   selectId,
+  selectIsConstraintActive,
   selectIsInitializing,
   selectIsMultiObjective,
   selectIsSuggestionCountEditable,
@@ -146,6 +146,30 @@ describe('Experiment selectors', () => {
               experimentSuggestionCount: suggestionCount,
             },
           },
+        })
+        expect(editable).toBe(result)
+      }
+    )
+  })
+
+  describe('selectIsConstraintActive', () => {
+    it.each([
+      [['a', 'b', 'c'], true],
+      [['a', 'b'], true],
+      [['a'], false],
+      [[], false],
+    ])(
+      'should return true when number of sum constraint variables > 1',
+      (dimensions, result) => {
+        const editable = selectIsConstraintActive({
+          ...initialState.experiment,
+          constraints: [
+            {
+              type: 'sum',
+              value: 100,
+              dimensions,
+            },
+          ],
         })
         expect(editable).toBe(result)
       }
