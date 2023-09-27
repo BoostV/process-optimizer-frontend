@@ -1,5 +1,14 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.8.1
+
+### Patch Changes
+
+- 44a5474: Improve calculation of the number of experiments to suggest
+- 204abcf: Hide run message while loading
+- Updated dependencies [44a5474]
+  - @boostv/process-optimizer-frontend-core@2.9.1
+
 ## 2.8.0
 
 ### Minor Changes
