@@ -129,7 +129,7 @@ describe('Experiment selectors', () => {
       //data points > initial points, constraint NOT active -> suggestionCount
       [2, 1, [], suggestionCount],
     ])(
-      'should be true when data points < intial points or constraints are active',
+      'should return correct value',
       (dataPoints, initialPoints, constraints, result) => {
         const editable = selectCalculatedSuggestionCount({
           ...initialState,
