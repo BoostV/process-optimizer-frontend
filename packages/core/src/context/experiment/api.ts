@@ -9,6 +9,7 @@ import {
   calculateSpace,
   experimentResultSchema,
 } from '@core/common'
+import { selectCalculatedSuggestionCountFromExperiment } from './experiment-selectors'
 
 export const createFetchExperimentResultRequest = (
   experiment: ExperimentType
@@ -25,7 +26,11 @@ export const createFetchExperimentResultRequest = (
         experiment.scoreVariables,
         experiment.dataPoints
       ),
-      extras: extras,
+      extras: {
+        ...extras,
+        experimentSuggestionCount:
+          selectCalculatedSuggestionCountFromExperiment(experiment),
+      },
       optimizerConfig: {
         acqFunc: cfg.acqFunc,
         baseEstimator: cfg.baseEstimator,

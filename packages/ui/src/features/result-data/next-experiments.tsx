@@ -1,30 +1,18 @@
 import { TextField, Tooltip } from '@mui/material'
 import { ChangeEvent, FC } from 'react'
 import {
-  ExperimentType,
-  selectActiveDataPoints,
-  selectSumConstraint,
+  selectIsSuggestionCountEditable,
+  selectCalculatedSuggestionCount,
   useSelector,
 } from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
-  experiment: ExperimentType
   onSuggestionChange: (suggestionCount: string) => void
 }
 
-export const NextExperiments: FC<Props> = ({
-  experiment,
-  onSuggestionChange,
-}) => {
-  const sumConstraint = useSelector(selectSumConstraint)
-  const constraints = sumConstraint?.dimensions.length ?? 0
-  const dataPoints = useSelector(selectActiveDataPoints)
-  const initialPoints = experiment.optimizerConfig.initialPoints
-  const isSuggestionCountDisabled =
-    dataPoints.length >= initialPoints && constraints > 1
-
-  const suggestionCount: number =
-    (experiment.extras['experimentSuggestionCount'] as number) ?? 1
+export const NextExperiments: FC<Props> = ({ onSuggestionChange }) => {
+  const isSuggestionCountEditable = useSelector(selectIsSuggestionCountEditable)
+  const suggestionCount = useSelector(selectCalculatedSuggestionCount)
 
   const handleSuggestionChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -33,9 +21,9 @@ export const NextExperiments: FC<Props> = ({
   return (
     <Tooltip
       title={
-        isSuggestionCountDisabled
-          ? 'Number of suggested experiments cannot be edited while there is a sum constraint.'
-          : ''
+        isSuggestionCountEditable
+          ? ''
+          : 'Number of suggested experiments cannot be edited while there is a sum constraint.'
       }
       disableInteractive
     >
@@ -46,7 +34,7 @@ export const NextExperiments: FC<Props> = ({
         label="Suggestions"
         size="small"
         onChange={handleSuggestionChange}
-        disabled={isSuggestionCountDisabled}
+        disabled={!isSuggestionCountEditable}
       />
     </Tooltip>
   )
