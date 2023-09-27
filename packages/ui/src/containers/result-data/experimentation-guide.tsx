@@ -169,7 +169,6 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         {!isInitializing && (
           <Box width={160}>
             <NextExperiments
-              experiment={experiment}
               onSuggestionChange={suggestionCount =>
                 dispatchExperiment({
                   type: 'updateSuggestionCount',

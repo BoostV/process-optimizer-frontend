@@ -13,7 +13,11 @@ export const selectDataPoints = (state: State) =>
   selectExperiment(state).dataPoints
 
 export const selectActiveDataPoints = (state: State) =>
-  selectExperiment(state).dataPoints.filter(d => d.meta.valid && d.meta.enabled)
+  selectActiveDataPointsFromExperiment(selectExperiment(state))
+
+export const selectActiveDataPointsFromExperiment = (
+  experiment: ExperimentType
+) => experiment.dataPoints.filter(d => d.meta.valid && d.meta.enabled)
 
 export const selectExpectedMinimum = (state: State) =>
   selectExperiment(state).results.expectedMinimum
@@ -51,7 +55,50 @@ export const selectActiveVariableNames = (state: State): string[] => {
     )
 }
 
-export const selectSumConstraint = (state: State) => {
-  const experiment = selectExperiment(state)
-  return experiment.constraints.find(c => c.type === 'sum')
+export const selectSumConstraint = (state: State) =>
+  selectSumConstraintFromExperiment(selectExperiment(state))
+
+export const selectSumConstraintFromExperiment = (experiment: ExperimentType) =>
+  experiment.constraints.find(c => c.type === 'sum')
+
+export const selectIsConstraintActive = (experiment: ExperimentType) =>
+  (selectSumConstraintFromExperiment(experiment)?.dimensions.length ?? 0) > 1
+
+export const selectInitialPoints = (state: State) =>
+  selectInitialPointsFromExperiment(selectExperiment(state))
+
+export const selectInitialPointsFromExperiment = (experiment: ExperimentType) =>
+  experiment.optimizerConfig.initialPoints
+
+export const selectIsSuggestionCountEditable = (state: State) => {
+  const dataPoints = selectActiveDataPoints(state)
+  const initialPoints = selectInitialPoints(state)
+  return (
+    dataPoints.length < initialPoints ||
+    !selectIsConstraintActive(selectExperiment(state))
+  )
+}
+
+export const selectSuggestionCountFromExperiment = (
+  experiment: ExperimentType
+) =>
+  Number.isInteger(experiment.extras['experimentSuggestionCount'])
+    ? Number(experiment.extras['experimentSuggestionCount'])
+    : 1
+
+export const selectCalculatedSuggestionCount = (state: State) =>
+  selectCalculatedSuggestionCountFromExperiment(selectExperiment(state))
+
+export const selectCalculatedSuggestionCountFromExperiment = (
+  experiment: ExperimentType
+) => {
+  const dataPoints = selectActiveDataPointsFromExperiment(experiment).length
+  const initialPoints = selectInitialPointsFromExperiment(experiment)
+
+  if (dataPoints < initialPoints) {
+    return initialPoints
+  } else if (selectIsConstraintActive(experiment)) {
+    return 1
+  }
+  return selectSuggestionCountFromExperiment(experiment)
 }

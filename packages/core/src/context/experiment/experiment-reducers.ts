@@ -63,17 +63,6 @@ const calculateXi = (state: ExperimentType) => {
   )
 }
 
-const calculateExperimentSuggestionCount = (state: ExperimentType) => {
-  const dataPoints = state.dataPoints.filter(
-    d => d.meta.enabled && d.meta.valid
-  ).length
-  const initialPoints = state.optimizerConfig.initialPoints
-  if (dataPoints >= initialPoints) {
-    return 1
-  }
-  return initialPoints
-}
-
 export type ExperimentAction =
   | {
       type: 'setSwVersion'
@@ -371,8 +360,6 @@ export const experimentReducer = produce(
         state.optimizerConfig = experimentSchema.shape.optimizerConfig.parse(
           action.payload
         )
-        state.extras.experimentSuggestionCount =
-          calculateExperimentSuggestionCount(state)
         break
       case 'registerResult':
         state.lastEvaluationHash = md5(
@@ -388,8 +375,6 @@ export const experimentReducer = produce(
           state.scoreVariables,
           action.payload
         )
-        state.extras.experimentSuggestionCount =
-          calculateExperimentSuggestionCount(state)
         state.optimizerConfig.xi = calculateXi(state)
         break
       case 'experiment/toggleMultiObjective':
@@ -441,8 +426,6 @@ export const experimentReducer = produce(
             dimensions: [action.payload],
           })
         }
-        state.extras.experimentSuggestionCount =
-          calculateExperimentSuggestionCount(state)
         break
       }
       case 'experiment/removeVariableFromConstraintSum': {
@@ -452,8 +435,7 @@ export const experimentReducer = produce(
             d => d !== action.payload
           )
         }
-        state.extras.experimentSuggestionCount =
-          calculateExperimentSuggestionCount(state)
+
         break
       }
       default:

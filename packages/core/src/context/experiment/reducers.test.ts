@@ -250,33 +250,9 @@ describe('experiment reducer', () => {
         }).experiment.constraints.find(c => c.type === 'sum')
         expect(actual?.dimensions).toContain('name')
       })
-
-      it('should set suggestion count to 1 when adding variable if data points >= initialPoints', () => {
-        const actual = rootReducer(
-          {
-            ...initState,
-            experiment: {
-              ...initState.experiment,
-              optimizerConfig: {
-                ...initState.experiment.optimizerConfig,
-                initialPoints: 1,
-              },
-              extras: {
-                ...initState.experiment.extras,
-                experimentSuggestionCount: 7,
-              },
-            },
-          },
-          {
-            type: 'experiment/addVariableToConstraintSum',
-            payload: 'name',
-          }
-        )
-        expect(actual.experiment.extras.experimentSuggestionCount).toBe(1)
-      })
     })
 
-    describe('removeVariableToConstraintSum', () => {
+    describe('removeVariableFromConstraintSum', () => {
       it('should remove variable from dimension of constraint', () => {
         const stateWithConstraint = rootReducer(initState, {
           type: 'experiment/addVariableToConstraintSum',
@@ -287,30 +263,6 @@ describe('experiment reducer', () => {
           payload: 'name',
         }).experiment.constraints.find(c => c.type === 'sum')
         expect(actual?.dimensions).not.toContain('name')
-      })
-
-      it('should set suggestion count to 1 when removing variable if data points >= initialPoints', () => {
-        const actual = rootReducer(
-          {
-            ...initState,
-            experiment: {
-              ...initState.experiment,
-              optimizerConfig: {
-                ...initState.experiment.optimizerConfig,
-                initialPoints: 1,
-              },
-              extras: {
-                ...initState.experiment.extras,
-                experimentSuggestionCount: 7,
-              },
-            },
-          },
-          {
-            type: 'experiment/removeVariableFromConstraintSum',
-            payload: 'name',
-          }
-        )
-        expect(actual.experiment.extras.experimentSuggestionCount).toBe(1)
       })
     })
   })
@@ -729,18 +681,6 @@ describe('experiment reducer', () => {
       expect(actual.optimizerConfig).toMatchObject(payload)
     })
 
-    it('should set suggested experiments to intial points if length of datapoints is less than initial points', () => {
-      const payload: OptimizerConfig = {
-        ...emptyExperiment.optimizerConfig,
-        initialPoints: 4,
-      }
-      const actual = rootReducer(initState, {
-        type: 'updateConfiguration',
-        payload,
-      }).experiment
-      expect(actual.extras.experimentSuggestionCount).toEqual(4)
-    })
-
     it('should not change suggested experiments when changing initial points to something less than length of data points', () => {
       const payload: OptimizerConfig = {
         ...emptyExperiment.optimizerConfig,
@@ -794,35 +734,6 @@ describe('experiment reducer', () => {
       }
       const actual = rootReducer(initState, action).experiment
       expect(actual.dataPoints).toEqual(payload)
-    })
-
-    it('should set suggested experiments to 1 when adding the nth data point where n = initial points', () => {
-      const testState = produce(initState, draft => {
-        draft.experiment.extras = { experimentSuggestionCount: 3 }
-      })
-
-      const action: ExperimentAction = {
-        type: 'updateDataPoints',
-        payload: createDataPoints(3),
-      }
-      const actual = rootReducer(testState, action).experiment
-      expect(actual.extras.experimentSuggestionCount).toEqual(1)
-    })
-
-    it('should set suggested experiments to initial points when removing the nth data point where n = initial points', () => {
-      const testState = produce(initState, draft => {
-        draft.experiment.extras = { experimentSuggestionCount: 1 }
-        draft.experiment.dataPoints = createDataPoints(3)
-      })
-      const action: ExperimentAction = {
-        type: 'updateDataPoints',
-        payload: createDataPoints(2),
-      }
-
-      expect(
-        rootReducer(testState, action).experiment.extras
-          .experimentSuggestionCount
-      ).toEqual(3)
     })
 
     it.each(new Array(100).fill(0))(
