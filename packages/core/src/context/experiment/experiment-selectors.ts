@@ -81,7 +81,8 @@ export const selectIsSuggestionCountEditable = (state: State) => {
 
 export const selectSuggestionCountFromExperiment = (
   experiment: ExperimentType
-) => Number.isInteger(experiment.extras['experimentSuggestionCount'])
+) =>
+  Number.isInteger(experiment.extras['experimentSuggestionCount'])
     ? Number(experiment.extras['experimentSuggestionCount'])
     : 1
 
