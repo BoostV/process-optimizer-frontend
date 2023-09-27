@@ -9,7 +9,7 @@ import {
 } from './experiment-selectors'
 import { rootReducer } from './reducers'
 import { createDataPoints } from './test-utils'
-import { ConstraintTypeEnum } from '@boostv/process-optimizer-frontend-api'
+import { ExperimentType } from '@core/common'
 
 describe('Experiment selectors', () => {
   let state: State
@@ -66,9 +66,9 @@ describe('Experiment selectors', () => {
   })
 
   describe('selectIsSuggestionCountEditable', () => {
-    const constraints = [
+    const constraints: ExperimentType['constraints'] = [
       {
-        type: ConstraintTypeEnum.Sum,
+        type: 'sum',
         dimensions: ['a', 'b'],
         value: 100,
       },
@@ -108,9 +108,9 @@ describe('Experiment selectors', () => {
 
   describe('selectCalculatedSuggestionCount', () => {
     const suggestionCount = 5
-    const constraints = [
+    const constraints: ExperimentType['constraints'] = [
       {
-        type: ConstraintTypeEnum.Sum,
+        type: 'sum',
         dimensions: ['a', 'b'],
         value: 100,
       },
