@@ -1,10 +1,15 @@
 import { initialState, State } from '@core/context/experiment/store'
 import {
+  selectCalculatedSuggestionCount,
+  selectCalculatedSuggestionCountFromExperiment,
   selectId,
   selectIsInitializing,
   selectIsMultiObjective,
+  selectIsSuggestionCountEditable,
 } from './experiment-selectors'
 import { rootReducer } from './reducers'
+import { createDataPoints } from './test-utils'
+import { ConstraintTypeEnum } from '@boostv/process-optimizer-frontend-api'
 
 describe('Experiment selectors', () => {
   let state: State
@@ -58,5 +63,92 @@ describe('Experiment selectors', () => {
       expect(after1stToggle).toEqual(!before)
       expect(after2ndToggle).toEqual(before)
     })
+  })
+
+  describe('selectIsSuggestionCountEditable', () => {
+    const constraints = [
+      {
+        type: ConstraintTypeEnum.Sum,
+        dimensions: ['a', 'b'],
+        value: 100,
+      },
+    ]
+    it.each([
+      //data points < initial points, constraint active
+      [1, 2, constraints, true],
+      //data points < initial points, constraint NOT active
+      [1, 2, [], true],
+      //data points = initial points, constraint active
+      [1, 1, constraints, false],
+      //data points = initial points, constraint NOT active
+      [1, 1, [], true],
+      //data points > initial points, constraint active
+      [2, 1, constraints, false],
+      //data points > initial points, constraint NOT active
+      [2, 1, [], true],
+    ])(
+      'should be true when data points < intial points or constraints are active',
+      (dataPoints, initialPoints, constraints, result) => {
+        const editable = selectIsSuggestionCountEditable({
+          ...initialState,
+          experiment: {
+            ...initialState.experiment,
+            dataPoints: createDataPoints(dataPoints),
+            optimizerConfig: {
+              ...initialState.experiment.optimizerConfig,
+              initialPoints,
+            },
+            constraints,
+          },
+        })
+        expect(editable).toBe(result)
+      }
+    )
+  })
+
+  describe('selectCalculatedSuggestionCount', () => {
+    const suggestionCount = 5
+    const constraints = [
+      {
+        type: ConstraintTypeEnum.Sum,
+        dimensions: ['a', 'b'],
+        value: 100,
+      },
+    ]
+    it.each([
+      //data points < initial points, constraint active -> initial points
+      [1, 2, constraints, 2],
+      //data points < initial points, constraint NOT active -> initial points
+      [1, 2, [], 2],
+      //data points = initial points, constraint active -> 1
+      [1, 1, constraints, 1],
+      //data points = initial points, constraint NOT active -> suggestionCount
+      [1, 1, [], suggestionCount],
+      //data points > initial points, constraint active -> 1
+      [2, 1, constraints, 1],
+      //data points > initial points, constraint NOT active -> suggestionCount
+      [2, 1, [], suggestionCount],
+    ])(
+      'should be true when data points < intial points or constraints are active',
+      (dataPoints, initialPoints, constraints, result) => {
+        const editable = selectCalculatedSuggestionCount({
+          ...initialState,
+          experiment: {
+            ...initialState.experiment,
+            dataPoints: createDataPoints(dataPoints),
+            optimizerConfig: {
+              ...initialState.experiment.optimizerConfig,
+              initialPoints,
+            },
+            constraints,
+            extras: {
+              ...initialState.experiment.extras,
+              experimentSuggestionCount: suggestionCount,
+            },
+          },
+        })
+        expect(editable).toBe(result)
+      }
+    )
   })
 })
