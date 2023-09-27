@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 2.9.1
+
+### Patch Changes
+
+- 44a5474: Improve calculation of the number of experiments to suggest
+
 ## 2.9.0
 
 ### Minor Changes
