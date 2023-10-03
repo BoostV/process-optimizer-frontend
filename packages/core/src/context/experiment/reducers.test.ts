@@ -845,7 +845,7 @@ describe('experiment reducer', () => {
       ])
     })
 
-    it('should only copy valid and enabled factors to data points', () => {
+    it('should only copy enabled variables to data points', () => {
       const action: ExperimentAction = {
         type: 'copySuggestedToDataPoints',
         payload: [0],
