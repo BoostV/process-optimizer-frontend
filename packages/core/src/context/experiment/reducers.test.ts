@@ -844,6 +844,53 @@ describe('experiment reducer', () => {
         { type: 'categorical', name: 'Icing', value: 'Chocolate' },
       ])
     })
+
+    it('should only copy valid and enabled factors to data points', () => {
+      const action: ExperimentAction = {
+        type: 'copySuggestedToDataPoints',
+        payload: [0],
+      }
+      const state: State = {
+        ...initState,
+        experiment: {
+          ...initState.experiment,
+          valueVariables: [
+            {
+              type: 'continuous',
+              name: 'Water',
+              description: 'Wet',
+              min: 100,
+              max: 200,
+              enabled: false,
+            },
+          ],
+          categoricalVariables: [
+            {
+              name: 'Icing',
+              description: '',
+              options: ['Vanilla', 'Chocolate'],
+              enabled: true,
+            },
+          ],
+          results: {
+            ...initState.experiment.results,
+            next: [['Vanilla'], ['Chocolate']],
+          },
+        },
+      }
+      const dp = rootReducer(state, action).experiment.dataPoints
+      expect(dp.length).toBe(2)
+      expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
+      expect(dp[dp.length - 1]?.meta.valid).toBeFalsy()
+      expect(dp[dp.length - 1]?.meta.id).toBe(2)
+      expect(dp[dp.length - 1]?.data).toEqual([
+        {
+          type: 'categorical',
+          name: 'Icing',
+          value: 'Vanilla',
+        },
+      ])
+    })
   })
 
   it('should add scores to new data point for multi-objective - two scores enabled', () => {

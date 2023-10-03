@@ -55,6 +55,21 @@ export const selectActiveVariableNames = (state: State): string[] => {
     )
 }
 
+export const selectActiveVariablesFromExperiment = (
+  experiment: ExperimentType
+) =>
+  experiment.valueVariables
+    .filter(v => v.enabled)
+    .map(v => ({ name: v.name, type: 'numeric' }))
+    .concat(
+      experiment.categoricalVariables
+        .filter(v => v.enabled)
+        .map(c => ({
+          name: c.name,
+          type: 'categorical',
+        }))
+    )
+
 export const selectSumConstraint = (state: State) =>
   selectSumConstraintFromExperiment(selectExperiment(state))
 

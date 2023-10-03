@@ -14,6 +14,7 @@ import { settings, versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
 import {
   selectActiveDataPoints,
+  selectActiveVariablesFromExperiment,
   selectNextValues,
 } from './experiment-selectors'
 import { createFetchExperimentResultRequest } from '@core/context/experiment/api'
@@ -185,14 +186,7 @@ export const experimentReducer = produce(
         break
       case 'copySuggestedToDataPoints': {
         const nextValues = selectNextValues(state)
-        const variables = state.valueVariables
-          .map(v => ({ name: v.name, type: 'numeric' }))
-          .concat(
-            state.categoricalVariables.map(c => ({
-              name: c.name,
-              type: 'categorical',
-            }))
-          )
+        const variables = selectActiveVariablesFromExperiment(state)
         const newEntries: DataEntry[] = nextValues
           .filter((_, i) => action.payload.includes(i))
           .map((n, k) => ({
