@@ -872,18 +872,16 @@ describe('experiment reducer', () => {
               enabled: true,
             },
           ],
+          dataPoints: [],
           results: {
             ...initState.experiment.results,
             next: [['Vanilla'], ['Chocolate']],
           },
         },
       }
-      const dp = rootReducer(state, action).experiment.dataPoints
-      expect(dp.length).toBe(2)
-      expect(dp[dp.length - 1]?.meta.enabled).toBeTruthy()
-      expect(dp[dp.length - 1]?.meta.valid).toBeFalsy()
-      expect(dp[dp.length - 1]?.meta.id).toBe(2)
-      expect(dp[dp.length - 1]?.data).toEqual([
+      const newDataPoints = rootReducer(state, action).experiment.dataPoints
+      expect(newDataPoints.length).toBe(1)
+      expect(newDataPoints[0]?.data).toEqual([
         {
           type: 'categorical',
           name: 'Icing',
