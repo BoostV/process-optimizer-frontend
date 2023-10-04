@@ -37,6 +37,7 @@ interface ResultDataProps {
   loadingMode?: 'skeleton' | 'overlay' | 'custom'
   warning?: string
   padding?: number
+  allowIndividualSuggestionCopy?: boolean
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
   onMouseLeaveExpand?: () => void
@@ -51,6 +52,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     warning,
     padding,
     loadingMode,
+    allowIndividualSuggestionCopy = true,
     toggleUISize,
     onMouseEnterExpand,
     onMouseLeaveExpand,
@@ -151,14 +153,12 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         <Suggestions
           values={nextValues}
           headers={headers}
-          onCopyToDataPoints={
-            !isInitializing
-              ? index =>
-                  dispatchExperiment({
-                    type: 'copySuggestedToDataPoints',
-                    payload: [index],
-                  })
-              : undefined
+          allowIndividualSuggestionCopy={allowIndividualSuggestionCopy}
+          onCopyToDataPoints={index =>
+            dispatchExperiment({
+              type: 'copySuggestedToDataPoints',
+              payload: [index],
+            })
           }
         />
       </Box>

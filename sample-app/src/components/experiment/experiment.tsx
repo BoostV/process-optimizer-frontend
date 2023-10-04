@@ -361,6 +361,7 @@ const LegacyExperiment = () => {
                         }
                         id="experimentation-guide"
                         isUIBig={isUIBig(uiSizes, 'result-data')}
+                        allowIndividualSuggestionCopy={!isInitializing}
                         toggleUISize={() =>
                           globalDispatch({
                             type: 'toggleUISize',

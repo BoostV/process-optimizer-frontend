@@ -14,12 +14,14 @@ import { MoveDown } from '@mui/icons-material'
 interface SuggestionsProps {
   values: string[][]
   headers: string[]
+  allowIndividualSuggestionCopy: boolean
   onCopyToDataPoints?: (index: number) => void
 }
 
 export const Suggestions = ({
   values,
   headers,
+  allowIndividualSuggestionCopy,
   onCopyToDataPoints,
 }: SuggestionsProps) => {
   const { classes } = useStyles()
@@ -34,7 +36,9 @@ export const Suggestions = ({
                 {headers.map((h, i) => (
                   <TableCell key={i}>{h}</TableCell>
                 ))}
-                {onCopyToDataPoints && <TableCell />}
+                {onCopyToDataPoints && allowIndividualSuggestionCopy && (
+                  <TableCell />
+                )}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -45,7 +49,7 @@ export const Suggestions = ({
                       {v}
                     </TableCell>
                   ))}
-                  {onCopyToDataPoints && (
+                  {onCopyToDataPoints && allowIndividualSuggestionCopy && (
                     <TableCell>
                       <Tooltip
                         disableInteractive
