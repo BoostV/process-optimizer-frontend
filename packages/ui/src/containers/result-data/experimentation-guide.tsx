@@ -151,11 +151,14 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         <Suggestions
           values={nextValues}
           headers={headers}
-          onCopyToDataPoints={index =>
-            dispatchExperiment({
-              type: 'copySuggestedToDataPoints',
-              payload: [index],
-            })
+          onCopyToDataPoints={
+            !isInitializing
+              ? index =>
+                  dispatchExperiment({
+                    type: 'copySuggestedToDataPoints',
+                    payload: [index],
+                  })
+              : undefined
           }
         />
       </Box>
