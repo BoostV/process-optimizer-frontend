@@ -1,4 +1,4 @@
-import { ExperimentType } from 'common'
+import { CombinedVariableType, ExperimentType } from 'common'
 import { State } from './store'
 
 export const selectExperiment = (state: State) => state.experiment
@@ -57,18 +57,24 @@ export const selectActiveVariableNames = (state: State): string[] => {
 
 export const selectActiveVariablesFromExperiment = (
   experiment: ExperimentType
-) =>
-  experiment.valueVariables
+) => {
+  const valueVars: CombinedVariableType[] = experiment.valueVariables
     .filter(v => v.enabled)
-    .map(v => ({ name: v.name, type: 'numeric' }))
-    .concat(
-      experiment.categoricalVariables
-        .filter(v => v.enabled)
-        .map(c => ({
-          name: c.name,
-          type: 'categorical',
-        }))
-    )
+    .map(v => ({
+      name: v.name,
+      description: v.description,
+      type: 'numeric',
+    }))
+  const catVars: CombinedVariableType[] = experiment.categoricalVariables
+    .filter(v => v.enabled)
+    .map(v => ({
+      name: v.name,
+      description: v.description,
+      type: 'options',
+      options: v.options,
+    }))
+  return valueVars.concat(catVars)
+}
 
 export const selectSumConstraint = (state: State) =>
   selectSumConstraintFromExperiment(selectExperiment(state))

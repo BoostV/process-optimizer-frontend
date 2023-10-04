@@ -208,7 +208,7 @@ export const experimentReducer = produce(
                       value: Number(v),
                       type: 'numeric',
                     }
-                  case 'categorical':
+                  case 'options':
                     return {
                       name: variable.name,
                       value: String(v),
