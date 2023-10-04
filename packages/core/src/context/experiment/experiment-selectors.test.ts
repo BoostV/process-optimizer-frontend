@@ -1,5 +1,6 @@
 import { initialState, State } from '@core/context/experiment/store'
 import {
+  selectActiveVariablesFromExperiment,
   selectCalculatedSuggestionCount,
   selectId,
   selectIsConstraintActive,
@@ -174,5 +175,49 @@ describe('Experiment selectors', () => {
         expect(editable).toBe(result)
       }
     )
+  })
+
+  describe('selectActiveVariablesFromExperiment', () => {
+    it('should filter out disabled variables', () => {
+      const experiment: ExperimentType = {
+        ...initialState.experiment,
+        valueVariables: [
+          {
+            name: 'Water',
+            description: '',
+            type: 'continuous',
+            min: 0,
+            max: 100,
+            enabled: true,
+          },
+          {
+            name: 'Cheese',
+            description: '',
+            type: 'discrete',
+            min: 0,
+            max: 100,
+            enabled: false,
+          },
+        ],
+        categoricalVariables: [
+          {
+            name: 'Icing',
+            description: '',
+            options: ['Vanilla', 'Chocolate'],
+            enabled: true,
+          },
+          {
+            name: 'Colour',
+            description: '',
+            options: ['Blue', 'Red'],
+            enabled: false,
+          },
+        ],
+      }
+      const activeVariables = selectActiveVariablesFromExperiment(experiment)
+      expect(activeVariables.length).toBe(2)
+      expect(activeVariables[0]?.name).toBe('Water')
+      expect(activeVariables[1]?.name).toBe('Icing')
+    })
   })
 })
