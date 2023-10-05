@@ -6,6 +6,7 @@ export const useStyles = makeStyles()(() => ({
   },
   cell: {
     minWidth: 48,
+    height: 32,
   },
 }))
 
