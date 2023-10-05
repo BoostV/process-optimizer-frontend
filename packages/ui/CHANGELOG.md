@@ -1,5 +1,16 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.9.0
+
+### Minor Changes
+
+- 53ac66a: Hide single copy of suggestions when initialising
+
+### Patch Changes
+
+- Updated dependencies [a4d75c6]
+  - @boostv/process-optimizer-frontend-core@2.9.2
+
 ## 2.8.1
 
 ### Patch Changes

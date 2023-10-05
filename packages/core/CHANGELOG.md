@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 2.9.2
+
+### Patch Changes
+
+- a4d75c6: Fix wrong variables being copied to data points
+
 ## 2.9.1
 
 ### Patch Changes
