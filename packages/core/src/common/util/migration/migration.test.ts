@@ -1,5 +1,6 @@
 import { JSONSchemaFaker } from 'json-schema-faker'
 import { migrate, _migrate, MIGRATIONS } from './migration'
+import version17 from './data-formats/17.json'
 import version16 from './data-formats/16.json'
 import version3 from './data-formats/3.json'
 import version2 from './data-formats/2.json'
@@ -11,8 +12,15 @@ import brokenV9Experiment from '@core/sample-data/version-9-with-strings-in-opti
 import large from '@core/sample-data/large.json'
 import { emptyExperiment } from '@core/context/experiment'
 import { formatNext } from './migrations/migrateToV9'
-import { experimentSchema } from '@core/common/types'
+import {
+  DataPointType,
+  ExperimentType,
+  ScoreVariableType,
+  experimentSchema,
+} from '@core/common/types'
 import { storeLatestSchema, loadTestData } from './test-utils'
+import { migrateToV17 } from './migrations/migrateToV17'
+import { satisfies } from 'compare-versions'
 
 describe('Migration of data format', () => {
   storeLatestSchema()
@@ -139,14 +147,131 @@ describe('Migration of data format', () => {
     })
   })
 
+  describe('migrateToV17', () => {
+    const scoreVarsMultiObjective = [
+      {
+        name: 'score',
+        description: 'score',
+        enabled: true,
+      },
+      {
+        name: 'score2',
+        description: 'score',
+        enabled: true,
+      },
+    ] satisfies ScoreVariableType[]
+
+    const scoreVarsMultiObjectiveDisabled = [
+      {
+        name: 'score',
+        description: 'score',
+        enabled: true,
+      },
+      {
+        name: 'score2',
+        description: 'score',
+        enabled: true,
+      },
+    ] satisfies ScoreVariableType[]
+
+    it.each([
+      ['multiobjective, all enabled', scoreVarsMultiObjective],
+      ['multiobjective, one disabled', scoreVarsMultiObjectiveDisabled],
+    ])('scoreVariables should be renamed, %s', (_, scoreVariables) => {
+      const experiment16 = {
+        ...version16,
+        scoreVariables,
+      } as unknown as ExperimentType
+      expect(migrateToV17(experiment16).scoreVariables).toEqual([
+        {
+          name: 'Quality',
+          description: 'Quality',
+          enabled: scoreVariables[0]?.enabled,
+        },
+        {
+          name: 'Quality2',
+          description: 'Quality',
+          enabled: scoreVariables[1]?.enabled,
+        },
+      ])
+    })
+
+    const dataPointsSingle = [...version16.dataPoints]
+    const dataPointsMulti = [...version16.dataPoints].map(dp => ({
+      ...dp,
+      data: [...dp.data].concat([
+        {
+          type: 'score',
+          name: 'score2',
+          value: 2,
+        },
+      ]),
+    }))
+
+    it.each([
+      ['one score exists', dataPointsSingle, false],
+      ['two scores exist', dataPointsMulti, true],
+    ])(
+      'data points should be renamed, %s',
+      (_, dataPoints, isMultiObjective) => {
+        const experiment16 = {
+          ...version16,
+          dataPoints,
+        } as unknown as ExperimentType
+        const actual = [
+          {
+            meta: {
+              enabled: true,
+              valid: true,
+              id: 1,
+            },
+            data: [
+              {
+                type: 'categorical',
+                name: 'Icing',
+                value: 'Brown',
+              },
+              {
+                type: 'numeric',
+                name: 'name1',
+                value: 10,
+              },
+              {
+                type: 'numeric',
+                name: 'name2',
+                value: 10.2,
+              },
+              {
+                type: 'score',
+                name: 'Quality',
+                value: 0.5,
+              },
+            ].concat(
+              isMultiObjective
+                ? [
+                    {
+                      type: 'score',
+                      name: 'Quality2',
+                      value: 2,
+                    },
+                  ]
+                : []
+            ),
+          },
+        ]
+        expect(migrateToV17(experiment16).dataPoints).toEqual(actual)
+      }
+    )
+  })
+
   describe('experiment properties', () => {
     //TODO: More/better tests - maybe this can be mabe obsolete by schema testing
     it('newest data format json should match default empty experiment', () => {
       expect(Object.keys(emptyExperiment).length).toBe(
-        Object.keys(version16).length
+        Object.keys(version17).length
       )
       Object.keys(emptyExperiment).forEach(p =>
-        expect(version16).toHaveProperty(p)
+        expect(version17).toHaveProperty(p)
       )
     })
   })

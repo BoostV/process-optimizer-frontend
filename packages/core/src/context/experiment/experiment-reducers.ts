@@ -379,7 +379,7 @@ export const experimentReducer = produce(
 
         if (state.scoreVariables.length < 2) {
           state.scoreVariables.push({
-            name: 'score2',
+            name: 'Quality',
             description: 'score 2',
             enabled: true,
           })
