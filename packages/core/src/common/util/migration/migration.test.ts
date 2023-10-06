@@ -17,6 +17,7 @@ import {
   ExperimentType,
   ScoreVariableType,
   experimentSchema,
+  scoreName,
 } from '@core/common/types'
 import { storeLatestSchema, loadTestData } from './test-utils'
 import { migrateToV17 } from './migrations/migrateToV17'
@@ -184,13 +185,13 @@ describe('Migration of data format', () => {
       } as unknown as ExperimentType
       expect(migrateToV17(experiment16).scoreVariables).toEqual([
         {
-          name: 'Quality',
-          description: 'Quality',
+          name: scoreName,
+          description: scoreName,
           enabled: scoreVariables[0]?.enabled,
         },
         {
-          name: 'Quality2',
-          description: 'Quality',
+          name: scoreName + '2',
+          description: scoreName,
           enabled: scoreVariables[1]?.enabled,
         },
       ])
@@ -243,7 +244,7 @@ describe('Migration of data format', () => {
               },
               {
                 type: 'score',
-                name: 'Quality',
+                name: scoreName,
                 value: 0.5,
               },
             ].concat(
@@ -251,7 +252,7 @@ describe('Migration of data format', () => {
                 ? [
                     {
                       type: 'score',
-                      name: 'Quality2',
+                      name: scoreName + '2',
                       value: 2,
                     },
                   ]

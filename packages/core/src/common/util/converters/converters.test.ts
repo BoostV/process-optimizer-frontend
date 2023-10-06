@@ -5,6 +5,7 @@ import {
   ExperimentType,
   ScoreVariableType,
   ValueVariableType,
+  scoreName,
 } from '@core/common/types'
 import { initialState } from '@core/context'
 import {
@@ -24,14 +25,14 @@ describe('converters', () => {
       { type: 'numeric', name: 'Peber', value: 982 },
       { type: 'numeric', name: 'Hvedemel', value: 632 },
       { type: 'categorical', name: 'Kunde', value: 'Mus' },
-      { type: 'score', name: 'score', value: 0.1 },
+      { type: 'score', name: scoreName, value: 0.1 },
     ] satisfies DataPointType[],
     [
       { type: 'numeric', name: 'Sukker', value: 15 },
       { type: 'numeric', name: 'Peber', value: 123 },
       { type: 'numeric', name: 'Hvedemel', value: 324 },
       { type: 'categorical', name: 'Kunde', value: 'Ræv' },
-      { type: 'score', name: 'score', value: 0.2 },
+      { type: 'score', name: scoreName, value: 0.2 },
     ] satisfies DataPointType[],
   ].map((data, idx) => ({
     meta: { enabled: true, id: idx + 1, valid: true },
@@ -43,16 +44,16 @@ describe('converters', () => {
       { type: 'numeric', name: 'Peber', value: 982 },
       { type: 'numeric', name: 'Hvedemel', value: 632 },
       { type: 'categorical', name: 'Kunde', value: 'Mus' },
-      { type: 'score', name: 'score', value: 0.1 },
-      { type: 'score', name: 'score2', value: 0.3 },
+      { type: 'score', name: scoreName, value: 0.1 },
+      { type: 'score', name: scoreName + '2', value: 0.3 },
     ] satisfies DataPointType[],
     [
       { type: 'numeric', name: 'Sukker', value: 15 },
       { type: 'numeric', name: 'Peber', value: 123 },
       { type: 'numeric', name: 'Hvedemel', value: 324 },
       { type: 'categorical', name: 'Kunde', value: 'Ræv' },
-      { type: 'score', name: 'score', value: 0.2 },
-      { type: 'score', name: 'score2', value: 0.4 },
+      { type: 'score', name: scoreName, value: 0.2 },
+      { type: 'score', name: scoreName + '2', value: 0.4 },
     ] satisfies DataPointType[],
   ].map((data, idx) => ({
     meta: { enabled: true, id: idx + 1, valid: true },
@@ -246,8 +247,8 @@ describe('converters', () => {
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
         [
-          { name: 'score', description: '', enabled: true },
-          { name: 'score2', description: '', enabled: true },
+          { name: scoreName, description: '', enabled: true },
+          { name: scoreName + '2', description: '', enabled: true },
         ],
         sampleMultiObjectiveDataPoints
       )
@@ -263,8 +264,8 @@ describe('converters', () => {
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
         [
-          { name: 'score', description: '', enabled: true },
-          { name: 'score2', description: '', enabled: false },
+          { name: scoreName, description: '', enabled: true },
+          { name: scoreName + '2', description: '', enabled: false },
         ],
         sampleMultiObjectiveDataPoints
       )

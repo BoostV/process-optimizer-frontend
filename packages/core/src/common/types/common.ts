@@ -5,6 +5,8 @@ import { z } from 'zod'
 
 export const currentVersion = '17'
 
+export const scoreName = 'Quality'
+
 const infoSchema = z.object({
   name: z.string(),
   description: z.string(),
