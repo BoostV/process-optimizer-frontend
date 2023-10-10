@@ -13,7 +13,6 @@ import large from '@core/sample-data/large.json'
 import { emptyExperiment } from '@core/context/experiment'
 import { formatNext } from './migrations/migrateToV9'
 import {
-  DataPointType,
   ExperimentType,
   ScoreVariableType,
   experimentSchema,
@@ -21,7 +20,6 @@ import {
 } from '@core/common/types'
 import { storeLatestSchema, loadTestData } from './test-utils'
 import { migrateToV17 } from './migrations/migrateToV17'
-import { satisfies } from 'compare-versions'
 
 describe('Migration of data format', () => {
   storeLatestSchema()
