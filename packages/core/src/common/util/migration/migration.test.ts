@@ -190,7 +190,7 @@ describe('Migration of data format', () => {
           enabled: scoreVariables[0]?.enabled,
         },
         {
-          name: scoreName + '2',
+          name: scoreName + ' 2',
           description: scoreName,
           enabled: scoreVariables[1]?.enabled,
         },
@@ -252,7 +252,7 @@ describe('Migration of data format', () => {
                 ? [
                     {
                       type: 'score',
-                      name: scoreName + '2',
+                      name: scoreName + ' 2',
                       value: 2,
                     },
                   ]

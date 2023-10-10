@@ -38,8 +38,8 @@
   ],
   "scoreVariables": [
     {
-      "name": "Quality",
-      "description": "Quality",
+      "name": "Quality (0-5)",
+      "description": "Quality (0-5)",
       "enabled": true
     }
   ],
@@ -90,7 +90,7 @@
         },
         {
           "type": "score",
-          "name": "Quality",
+          "name": "Quality (0-5)",
           "value": 0.5
         }
       ]
