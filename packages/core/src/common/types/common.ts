@@ -3,7 +3,9 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '16'
+export const currentVersion = '17'
+
+export const scoreName = 'Quality (0-5)'
 
 const infoSchema = z.object({
   name: z.string(),

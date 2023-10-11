@@ -1,5 +1,5 @@
 import { versionInfo } from '@core/common'
-import { currentVersion } from '@core/common/types'
+import { currentVersion, scoreName } from '@core/common/types'
 import { ExperimentType } from '@core/common/types'
 
 export const emptyExperiment: ExperimentType = {
@@ -18,8 +18,8 @@ export const emptyExperiment: ExperimentType = {
   valueVariables: [],
   scoreVariables: [
     {
-      name: 'score',
-      description: 'score',
+      name: scoreName,
+      description: scoreName,
       enabled: true,
     },
   ],
