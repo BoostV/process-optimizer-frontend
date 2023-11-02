@@ -117,7 +117,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       type: 'updateSuggestionCount',
       payload: suggestionCount,
     })
-  }, 500)
+  }, 1000)
 
   return (
     <TitleCard
