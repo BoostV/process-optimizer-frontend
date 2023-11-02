@@ -182,9 +182,12 @@ export const experimentReducer = produce(
         state.info.description =
           experimentSchema.shape.info.shape.description.parse(action.payload)
         break
-      case 'updateSuggestionCount':
-        state.extras.experimentSuggestionCount = Number(action.payload)
+      case 'updateSuggestionCount': {
+        const payloadVal = Number(action.payload)
+        const actualVal = payloadVal <= 10 ? payloadVal : 10
+        state.extras.experimentSuggestionCount = actualVal >= 1 ? actualVal : 1
         break
+      }
       case 'copySuggestedToDataPoints': {
         const nextValues = selectNextValues(state)
         const variables = selectActiveVariablesFromExperiment(state)

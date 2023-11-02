@@ -1,5 +1,5 @@
 import { TextField, Tooltip } from '@mui/material'
-import { ChangeEvent, FC } from 'react'
+import { ChangeEvent, FC, useState } from 'react'
 import {
   selectIsSuggestionCountEditable,
   selectCalculatedSuggestionCount,
@@ -13,6 +13,7 @@ type Props = {
 export const NextExperiments: FC<Props> = ({ onSuggestionChange }) => {
   const isSuggestionCountEditable = useSelector(selectIsSuggestionCountEditable)
   const suggestionCount = useSelector(selectCalculatedSuggestionCount)
+  const [suggestionCountUI, setSuggestionCountUI] = useState(suggestionCount)
 
   const handleSuggestionChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -29,11 +30,14 @@ export const NextExperiments: FC<Props> = ({ onSuggestionChange }) => {
     >
       <TextField
         type="number"
-        value={suggestionCount}
+        value={suggestionCountUI + ''}
         name="numberOfSuggestions"
-        label="Suggestions"
+        label="Suggestions (1-10)"
         size="small"
-        onChange={handleSuggestionChange}
+        onChange={val => {
+          setSuggestionCountUI(Number(val.target.value))
+          handleSuggestionChange(val)
+        }}
         disabled={!isSuggestionCountEditable}
       />
     </Tooltip>

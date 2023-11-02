@@ -28,6 +28,7 @@ import { ReactNode } from 'react'
 import { experimentResultSchema } from '@boostv/process-optimizer-frontend-core'
 import { z } from 'zod'
 import { isArray } from 'remeda'
+import _ from 'lodash'
 
 interface ResultDataProps {
   id?: string
@@ -110,6 +111,14 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   ) : (
     <Box p={2}>Please run optimizer</Box>
   )
+
+  const debouncedUpdate = _.debounce(suggestionCount => {
+    dispatchExperiment({
+      type: 'updateSuggestionCount',
+      payload: suggestionCount,
+    })
+  }, 500)
+
   return (
     <TitleCard
       id={id}
@@ -173,10 +182,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           <Box width={160}>
             <NextExperiments
               onSuggestionChange={suggestionCount =>
-                dispatchExperiment({
-                  type: 'updateSuggestionCount',
-                  payload: suggestionCount,
-                })
+                debouncedUpdate(suggestionCount)
               }
             />
           </Box>
