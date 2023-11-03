@@ -197,13 +197,13 @@ describe('experiment reducer', () => {
   })
 
   describe('updateSuggestionCount', () => {
-    it('should change suggestion count', () => {
+    it('should change suggestion count (min 1, max 10)', () => {
       const actual = rootReducer(initState, {
         type: 'updateSuggestionCount',
         payload: '42',
       })
       expect(actual.experiment.extras).toMatchObject({
-        experimentSuggestionCount: 42,
+        experimentSuggestionCount: 10,
       })
       expect(actual.experiment.changedSinceLastEvaluation).toBeTruthy()
     })
