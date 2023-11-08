@@ -124,7 +124,9 @@ export const dummyPayloads: Payloads = {
   updateExperimentDescription: '',
   updateConfiguration: initialState.experiment.optimizerConfig,
   updateDataPoints: initialState.experiment.dataPoints,
-  updateSuggestionCount: '',
+  updateSuggestionCount: {
+    suggestionCount: '',
+  },
   copySuggestedToDataPoints: [],
   'experiment/toggleMultiObjective': undefined,
   'experiment/setConstraintSum': 0,

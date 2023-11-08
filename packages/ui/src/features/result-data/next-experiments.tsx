@@ -7,10 +7,14 @@ import {
 } from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
+  maxSuggestionCount?: number
   onSuggestionChange: (suggestionCount: string) => void
 }
 
-export const NextExperiments: FC<Props> = ({ onSuggestionChange }) => {
+export const NextExperiments: FC<Props> = ({
+  onSuggestionChange,
+  maxSuggestionCount,
+}) => {
   const isSuggestionCountEditable = useSelector(selectIsSuggestionCountEditable)
   const suggestionCount = useSelector(selectCalculatedSuggestionCount)
   const [suggestionCountUI, setSuggestionCountUI] = useState(suggestionCount)
@@ -32,7 +36,9 @@ export const NextExperiments: FC<Props> = ({ onSuggestionChange }) => {
         type="number"
         value={suggestionCountUI + ''}
         name="numberOfSuggestions"
-        label="Suggestions (1-10)"
+        label={`Suggestions${
+          maxSuggestionCount !== undefined ? ` (1-${maxSuggestionCount})` : ''
+        }`}
         size="small"
         onChange={val => {
           setSuggestionCountUI(Number(val.target.value))

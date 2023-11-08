@@ -140,7 +140,10 @@ export type ExperimentAction =
     }
   | {
       type: 'updateSuggestionCount'
-      payload: string
+      payload: {
+        suggestionCount: string
+        maxSuggestionCount?: number
+      }
     }
   | {
       type: 'copySuggestedToDataPoints'
@@ -183,8 +186,13 @@ export const experimentReducer = produce(
           experimentSchema.shape.info.shape.description.parse(action.payload)
         break
       case 'updateSuggestionCount': {
-        const payloadVal = Number(action.payload)
-        const actualVal = payloadVal <= 10 ? payloadVal : 10
+        const payloadVal = Number(action.payload.suggestionCount)
+        const maxSuggestionCount = action.payload.maxSuggestionCount
+        let actualVal = payloadVal
+        if (maxSuggestionCount !== undefined) {
+          actualVal =
+            payloadVal <= maxSuggestionCount ? payloadVal : maxSuggestionCount
+        }
         state.extras.experimentSuggestionCount = actualVal >= 1 ? actualVal : 1
         break
       }

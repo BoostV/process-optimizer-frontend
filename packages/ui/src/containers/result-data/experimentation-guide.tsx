@@ -39,6 +39,7 @@ interface ResultDataProps {
   warning?: string
   padding?: number
   allowIndividualSuggestionCopy?: boolean
+  maxSuggestionCount?: number
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
   onMouseLeaveExpand?: () => void
@@ -54,6 +55,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     padding,
     loadingMode,
     allowIndividualSuggestionCopy = true,
+    maxSuggestionCount,
     toggleUISize,
     onMouseEnterExpand,
     onMouseLeaveExpand,
@@ -181,6 +183,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         {!isInitializing && (
           <Box width={160}>
             <NextExperiments
+              maxSuggestionCount={maxSuggestionCount}
               onSuggestionChange={suggestionCount =>
                 debouncedUpdate(suggestionCount)
               }
