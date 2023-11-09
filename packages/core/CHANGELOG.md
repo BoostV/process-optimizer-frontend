@@ -1,5 +1,12 @@
 # @process-optimizer-frontend/core
 
+## 2.10.0
+
+### Minor Changes
+
+- 4d47233: Rename score to quality
+- 9a4cded: Cap suggestion count
+
 ## 2.9.2
 
 ### Patch Changes
