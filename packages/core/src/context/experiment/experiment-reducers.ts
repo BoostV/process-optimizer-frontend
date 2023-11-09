@@ -187,6 +187,7 @@ export const experimentReducer = produce(
         break
       case 'updateSuggestionCount': {
         const payloadVal = Number(action.payload.suggestionCount)
+        // TODO: Move max out of reducer if used in application settings
         const maxSuggestionCount =
           action.payload.maxSuggestionCount ?? Number.MAX_VALUE
         state.extras.experimentSuggestionCount = Math.max(
