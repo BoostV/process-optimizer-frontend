@@ -140,7 +140,10 @@ export type ExperimentAction =
     }
   | {
       type: 'updateSuggestionCount'
-      payload: string
+      payload: {
+        suggestionCount: string
+        maxSuggestionCount?: number
+      }
     }
   | {
       type: 'copySuggestedToDataPoints'
@@ -182,9 +185,17 @@ export const experimentReducer = produce(
         state.info.description =
           experimentSchema.shape.info.shape.description.parse(action.payload)
         break
-      case 'updateSuggestionCount':
-        state.extras.experimentSuggestionCount = Number(action.payload)
+      case 'updateSuggestionCount': {
+        const payloadVal = Number(action.payload.suggestionCount)
+        // TODO: Move max out of reducer if used in application settings
+        const maxSuggestionCount =
+          action.payload.maxSuggestionCount ?? Number.MAX_VALUE
+        state.extras.experimentSuggestionCount = Math.max(
+          1,
+          Math.min(maxSuggestionCount, payloadVal)
+        )
         break
+      }
       case 'copySuggestedToDataPoints': {
         const nextValues = selectNextValues(state)
         const variables = selectActiveVariablesFromExperiment(state)

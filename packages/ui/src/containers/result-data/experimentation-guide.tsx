@@ -29,6 +29,7 @@ import { ReactNode } from 'react'
 import { experimentResultSchema } from '@boostv/process-optimizer-frontend-core'
 import { z } from 'zod'
 import { isArray } from 'remeda'
+import _ from 'lodash'
 
 interface ResultDataProps {
   id?: string
@@ -39,6 +40,7 @@ interface ResultDataProps {
   warning?: string
   padding?: number
   allowIndividualSuggestionCopy?: boolean
+  maxSuggestionCount?: number
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
   onMouseLeaveExpand?: () => void
@@ -54,6 +56,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     padding,
     loadingMode,
     allowIndividualSuggestionCopy = true,
+    maxSuggestionCount,
     toggleUISize,
     onMouseEnterExpand,
     onMouseLeaveExpand,
@@ -112,6 +115,14 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   ) : (
     <Box p={2}>Please run optimizer</Box>
   )
+
+  const debouncedUpdate = _.debounce(suggestionCount => {
+    dispatchExperiment({
+      type: 'updateSuggestionCount',
+      payload: { suggestionCount, maxSuggestionCount },
+    })
+  }, 1000)
+
   return (
     <TitleCard
       id={id}
@@ -174,11 +185,9 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         {!isInitializing && (
           <Box width={160}>
             <NextExperiments
+              maxSuggestionCount={maxSuggestionCount}
               onSuggestionChange={suggestionCount =>
-                dispatchExperiment({
-                  type: 'updateSuggestionCount',
-                  payload: suggestionCount,
-                })
+                debouncedUpdate(suggestionCount)
               }
             />
           </Box>

@@ -1,5 +1,5 @@
 import { TextField, Tooltip } from '@mui/material'
-import { ChangeEvent, FC } from 'react'
+import { ChangeEvent, FC, useState } from 'react'
 import {
   selectIsSuggestionCountEditable,
   selectCalculatedSuggestionCount,
@@ -7,12 +7,17 @@ import {
 } from '@boostv/process-optimizer-frontend-core'
 
 type Props = {
+  maxSuggestionCount?: number
   onSuggestionChange: (suggestionCount: string) => void
 }
 
-export const NextExperiments: FC<Props> = ({ onSuggestionChange }) => {
+export const NextExperiments: FC<Props> = ({
+  onSuggestionChange,
+  maxSuggestionCount,
+}) => {
   const isSuggestionCountEditable = useSelector(selectIsSuggestionCountEditable)
   const suggestionCount = useSelector(selectCalculatedSuggestionCount)
+  const [suggestionCountUI, setSuggestionCountUI] = useState(suggestionCount)
 
   const handleSuggestionChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -29,11 +34,16 @@ export const NextExperiments: FC<Props> = ({ onSuggestionChange }) => {
     >
       <TextField
         type="number"
-        value={suggestionCount}
+        value={suggestionCountUI + ''}
         name="numberOfSuggestions"
-        label="Suggestions"
+        label={`Suggestions${
+          maxSuggestionCount !== undefined ? ` (1-${maxSuggestionCount})` : ''
+        }`}
         size="small"
-        onChange={handleSuggestionChange}
+        onChange={val => {
+          setSuggestionCountUI(Number(val.target.value))
+          handleSuggestionChange(val)
+        }}
         disabled={!isSuggestionCountEditable}
       />
     </Tooltip>

@@ -197,13 +197,33 @@ describe('experiment reducer', () => {
   })
 
   describe('updateSuggestionCount', () => {
-    it('should change suggestion count', () => {
+    it('should cap suggestion count to max', () => {
       const actual = rootReducer(initState, {
         type: 'updateSuggestionCount',
-        payload: '42',
+        payload: { suggestionCount: '42', maxSuggestionCount: 10 },
+      })
+      expect(actual.experiment.extras).toMatchObject({
+        experimentSuggestionCount: 10,
+      })
+      expect(actual.experiment.changedSinceLastEvaluation).toBeTruthy()
+    })
+    it('should not cap suggestion count to max when unset', () => {
+      const actual = rootReducer(initState, {
+        type: 'updateSuggestionCount',
+        payload: { suggestionCount: '42' },
       })
       expect(actual.experiment.extras).toMatchObject({
         experimentSuggestionCount: 42,
+      })
+      expect(actual.experiment.changedSinceLastEvaluation).toBeTruthy()
+    })
+    it('should set suggestion count to min 1', () => {
+      const actual = rootReducer(initState, {
+        type: 'updateSuggestionCount',
+        payload: { suggestionCount: '0' },
+      })
+      expect(actual.experiment.extras).toMatchObject({
+        experimentSuggestionCount: 1,
       })
       expect(actual.experiment.changedSinceLastEvaluation).toBeTruthy()
     })

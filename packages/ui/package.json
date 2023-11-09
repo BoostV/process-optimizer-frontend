@@ -37,6 +37,7 @@
   "dependencies": {
     "@boostv/process-optimizer-frontend-core": "*",
     "@boostv/process-optimizer-frontend-plots": "*",
+    "lodash.debounce": "^4.0.8",
     "react-hook-form": "^7.33.0",
     "remeda": "^1.12.0",
     "tss-react": "^4.8.2"
