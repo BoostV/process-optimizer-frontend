@@ -117,7 +117,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   const debouncedUpdate = _.debounce(suggestionCount => {
     dispatchExperiment({
       type: 'updateSuggestionCount',
-      payload: suggestionCount,
+      payload: { suggestionCount, maxSuggestionCount },
     })
   }, 1000)
 
