@@ -5,6 +5,7 @@ import {
   selectNextExperimentValues,
   selectIsInitializing,
   selectActiveVariableNames,
+  selectDataPoints,
 } from '@boostv/process-optimizer-frontend-core'
 import {
   Tooltip,
@@ -70,6 +71,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   const headers = useSelector(selectActiveVariableNames)
   const expectedMinimum = useSelector(selectExpectedMinimum)
   const isInitializing = useSelector(selectIsInitializing)
+  const dataPoints = useSelector(selectDataPoints)
 
   const defaultLoadingView = (
     <Stack direction="column" spacing={2} m={2}>
@@ -195,6 +197,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           nextValues[0].length > 0 && (
             <Box>
               <CopySuggested
+                isInitialInteraction={dataPoints.length === 0}
                 onClick={() =>
                   dispatchExperiment({
                     type: 'copySuggestedToDataPoints',
