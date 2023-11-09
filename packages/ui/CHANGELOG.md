@@ -1,5 +1,19 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.10.0
+
+### Minor Changes
+
+- 4d47233: Rename score to quality
+- d63ac4b: Change transfer button label on initial interaction
+- 9a4cded: Cap suggestion count
+
+### Patch Changes
+
+- Updated dependencies [4d47233]
+- Updated dependencies [9a4cded]
+  - @boostv/process-optimizer-frontend-core@2.10.0
+
 ## 2.9.0
 
 ### Minor Changes
