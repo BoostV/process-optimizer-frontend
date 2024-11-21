@@ -1,4 +1,4 @@
-import { vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
   saveToLocalFile,
   saveCSVToLocalFile,
@@ -9,10 +9,12 @@ describe('save-to-local-file', () => {
   describe('saveToLocalFile', () => {
     it('Saves file to local disk', () => {
       const payload = 'hello'
-      const link: any = {
+      const link: Partial<HTMLAnchorElement> = {
         click: vi.fn(),
       }
-      vi.spyOn(document, 'createElement').mockImplementation(() => link)
+      vi.spyOn(document, 'createElement').mockImplementation(
+        () => link as HTMLElement
+      )
 
       saveToLocalFile(payload, 'the-file-name', 'application/json')
 
@@ -26,10 +28,12 @@ describe('save-to-local-file', () => {
   describe('saveCSVToLocalFile', () => {
     it('Saves CSV', () => {
       const payload = 'hello,world'
-      const link: any = {
+      const link: Partial<HTMLAnchorElement> = {
         click: vi.fn(),
       }
-      vi.spyOn(document, 'createElement').mockImplementation(() => link)
+      vi.spyOn(document, 'createElement').mockImplementation(
+        () => link as HTMLElement
+      )
       saveCSVToLocalFile(payload, 'file.csv')
       expect(link.download).toEqual('file.csv')
       expect(link.href).toEqual('data:text/csv;charset=utf-8;,hello%2Cworld')
@@ -42,10 +46,12 @@ describe('save-to-local-file', () => {
       const payload = {
         name: 'test',
       }
-      const link: any = {
+      const link: Partial<HTMLAnchorElement> = {
         click: vi.fn(),
       }
-      vi.spyOn(document, 'createElement').mockImplementation(() => link)
+      vi.spyOn(document, 'createElement').mockImplementation(
+        () => link as HTMLElement
+      )
       saveObjectToLocalFile(payload, 'file.json')
       expect(link.download).toEqual('file.json')
       expect(link.href).toEqual(

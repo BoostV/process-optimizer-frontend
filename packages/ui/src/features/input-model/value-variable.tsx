@@ -90,7 +90,7 @@ export default function ValueVariable(props: ValueVariableProps) {
           label="Name"
           rules={{
             ...validation.required,
-            validate: (name: string, _: unknown) =>
+            validate: (name: string) =>
               isValidVariableName(
                 valueVariables,
                 categoricalVariables,

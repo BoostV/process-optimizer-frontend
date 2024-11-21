@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const migrateToV5 = (json: any): any => {
   return {
     ...json,

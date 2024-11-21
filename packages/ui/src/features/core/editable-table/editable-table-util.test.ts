@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { getRowIndex, getRowId } from './editable-table-util'
 
 describe('editable-table-util', () => {

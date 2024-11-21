@@ -27,10 +27,11 @@ export const selectIsMultiObjective = (state: State) =>
 
 export const selectNextValues = (experiment: ExperimentType) => {
   return experiment.results.next && Array.isArray(experiment.results.next[0])
-    ? (experiment.results.next as unknown as any[][])
+    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (experiment.results.next as unknown as any[][])
     : experiment.results.next
-    ? [experiment.results.next]
-    : []
+      ? [experiment.results.next]
+      : []
 }
 
 export const selectNextExperimentValues = (state: State) => {

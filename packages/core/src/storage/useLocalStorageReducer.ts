@@ -13,6 +13,7 @@ const init =
       }
     } catch (error) {
       // Incognito mode might cause loading to fail - add error message to initial state and continue
+      console.info(error)
     }
     return initialState
   }

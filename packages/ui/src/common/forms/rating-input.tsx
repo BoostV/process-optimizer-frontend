@@ -91,9 +91,11 @@ export const RatingInput = ({ value, onChange }: RatingInputProps) => {
                 {formatRating(tempRating, value)}
               </Typography>
               <StarRating
-                value={Number(value) ?? 0}
+                value={Number(value ?? 0)}
                 onChange={v => {
-                  v !== null && onChange('' + formatRating(tempRating, value))
+                  if (v !== null) {
+                    onChange('' + formatRating(tempRating, value))
+                  }
                   setAnchorEl(null)
                   setTempRating(undefined)
                 }}

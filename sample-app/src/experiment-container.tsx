@@ -15,9 +15,6 @@ export default function ExperimentContainer() {
     state: { debug, showJsonEditor, focus },
   } = useGlobal()
 
-  if (!experimentId) {
-    return <LoadingExperiment />
-  }
   useEffect(() => {
     if (experimentId) {
       dispatch({
@@ -26,11 +23,16 @@ export default function ExperimentContainer() {
       })
     }
   }, [experimentId, dispatch])
+
+  if (!experimentId) {
+    return <LoadingExperiment />
+  }
+
   return (
     <>
       <ExperimentProvider
         experimentId={
-          Array.isArray(experimentId) ? experimentId[0] ?? '' : experimentId
+          Array.isArray(experimentId) ? (experimentId[0] ?? '') : experimentId
         }
       >
         {focus === 'legacy' ? <Experiment /> : <TabbedExperiment />}

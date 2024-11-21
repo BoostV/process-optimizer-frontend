@@ -9,6 +9,7 @@ import { Controller } from 'react-hook-form'
 
 type FormRadioGroupProps = {
   name: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: any
   values: string[]
   labels: string[]

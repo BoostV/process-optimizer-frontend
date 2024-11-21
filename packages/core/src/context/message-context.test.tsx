@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { FC, useEffect } from 'react'
 import {
   MessageProvider,
@@ -33,13 +34,7 @@ describe('MessageProvider', () => {
         ])
       )
     }, [setMessages])
-    return (
-      <>
-        {messages?.map((m, i) => (
-          <span key={i}>{m?.text}</span>
-        ))}
-      </>
-    )
+    return <>{messages?.map((m, i) => <span key={i}>{m?.text}</span>)}</>
   }
   it('sets and shows messages', async () => {
     render(

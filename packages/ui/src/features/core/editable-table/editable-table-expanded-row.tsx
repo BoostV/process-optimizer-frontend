@@ -43,7 +43,7 @@ export const EditableTableExpandedRow = ({
   } satisfies TableDataRow
   const { classes } = useStyles()
   const [editedRow, setEditedRow] = useState<TableDataRow>({ ...tableRow })
-  const isModified = !R.equals(editedRow, tableRow)
+  const isModified = !R.isDeepEqual(editedRow, tableRow)
 
   const handleEdit = (idx: number, value: string) => {
     setEditedRow({

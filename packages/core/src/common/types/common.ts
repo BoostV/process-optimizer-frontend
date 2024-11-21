@@ -91,7 +91,7 @@ const dataEntrySchema = z.object({
   data: z.array(dataPointSchema),
 })
 
-const spaceSchema = z
+export const spaceSchema = z
   .object({
     type: z.union([
       z.literal('category'),
