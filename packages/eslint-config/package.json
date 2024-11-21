@@ -20,7 +20,8 @@
   "bugs": {
     "url": "https://github.com/BoostV/process-optimizer-frontend/issues"
   },
-  "main": "index.js",
+  "main": "index.mjs",
+  "type": "module",
   "peerDependencies": {
     "@typescript-eslint/eslint-plugin": ">=5.36.2",
     "@typescript-eslint/parser": ">=5.36.2",
@@ -30,5 +31,11 @@
     "eslint-plugin-react": ">=7.31.6",
     "eslint-plugin-react-hooks": ">=4.6.0",
     "eslint-plugin-testing-library": ">=5.6.1"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1.2.3",
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.15.0",
+    "globals": "^15.12.0"
   }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /// <reference types="vitest" />
 
 import { defineConfig } from 'vite'
@@ -30,9 +29,9 @@ export default defineConfig({
   },
   test: {
     coverage: {
+      provider: 'v8',
       reporter: ['lcov', 'text-summary'],
     },
-    globals: true,
     environment: 'jsdom',
     setupFiles: './src/testing/setupTests.ts',
   },

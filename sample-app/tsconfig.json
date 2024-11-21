@@ -2,7 +2,6 @@
   "extends": "../scaffold/tsconfig.ui-lib.json",
   "compilerOptions": {
     "noImplicitAny": false,
-    "types": ["vitest/globals"],
     "outDir": "dist",
     "rootDir": "src",
     "baseUrl": "src",

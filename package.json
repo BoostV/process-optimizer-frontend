@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "bootstrap": "npm run build --workspace packages --if-present",
+    "lint": "eslint",
     "build": "npm run build -ws --if-present",
     "test": "npm run test -ws --if-present -- --run",
     "clean": "npx -y rimraf node_modules **/node_modules/",
@@ -22,29 +23,31 @@
     "dev:core": "npm run dev --workspace @boostv/process-optimizer-frontend-core",
     "openapi": "npm run openapi --workspace @boostv/process-optimizer-frontend-api",
     "update-deps": "npx npm-check-updates -ws --root -i",
-    "prepare": "husky install",
+    "prepare": "husky",
     "formatAll": "prettier --write .",
     "prettier": "prettier --check .",
     "release": "npm run build && changeset publish"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "**/*": "prettier --write --ignore-unknown",
+    "**/*.{js,ts,tsx}": "eslint --fix"
   },
   "devDependencies": {
-    "@boostv/eslint-config": "^1.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.50.0",
-    "@typescript-eslint/parser": "^5.50.0",
-    "eslint": "^8.33.0",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-jest-dom": "^4.0.3",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-testing-library": "^5.10.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.1.0",
-    "prettier": "2.8.3",
-    "rimraf": "^4.1.2",
-    "typescript": "^4.9.5"
+    "@boostv/eslint-config": "*",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "ajv": "^8.17.1",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jest-dom": "^5.5.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-testing-library": "^6.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
+    "prettier": "3.3.3",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.6.3"
   },
   "engineStrict": true,
   "engines": {
@@ -52,6 +55,6 @@
     "yarn": ">100.0.0"
   },
   "dependencies": {
-    "@changesets/cli": "^2.26.0"
+    "@changesets/cli": "^2.27.10"
   }
 }

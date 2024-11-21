@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     dts(),
     react({
-      jsxRuntime: 'classic',
+      jsxRuntime: 'automatic',
     }),
   ],
   resolve: {
@@ -45,9 +45,9 @@ export default defineConfig({
   },
   test: {
     coverage: {
+      provider: 'v8',
       reporter: ['lcov', 'text-summary'],
     },
-    globals: true,
     environment: 'jsdom',
     setupFiles: './src/testing/setupTests.ts',
   },
