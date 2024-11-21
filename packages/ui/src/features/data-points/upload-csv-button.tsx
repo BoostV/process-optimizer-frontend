@@ -33,8 +33,8 @@ const UploadCSVButton = ({
   categoricalVariables,
   scoreVariables,
 }: UploadCSVButtonProps) => {
-  const handleFileUpload = (files: string | any[] | FileList) => {
-    if (files && files.length > 0) {
+  const handleFileUpload = (files: File[]) => {
+    if (files && files.length > 0 && files[0] !== undefined) {
       readFile(files[0], data =>
         onUpload(
           csvToDataPoints(
@@ -60,7 +60,7 @@ const UploadCSVButton = ({
             accept: '.csv',
           }}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            handleFileUpload(e.target.files ?? [])
+            handleFileUpload(Array.from(e.target.files || []))
           }
         />
       </IconButton>

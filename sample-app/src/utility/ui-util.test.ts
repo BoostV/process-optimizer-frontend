@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { UISize, UISizeValue } from '@sample/context/global'
 import { getSize, isUIBig, isUISmall } from './ui-util'
 

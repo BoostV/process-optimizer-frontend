@@ -86,8 +86,8 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     loadingMode === 'overlay'
       ? undefined
       : loadingMode === 'custom'
-      ? loadingView
-      : defaultLoadingView
+        ? loadingView
+        : defaultLoadingView
 
   const summary = isInitializing ? (
     <InitializationProgress

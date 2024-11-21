@@ -8,7 +8,7 @@ import replace from '@rollup/plugin-replace'
 export default defineConfig({
   plugins: [
     react({
-      jsxRuntime: 'classic',
+      jsxRuntime: 'automatic',
     }),
     dts(),
     replace({
@@ -44,9 +44,9 @@ export default defineConfig({
   },
   test: {
     coverage: {
+      provider: 'v8',
       reporter: ['lcov', 'text-summary'],
     },
-    globals: true,
     environment: 'jsdom',
     setupFiles: './src/testing/setupTests.ts',
   },

@@ -17,7 +17,7 @@ export const createValueVariable = (input: Partial<ValueVariableType>) =>
     min: input.min ?? 0,
     max: input.max ?? 100,
     enabled: input.enabled ?? true,
-  } satisfies ValueVariableType)
+  }) satisfies ValueVariableType
 
 export const createCategoricalVariable = (
   input: Partial<CategoricalVariableType>
@@ -27,14 +27,14 @@ export const createCategoricalVariable = (
     description: input.description ?? '',
     options: input.options ?? ['option1', 'option2'],
     enabled: input.enabled ?? true,
-  } satisfies CategoricalVariableType)
+  }) satisfies CategoricalVariableType
 
 export const createScoreVariable = (input: Partial<ScoreVariableType>) =>
   ({
     name: input.name ?? 'name',
     description: input.description ?? '',
     enabled: input.enabled ?? true,
-  } satisfies ScoreVariableType)
+  }) satisfies ScoreVariableType
 
 export const createDataPoints = (
   count: number,

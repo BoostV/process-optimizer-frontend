@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { isValidVariableName, validation } from './validation'
 
 describe('mustBeNumber', () => {

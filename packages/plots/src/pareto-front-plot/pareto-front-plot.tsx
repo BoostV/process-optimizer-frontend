@@ -10,7 +10,13 @@ import {
   Label,
 } from 'recharts'
 
-const CustomTooltip = ({ payload, label }: any) => {
+const CustomTooltip = ({
+  payload,
+  label,
+}: {
+  payload?: unknown
+  label?: string
+}) => {
   console.log('payload', payload, label)
   // if (active && payload && payload.length) {
   //   return (

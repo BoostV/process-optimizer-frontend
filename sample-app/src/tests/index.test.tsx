@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest'
 import MyApp from '@sample/app'
 import { render } from '@testing-library/react'
 

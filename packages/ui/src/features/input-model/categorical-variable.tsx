@@ -85,7 +85,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
         <TextField
           {...register('name', {
             ...validation.required,
-            validate: (name: string, _: unknown) =>
+            validate: (name: string) =>
               isValidVariableName(
                 valueVariables,
                 categoricalVariables,
@@ -133,7 +133,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           }}
           error={
             formState.errors.options !== undefined
-              ? formState.errors.options[0]?.message ?? ''
+              ? (formState.errors.options[0]?.message ?? '')
               : ''
           }
         />

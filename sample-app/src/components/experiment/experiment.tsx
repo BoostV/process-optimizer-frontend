@@ -103,7 +103,7 @@ const LegacyExperiment = () => {
         ['input-model', inputModelMessages],
       ])
     )
-  }, [violations])
+  }, [setMessages, violations])
 
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)

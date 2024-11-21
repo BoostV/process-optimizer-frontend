@@ -3,16 +3,17 @@ import { Controller } from 'react-hook-form'
 
 type FormInputTextPropType = {
   name: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: any
-  rules?: any
-  transform?: (x: any) => any
+  rules?: Parameters<typeof Controller>[0]['rules']
+  transform?: (x: unknown) => unknown
 }
 
 const FormInputText = ({
   name,
   control,
   rules,
-  transform = (x: any) => x,
+  transform = (x: unknown) => x,
   ...rest
 }: FormInputTextPropType & TextFieldProps) => (
   <Controller

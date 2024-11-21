@@ -1,7 +1,7 @@
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ApiProvider } from '@core/context/experiment/api-provider'
 import { render, renderHook, screen } from '@testing-library/react'
 import { FC } from 'react'
-import { it, vi } from 'vitest'
 import {
   useExperiment,
   ExperimentProvider,

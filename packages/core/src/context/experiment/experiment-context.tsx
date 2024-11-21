@@ -62,7 +62,7 @@ export function ManagedExperimentProvider({
 
   const [loading, setLoading] = React.useState(false)
 
-  const getValue = (callback: (state: State) => any) => callback(state)
+  const getValue = (callback: (state: State) => unknown) => callback(state)
 
   const value = {
     state,

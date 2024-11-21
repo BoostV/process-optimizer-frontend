@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { ExperimentAction } from './experiment-reducers'
 import { rootReducer } from './reducers'
 import {
@@ -10,7 +11,6 @@ import {
 } from '@core/common/types'
 import { emptyExperiment, State } from '@core/context/experiment'
 import { versionInfo } from '@core/common'
-import { expect } from 'vitest'
 import _ from 'lodash'
 import { produce } from 'immer'
 import {
@@ -338,7 +338,7 @@ describe('experiment reducer', () => {
               min: 0,
               max: 0,
               enabled: false,
-            } satisfies ValueVariableType)
+            }) satisfies ValueVariableType
         )
         variables.forEach(v => draft.experiment.valueVariables.push(v))
       })

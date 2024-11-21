@@ -1,3 +1,4 @@
+import { describe, expect, it, vi } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { FC } from 'react'
 import { State } from '@sample/context/global'
@@ -34,6 +35,6 @@ describe('useSelector', () => {
     const { result } = renderHook(() => useSelector(testSelector), {
       wrapper: GlobalWrapper,
     })
-    expect(result.current).toBeFalsy
+    expect(result.current).toBeFalsy()
   })
 })

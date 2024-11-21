@@ -56,8 +56,8 @@ export const TitleCard = (props: TitleCardProps) => {
     loadingMode === 'skeleton'
       ? loadingSkeleton
       : loadingMode === 'overlay'
-      ? loadingOverlay
-      : loadingView
+        ? loadingOverlay
+        : loadingView
 
   const cardView = loading ? loadingComponent : children
 

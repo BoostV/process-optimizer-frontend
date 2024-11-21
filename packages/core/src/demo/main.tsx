@@ -45,10 +45,10 @@ const initialManagerState: ManagerState = {
     large: migrate(large),
   },
 }
-
+type ManagerAction = Action & { target: string }
 const managerReducer = (
   s: ManagerState,
-  action: any | Action
+  action: ManagerAction
 ): ManagerState => {
   if (action.target) {
     const oldTargetState =
