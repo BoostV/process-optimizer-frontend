@@ -43,12 +43,12 @@
     "tss-react": "^4.9.13"
   },
   "peerDependencies": {
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
-    "@mui/icons-material": "^5.11.0",
-    "@mui/material": "^5.11.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@emotion/react": ">=11.10.5",
+    "@emotion/styled": ">=11.10.5",
+    "@mui/icons-material": ">=6.1.8",
+    "@mui/material": ">=6.1.8",
+    "react": ">=18.2.0",
+    "react-dom": ">=18.2.0"
   },
   "devDependencies": {
     "@emotion/react": "^11.13.5",
