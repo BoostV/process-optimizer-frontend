@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/plots
 
+## 1.0.4
+
+### Patch Changes
+
+- d5dabb9: Update dependencies
+
 ## 1.0.3
 
 ### Patch Changes
