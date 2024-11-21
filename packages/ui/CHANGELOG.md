@@ -1,5 +1,11 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.10.2
+
+### Patch Changes
+
+- 4ee3cdb: Fix peer dependencies
+
 ## 2.10.1
 
 ### Patch Changes
