@@ -1,5 +1,14 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.10.3
+
+### Patch Changes
+
+- 5397e62: Export types properly in manifests
+- Updated dependencies [5397e62]
+  - @boostv/process-optimizer-frontend-plots@1.0.5
+  - @boostv/process-optimizer-frontend-core@2.10.2
+
 ## 2.10.2
 
 ### Patch Changes
