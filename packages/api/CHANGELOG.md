@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/api
 
+## 1.4.2
+
+### Patch Changes
+
+- 5397e62: Export types properly in manifests
+
 ## 1.4.1
 
 ### Patch Changes

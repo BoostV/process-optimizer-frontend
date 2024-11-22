@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/plots
 
+## 1.0.5
+
+### Patch Changes
+
+- 5397e62: Export types properly in manifests
+
 ## 1.0.4
 
 ### Patch Changes

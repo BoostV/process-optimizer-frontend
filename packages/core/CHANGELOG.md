@@ -1,5 +1,13 @@
 # @process-optimizer-frontend/core
 
+## 2.10.2
+
+### Patch Changes
+
+- 5397e62: Export types properly in manifests
+- Updated dependencies [5397e62]
+  - @boostv/process-optimizer-frontend-api@1.4.2
+
 ## 2.10.1
 
 ### Patch Changes
