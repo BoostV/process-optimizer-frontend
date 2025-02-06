@@ -1,5 +1,15 @@
 # @process-optimizer-frontend/sample-app
 
+## 2.0.4
+
+### Patch Changes
+
+- 0b0100d: Update external dependencies
+- Updated dependencies [0b0100d]
+  - @boostv/process-optimizer-frontend-plots@1.0.6
+  - @boostv/process-optimizer-frontend-core@2.10.3
+  - @boostv/process-optimizer-frontend-ui@2.10.4
+
 ## 2.0.3
 
 ### Patch Changes

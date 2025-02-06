@@ -1,5 +1,11 @@
 # @boostv/eslint-config
 
+## 2.0.2
+
+### Patch Changes
+
+- 0b0100d: Update external dependencies
+
 ## 2.0.1
 
 ### Patch Changes

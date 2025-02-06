@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/api
 
+## 1.4.3
+
+### Patch Changes
+
+- 0b0100d: Update external dependencies
+
 ## 1.4.2
 
 ### Patch Changes

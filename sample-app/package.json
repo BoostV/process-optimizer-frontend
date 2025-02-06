@@ -1,10 +1,10 @@
 {
   "name": "@boostv/process-optimizer-frontend-sample-app",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "dependencies": {
-    "@boostv/process-optimizer-frontend-core": "2.10.2",
-    "@boostv/process-optimizer-frontend-plots": "1.0.5",
-    "@boostv/process-optimizer-frontend-ui": "2.10.3",
+    "@boostv/process-optimizer-frontend-core": "2.10.3",
+    "@boostv/process-optimizer-frontend-plots": "1.0.6",
+    "@boostv/process-optimizer-frontend-ui": "2.10.4",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": ">=6.4.3",
