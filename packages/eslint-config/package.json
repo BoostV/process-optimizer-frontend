@@ -1,7 +1,7 @@
 {
   "name": "@boostv/eslint-config",
   "description": "Common eslint rules for process optimizer frontend",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
   "devDependencies": {
