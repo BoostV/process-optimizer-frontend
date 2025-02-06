@@ -67,7 +67,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "clean": "rimraf ./dist",
-    "dev": "vite",
+    "dev": "vite --host",
     "prepublishOnly": "vite build",
     "test": "vitest"
   },

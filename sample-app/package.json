@@ -43,7 +43,7 @@
   "private": true,
   "scripts": {
     "build": "tsc && vite build",
-    "dev": "vite",
+    "dev": "vite --host",
     "lint": "eslint src",
     "start": "vite preview",
     "test": "vitest"
