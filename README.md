@@ -58,6 +58,16 @@ When you create significant changes that need to be noted in the changelog pleas
 npx changeset
 ```
 
+## Updating dependencies
+
+Normally it should be possible to update all dependencies using the following commands
+
+```bash
+npx syncpack list
+npx syncpack update
+npx syncpack fix-mismatches
+```
+
 ## Contributing
 
 Please see [Contribution guideline for this project](CONTRIBUTING.md)

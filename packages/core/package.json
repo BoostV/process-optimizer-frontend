@@ -1,52 +1,15 @@
 {
   "name": "@boostv/process-optimizer-frontend-core",
-  "private": false,
-  "sideEffects": false,
-  "version": "2.10.2",
   "description": "Core library for process optimizer frontend",
+  "version": "2.10.2",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
-  "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
-  "license": "BSD-3-Clause",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BoostV/process-optimizer-frontend.git"
-  },
-  "bugs": {
-    "url": "https://github.com/BoostV/process-optimizer-frontend/issues"
-  },
-  "files": [
-    "dist"
-  ],
-  "type": "module",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/process-optimizer-frontend-core.js",
-      "require": "./dist/process-optimizer-frontend-core.umd.cjs"
-    }
-  },
-  "scripts": {
-    "build": "tsc && vite build",
-    "prepublishOnly": "vite build",
-    "clean": "rimraf ./dist",
-    "dev": "vite",
-    "test": "vitest"
-  },
+  "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
   "dependencies": {
-    "@boostv/process-optimizer-frontend-api": "*",
+    "@boostv/process-optimizer-frontend-api": "1.4.2",
     "compare-versions": "^6.1.1",
     "immer": "^10.1.1",
     "md5": "^2.3.0",
     "zod": "^3.23.8"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-hook-form": "^7.33.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
@@ -56,22 +19,54 @@
     "@types/lodash": "^4.17.13",
     "@types/md5": "^2.3.5",
     "@types/node": "^22.9.1",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
     "@types/rimraf": "^4.0.5",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.3",
-    "jsdom": "^25.0.1",
+    "jsdom": "26.0.0",
     "json-schema-faker": "^0.5.8",
     "lodash": "^4.17.21",
     "node-mocks-http": "^1.16.1",
     "react-devtools": "^6.0.1",
     "rimraf": "^6.0.1",
     "tsc-alias": "^1.8.10",
-    "typescript": "^5.6.3",
-    "vite": "^5.4.11",
+    "typescript": "^5.7.3",
+    "vite": "6.1.0",
     "vite-plugin-dts": "^4.3.0",
-    "vitest": "^2.1.5",
+    "vitest": "3.0.5",
     "zod-to-json-schema": "^3.23.5"
-  }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/process-optimizer-frontend-core.js",
+      "require": "./dist/process-optimizer-frontend-core.umd.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
+  "license": "BSD-3-Clause",
+  "peerDependencies": {
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-hook-form": "^7.53.2"
+  },
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": "BoostV/process-optimizer-frontend.git",
+  "scripts": {
+    "build": "tsc && vite build",
+    "clean": "rimraf ./dist",
+    "dev": "vite",
+    "prepublishOnly": "vite build",
+    "test": "vitest"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "./dist/index.d.ts"
 }
