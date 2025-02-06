@@ -5,37 +5,37 @@
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
   "dependencies": {
-    "@boostv/process-optimizer-frontend-api": "*",
+    "@boostv/process-optimizer-frontend-api": "1.4.2",
     "compare-versions": "^6.1.1",
     "immer": "^10.1.1",
     "md5": "^2.3.0",
-    "zod": "^3.23.8"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.0.1",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/lodash": "^4.17.13",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/lodash": "^4.17.15",
     "@types/md5": "^2.3.5",
-    "@types/node": "^22.9.1",
+    "@types/node": "^22.13.1",
     "@types/react": "19.0.8",
     "@types/react-dom": "19.0.3",
     "@types/rimraf": "^4.0.5",
     "@types/uuid": "^10.0.0",
-    "@vitejs/plugin-react": "^4.3.3",
+    "@vitejs/plugin-react": "^4.3.4",
     "jsdom": "26.0.0",
     "json-schema-faker": "^0.5.8",
     "lodash": "^4.17.21",
-    "node-mocks-http": "^1.16.1",
-    "react-devtools": "^6.0.1",
+    "node-mocks-http": "^1.16.2",
+    "react-devtools": "^6.1.0",
     "rimraf": "^6.0.1",
     "tsc-alias": "^1.8.10",
     "typescript": "^5.7.3",
     "vite": "6.1.0",
-    "vite-plugin-dts": "^4.3.0",
+    "vite-plugin-dts": "^4.5.0",
     "vitest": "3.0.5",
-    "zod-to-json-schema": "^3.23.5"
+    "zod-to-json-schema": "^3.24.1"
   },
   "exports": {
     ".": {
@@ -52,7 +52,7 @@
   "peerDependencies": {
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "react-hook-form": "^7.53.2"
+    "react-hook-form": "^7.54.2"
   },
   "private": false,
   "publishConfig": {

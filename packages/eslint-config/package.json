@@ -5,10 +5,10 @@
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
   "devDependencies": {
-    "@eslint/compat": "^1.2.3",
+    "@eslint/compat": "^1.2.6",
     "@eslint/eslintrc": "^3.2.0",
-    "@eslint/js": "^9.15.0",
-    "globals": "^15.12.0"
+    "@eslint/js": "^9.19.0",
+    "globals": "^15.14.0"
   },
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
   "keywords": [
