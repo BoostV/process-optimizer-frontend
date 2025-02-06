@@ -9,7 +9,10 @@ interface PlotItemProps {
   width?: number | string
   maxWidth?: number | string
   plots: { id: string; plot: string }[]
-  children: React.ReactElement
+  children: React.ReactElement<{
+    width?: number | string
+    maxWidth?: number | string
+  }>
 }
 
 export const PlotItem = ({

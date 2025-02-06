@@ -1,26 +1,16 @@
 {
   "name": "@boostv/process-optimizer-frontend-api",
-  "private": false,
-  "version": "1.4.2",
   "description": "API for process optimizer backend",
+  "version": "1.4.2",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
-  "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
-  "license": "BSD-3-Clause",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+  "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "2.16.3",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3",
+    "vite": "6.1.0",
+    "vite-plugin-dts": "^4.5.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BoostV/process-optimizer-frontend.git"
-  },
-  "bugs": {
-    "url": "https://github.com/BoostV/process-optimizer-frontend/issues"
-  },
-  "files": [
-    "dist"
-  ],
-  "type": "module",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -28,16 +18,21 @@
       "require": "./dist/process-optimizer-frontend-api.umd.cjs"
     }
   },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
+  "license": "BSD-3-Clause",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": "BoostV/process-optimizer-frontend.git",
   "scripts": {
     "build": "tsc && vite build",
-    "prepublishOnly": "vite build",
-    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.4.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi"
+    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.4.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi",
+    "prepublishOnly": "vite build"
   },
-  "devDependencies": {
-    "@openapitools/openapi-generator-cli": "2.15.3",
-    "prettier": "^3.3.3",
-    "typescript": "^5.6.3",
-    "vite": "^5.4.11",
-    "vite-plugin-dts": "^4.3.0"
-  }
+  "type": "module",
+  "types": "./dist/index.d.ts"
 }

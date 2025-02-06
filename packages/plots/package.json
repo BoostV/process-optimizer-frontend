@@ -1,48 +1,43 @@
 {
   "name": "@boostv/process-optimizer-frontend-plots",
-  "private": false,
-  "version": "1.0.5",
   "description": "Plot components for for process optimizer frontend",
+  "version": "1.0.5",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
-  "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
-  "license": "BSD-3-Clause",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+  "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
+  "dependencies": {
+    "@bokeh/bokehjs": "^3.6.1",
+    "jquery": "^3.7.1",
+    "recharts": "^2.15.1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BoostV/process-optimizer-frontend.git"
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "6.1.0",
+    "vite-plugin-dts": "^4.5.0"
   },
-  "bugs": {
-    "url": "https://github.com/BoostV/process-optimizer-frontend/issues"
-  },
-  "files": [
-    "dist"
-  ],
-  "type": "module",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/process-optimizer-frontend-plots.js"
     }
   },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
+  "license": "BSD-3-Clause",
+  "peerDependencies": {
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": "BoostV/process-optimizer-frontend.git",
   "scripts": {
     "build": "tsc && vite build",
     "prepublishOnly": "vite build"
   },
-  "dependencies": {
-    "@bokeh/bokehjs": "^3.6.1",
-    "jquery": "^3.7.1",
-    "recharts": "^2.13.3"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.3",
-    "vite": "^5.4.11",
-    "vite-plugin-dts": "^4.3.0"
-  }
+  "type": "module",
+  "types": "./dist/index.d.ts"
 }
