@@ -5,8 +5,8 @@
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
   "dependencies": {
-    "@boostv/process-optimizer-frontend-core": "2.10.2",
-    "@boostv/process-optimizer-frontend-plots": "1.0.5",
+    "@boostv/process-optimizer-frontend-core": "*",
+    "@boostv/process-optimizer-frontend-plots": "*",
     "lodash.debounce": "^4.0.8",
     "react-hook-form": "^7.53.2",
     "remeda": "^2.17.3",
