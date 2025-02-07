@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 2.10.4
+
+### Patch Changes
+
+- bd25586: Loosen peer dependency version ranges
+
 ## 2.10.3
 
 ### Patch Changes
