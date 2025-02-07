@@ -1,5 +1,14 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.10.5
+
+### Patch Changes
+
+- bd25586: Loosen peer dependency version ranges
+- Updated dependencies [bd25586]
+  - @boostv/process-optimizer-frontend-core@2.10.4
+  - @boostv/process-optimizer-frontend-plots@1.0.7
+
 ## 2.10.4
 
 ### Patch Changes

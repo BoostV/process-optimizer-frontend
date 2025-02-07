@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/plots
 
+## 1.0.7
+
+### Patch Changes
+
+- bd25586: Loosen peer dependency version ranges
+
 ## 1.0.6
 
 ### Patch Changes
