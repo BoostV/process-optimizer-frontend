@@ -17,10 +17,12 @@ import {
   migrateToV14,
   migrateToV15,
   migrateToV16,
+  migrateToV17,
+  migrateToV18,
 } from './migrations'
-import { migrateToV17 } from './migrations/migrateToV17'
 
 export const migrate = (json: any): ExperimentType => {
+  console.log(json.info.dataFormatVersion)
   const migrated = _migrate(
     json,
     MIGRATIONS[MIGRATIONS.length - 1]?.version ?? '0'
@@ -30,6 +32,7 @@ export const migrate = (json: any): ExperimentType => {
     return parsed.data
   }
   console.warn(parsed.error)
+  console.log(json.info.dataFormatVersion)
   throw new Error('Error migrating json to experiment')
 }
 
@@ -100,4 +103,5 @@ export const MIGRATIONS: Migration[] = [
   { version: '15', converter: migrateToV15 },
   { version: '16', converter: migrateToV16 },
   { version: '17', converter: migrateToV17 },
+  { version: '18', converter: migrateToV18 },
 ]
