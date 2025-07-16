@@ -22,7 +22,6 @@ import {
 } from './migrations'
 
 export const migrate = (json: any): ExperimentType => {
-  console.log(json.info.dataFormatVersion)
   const migrated = _migrate(
     json,
     MIGRATIONS[MIGRATIONS.length - 1]?.version ?? '0'
@@ -32,7 +31,6 @@ export const migrate = (json: any): ExperimentType => {
     return parsed.data
   }
   console.warn(parsed.error)
-  console.log(json.info.dataFormatVersion)
   throw new Error('Error migrating json to experiment')
 }
 
