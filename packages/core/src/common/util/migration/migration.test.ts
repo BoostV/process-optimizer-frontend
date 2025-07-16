@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { JSONSchemaFaker } from 'json-schema-faker'
 import { migrate, _migrate, MIGRATIONS } from './migration'
 import version18 from './data-formats/18.json'

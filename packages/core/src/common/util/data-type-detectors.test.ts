@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { isJSON, isPNG } from './data-type-detectors'
 
 describe('isJSON', () => {

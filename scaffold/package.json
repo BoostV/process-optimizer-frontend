@@ -1,16 +1,16 @@
 {
   "name": "@boostv/process-optimizer-frontend-scaffol",
-  "version": "1.0.1",
-  "repository": "https://github.com/BoostV/process-optimizer-frontend.git",
+  "version": "1.0.2",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "license": "BSD-3-Clause",
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
   "private": true,
+  "repository": "https://github.com/BoostV/process-optimizer-frontend.git",
   "scripts": {
     "build": "echo 'No build for scaffold project'",
     "lint": "echo 'No lint for scaffold project'",
     "start": "echo 'No start for scaffold project'"
-  },
-  "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
   }
 }

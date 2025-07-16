@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const migrateToV9 = (json: any): any => {
   return {
     ...json,

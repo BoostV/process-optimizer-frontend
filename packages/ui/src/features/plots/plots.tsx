@@ -48,8 +48,8 @@ export const Plots: FC<Props> = ({
     loadingMode === 'overlay'
       ? undefined
       : loadingMode === 'custom'
-      ? loadingView
-      : defaultLoadingView
+        ? loadingView
+        : defaultLoadingView
 
   return (
     <>

@@ -119,14 +119,12 @@ export const validateDuplicateDataPointIds = (
   experiment: ExperimentType
 ): number[] => findUniqueDuplicates(experiment.dataPoints.map(dp => dp.meta.id))
 
-export const findUniqueDuplicates = <T extends number[] | string[]>(
-  arr: T
-): T =>
+export const findUniqueDuplicates = <T extends number | string>(
+  arr: T[]
+): T[] =>
   arr
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore - https://github.com/microsoft/TypeScript/issues/44373
-    .filter((val: T, i: number, arr: T[]) => arr.indexOf(val) !== i)
-    .filter((val: T, i: number, arr: T[]) => arr.indexOf(val) === i)
+    .filter((val, i: number, arr) => arr.indexOf(val) !== i)
+    .filter((val, i: number, arr) => arr.indexOf(val) === i)
 
 export const validateCategoricalValues = (experiment: ExperimentType) => {
   const dataPoints = experiment.dataPoints

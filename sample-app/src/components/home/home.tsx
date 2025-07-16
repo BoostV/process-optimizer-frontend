@@ -6,6 +6,7 @@ import {
   IconButton,
   List,
   ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   Snackbar,
@@ -42,10 +43,13 @@ export default function Home() {
   })
   const [tempExperiment, setTempExperiment] = useState<ExperimentType>()
 
-  const saveExperimentLocally = useCallback((experiment: ExperimentType) => {
-    localStorage.setItem(experiment.id, JSON.stringify({ experiment }))
-    navigate('/experiment/' + experiment.id)
-  }, [])
+  const saveExperimentLocally = useCallback(
+    (experiment: ExperimentType) => {
+      localStorage.setItem(experiment.id, JSON.stringify({ experiment }))
+      navigate('/experiment/' + experiment.id)
+    },
+    [navigate]
+  )
 
   const onDrop = useCallback(
     (acceptedFiles: Blob[]) => {
@@ -60,7 +64,7 @@ export default function Home() {
             setTempExperiment(experiment)
           }
         } catch (e) {
-          console.error('Unable to use local storage')
+          console.error('Unable to use local storage', e)
           setUploadMessage({ message: 'Upload failed', isError: true })
         }
       }
@@ -111,11 +115,11 @@ export default function Home() {
 
   const getExperimentName = (key: string) => {
     try {
-      const json: any = JSON.parse(localStorage.getItem(key) ?? '')
+      const json = JSON.parse(localStorage.getItem(key) ?? '')
       const experiment: ExperimentType = json.experiment
       return '' !== experiment.info.name ? experiment.info.name : '-'
     } catch (e) {
-      console.error('Error parsing saved experiment')
+      console.error('Error parsing saved experiment', e)
     }
     return key
   }
@@ -176,12 +180,14 @@ export default function Home() {
 
           <Box p={0} pl={1} mb={1} className={classes.box}>
             <List component="nav">
-              <ListItem button onClick={() => createNewExperiment()}>
-                <ListItemText
-                  primaryTypographyProps={{ variant: 'h6' }}
-                  primary="Create new experiment"
-                />
-                <ChevronRight />
+              <ListItem component="div">
+                <ListItemButton onClick={() => createNewExperiment()}>
+                  <ListItemText
+                    primaryTypographyProps={{ variant: 'h6' }}
+                    primary="Create new experiment"
+                  />
+                  <ChevronRight />
+                </ListItemButton>
               </ListItem>
             </List>
           </Box>
@@ -212,26 +218,26 @@ export default function Home() {
                       id => deletionState.experimentsToDelete.indexOf(id) === -1
                     )
                     .map((id, i) => (
-                      <ListItem
-                        key={i}
-                        button
-                        onClick={() => openSavedExperiment(id)}
-                      >
-                        <ListItemIcon>
-                          <IconButton
-                            edge="start"
-                            onClick={(e: MouseEvent) => deleteExperiment(e, id)}
-                            size="large"
-                          >
-                            <Delete color="secondary" fontSize="small" />
-                          </IconButton>
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={getExperimentName(id)}
-                          secondary={id}
-                          secondaryTypographyProps={{ color: 'inherit' }}
-                        />
-                        <ChevronRight />
+                      <ListItem key={i} disablePadding>
+                        <ListItemButton onClick={() => openSavedExperiment(id)}>
+                          <ListItemIcon>
+                            <IconButton
+                              edge="start"
+                              onClick={(e: MouseEvent) =>
+                                deleteExperiment(e, id)
+                              }
+                              size="large"
+                            >
+                              <Delete color="secondary" fontSize="small" />
+                            </IconButton>
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={getExperimentName(id)}
+                            secondary={id}
+                            secondaryTypographyProps={{ color: 'inherit' }}
+                          />
+                          <ChevronRight />
+                        </ListItemButton>
                       </ListItem>
                     ))}
                 </List>

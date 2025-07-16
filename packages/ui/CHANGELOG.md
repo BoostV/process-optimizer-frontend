@@ -1,5 +1,61 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.10.5
+
+### Patch Changes
+
+- bd25586: Loosen peer dependency version ranges
+- Updated dependencies [bd25586]
+  - @boostv/process-optimizer-frontend-core@2.10.4
+  - @boostv/process-optimizer-frontend-plots@1.0.7
+
+## 2.10.4
+
+### Patch Changes
+
+- 0b0100d: Update external dependencies
+- Updated dependencies [0b0100d]
+  - @boostv/process-optimizer-frontend-plots@1.0.6
+  - @boostv/process-optimizer-frontend-core@2.10.3
+
+## 2.10.3
+
+### Patch Changes
+
+- 5397e62: Export types properly in manifests
+- Updated dependencies [5397e62]
+  - @boostv/process-optimizer-frontend-plots@1.0.5
+  - @boostv/process-optimizer-frontend-core@2.10.2
+
+## 2.10.2
+
+### Patch Changes
+
+- 4ee3cdb: Fix peer dependencies
+
+## 2.10.1
+
+### Patch Changes
+
+- d5dabb9: Update dependencies
+- Updated dependencies [d5dabb9]
+  - @boostv/process-optimizer-frontend-plots@1.0.4
+  - @boostv/process-optimizer-frontend-core@2.10.1
+
+## 2.10.0
+
+### Minor Changes
+
+- 4d47233: Rename score to quality
+- d63ac4b: Change transfer button label on initial interaction
+- 9a4cded: Cap suggestion count
+
+### Patch Changes
+
+- Updated dependencies [4d47233]
+- Updated dependencies [9a4cded]
+  - @boostv/process-optimizer-frontend-core@2.10.0
+
 ## 2.9.0
 
 ### Minor Changes

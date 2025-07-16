@@ -1,5 +1,42 @@
 # @process-optimizer-frontend/core
 
+## 2.10.4
+
+### Patch Changes
+
+- bd25586: Loosen peer dependency version ranges
+
+## 2.10.3
+
+### Patch Changes
+
+- 0b0100d: Update external dependencies
+- Updated dependencies [0b0100d]
+  - @boostv/process-optimizer-frontend-api@1.4.3
+
+## 2.10.2
+
+### Patch Changes
+
+- 5397e62: Export types properly in manifests
+- Updated dependencies [5397e62]
+  - @boostv/process-optimizer-frontend-api@1.4.2
+
+## 2.10.1
+
+### Patch Changes
+
+- d5dabb9: Update dependencies
+- Updated dependencies [d5dabb9]
+  - @boostv/process-optimizer-frontend-api@1.4.1
+
+## 2.10.0
+
+### Minor Changes
+
+- 4d47233: Rename score to quality
+- 9a4cded: Cap suggestion count
+
 ## 2.9.2
 
 ### Patch Changes

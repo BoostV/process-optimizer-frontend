@@ -1,34 +1,36 @@
 {
   "name": "@boostv/eslint-config",
-  "private": false,
-  "version": "2.0.0",
   "description": "Common eslint rules for process optimizer frontend",
+  "version": "2.0.3",
+  "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
+  "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
+  "devDependencies": {
+    "@eslint/compat": "^1.2.6",
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.19.0",
+    "globals": "^15.14.0"
+  },
+  "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
   "keywords": [
     "eslint",
     "eslintconfig "
   ],
-  "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
-  "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
   "license": "BSD-3-Clause",
+  "main": "index.mjs",
+  "peerDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.23.0",
+    "@typescript-eslint/parser": "^8.23.0",
+    "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-jest-dom": "^5.5.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-testing-library": "7.1.1"
+  },
+  "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BoostV/process-optimizer-frontend.git"
-  },
-  "bugs": {
-    "url": "https://github.com/BoostV/process-optimizer-frontend/issues"
-  },
-  "main": "index.js",
-  "peerDependencies": {
-    "@typescript-eslint/eslint-plugin": ">=5.36.2",
-    "@typescript-eslint/parser": ">=5.36.2",
-    "eslint": ">=8.23.0",
-    "eslint-config-prettier": ">=8.5.0",
-    "eslint-plugin-jest-dom": ">=4.0.2",
-    "eslint-plugin-react": ">=7.31.6",
-    "eslint-plugin-react-hooks": ">=4.6.0",
-    "eslint-plugin-testing-library": ">=5.6.1"
-  }
+  "repository": "BoostV/process-optimizer-frontend.git",
+  "type": "module"
 }

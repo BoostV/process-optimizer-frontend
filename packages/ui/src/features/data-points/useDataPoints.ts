@@ -32,7 +32,7 @@ export const useDataPoints = (
           dataPoints
         ),
         meta: dataPoints.map(dp => dp.meta),
-      } as const),
+      }) as const,
     [categoricalVariables, dataPoints, scoreNames, valueVariables]
   )
 

@@ -1,5 +1,23 @@
 # @process-optimizer-frontend/api
 
+## 1.4.3
+
+### Patch Changes
+
+- 0b0100d: Update external dependencies
+
+## 1.4.2
+
+### Patch Changes
+
+- 5397e62: Export types properly in manifests
+
+## 1.4.1
+
+### Patch Changes
+
+- d5dabb9: Update dependencies
+
 ## 1.4.0
 
 ### Minor Changes

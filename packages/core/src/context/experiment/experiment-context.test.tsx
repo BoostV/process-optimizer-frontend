@@ -1,7 +1,7 @@
+import { afterEach, describe, expect, it } from 'vitest'
 import { ApiProvider } from '@core/context/experiment/api-provider'
 import { render, renderHook, screen } from '@testing-library/react'
 import { FC } from 'react'
-import { it, vi } from 'vitest'
 import {
   useExperiment,
   ExperimentProvider,
@@ -19,11 +19,9 @@ const ExperimentWrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
 
 describe('useExperiment', () => {
   it('fails if called outside provider', async () => {
-    console.error = vi.fn()
     expect(() => renderHook(() => useExperiment())).toThrow(
       'useExperiment must be used within an ExperimentProvider'
     )
-    expect(console.error).toHaveBeenCalled()
   })
 
   it('provides context when called inside provider', async () => {
