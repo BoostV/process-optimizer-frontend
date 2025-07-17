@@ -14,7 +14,10 @@ import {
 import useStyles from './single-data-point.style'
 import { PNGPlot } from '@boostv/process-optimizer-frontend-plots'
 import { useState } from 'react'
-import { scoreName } from '@boostv/process-optimizer-frontend-core'
+import {
+  scoreNames,
+  defaultScoreName,
+} from '@boostv/process-optimizer-frontend-core'
 
 interface SingleDataPointProps {
   title: string
@@ -47,7 +50,10 @@ export const SingleDataPoint = ({
         <TableHead>
           <TableRow>
             {headers
-              .concat([scoreName + ' (95 % credibility interval)'])
+              .concat([
+                (scoreNames[0] ?? defaultScoreName) +
+                  ' (95 % credibility interval)',
+              ])
               .map((h, idx) => (
                 <TableCell className={classes.cell} key={idx}>
                   {h}

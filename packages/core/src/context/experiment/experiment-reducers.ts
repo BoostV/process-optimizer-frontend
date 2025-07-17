@@ -6,8 +6,9 @@ import {
   OptimizerConfig,
   ScoreVariableType,
   ValueVariableType,
+  defaultScoreName,
   experimentSchema,
-  scoreName,
+  scoreNames,
 } from '@core/common/types'
 import { produce } from 'immer'
 import md5 from 'md5'
@@ -390,18 +391,19 @@ export const experimentReducer = produce(
         }))
 
         if (state.scoreVariables.length < 2) {
+          const scoreNameToAdd = scoreNames[1] ?? defaultScoreName
           state.scoreVariables.push({
-            name: scoreName + ' 2',
-            description: scoreName + ' 2',
+            name: scoreNameToAdd,
+            description: scoreNameToAdd,
             enabled: true,
           })
-          const scoreNames = state.scoreVariables.map(it => it.name)
+          const scoreVariableNames = state.scoreVariables.map(it => it.name)
           state.dataPoints.forEach(dataEntry => {
             const dp = dataEntry.data
             const containedScores = dp
-              .filter(it => scoreNames.includes(it.name))
+              .filter(it => scoreVariableNames.includes(it.name))
               .map(it => it.name)
-            scoreNames.forEach(scoreName => {
+            scoreVariableNames.forEach(scoreName => {
               if (!containedScores.includes(scoreName))
                 dp.push({ type: 'score', name: scoreName, value: 0 })
             })
