@@ -62,3 +62,21 @@ export type State = {
 export const initialState: State = {
   experiment: emptyExperiment,
 }
+
+export const initialStateMultiObjective: State = {
+  experiment: {
+    ...emptyExperiment,
+    scoreVariables: [
+      {
+        name: scoreNames[0] ?? defaultScoreName,
+        description: scoreNames[0] ?? defaultScoreName,
+        enabled: true,
+      },
+      {
+        name: scoreNames[1] ?? defaultScoreName,
+        description: scoreNames[1] ?? defaultScoreName,
+        enabled: true,
+      },
+    ],
+  },
+}
