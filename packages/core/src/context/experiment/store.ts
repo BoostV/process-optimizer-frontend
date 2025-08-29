@@ -36,6 +36,7 @@ export const emptyExperiment: ExperimentType = {
     initialPoints: 3,
     kappa: 1.96,
     xi: 0.01,
+    maxEnabledVariablesBeforeSuggestionLimitation: 10,
   },
   results: {
     id: '',

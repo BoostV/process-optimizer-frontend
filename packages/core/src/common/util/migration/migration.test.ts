@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { JSONSchemaFaker } from 'json-schema-faker'
 import { migrate, _migrate, MIGRATIONS } from './migration'
+import version18 from './data-formats/18.json'
 import version17 from './data-formats/17.json'
 import version16 from './data-formats/16.json'
 import version3 from './data-formats/3.json'
@@ -20,7 +21,7 @@ import {
   scoreName,
 } from '@core/common/types'
 import { storeLatestSchema, loadTestData } from './test-utils'
-import { migrateToV17 } from './migrations/migrateToV17'
+import { migrateToV17, migrateToV18 } from './migrations'
 
 describe('Migration of data format', () => {
   storeLatestSchema()
@@ -264,14 +265,25 @@ describe('Migration of data format', () => {
     )
   })
 
+  describe('migrateToV18', () => {
+    it('should set maxEnabledVariablesBeforeSuggestionLimitation to 10', () => {
+      expect(version17.info.dataFormatVersion).toBe('17')
+      const migrated = migrateToV18(version17)
+      expect(migrated.info.dataFormatVersion).toBe('18')
+      expect(
+        migrated.optimizerConfig.maxEnabledVariablesBeforeSuggestionLimitation
+      ).toBe(10)
+    })
+  })
+
   describe('experiment properties', () => {
-    //TODO: More/better tests - maybe this can be mabe obsolete by schema testing
+    //TODO: More/better tests - maybe this can be made obsolete by schema testing
     it('newest data format json should match default empty experiment', () => {
       expect(Object.keys(emptyExperiment).length).toBe(
-        Object.keys(version17).length
+        Object.keys(version18).length
       )
       Object.keys(emptyExperiment).forEach(p =>
-        expect(version17).toHaveProperty(p)
+        expect(version18).toHaveProperty(p)
       )
     })
   })

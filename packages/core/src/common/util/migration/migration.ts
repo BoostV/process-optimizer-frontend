@@ -17,8 +17,9 @@ import {
   migrateToV14,
   migrateToV15,
   migrateToV16,
+  migrateToV17,
+  migrateToV18,
 } from './migrations'
-import { migrateToV17 } from './migrations/migrateToV17'
 
 export const migrate = (json: any): ExperimentType => {
   const migrated = _migrate(
@@ -83,6 +84,7 @@ interface Migration {
 //To add new migration:
 //* Add new json file to /data-formats
 //* Add new migration and converter function below
+//* update currentVersion in /types/common.ts
 //* Write unit test
 export const MIGRATIONS: Migration[] = [
   { version: '3', converter: migrateToV3 },
@@ -100,4 +102,5 @@ export const MIGRATIONS: Migration[] = [
   { version: '15', converter: migrateToV15 },
   { version: '16', converter: migrateToV16 },
   { version: '17', converter: migrateToV17 },
+  { version: '18', converter: migrateToV18 },
 ]

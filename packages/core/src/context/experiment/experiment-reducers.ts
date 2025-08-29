@@ -16,9 +16,12 @@ import { assertUnreachable } from '@core/common/util'
 import {
   selectActiveDataPoints,
   selectActiveVariablesFromExperiment,
+  selectCalculatedSuggestionCountFromExperiment,
   selectNextValues,
 } from './experiment-selectors'
 import { createFetchExperimentResultRequest } from '@core/context/experiment/api'
+
+// TODO: Test changes
 
 const calculateInitialPoints = (state: ExperimentType) =>
   Math.max(
@@ -251,7 +254,7 @@ export const experimentReducer = produce(
         )
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
-          state.optimizerConfig.initialPoints
+          selectCalculatedSuggestionCountFromExperiment(state)
         break
       case 'editValueVariable': {
         const oldVariable = state.valueVariables[action.payload.index]
@@ -287,7 +290,7 @@ export const experimentReducer = produce(
         state.valueVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
-          state.optimizerConfig.initialPoints
+          selectCalculatedSuggestionCountFromExperiment(state)
         state.dataPoints = removeDataPoints(
           state,
           action.payload,
@@ -301,6 +304,7 @@ export const experimentReducer = produce(
         }))
         break
       }
+      // TODO: set initialPoints?
       case 'setValueVariableEnabled': {
         const valueVariable = state.valueVariables[action.payload.index]
         if (valueVariable !== undefined) {
@@ -308,6 +312,8 @@ export const experimentReducer = produce(
             ...valueVariable,
             enabled: action.payload.enabled,
           }
+          state.extras.experimentSuggestionCount =
+            selectCalculatedSuggestionCountFromExperiment(state)
         }
         break
       }
@@ -321,7 +327,7 @@ export const experimentReducer = produce(
         )
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
-          state.optimizerConfig.initialPoints
+          selectCalculatedSuggestionCountFromExperiment(state)
         break
       case 'editCategoricalVariable': {
         const oldVariableName =
@@ -344,7 +350,7 @@ export const experimentReducer = produce(
         state.categoricalVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
-          state.optimizerConfig.initialPoints
+          selectCalculatedSuggestionCountFromExperiment(state)
         state.dataPoints = removeDataPoints(
           state,
           action.payload,
@@ -352,6 +358,7 @@ export const experimentReducer = produce(
         )
         break
       }
+      // TODO: set initialPoints?
       case 'setCategoricalVariableEnabled': {
         const catVariable = state.categoricalVariables[action.payload.index]
         if (catVariable !== undefined) {
@@ -359,6 +366,8 @@ export const experimentReducer = produce(
             ...catVariable,
             enabled: action.payload.enabled,
           }
+          state.extras.experimentSuggestionCount =
+            selectCalculatedSuggestionCountFromExperiment(state)
         }
         break
       }

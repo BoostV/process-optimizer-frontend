@@ -1,6 +1,8 @@
 import { CombinedVariableType, ExperimentType } from 'common'
 import { State } from './store'
 
+// TODO: Test changes
+
 export const selectExperiment = (state: State) => state.experiment
 export const selectId = (state: State) => selectExperiment(state).id
 
@@ -89,15 +91,36 @@ export const selectIsConstraintActive = (experiment: ExperimentType) =>
 export const selectInitialPoints = (state: State) =>
   selectInitialPointsFromExperiment(selectExperiment(state))
 
+export const selectMaxEnabledVariablesBeforeSuggestionLimitation = (
+  state: State
+) =>
+  selectMaxEnabledVariablesBeforeSuggestionLimitationFromExperiment(
+    selectExperiment(state)
+  )
+
 export const selectInitialPointsFromExperiment = (experiment: ExperimentType) =>
   experiment.optimizerConfig.initialPoints
 
 export const selectIsSuggestionCountEditable = (state: State) => {
   const dataPoints = selectActiveDataPoints(state)
   const initialPoints = selectInitialPoints(state)
+  const numberOfActiveVariables = selectActiveVariableNames(state).length
+  const maxEnabledVariablesBeforeSuggestionLimitation =
+    selectMaxEnabledVariablesBeforeSuggestionLimitation(state)
+
+  console.log({
+    dataPoints,
+    initialPoints,
+    numberOfActiveVariables,
+    maxEnabledVariablesBeforeSuggestionLimitation,
+    isConstraintActive: selectIsConstraintActive(selectExperiment(state)),
+  })
+
   return (
-    dataPoints.length < initialPoints ||
-    !selectIsConstraintActive(selectExperiment(state))
+    (dataPoints.length < initialPoints ||
+      !selectIsConstraintActive(selectExperiment(state))) &&
+    (maxEnabledVariablesBeforeSuggestionLimitation === undefined ||
+      numberOfActiveVariables <= maxEnabledVariablesBeforeSuggestionLimitation)
   )
 }
 
@@ -111,15 +134,29 @@ export const selectSuggestionCountFromExperiment = (
 export const selectCalculatedSuggestionCount = (state: State) =>
   selectCalculatedSuggestionCountFromExperiment(selectExperiment(state))
 
+export const selectMaxEnabledVariablesBeforeSuggestionLimitationFromExperiment =
+  (experiment: ExperimentType) =>
+    experiment.optimizerConfig.maxEnabledVariablesBeforeSuggestionLimitation
+
 export const selectCalculatedSuggestionCountFromExperiment = (
   experiment: ExperimentType
 ) => {
   const dataPoints = selectActiveDataPointsFromExperiment(experiment).length
   const initialPoints = selectInitialPointsFromExperiment(experiment)
+  const activeVariables = selectActiveVariablesFromExperiment(experiment).length
+  const maxEnabledVariablesBeforeSuggestionLimitation =
+    selectMaxEnabledVariablesBeforeSuggestionLimitationFromExperiment(
+      experiment
+    )
+
+  const isSuggestionsLimited =
+    activeVariables > maxEnabledVariablesBeforeSuggestionLimitation
 
   if (dataPoints < initialPoints) {
     return initialPoints
   } else if (selectIsConstraintActive(experiment)) {
+    return 1
+  } else if (isSuggestionsLimited) {
     return 1
   }
   return selectSuggestionCountFromExperiment(experiment)
