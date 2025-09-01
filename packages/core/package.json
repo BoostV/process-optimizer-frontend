@@ -20,7 +20,7 @@
     "@types/md5": "^2.3.5",
     "@types/node": "^22.13.1",
     "@types/react": "19.0.8",
-    "@types/react-dom": "19.0.3",
+    "@types/react-dom": "19.1.9",
     "@types/rimraf": "^4.0.5",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.4",

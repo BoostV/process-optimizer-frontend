@@ -5,7 +5,7 @@
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "2.16.3",
+    "@openapitools/openapi-generator-cli": "2.23.1",
     "prettier": "^3.4.2",
     "typescript": "^5.7.3",
     "vite": "6.1.0",
