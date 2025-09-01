@@ -6,7 +6,7 @@
     "@changesets/cli": "^2.27.12"
   },
   "devDependencies": {
-    "@boostv/eslint-config": "2.0.3",
+    "@boostv/eslint-config": "2.1.0",
     "@typescript-eslint/eslint-plugin": "^8.23.0",
     "@typescript-eslint/parser": "^8.23.0",
     "ajv": "^8.17.1",
