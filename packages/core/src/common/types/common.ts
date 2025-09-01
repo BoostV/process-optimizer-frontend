@@ -13,7 +13,7 @@ const infoSchema = z.object({
   swVersion: z.string(),
   dataFormatVersion: z.literal(currentVersion),
   version: z.number(),
-  extras: z.record(z.unknown()),
+  extras: z.record(z.string(), z.unknown()),
 })
 
 export const experimentResultSchema = z.object({
@@ -22,7 +22,7 @@ export const experimentResultSchema = z.object({
   next: z.array(z.array(z.number().or(z.string()))),
   pickled: z.string(),
   expectedMinimum: z.array(z.array(z.number().or(z.string())).or(z.number())),
-  extras: z.record(z.unknown()),
+  extras: z.record(z.string(), z.unknown()),
 })
 
 const categorialVariableSchema = z.object({
@@ -35,7 +35,7 @@ const categorialVariableSchema = z.object({
 const valueVariableSchema = z.object({
   type: z.literal('discrete').or(z.literal('continuous')),
   name: z.string(),
-  description: z.string().default(''),
+  description: z.string().prefault(''),
   min: z.number(),
   max: z.number(),
   enabled: z.boolean(),
@@ -56,9 +56,9 @@ const optimizerSchema = z.object({
 })
 
 const dataEntryMetaDataSchema = z.object({
-  id: z.coerce.number().default(0),
-  enabled: z.coerce.boolean().default(true),
-  valid: z.coerce.boolean().default(true),
+  id: z.coerce.number().prefault(0),
+  enabled: z.coerce.boolean().prefault(true),
+  valid: z.coerce.boolean().prefault(true),
   description: z.optional(z.string()),
 })
 
@@ -116,7 +116,7 @@ export const experimentSchema = z.object({
   lastEvaluationHash: z.string().optional(),
   changedSinceLastEvaluation: z.boolean(),
   info: infoSchema,
-  extras: z.record(z.unknown()),
+  extras: z.record(z.string(), z.unknown()),
   categoricalVariables: z.array(categorialVariableSchema),
   valueVariables: z.array(valueVariableSchema),
   scoreVariables: z.array(scoreVariableSchema),
