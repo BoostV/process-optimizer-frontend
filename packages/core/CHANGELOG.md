@@ -1,5 +1,16 @@
 # @process-optimizer-frontend/core
 
+## 2.11.0
+
+### Minor Changes
+
+- 898c7ce: Update external dependencies
+
+### Patch Changes
+
+- Updated dependencies [898c7ce]
+  - @boostv/process-optimizer-frontend-api@1.5.0
+
 ## 2.10.4
 
 ### Patch Changes

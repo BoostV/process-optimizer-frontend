@@ -1,11 +1,11 @@
 {
   "name": "@boostv/process-optimizer-frontend-core",
   "description": "Core library for process optimizer frontend",
-  "version": "2.10.4",
+  "version": "2.11.0",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
   "dependencies": {
-    "@boostv/process-optimizer-frontend-api": "1.4.3",
+    "@boostv/process-optimizer-frontend-api": "1.5.0",
     "compare-versions": "^6.1.1",
     "immer": "^10.1.1",
     "md5": "^2.3.0",

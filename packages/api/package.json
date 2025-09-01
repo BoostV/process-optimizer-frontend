@@ -1,7 +1,7 @@
 {
   "name": "@boostv/process-optimizer-frontend-api",
   "description": "API for process optimizer backend",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
   "devDependencies": {
