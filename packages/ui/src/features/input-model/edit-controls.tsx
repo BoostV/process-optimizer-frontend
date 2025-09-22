@@ -1,7 +1,9 @@
 import { Box, Checkbox, IconButton, Tooltip } from '@mui/material'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import useStyles from './edit-controls.style'
 import { Edit, Delete } from '@mui/icons-material'
+import CancelIcon from '@mui/icons-material/Cancel'
+import CheckIcon from '@mui/icons-material/Check'
 
 type Props = {
   enabled: boolean
@@ -18,33 +20,92 @@ export const EditControls: FC<Props> = ({
 }) => {
   const { classes } = useStyles()
 
+  const [isDeleteConfirmVisible, setDeleteConfirmVisible] =
+    useState<boolean>(false)
+  const [deleteTooltipOpen, setDeleteTooltipOpen] = useState<boolean>(false)
+
+  const handleDelete = () => {
+    setDeleteTooltipOpen(false)
+    setDeleteConfirmVisible(true)
+  }
+
+  const confirmButton = (
+    <Tooltip disableInteractive title="Confirm delete">
+      <span>
+        <IconButton
+          size="small"
+          aria-label="confirm"
+          onClick={() => {
+            onDelete()
+            setDeleteConfirmVisible(false)
+          }}
+        >
+          <CheckIcon color="primary" fontSize="small" />
+        </IconButton>
+      </span>
+    </Tooltip>
+  )
+
+  const cancelButton = (
+    <Tooltip disableInteractive title="Cancel delete">
+      <span>
+        <IconButton
+          size="small"
+          aria-label="cancel"
+          onClick={() => setDeleteConfirmVisible(false)}
+          autoFocus
+        >
+          <CancelIcon color="primary" fontSize="small" />
+        </IconButton>
+      </span>
+    </Tooltip>
+  )
+
   return (
     <Box className={classes.editIconsContainer}>
       <Tooltip disableInteractive title="Edit">
         <span>
-          <IconButton size="small" onClick={onEdit}>
-            <Edit color={'primary'} fontSize="small" />
-          </IconButton>
+          {!isDeleteConfirmVisible && (
+            <IconButton size="small" onClick={onEdit}>
+              <Edit color={'primary'} fontSize="small" />
+            </IconButton>
+          )}
         </span>
       </Tooltip>
-      <Tooltip disableInteractive title="Delete">
+      <Tooltip
+        disableInteractive
+        title="Delete"
+        open={deleteTooltipOpen && !isDeleteConfirmVisible}
+        onOpen={() => setDeleteTooltipOpen(true)}
+        onClose={() => setDeleteTooltipOpen(false)}
+      >
         <span>
-          <IconButton size="small" onClick={onDelete}>
-            <Delete color={'primary'} fontSize="small" />
-          </IconButton>
+          {!isDeleteConfirmVisible && (
+            <IconButton size="small" onClick={handleDelete}>
+              <Delete color={'primary'} fontSize="small" />
+            </IconButton>
+          )}
         </span>
       </Tooltip>
+      {isDeleteConfirmVisible && (
+        <Box className={classes.confirmContainer}>
+          {confirmButton}
+          {cancelButton}
+        </Box>
+      )}
       <Tooltip disableInteractive title="Disable/enable">
         <span>
-          <Checkbox
-            checked={enabled}
-            onChange={(_, checked) => onEnabledToggled(checked)}
-            inputProps={{
-              'aria-label': 'Enable/disable',
-            }}
-            size="small"
-            color="primary"
-          />
+          {!isDeleteConfirmVisible && (
+            <Checkbox
+              checked={enabled}
+              onChange={(_, checked) => onEnabledToggled(checked)}
+              inputProps={{
+                'aria-label': 'Enable/disable',
+              }}
+              size="small"
+              color="primary"
+            />
+          )}
         </span>
       </Tooltip>
     </Box>
