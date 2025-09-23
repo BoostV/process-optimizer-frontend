@@ -85,55 +85,50 @@ export const EditableTable = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows
-            .filter(row => !row.isNew || !isSelectionExists)
-            .map((row, rowIndex) => (
-              <EditableTableRow
-                key={'editablerow' + rowIndex}
-                colSpan={row.dataPoints.length + 2}
-                rowId={getRowId(newestFirst, rowIndex, rows.length)}
-                onSave={(row: TableDataRow) =>
-                  onRowEdited(
-                    getRowIndex(newestFirst, rowIndex, rows.length),
-                    row
+          {rows.map((row, rowIndex) => (
+            <EditableTableRow
+              key={'editablerow' + rowIndex}
+              colSpan={row.dataPoints.length + 2}
+              rowId={getRowId(newestFirst, rowIndex, rows.length)}
+              onSave={(row: TableDataRow) =>
+                onRowEdited(
+                  getRowIndex(newestFirst, rowIndex, rows.length),
+                  row
+                )
+              }
+              onAdd={(row: TableDataRow) => onRowAdded(row)}
+              tableRow={row}
+              violations={
+                violations?.find(v => v.rowMetaId === row.metaId)?.messages
+              }
+              order={order}
+              isEditingDisabled={isEditingDisabled}
+              onEnabledToggled={enabled =>
+                onRowEnabledToggled(
+                  getRowIndex(newestFirst, rowIndex, rows.length),
+                  enabled
+                )
+              }
+              isSelectionExists={isSelectionExists}
+              isSelected={selectedRowIndices.includes(
+                getRowIndex(newestFirst, rowIndex, rows.length)
+              )}
+              onSelected={() => {
+                const actualRowIndex = getRowIndex(
+                  newestFirst,
+                  rowIndex,
+                  rows.length
+                )
+                if (selectedRowIndices.includes(actualRowIndex)) {
+                  setSelectedRowIndices(
+                    selectedRowIndices.filter(i => i !== actualRowIndex)
                   )
+                } else {
+                  setSelectedRowIndices([...selectedRowIndices, actualRowIndex])
                 }
-                onAdd={(row: TableDataRow) => onRowAdded(row)}
-                tableRow={row}
-                violations={
-                  violations?.find(v => v.rowMetaId === row.metaId)?.messages
-                }
-                order={order}
-                isEditingDisabled={isEditingDisabled}
-                onEnabledToggled={enabled =>
-                  onRowEnabledToggled(
-                    getRowIndex(newestFirst, rowIndex, rows.length),
-                    enabled
-                  )
-                }
-                isSelectionExists={isSelectionExists}
-                isSelected={selectedRowIndices.includes(
-                  getRowIndex(newestFirst, rowIndex, rows.length)
-                )}
-                onSelected={() => {
-                  const actualRowIndex = getRowIndex(
-                    newestFirst,
-                    rowIndex,
-                    rows.length
-                  )
-                  if (selectedRowIndices.includes(actualRowIndex)) {
-                    setSelectedRowIndices(
-                      selectedRowIndices.filter(i => i !== actualRowIndex)
-                    )
-                  } else {
-                    setSelectedRowIndices([
-                      ...selectedRowIndices,
-                      actualRowIndex,
-                    ])
-                  }
-                }}
-              />
-            ))}
+              }}
+            />
+          ))}
         </TableBody>
         {rows.length > 10 && (
           <TableFooter>

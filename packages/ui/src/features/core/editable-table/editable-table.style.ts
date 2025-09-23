@@ -23,8 +23,8 @@ export const useStyles = makeStyles()(() => ({
     display: 'flex',
     justifyContent: 'flex-end',
     gap: '8px',
-    marginRight: '16px',
-    marginTop: '16px',
+    marginRight: '24px',
+    marginTop: '4px',
   },
 }))
 

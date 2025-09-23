@@ -33,6 +33,7 @@ export const EditableTableCollapsedRow = ({
   onSelected,
   isEditingDisabled,
   isSelected,
+  isSelectionExists,
 }: EditableTableCollapsedRowProps) => {
   const { classes } = useStyles()
   const rowEnabled = tableRow.enabled && tableRow.valid
@@ -64,7 +65,7 @@ export const EditableTableCollapsedRow = ({
               <Button
                 size="small"
                 onClick={() => setExpanded(true)}
-                disabled={isEditingDisabled}
+                disabled={isEditingDisabled || isSelectionExists}
                 startIcon={<Add fontSize="small" />}
                 variant="outlined"
               >

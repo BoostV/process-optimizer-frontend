@@ -31,6 +31,7 @@ export const EditableTableRow = ({
   violations,
   order,
   isEditingDisabled,
+  isSelectionExists,
   isSelected,
 }: EditableTableRowProps) => {
   const [expanded, setExpanded] = useState(false)
@@ -63,6 +64,7 @@ export const EditableTableRow = ({
           onEnabledToggled={enabled => onEnabledToggled(enabled)}
           onSelected={() => onSelected()}
           isSelected={isSelected}
+          isSelectionExists={isSelectionExists}
         />
       )}
     </>
