@@ -1,6 +1,6 @@
-import zodToJsonSchema from 'zod-to-json-schema'
 import fs from 'fs'
 import { currentVersion, experimentSchema } from '@core/common/types'
+import z from 'zod'
 
 const loadNamedJson = (version: number) => {
   return JSON.parse(
@@ -12,10 +12,11 @@ const loadNamedJson = (version: number) => {
 }
 
 export const storeLatestSchema = () => {
-  const jsonSchema = zodToJsonSchema(
-    experimentSchema,
-    `experiment-v${currentVersion}`
-  )
+  const jsonSchema = z.toJSONSchema(experimentSchema)
+  //  zodToJsonSchema(
+  //   experimentSchema,
+  //   `experiment-v${currentVersion}`
+  // )
   fs.writeFileSync(
     `src/common/util/migration/schemas/${currentVersion}.json`,
     JSON.stringify(jsonSchema, undefined, 2)
