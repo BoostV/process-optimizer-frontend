@@ -1,5 +1,11 @@
 # @boostv/eslint-config
 
+## 2.1.0
+
+### Minor Changes
+
+- 898c7ce: Update external dependencies
+
 ## 2.0.3
 
 ### Patch Changes

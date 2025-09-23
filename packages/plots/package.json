@@ -7,11 +7,11 @@
   "dependencies": {
     "@bokeh/bokehjs": "^3.6.1",
     "jquery": "^3.7.1",
-    "recharts": "^2.15.1"
+    "recharts": "3.1.2"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "6.1.0",
+    "@vitejs/plugin-react": "5.0.2",
+    "vite": "7.1.3",
     "vite-plugin-dts": "^4.5.0"
   },
   "exports": {
@@ -26,8 +26,8 @@
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
   "license": "BSD-3-Clause",
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
   },
   "private": false,
   "publishConfig": {

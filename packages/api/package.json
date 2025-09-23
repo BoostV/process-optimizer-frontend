@@ -1,14 +1,14 @@
 {
   "name": "@boostv/process-optimizer-frontend-api",
   "description": "API for process optimizer backend",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "2.16.3",
+    "@openapitools/openapi-generator-cli": "2.23.1",
     "prettier": "^3.4.2",
     "typescript": "^5.7.3",
-    "vite": "6.1.0",
+    "vite": "7.1.3",
     "vite-plugin-dts": "^4.5.0"
   },
   "exports": {

@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/api
 
+## 1.5.0
+
+### Minor Changes
+
+- 898c7ce: Update external dependencies
+
 ## 1.4.3
 
 ### Patch Changes
