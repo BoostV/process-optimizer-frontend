@@ -1,7 +1,8 @@
 import { makeStyles } from 'tss-react/mui'
 import { colors, tableBorder } from './styles'
+import { lighten } from '@mui/material'
 
-export const useStyles = makeStyles()(() => ({
+export const useStyles = makeStyles()(theme => ({
   buttonContainer: {
     whiteSpace: 'nowrap',
     float: 'right',
@@ -22,7 +23,20 @@ export const useStyles = makeStyles()(() => ({
       background: 'white',
     },
   },
+  rowSelected: {
+    cursor: 'pointer',
+    td: {
+      backgroundColor: lighten(theme.palette.primary.main, 0.8),
+    },
+    'td:first-of-type': {
+      background: 'white',
+    },
+    'td:last-of-type': {
+      background: 'white',
+    },
+  },
   row: {
+    cursor: 'pointer',
     '&:hover': {
       background: '#fdfdfd',
     },

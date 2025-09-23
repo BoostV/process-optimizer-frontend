@@ -19,6 +19,13 @@ export const useStyles = makeStyles()(() => ({
     borderTop: tableBorder,
     borderBottom: tableBorder,
   },
+  selectionControls: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '8px',
+    marginRight: '16px',
+    marginTop: '16px',
+  },
 }))
 
 export default useStyles
