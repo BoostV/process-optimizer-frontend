@@ -43,6 +43,9 @@ export const EditableTable = ({
 }: EditableTableProps) => {
   const { classes } = useStyles()
   const [selectedRowIndices, setSelectedRowIndices] = useState<number[]>([])
+  const [lastSelectedIndex, setLastSelectedIndex] = useState<
+    number | undefined
+  >(undefined)
   const isSelectionExists = selectedRowIndices.length > 0
 
   const selectionControls = (
@@ -70,9 +73,36 @@ export const EditableTable = ({
     </Box>
   )
 
+  const handleRowSelection = (rowIndex: number, isShiftKeyDown: boolean) => {
+    const actualRowIndex = getRowIndex(newestFirst, rowIndex, rows.length)
+    // shift key down: range selection
+    if (isShiftKeyDown && lastSelectedIndex !== undefined) {
+      const startSelection = Math.min(lastSelectedIndex, actualRowIndex)
+      const endSelection = Math.max(lastSelectedIndex, actualRowIndex)
+      const selectionIndices = []
+
+      for (let i = startSelection; i <= endSelection; i++) {
+        selectionIndices.push(i)
+      }
+
+      const newSelection = [...selectedRowIndices, ...selectionIndices]
+      setSelectedRowIndices(newSelection)
+      // regular click: toggle single row
+    } else {
+      if (selectedRowIndices.includes(actualRowIndex)) {
+        setSelectedRowIndices(
+          selectedRowIndices.filter(i => i !== actualRowIndex)
+        )
+      } else {
+        setSelectedRowIndices([...selectedRowIndices, actualRowIndex])
+        setLastSelectedIndex(actualRowIndex)
+      }
+    }
+  }
+
   return (
     <>
-      <Table size="small">
+      <Table size="small" className={classes.table}>
         <TableHead>
           <TableRow>
             <TableCell className={classes.emptyCell} />
@@ -113,20 +143,9 @@ export const EditableTable = ({
               isSelected={selectedRowIndices.includes(
                 getRowIndex(newestFirst, rowIndex, rows.length)
               )}
-              onSelected={() => {
-                const actualRowIndex = getRowIndex(
-                  newestFirst,
-                  rowIndex,
-                  rows.length
-                )
-                if (selectedRowIndices.includes(actualRowIndex)) {
-                  setSelectedRowIndices(
-                    selectedRowIndices.filter(i => i !== actualRowIndex)
-                  )
-                } else {
-                  setSelectedRowIndices([...selectedRowIndices, actualRowIndex])
-                }
-              }}
+              onSelected={(isShiftKeyDown: boolean) =>
+                handleRowSelection(rowIndex, isShiftKeyDown)
+              }
             />
           ))}
         </TableBody>

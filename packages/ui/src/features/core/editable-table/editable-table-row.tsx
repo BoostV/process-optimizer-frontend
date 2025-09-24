@@ -12,7 +12,7 @@ interface EditableTableRowProps {
   onDelete: () => void
   onAdd: (row: TableDataRow) => void
   onEnabledToggled: (enabled: boolean) => void
-  onSelected: () => void
+  onSelected: (isShiftKeyDown: boolean) => void
   violations?: string[]
   order: TableOrder
   isEditingDisabled?: boolean
@@ -62,7 +62,7 @@ export const EditableTableRow = ({
           setExpanded={expanded => setExpanded(expanded)}
           isEditingDisabled={isEditingDisabled}
           onEnabledToggled={enabled => onEnabledToggled(enabled)}
-          onSelected={() => onSelected()}
+          onSelected={isShiftKeyDown => onSelected(isShiftKeyDown)}
           isSelected={isSelected}
           isSelectionExists={isSelectionExists}
         />
