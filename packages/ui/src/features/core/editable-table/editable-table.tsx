@@ -96,6 +96,7 @@ export const EditableTable = ({
 
   const handleRowSelection = (rowIndex: number, isShiftKeyDown: boolean) => {
     const actualRowIndex = getRowIndex(newestFirst, rowIndex, rows.length)
+
     // shift key down: range selection
     if (isShiftKeyDown && lastSelectedIndex !== undefined) {
       const startSelection = Math.min(lastSelectedIndex, actualRowIndex)
@@ -106,8 +107,11 @@ export const EditableTable = ({
         selectionIndices.push(i)
       }
 
-      const newSelection = [...selectedRowIndices, ...selectionIndices]
+      const newSelection = [
+        ...new Set([...selectedRowIndices, ...selectionIndices]),
+      ]
       setSelectedRowIndices(newSelection)
+
       // regular click: toggle single row
     } else {
       if (selectedRowIndices.includes(actualRowIndex)) {
