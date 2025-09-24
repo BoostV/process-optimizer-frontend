@@ -14,7 +14,7 @@ import useStyles from './editable-table.style'
 import { TableDataRow } from './types'
 import { EditableTableViolation } from '@boostv/process-optimizer-frontend-core'
 import { Delete } from '@mui/icons-material'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export type TableOrder = 'ascending' | 'descending'
 
@@ -46,7 +46,28 @@ export const EditableTable = ({
   const [lastSelectedIndex, setLastSelectedIndex] = useState<
     number | undefined
   >(undefined)
+  const [isShiftSelecting, setShiftSelecting] = useState(false)
   const isSelectionExists = selectedRowIndices.length > 0
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') {
+        setShiftSelecting(true)
+      }
+    }
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') {
+        setShiftSelecting(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+
+    return () => {
+      window.removeEventListener('keyup', handleKeyUp)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [setShiftSelecting])
 
   const selectionControls = (
     <Box className={classes.selectionControls}>
@@ -102,7 +123,10 @@ export const EditableTable = ({
 
   return (
     <>
-      <Table size="small" className={classes.table}>
+      <Table
+        size="small"
+        className={isShiftSelecting ? classes.tableIsSelecting : classes.table}
+      >
         <TableHead>
           <TableRow>
             <TableCell className={classes.emptyCell} />

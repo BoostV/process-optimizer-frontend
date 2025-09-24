@@ -9,7 +9,6 @@ interface EditableTableRowProps {
   colSpan: number
   rowId: number
   onSave: (row: TableDataRow) => void
-  onDelete: () => void
   onAdd: (row: TableDataRow) => void
   onEnabledToggled: (enabled: boolean) => void
   onSelected: (isShiftKeyDown: boolean) => void

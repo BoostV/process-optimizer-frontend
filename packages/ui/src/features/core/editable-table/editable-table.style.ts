@@ -3,6 +3,9 @@ import { tableBorder } from './styles'
 
 export const useStyles = makeStyles()(() => ({
   table: {
+    userSelect: 'auto',
+  },
+  tableIsSelecting: {
     userSelect: 'none',
   },
   emptyCell: {
