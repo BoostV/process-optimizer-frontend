@@ -64,8 +64,8 @@ export const EditableTable = ({
     window.addEventListener('keyup', handleKeyUp)
 
     return () => {
-      window.removeEventListener('keyup', handleKeyUp)
       window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
     }
   }, [setShiftSelecting])
 
