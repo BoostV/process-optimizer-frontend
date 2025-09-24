@@ -13,10 +13,6 @@ const loadNamedJson = (version: number) => {
 
 export const storeLatestSchema = () => {
   const jsonSchema = z.toJSONSchema(experimentSchema)
-  //  zodToJsonSchema(
-  //   experimentSchema,
-  //   `experiment-v${currentVersion}`
-  // )
   fs.writeFileSync(
     `src/common/util/migration/schemas/${currentVersion}.json`,
     JSON.stringify(jsonSchema, undefined, 2)
