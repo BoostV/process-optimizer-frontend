@@ -7,13 +7,13 @@ exports[`converters > csvToDataPoints > should fail if header is missing 1`] = `
 exports[`converters > csvToDataPoints > should fail if types does not match schema 1`] = `
 [ZodError: [
   {
-    "code": "invalid_type",
     "expected": "number",
-    "received": "nan",
+    "code": "invalid_type",
+    "received": "NaN",
     "path": [
       "value"
     ],
-    "message": "Expected number, received nan"
+    "message": "Invalid input: expected number, received NaN"
   }
 ]]
 `;
