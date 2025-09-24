@@ -5,6 +5,9 @@ export const useStyles = makeStyles()(() => ({
     whiteSpace: 'nowrap',
     float: 'right',
   },
+  confirmContainer: {
+    marginRight: 4,
+  },
 }))
 
 export default useStyles
