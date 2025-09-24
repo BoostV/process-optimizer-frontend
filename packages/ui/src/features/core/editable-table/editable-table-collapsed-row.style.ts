@@ -28,6 +28,9 @@ export const useStyles = makeStyles()(theme => ({
     td: {
       backgroundColor: lighten(theme.palette.primary.main, 0.8),
     },
+    '&:hover td': {
+      backgroundColor: lighten(theme.palette.primary.main, 0.7),
+    },
     'td:first-of-type': {
       background: 'white',
     },
