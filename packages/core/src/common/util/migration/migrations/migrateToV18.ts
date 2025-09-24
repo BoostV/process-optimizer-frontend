@@ -1,8 +1,12 @@
-import { ExperimentType, scoreName } from '@core/common/types'
+import {
+  defaultScoreName,
+  ExperimentType,
+  scoreNames,
+} from '@core/common/types'
 import { produce } from 'immer'
 
-export const migrateToV17 = (json: ExperimentType): ExperimentType => {
-  // renames all scores to ["scoreName", "scoreName 2"...]
+// renames scores [scoreNames[0], scoreNames[1]...] with defaultScoreName as fallback
+export const migrateToV18 = (json: ExperimentType): ExperimentType => {
   return produce(
     json,
     (draft: {
@@ -12,10 +16,10 @@ export const migrateToV17 = (json: ExperimentType): ExperimentType => {
         data: { name: string; type: string }[]
       }[]
     }) => {
-      draft.info.dataFormatVersion = '17'
+      draft.info.dataFormatVersion = '18'
       draft.scoreVariables = json.scoreVariables.map((s, i) => ({
-        name: getScoreName(scoreName, i),
-        description: scoreName,
+        name: getScoreName(scoreNames, i),
+        description: getScoreName(scoreNames, i),
         enabled: s.enabled,
       }))
       draft.dataPoints = json.dataPoints.map(dp => {
@@ -25,7 +29,7 @@ export const migrateToV17 = (json: ExperimentType): ExperimentType => {
           data: dp.data.map(d => {
             let newName = d.name
             if (d.type === 'score') {
-              newName = getScoreName(scoreName, scoreIndex)
+              newName = getScoreName(scoreNames, scoreIndex)
               scoreIndex++
             }
             return {
@@ -39,5 +43,5 @@ export const migrateToV17 = (json: ExperimentType): ExperimentType => {
   )
 }
 
-const getScoreName = (name: string, index: number) =>
-  name + (index > 0 ? ` ${index + 1}` : '')
+const getScoreName = (scoreNames: string[], index: number) =>
+  scoreNames[index] ?? defaultScoreName
