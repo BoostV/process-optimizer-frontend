@@ -19,10 +19,10 @@ describe('useDataPoints', () => {
 
   describe('deleteRows', () => {
     const original = [
-      { meta: { id: 1, enabled: true }, data: [] },
-      { meta: { id: 2, enabled: true }, data: [] },
-      { meta: { id: 3, enabled: true }, data: [] },
-      { meta: { id: 4, enabled: true }, data: [] },
+      { meta: { id: 1, enabled: true, valid: true }, data: [] },
+      { meta: { id: 2, enabled: true, valid: true }, data: [] },
+      { meta: { id: 3, enabled: true, valid: true }, data: [] },
+      { meta: { id: 4, enabled: true, valid: true }, data: [] },
     ]
 
     it('should delete single row', () => {
@@ -30,9 +30,9 @@ describe('useDataPoints', () => {
       const deleteResult = result.current.deleteRow(1)
 
       const expected = [
-        { meta: { id: 1, enabled: true }, data: [] },
-        { meta: { id: 3, enabled: true }, data: [] },
-        { meta: { id: 4, enabled: true }, data: [] },
+        { meta: { id: 1, enabled: true, valid: true }, data: [] },
+        { meta: { id: 3, enabled: true, valid: true }, data: [] },
+        { meta: { id: 4, enabled: true, valid: true }, data: [] },
       ]
       expect(deleteResult).toEqual(expected)
     })
@@ -42,8 +42,8 @@ describe('useDataPoints', () => {
       const deleteResult = result.current.deleteRows([0, 2])
 
       const expected = [
-        { meta: { id: 2, enabled: true }, data: [] },
-        { meta: { id: 4, enabled: true }, data: [] },
+        { meta: { id: 2, enabled: true, valid: true }, data: [] },
+        { meta: { id: 4, enabled: true, valid: true }, data: [] },
       ]
       expect(deleteResult).toEqual(expected)
     })
