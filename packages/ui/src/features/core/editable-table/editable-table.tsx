@@ -89,7 +89,7 @@ export const EditableTable = ({
         color="primary"
         onClick={() => setSelectedRowIndices([])}
       >
-        Cancel
+        Deselect all
       </Button>
     </Box>
   )
