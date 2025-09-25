@@ -18,7 +18,7 @@ interface EditableTableCollapsedRowProps {
   tableRow: TableDataRow
   setExpanded: (expanded: boolean) => void
   onEnabledToggled: (enabled: boolean) => void
-  onSelected: (isShiftKeyDown: boolean) => void
+  onSelected: (isShiftKeyDown: boolean, isCtrlKeyDown: boolean) => void
   isEditingDisabled?: boolean
   isSelectionExists: boolean
   isSelected: boolean
@@ -49,7 +49,7 @@ export const EditableTableCollapsedRow = ({
       }
       onClick={e => {
         if (!tableRow.isNew) {
-          onSelected(e.shiftKey)
+          onSelected(e.shiftKey, e.ctrlKey || e.metaKey)
         }
       }}
     >

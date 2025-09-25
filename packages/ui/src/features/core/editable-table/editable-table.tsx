@@ -94,7 +94,11 @@ export const EditableTable = ({
     </Box>
   )
 
-  const handleRowSelection = (rowIndex: number, isShiftKeyDown: boolean) => {
+  const handleRowSelection = (
+    rowIndex: number,
+    isShiftKeyDown: boolean,
+    isCtrlKeyDown: boolean
+  ) => {
     const actualRowIndex = getRowIndex(newestFirst, rowIndex, rows.length)
 
     // shift key down: range selection
@@ -112,14 +116,32 @@ export const EditableTable = ({
       ]
       setSelectedRowIndices(newSelection)
 
-      // regular click: toggle single row
-    } else {
+      // ctrl/cmd + click: add/remove from selection
+    } else if (isCtrlKeyDown) {
       if (selectedRowIndices.includes(actualRowIndex)) {
         setSelectedRowIndices(
           selectedRowIndices.filter(i => i !== actualRowIndex)
         )
+        if (lastSelectedIndex === actualRowIndex) {
+          setLastSelectedIndex(
+            selectedRowIndices.find(i => i !== actualRowIndex)
+          )
+        }
       } else {
         setSelectedRowIndices([...selectedRowIndices, actualRowIndex])
+        setLastSelectedIndex(actualRowIndex)
+      }
+
+      // regular click: select this row and deselect others
+    } else {
+      if (
+        selectedRowIndices.includes(actualRowIndex) &&
+        selectedRowIndices.length === 1
+      ) {
+        setSelectedRowIndices([])
+        setLastSelectedIndex(undefined)
+      } else {
+        setSelectedRowIndices([actualRowIndex])
         setLastSelectedIndex(actualRowIndex)
       }
     }
@@ -171,8 +193,8 @@ export const EditableTable = ({
               isSelected={selectedRowIndices.includes(
                 getRowIndex(newestFirst, rowIndex, rows.length)
               )}
-              onSelected={(isShiftKeyDown: boolean) =>
-                handleRowSelection(rowIndex, isShiftKeyDown)
+              onSelected={(isShiftKeyDown: boolean, isCtrlKeyDown: boolean) =>
+                handleRowSelection(rowIndex, isShiftKeyDown, isCtrlKeyDown)
               }
             />
           ))}
