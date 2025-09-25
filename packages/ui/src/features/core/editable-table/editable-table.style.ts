@@ -2,6 +2,12 @@ import { makeStyles } from 'tss-react/mui'
 import { tableBorder } from './styles'
 
 export const useStyles = makeStyles()(() => ({
+  table: {
+    userSelect: 'auto',
+  },
+  tableIsSelecting: {
+    userSelect: 'none',
+  },
   emptyCell: {
     border: 'none',
     width: 16,
@@ -18,6 +24,13 @@ export const useStyles = makeStyles()(() => ({
     color: 'black',
     borderTop: tableBorder,
     borderBottom: tableBorder,
+  },
+  selectionControls: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '8px',
+    marginRight: '24px',
+    marginTop: '8px',
   },
 }))
 

@@ -54,6 +54,12 @@ export const useDataPoints = (
     (rowIndex: number) => _deleteRow(dataPoints, rowIndex),
     [dataPoints]
   )
+
+  const deleteRows = useCallback(
+    (rowIndices: number[]) => _deleteRows(dataPoints, rowIndices),
+    [dataPoints]
+  )
+
   const editRow = useCallback(
     (rowIndex: number, row: TableDataRow) =>
       _editRow(
@@ -78,6 +84,7 @@ export const useDataPoints = (
     state,
     addRow,
     deleteRow,
+    deleteRows,
     editRow,
     setEnabledState,
   }
@@ -202,6 +209,15 @@ const _setEnabledState = (
 const _deleteRow = (original: DataEntry[], rowIndex: number) =>
   produce(original, result => {
     result.splice(rowIndex, 1)
+  })
+
+const _deleteRows = (original: DataEntry[], rowIndices: number[]) =>
+  produce(original, result => {
+    rowIndices
+      .sort((a, b) => b - a)
+      .forEach(rowIndex => {
+        result.splice(rowIndex, 1)
+      })
   })
 
 const buildCombinedVariables = (
