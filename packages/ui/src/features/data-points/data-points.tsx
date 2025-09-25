@@ -1,6 +1,9 @@
 import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
+
 import { EditableTable } from '../core'
-import { SwapVert } from '@mui/icons-material'
+import SwapVertIcon from '@mui/icons-material/SwapVert'
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
+import SettingsIcon from '@mui/icons-material/Settings'
 import { TitleCard } from '../core/title-card/title-card'
 import DownloadCSVButton from './download-csv-button'
 import useStyles from './data-points.style'
@@ -16,6 +19,8 @@ import {
   EditableTableViolation,
 } from '@boostv/process-optimizer-frontend-core'
 import { useDataPoints } from './useDataPoints'
+import { DataPointsSettings } from './settings/data-points-settings'
+import { useState } from 'react'
 
 type DataPointProps = {
   id?: string
@@ -48,6 +53,8 @@ export function DataPoints(props: DataPointProps) {
     onUpdateDataPoints,
   } = props
   const { classes } = useStyles()
+  const [isSettingsOpen, setSettingsOpen] = useState(false)
+
   const enabledValueVariables = valueVariables.filter(v => v.enabled)
   const enabledCategoricalVariables = categoricalVariables.filter(
     v => v.enabled
@@ -108,10 +115,23 @@ export function DataPoints(props: DataPointProps) {
               <Tooltip disableInteractive title="Reverse order">
                 <IconButton
                   size="small"
-                  className={classes.titleButton}
+                  className={classes.iconLight}
                   onClick={onToggleNewestFirst}
                 >
-                  <SwapVert fontSize="small" className={classes.titleIcon} />
+                  <SwapVertIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip disableInteractive title="Settings">
+                <IconButton
+                  size="small"
+                  className={classes.iconLight}
+                  onClick={() => setSettingsOpen(!isSettingsOpen)}
+                >
+                  {isSettingsOpen ? (
+                    <SettingsOutlinedIcon fontSize="small" />
+                  ) : (
+                    <SettingsIcon fontSize="small" />
+                  )}
                 </IconButton>
               </Tooltip>
             </Box>
@@ -125,27 +145,35 @@ export function DataPoints(props: DataPointProps) {
         isLoadingState && <CircularProgress size={24} />}
       {enabledValueVariables.length + enabledCategoricalVariables.length > 0 &&
         !isLoadingState && (
-          <Box className={classes.tableContainer}>
-            <EditableTable
-              newestFirst={newestFirst}
-              rows={
-                (newestFirst
-                  ? [...state.rows].reverse()
-                  : [...state.rows]) as TableDataRow[]
-              }
-              onRowAdded={(row: TableDataRow) => rowAdded(row)}
-              onRowDeleted={(rowIndex: number) => rowDeleted(rowIndex)}
-              onRowEdited={(rowIndex: number, row: TableDataRow) =>
-                rowEdited(rowIndex, row)
-              }
-              violations={violationsInTable}
-              order={newestFirst ? 'ascending' : 'descending'}
-              isEditingDisabled={isEditingDisabled}
-              onRowEnabledToggled={(index, enabled) =>
-                rowEnabledToggled(index, enabled)
-              }
-            />
-          </Box>
+          <>
+            {isSettingsOpen && (
+              <DataPointsSettings
+                tabs={['Quality (0-5)', 'Quality 2 (0-5)']}
+                onCancel={() => setSettingsOpen(false)}
+              />
+            )}
+            <Box className={classes.tableContainer}>
+              <EditableTable
+                newestFirst={newestFirst}
+                rows={
+                  (newestFirst
+                    ? [...state.rows].reverse()
+                    : [...state.rows]) as TableDataRow[]
+                }
+                onRowAdded={(row: TableDataRow) => rowAdded(row)}
+                onRowDeleted={(rowIndex: number) => rowDeleted(rowIndex)}
+                onRowEdited={(rowIndex: number, row: TableDataRow) =>
+                  rowEdited(rowIndex, row)
+                }
+                violations={violationsInTable}
+                order={newestFirst ? 'ascending' : 'descending'}
+                isEditingDisabled={isEditingDisabled}
+                onRowEnabledToggled={(index, enabled) =>
+                  rowEnabledToggled(index, enabled)
+                }
+              />
+            </Box>
+          </>
         )}
     </TitleCard>
   )
