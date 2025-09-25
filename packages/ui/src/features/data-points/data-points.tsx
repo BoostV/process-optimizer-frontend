@@ -52,7 +52,7 @@ export function DataPoints(props: DataPointProps) {
   const enabledCategoricalVariables = categoricalVariables.filter(
     v => v.enabled
   )
-  const { state, addRow, deleteRow, editRow, setEnabledState } = useDataPoints(
+  const { state, addRow, deleteRows, editRow, setEnabledState } = useDataPoints(
     enabledValueVariables,
     enabledCategoricalVariables,
     scoreVariables,
@@ -69,8 +69,8 @@ export function DataPoints(props: DataPointProps) {
       })
     )
 
-  const rowDeleted = (rowIndex: number) =>
-    onUpdateDataPoints(deleteRow(rowIndex))
+  const rowsDeleted = (rowIndices: number[]) =>
+    onUpdateDataPoints(deleteRows(rowIndices))
 
   const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
     onUpdateDataPoints(setEnabledState(rowIndex, enabled))
@@ -134,7 +134,7 @@ export function DataPoints(props: DataPointProps) {
                   : [...state.rows]) as TableDataRow[]
               }
               onRowAdded={(row: TableDataRow) => rowAdded(row)}
-              onRowDeleted={(rowIndex: number) => rowDeleted(rowIndex)}
+              onRowsDeleted={(rowIndices: number[]) => rowsDeleted(rowIndices)}
               onRowEdited={(rowIndex: number, row: TableDataRow) =>
                 rowEdited(rowIndex, row)
               }

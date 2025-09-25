@@ -9,12 +9,14 @@ interface EditableTableRowProps {
   colSpan: number
   rowId: number
   onSave: (row: TableDataRow) => void
-  onDelete: () => void
   onAdd: (row: TableDataRow) => void
   onEnabledToggled: (enabled: boolean) => void
+  onSelected: (isShiftKeyDown: boolean, isCtrlKeyDown: boolean) => void
   violations?: string[]
   order: TableOrder
   isEditingDisabled?: boolean
+  isSelectionExists: boolean
+  isSelected: boolean
 }
 
 export const EditableTableRow = ({
@@ -22,12 +24,14 @@ export const EditableTableRow = ({
   rowId,
   colSpan,
   onSave,
-  onDelete,
   onAdd,
   onEnabledToggled,
+  onSelected,
   violations,
   order,
   isEditingDisabled,
+  isSelectionExists,
+  isSelected,
 }: EditableTableRowProps) => {
   const [expanded, setExpanded] = useState(false)
   const [prevOrder, setPrevOrder] = useState(order)
@@ -54,10 +58,14 @@ export const EditableTableRow = ({
           colSpan={colSpan}
           rowId={rowId}
           tableRow={tableRow}
-          onDelete={() => onDelete()}
           setExpanded={expanded => setExpanded(expanded)}
           isEditingDisabled={isEditingDisabled}
           onEnabledToggled={enabled => onEnabledToggled(enabled)}
+          onSelected={(isShiftKeyDown, isCtrlKeyDown) =>
+            onSelected(isShiftKeyDown, isCtrlKeyDown)
+          }
+          isSelected={isSelected}
+          isSelectionExists={isSelectionExists}
         />
       )}
     </>
