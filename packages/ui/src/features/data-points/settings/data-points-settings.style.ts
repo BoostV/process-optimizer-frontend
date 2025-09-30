@@ -4,6 +4,7 @@ import { colors } from '@mui/material'
 export const useStyles = makeStyles()(theme => ({
   main: {
     backgroundColor: colors.grey[200],
+    borderRadius: '4px',
   },
   header: {
     display: 'flex',
