@@ -19,7 +19,7 @@ import {
   EditableTableViolation,
 } from '@boostv/process-optimizer-frontend-core'
 import { useDataPoints } from './useDataPoints'
-import { DataPointsSettings } from './settings/data-points-settings'
+import { DataPointsSettings } from '@ui/features/data-points/settings/data-points-settings'
 import { useState } from 'react'
 
 type DataPointProps = {
@@ -150,6 +150,7 @@ export function DataPoints(props: DataPointProps) {
               <DataPointsSettings
                 tabs={['Quality (0-5)', 'Quality 2 (0-5)']}
                 onCancel={() => setSettingsOpen(false)}
+                onSave={() => {}}
               />
             )}
             <Box className={classes.tableContainer}>

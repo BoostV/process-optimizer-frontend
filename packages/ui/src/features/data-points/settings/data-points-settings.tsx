@@ -10,7 +10,7 @@ import FormInputText from '@ui/common/forms/form-input'
 import { FormProvider, useForm } from 'react-hook-form'
 import { InfoBox } from '@ui/features/core'
 import { parse } from 'mathjs'
-import { FunctionVariables } from './function-variables'
+import { FunctionVariables } from '@ui/features/data-points/settings/function-variables'
 
 type DataPointsSettingsProps = {
   tabs: string[]
@@ -25,8 +25,15 @@ export function DataPointsSettings(props: DataPointsSettingsProps) {
   const methods = useForm<{
     qualityFunction: string
     functionVariables: string[]
+    newVariableName: string
+    newVariable: string
   }>({
-    defaultValues: { qualityFunction: '', functionVariables: [] },
+    defaultValues: {
+      qualityFunction: '',
+      functionVariables: [],
+      newVariableName: '',
+      newVariable: '',
+    },
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
   })
@@ -37,7 +44,7 @@ export function DataPointsSettings(props: DataPointsSettingsProps) {
     setTabIndex(newValue)
 
   const onSubmit = (data: { qualityFunction: string }) => {
-    console.log(data)
+    console.log('submit', data)
     onSave()
   }
 
