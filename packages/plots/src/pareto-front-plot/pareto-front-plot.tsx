@@ -10,6 +10,25 @@ import {
   Label,
 } from 'recharts'
 
+type Props = {
+  plot: {
+    front_x_data: [number, number][]
+    front_y_data: [number, number][]
+    obj1_error: [number, number, number][]
+    obj2_error: [number, number, number][]
+    best_idx: number
+    obj1_1D_data: [[[number], [number], [number], number]]
+    obj2_1D_data: [[[number], [number], [number], number]]
+    obj1_mean: number
+    obj1_std: number
+    obj2_mean: number
+    obj2_std: number
+  }
+  width?: number | string
+  maxWidth?: number | string
+  altText?: string
+}
+
 const CustomTooltip = ({
   payload,
   label,
@@ -39,7 +58,7 @@ const CustomTooltip = ({
   return null
 }
 
-export default function ParetoFrontPlot() {
+export default function ParetoFrontPlot({ plot }: Props) {
   const dataScore = [
     {
       x: 0.1,
@@ -91,14 +110,7 @@ export default function ParetoFrontPlot() {
     },
   ]
 
-  const dataPareto = [
-    { x: 0.11, y: 0.25 },
-    { x: 0.12, y: 0.26 },
-    { x: 0.13, y: 0.27 },
-    { x: 0.14, y: 0.28 },
-    { x: 0.15, y: 0.29 },
-    { x: 0.16, y: 0.3 },
-  ]
+  const dataPareto = plot.front_y_data.map(([x, y]) => ({ x, y }))
 
   return (
     <div style={{ height: '600px', width: '600px' }}>

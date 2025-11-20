@@ -7,6 +7,15 @@ type Props = {
   altText?: string
 }
 
-export const JsonPlot: React.FC<Props> = ({ plot }) => (
-  <span>{JSON.stringify(JSON.parse(plot), null, 2)}</span>
-)
+export const JsonPlot: React.FC<Props> = ({ plot }) => {
+  const data = JSON.parse(plot)
+  if ('front_x_data' in data) {
+    return (
+      <>
+        {/* <ParetoFrontPlot plot={data as ParetoData} /> */}
+        <span>{JSON.stringify(data, null, 2)}</span>
+      </>
+    )
+  }
+  return <span>{JSON.stringify(data, null, 2)}</span>
+}

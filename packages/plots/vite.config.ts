@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     dts(),
     react({
-      jsxRuntime: 'classic',
+      jsxRuntime: 'automatic',
     }),
   ],
   build: {
