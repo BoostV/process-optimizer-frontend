@@ -3,9 +3,10 @@ import { Tooltip, IconButton, Hidden, Stack, Skeleton } from '@mui/material'
 import { ZoomOutMap } from '@mui/icons-material'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
-import { isPNG } from '@boostv/process-optimizer-frontend-core'
+import { isJSON, isPNG } from '@boostv/process-optimizer-frontend-core'
 import { BokehPlot } from '@boostv/process-optimizer-frontend-plots'
 import { PNGPlot } from '@boostv/process-optimizer-frontend-plots'
+import { JsonPlot } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
 import { FC, ReactNode } from 'react'
 import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
@@ -137,6 +138,8 @@ export const Plots: FC<Props> = ({
                 >
                   {isPNG(plot.plot) ? (
                     <PNGPlot plot={plot.plot} />
+                  ) : isJSON(plot.plot) ? (
+                    <JsonPlot plot={plot.plot} />
                   ) : (
                     <BokehPlot data={plot.plot} />
                   )}
@@ -155,6 +158,8 @@ export const Plots: FC<Props> = ({
                 >
                   {isPNG(plot.plot) ? (
                     <PNGPlot plot={plot.plot} />
+                  ) : isJSON(plot.plot) ? (
+                    <JsonPlot plot={plot.plot} />
                   ) : (
                     <BokehPlot data={plot.plot} />
                   )}
