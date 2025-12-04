@@ -1,5 +1,12 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.11.0
+
+### Minor Changes
+
+- eaf7f39: Add factor delete confirmation
+- 0a2142d: Add deletion via selection to data points
+
 ## 2.10.6
 
 ### Patch Changes
