@@ -98,13 +98,16 @@ type Payloads = {
 export const dummyPayloads: Payloads = {
   setSwVersion: '123',
   registerResult: {
-    id: 'myExperiment',
-    next: [[1, 2, 3, 'Red']],
-    pickled: 'pickled',
-    expectedMinimum: [],
-    extras: {},
-    plots: [{ id: 'sample', plot: 'base64encodedData' }],
-  } satisfies ExperimentResultType,
+    experimentVersion: 2,
+    result: {
+      id: 'myExperiment',
+      next: [[1, 2, 3, 'Red']],
+      pickled: 'pickled',
+      expectedMinimum: [],
+      extras: {},
+      plots: [{ id: 'sample', plot: 'base64encodedData' }],
+    } satisfies ExperimentResultType,
+  },
   addCategorialVariable: createCategoricalVariable({}),
   editCategoricalVariable: {
     index: 0,

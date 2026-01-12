@@ -731,7 +731,10 @@ describe('experiment reducer', () => {
 
       const action: ExperimentAction = {
         type: 'registerResult',
-        payload: payload,
+        payload: {
+          experimentVersion: initState.experiment.info.version,
+          result: payload,
+        },
       }
 
       expect(rootReducer(initState, action)).toMatchObject({
@@ -739,6 +742,34 @@ describe('experiment reducer', () => {
           changedSinceLastEvaluation: false,
           lastEvaluationHash: expect.stringMatching(/.+/),
           results: payload,
+        },
+      })
+    })
+
+    it('should not update result if version does not match current state', async () => {
+      const payload: ExperimentResultType = {
+        id: 'myExperiment',
+        next: [[1, 2, 3, 'Red']],
+        pickled: 'pickled',
+        expectedMinimum: [],
+        extras: {},
+        plots: [{ id: 'sample', plot: 'base64encodedData' }],
+      }
+
+      const action: ExperimentAction = {
+        type: 'registerResult',
+        payload: {
+          experimentVersion: 9,
+          result: payload,
+        },
+      }
+
+      expect(rootReducer(initState, action)).toMatchObject({
+        experiment: {
+          changedSinceLastEvaluation:
+            initState.experiment.changedSinceLastEvaluation,
+          lastEvaluationHash: initState.experiment.lastEvaluationHash,
+          results: initState.experiment.results,
         },
       })
     })

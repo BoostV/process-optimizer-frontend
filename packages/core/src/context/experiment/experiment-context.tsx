@@ -111,5 +111,8 @@ async function runExperiment(
   api: DefaultApi
 ) {
   const result = await fetchExperimentResult(experiment, api)
-  dispatch({ type: 'registerResult', payload: result })
+  dispatch({
+    type: 'registerResult',
+    payload: { experimentVersion: experiment.info.version, result: result },
+  })
 }
