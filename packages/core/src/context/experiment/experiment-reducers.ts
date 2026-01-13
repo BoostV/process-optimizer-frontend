@@ -72,7 +72,10 @@ export type ExperimentAction =
     }
   | {
       type: 'registerResult'
-      payload: ExperimentResultType
+      payload: {
+        experimentVersion: number
+        result: ExperimentResultType
+      }
     }
   | {
       type: 'addCategorialVariable'
@@ -368,10 +371,15 @@ export const experimentReducer = produce(
         )
         break
       case 'registerResult':
+        if (state.info.version !== action.payload.experimentVersion) {
+          return state
+        }
         state.lastEvaluationHash = md5(
           JSON.stringify(createFetchExperimentResultRequest(state))
         )
-        state.results = experimentSchema.shape.results.parse(action.payload)
+        state.results = experimentSchema.shape.results.parse(
+          action.payload.result
+        )
         break
       case 'updateDataPoints':
         experimentSchema.shape.dataPoints.parse(action.payload)
