@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 2.11.1
+
+### Patch Changes
+
+- 272dc90: Only register results matching the version of the experiment that they are calculated on
+
 ## 2.11.0
 
 ### Minor Changes

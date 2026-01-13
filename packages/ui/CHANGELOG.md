@@ -1,5 +1,12 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.11.1
+
+### Patch Changes
+
+- Updated dependencies [272dc90]
+  - @boostv/process-optimizer-frontend-core@2.11.1
+
 ## 2.11.0
 
 ### Minor Changes
