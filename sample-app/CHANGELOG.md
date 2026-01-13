@@ -1,5 +1,13 @@
 # @process-optimizer-frontend/sample-app
 
+## 2.1.2
+
+### Patch Changes
+
+- Updated dependencies [272dc90]
+  - @boostv/process-optimizer-frontend-core@2.11.1
+  - @boostv/process-optimizer-frontend-ui@2.11.1
+
 ## 2.1.1
 
 ### Patch Changes
