@@ -1,40 +1,16 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.224.3/containers/javascript-node-postgres
-// Update the VARIANT arg in docker-compose.yml to pick a Node.js version
 {
   "name": "Typescript & API backend",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  // Set *default* container specific settings.json values on container create.
-  "customizations": {
-    "vscode": {
-      "settings": {
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "typescript.tsserver.experimental.enableProjectDiagnostics": true
-      },
-      "extensions": [
-        "dbaeumer.vscode-eslint",
-        "mhutchie.git-graph",
-        "esbenp.prettier-vscode",
-        "rhalaly.scope-to-this",
-        "GitHub.vscode-pull-request-github"
-      ]
-    }
-  },
-  // Add the IDs of extensions you want installed when the container is created.
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // This can be used to network with other containers or with the host.
   "forwardPorts": [
     3000,
     9090
   ],
-  // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "yarn install",
-  // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
   "remoteUser": "node",
   "features": {
-    "docker-in-docker": "latest"
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/GeorgOfenbeck/features/lazygit-linuxbinary:1": {},
+    "ghcr.io/devcontainers/features/sshd:1": {}
   }
 }
