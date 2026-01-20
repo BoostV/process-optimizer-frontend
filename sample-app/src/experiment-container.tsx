@@ -13,8 +13,6 @@ export default function ExperimentContainer() {
   const [searchParams] = useSearchParams()
   const isMultiObjective = searchParams.get('multiObjective') === 'true'
 
-  console.log('ExperimentContainer render', { experimentId, isMultiObjective })
-
   const {
     dispatch,
     state: { debug, showJsonEditor, focus },
