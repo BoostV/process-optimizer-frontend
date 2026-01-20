@@ -1,5 +1,5 @@
 import { versionInfo } from '@core/common'
-import { currentVersion, scoreName } from '@core/common/types'
+import { currentVersion, scoreLabels, scoreName } from '@core/common/types'
 import { ExperimentType } from '@core/common/types'
 
 export const emptyExperiment: ExperimentType = {
@@ -19,7 +19,8 @@ export const emptyExperiment: ExperimentType = {
   scoreVariables: [
     {
       name: scoreName,
-      description: scoreName,
+      label: scoreLabels[0],
+      description: '',
       enabled: true,
     },
   ],
@@ -57,4 +58,24 @@ export type State = {
 
 export const initialState: State = {
   experiment: emptyExperiment,
+}
+
+export const initialStateMultiObjective: State = {
+  experiment: {
+    ...emptyExperiment,
+    scoreVariables: [
+      {
+        name: scoreName,
+        label: scoreLabels[0],
+        description: '',
+        enabled: true,
+      },
+      {
+        name: scoreName + ' 2',
+        label: scoreLabels[1],
+        description: '',
+        enabled: true,
+      },
+    ],
+  },
 }

@@ -76,7 +76,7 @@ export const EditableTableExpandedRow = ({
                         key={'header' + i}
                         className={classes.rowHeaderCell}
                       >
-                        {d.name}
+                        {d.label ?? d.name}
                       </TableCell>
                     ))}
                   </TableRow>

@@ -3,13 +3,18 @@ import TabbedExperiment from '@sample/components/experiment/tabbed-experiment'
 import Experiment from '@sample/components/experiment/experiment'
 import DebugExperiment from '@sample/components/experiment/debug-experiment'
 import { useGlobal } from '@sample/context/global'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { LoadingExperiment } from '@sample/components/experiment/loading-experiment'
 import JsonEditor from '@sample/components/json-editor/json-editor'
 import { useEffect } from 'react'
 
 export default function ExperimentContainer() {
   const { experimentId } = useParams()
+  const [searchParams] = useSearchParams()
+  const isMultiObjective = searchParams.get('multiObjective') === 'true'
+
+  console.log('ExperimentContainer render', { experimentId, isMultiObjective })
+
   const {
     dispatch,
     state: { debug, showJsonEditor, focus },
@@ -34,6 +39,7 @@ export default function ExperimentContainer() {
         experimentId={
           Array.isArray(experimentId) ? (experimentId[0] ?? '') : experimentId
         }
+        isMultiObjective={isMultiObjective}
       >
         {focus === 'legacy' ? <Experiment /> : <TabbedExperiment />}
         {debug && <DebugExperiment />}

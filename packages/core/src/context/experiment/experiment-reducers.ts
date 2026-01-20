@@ -7,7 +7,9 @@ import {
   ScoreVariableType,
   ValueVariableType,
   experimentSchema,
+  scoreLabels,
   scoreName,
+  scoreNames as scoreNamesState,
 } from '@core/common/types'
 import { produce } from 'immer'
 import md5 from 'md5'
@@ -399,8 +401,9 @@ export const experimentReducer = produce(
 
         if (state.scoreVariables.length < 2) {
           state.scoreVariables.push({
-            name: scoreName + ' 2',
-            description: scoreName + ' 2',
+            name: scoreNamesState[1] ?? scoreName + ' 2',
+            label: scoreLabels[1],
+            description: scoreNamesState[1] ?? scoreName + ' 2',
             enabled: true,
           })
           const scoreNames = state.scoreVariables.map(it => it.name)

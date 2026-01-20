@@ -6,6 +6,9 @@ import { z } from 'zod'
 export const currentVersion = '17'
 
 export const scoreName = 'Quality (0-5)'
+export const scoreNames = [scoreName, scoreName + ' 2']
+// Label is shown in UI, name is used in data
+export const scoreLabels = ['Quality (0-5)', 'Cost (0-5)']
 
 const infoSchema = z.object({
   name: z.string(),
@@ -43,6 +46,7 @@ const valueVariableSchema = z.object({
 
 const scoreVariableSchema = z.object({
   name: z.string(),
+  label: z.optional(z.string()),
   description: z.string(),
   enabled: z.boolean(),
 })

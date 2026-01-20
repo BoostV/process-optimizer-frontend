@@ -18,7 +18,10 @@ export const useDataPoints = (
   dataPoints: DataEntry[]
 ) => {
   const scoreNames = useMemo(
-    () => scoreVariables.filter(it => it.enabled).map(it => it.name),
+    () =>
+      scoreVariables
+        .filter(it => it.enabled)
+        .map(it => ({ name: it.name, label: it.label })),
     [scoreVariables]
   )
 
@@ -246,7 +249,7 @@ const mapDataPointToTableType = (
 const buildEmptyRow = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
-  scoreNames: string[]
+  scoreNames: { name: string; label?: string }[]
 ) => {
   return {
     dataPoints: buildCombinedVariables(valueVariables, categoricalVariables)
@@ -259,7 +262,8 @@ const buildEmptyRow = (
       }))
       .concat(
         scoreNames.map((s, i) => ({
-          name: s,
+          name: s.name,
+          label: s.label,
           value: undefined,
           options: undefined,
           tooltip: undefined,
@@ -280,7 +284,7 @@ export const formatScore = (value: number | string) =>
 const buildRows = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
-  scoreNames: string[],
+  scoreNames: { name: string; label?: string }[],
   dataPoints: DataEntry[]
 ) => {
   const combinedVariables = buildCombinedVariables(
@@ -314,17 +318,20 @@ const buildRows = (
         }
       })
       scoreNames.forEach((v, i) => {
-        const existingData = item.data.find(d => d.name === v)
+        const existingData = item.data.find(d => d.name === v.name)
         const type = i === 0 ? 'rating' : 'numeric'
+        const label = v.label
         if (existingData !== undefined) {
           vars.push({
             ...existingData,
             value: formatScore(existingData.value),
+            label,
             type,
           })
         } else {
           vars.push({
-            name: v,
+            name: v.name,
+            label,
             value: undefined,
             type,
           })

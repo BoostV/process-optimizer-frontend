@@ -3,7 +3,12 @@ import { useLocalStorageReducer } from '@core/storage'
 import { DefaultApi } from '@boostv/process-optimizer-frontend-api'
 import { Dispatch, rootReducer } from './reducers'
 import { migrate } from '@core/common'
-import { initialState, State, useApi } from '@core/context/experiment'
+import {
+  initialState,
+  initialStateMultiObjective,
+  State,
+  useApi,
+} from '@core/context/experiment'
 import { ExperimentType } from '@core/common/types'
 import { fetchExperimentResult } from '@core/context/experiment/api'
 
@@ -21,17 +26,22 @@ type ExperimentProviderProps = {
   experimentId: string
   children?: React.ReactNode
   storage?: Storage
+  isMultiObjective?: boolean
 }
 
 export const ExperimentProvider = ({
   experimentId,
   children,
   storage,
+  isMultiObjective,
 }: ExperimentProviderProps) => {
   const storageKey = experimentId === undefined ? 'unknown' : experimentId
+  const initialStateToUse = isMultiObjective
+    ? initialStateMultiObjective
+    : initialState
   const initialExperimentState = {
-    ...initialState,
-    experiment: { ...initialState.experiment, id: experimentId },
+    ...initialStateToUse,
+    experiment: { ...initialStateToUse.experiment, id: experimentId },
   }
   const [state, dispatch] = useLocalStorageReducer(
     rootReducer,
