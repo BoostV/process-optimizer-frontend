@@ -3,10 +3,9 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '17'
+export const currentVersion = '18'
 
-export const scoreName = 'Quality (0-5)'
-export const scoreNames = [scoreName, scoreName + ' 2']
+export const scoreNames = ['Quality', 'Cost']
 // Label is shown in UI, name is used in data
 export const scoreLabels = ['Quality (0-5)', 'Cost (0-5)']
 

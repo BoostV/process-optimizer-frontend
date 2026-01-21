@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { JSONSchemaFaker } from 'json-schema-faker'
 import { migrate, _migrate, MIGRATIONS } from './migration'
+import version18 from './data-formats/18.json'
 import version17 from './data-formats/17.json'
 import version16 from './data-formats/16.json'
 import version3 from './data-formats/3.json'
@@ -17,10 +18,12 @@ import {
   ExperimentType,
   ScoreVariableType,
   experimentSchema,
-  scoreName,
+  scoreLabels,
+  scoreNames,
 } from '@core/common/types'
 import { storeLatestSchema, loadTestData } from './test-utils'
-import { migrateToV17 } from './migrations/migrateToV17'
+import { scoreName17 } from './migrations/migrateToV17'
+import { migrateToV17, migrateToV18 } from './migrations'
 
 describe('Migration of data format', () => {
   storeLatestSchema()
@@ -170,7 +173,7 @@ describe('Migration of data format', () => {
       {
         name: 'score2',
         description: 'score',
-        enabled: true,
+        enabled: false,
       },
     ] satisfies ScoreVariableType[]
 
@@ -184,13 +187,13 @@ describe('Migration of data format', () => {
       } as unknown as ExperimentType
       expect(migrateToV17(experiment16).scoreVariables).toEqual([
         {
-          name: scoreName,
-          description: scoreName,
+          name: scoreName17,
+          description: scoreName17,
           enabled: scoreVariables[0]?.enabled,
         },
         {
-          name: scoreName + ' 2',
-          description: scoreName,
+          name: scoreName17 + ' 2',
+          description: scoreName17,
           enabled: scoreVariables[1]?.enabled,
         },
       ])
@@ -243,7 +246,7 @@ describe('Migration of data format', () => {
               },
               {
                 type: 'score',
-                name: scoreName,
+                name: scoreName17,
                 value: 0.5,
               },
             ].concat(
@@ -251,7 +254,7 @@ describe('Migration of data format', () => {
                 ? [
                     {
                       type: 'score',
-                      name: scoreName + ' 2',
+                      name: scoreName17 + ' 2',
                       value: 2,
                     },
                   ]
@@ -264,14 +267,133 @@ describe('Migration of data format', () => {
     )
   })
 
+  describe('migrateToV18', () => {
+    const scoreVarsMultiObjective = [
+      {
+        name: 'Quality (0-5)',
+        description: 'Quality (0-5)',
+        enabled: true,
+      },
+      {
+        name: 'Quality (0-5) 2',
+        description: 'Quality (0-5) 2',
+        enabled: true,
+      },
+    ] satisfies ScoreVariableType[]
+
+    const scoreVarsMultiObjectiveDisabled = [
+      {
+        name: 'Quality (0-5)',
+        description: 'Quality (0-5)',
+        enabled: true,
+      },
+      {
+        name: 'Quality (0-5) 2',
+        description: 'Quality (0-5) 2',
+        enabled: false,
+      },
+    ] satisfies ScoreVariableType[]
+
+    it.each([
+      ['multiobjective, all enabled', scoreVarsMultiObjective],
+      ['multiobjective, one disabled', scoreVarsMultiObjectiveDisabled],
+    ])('scoreVariables should be updated, %s', (_, scoreVariables) => {
+      const experiment17 = {
+        ...version17,
+        scoreVariables,
+      } as unknown as ExperimentType
+      expect(migrateToV18(experiment17).scoreVariables).toEqual([
+        {
+          name: scoreNames[0],
+          label: scoreLabels[0] ?? '',
+          description: '',
+          enabled: scoreVariables[0]?.enabled,
+        },
+        {
+          name: scoreNames[1],
+          label: scoreLabels[1] ?? '',
+          description: '',
+          enabled: scoreVariables[1]?.enabled,
+        },
+      ])
+    })
+
+    const dataPointsSingle = [...version17.dataPoints]
+    const dataPointsMulti = [...version17.dataPoints].map(dp => ({
+      ...dp,
+      data: [...dp.data].concat([
+        {
+          type: 'score',
+          name: scoreNames[1] ?? '',
+          value: 2,
+        },
+      ]),
+    }))
+
+    it.each([
+      ['one score exists', dataPointsSingle, false],
+      ['two scores exist', dataPointsMulti, true],
+    ])(
+      'data points should be renamed, %s',
+      (_, dataPoints, isMultiObjective) => {
+        const experiment17 = {
+          ...version17,
+          dataPoints,
+        } as unknown as ExperimentType
+        const actual = [
+          {
+            meta: {
+              enabled: true,
+              valid: true,
+              id: 1,
+            },
+            data: [
+              {
+                type: 'categorical',
+                name: 'Icing',
+                value: 'Brown',
+              },
+              {
+                type: 'numeric',
+                name: 'name1',
+                value: 10,
+              },
+              {
+                type: 'numeric',
+                name: 'name2',
+                value: 10.2,
+              },
+              {
+                type: 'score',
+                name: scoreNames[0],
+                value: 0.5,
+              },
+            ].concat(
+              isMultiObjective
+                ? [
+                    {
+                      type: 'score',
+                      name: scoreNames[1],
+                      value: 2,
+                    },
+                  ]
+                : []
+            ),
+          },
+        ]
+        expect(migrateToV18(experiment17).dataPoints).toEqual(actual)
+      }
+    )
+  })
+
   describe('experiment properties', () => {
-    //TODO: More/better tests - maybe this can be mabe obsolete by schema testing
+    //TODO: More/better tests - maybe this can be made obsolete by schema testing
     it('newest data format json should match default empty experiment', () => {
       expect(Object.keys(emptyExperiment).length).toBe(
-        Object.keys(version17).length
+        Object.keys(version18).length
       )
       Object.keys(emptyExperiment).forEach(p =>
-        expect(version17).toHaveProperty(p)
+        expect(version18).toHaveProperty(p)
       )
     })
   })
