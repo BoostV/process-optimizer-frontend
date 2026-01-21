@@ -202,7 +202,7 @@ export default function Home() {
                   <ListItemText
                     primaryTypographyProps={{ variant: 'h6' }}
                     primary="Create new experiment"
-                    secondary="Multiobjective"
+                    secondary="Multi-objective"
                   />
                   <ChevronRight />
                 </ListItemButton>
