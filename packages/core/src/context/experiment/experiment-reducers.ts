@@ -7,6 +7,7 @@ import {
   ScoreVariableType,
   ValueVariableType,
   experimentSchema,
+  isValidScoreName,
   scoreLabels,
   scoreNames as scoreNamesState,
 } from '@core/common/types'
@@ -401,7 +402,7 @@ export const experimentReducer = produce(
         if (state.scoreVariables.length < 2) {
           state.scoreVariables.push({
             name: scoreNamesState[1],
-            label: scoreLabels[1] ?? 'score2',
+            label: scoreLabels[1] ?? scoreNamesState[1],
             description: '',
             enabled: true,
           })
@@ -409,11 +410,7 @@ export const experimentReducer = produce(
           state.dataPoints.forEach(dataEntry => {
             const dp = dataEntry.data
             const containedScores = dp
-              .filter(
-                it =>
-                  it.type === 'score' &&
-                  scoreNames.includes(it.name as (typeof scoreNames)[number])
-              )
+              .filter(it => it.type === 'score' && isValidScoreName(it.name))
               .map(it => it.name)
             scoreNames.forEach(scoreName => {
               if (!containedScores.includes(scoreName))

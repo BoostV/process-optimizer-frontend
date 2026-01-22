@@ -9,6 +9,12 @@ export const scoreNames = ['quality', 'cost'] as const
 // Label is shown in UI, name is used in data
 export const scoreLabels = ['Quality (0-5)', 'Cost (0-5)']
 
+export const isValidScoreName = (
+  name: string
+): name is (typeof scoreNames)[number] => {
+  return (scoreNames as readonly string[]).includes(name)
+}
+
 const infoSchema = z.object({
   name: z.string(),
   description: z.string(),

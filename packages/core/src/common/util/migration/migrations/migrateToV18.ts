@@ -85,6 +85,7 @@ export type ExperimentTypeV17 = {
   }[]
 }
 
+// TODO: multiobjective, try without immer
 // rename scores, change description to empty string, add labels
 export const migrateToV18 = (json: ExperimentTypeV17): ExperimentType => {
   return produce(
@@ -111,33 +112,20 @@ export const migrateToV18 = (json: ExperimentTypeV17): ExperimentType => {
         let scoreIndex = 0
         return {
           ...dp,
-          data: dp.data
-            .filter(d => {
-              // only map score data points up to scoreNames.length
-              if (d.type === 'score') {
-                if (scoreIndex >= scoreNames.length) {
-                  return false
-                }
-                scoreIndex++
-              }
-              return true
-            })
-            .map(d => {
-              let newName = d.name
-              if (d.type === 'score') {
-                // reset scoreIndex for mapping
-                const currentScoreIndex = dp.data
-                  .slice(0, dp.data.indexOf(d))
-                  .filter(item => item.type === 'score').length
-                newName = scoreNames[
-                  currentScoreIndex
-                ] as (typeof scoreNames)[number]
-              }
-              return {
-                ...d,
-                name: newName,
-              }
-            }),
+          data: dp.data.flatMap(d => {
+            if (d.type === 'score') {
+              // empty result is filtered out by flatMap
+              return scoreIndex < scoreNames.length
+                ? {
+                    ...d,
+                    name: scoreNames[
+                      scoreIndex++
+                    ] as (typeof scoreNames)[number],
+                  }
+                : []
+            }
+            return d
+          }),
         }
       })
     }

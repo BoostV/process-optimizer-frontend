@@ -34,7 +34,7 @@ export const createScoreVariable = (
   input: Partial<ScoreVariableType> & Pick<ScoreVariableType, 'name'>
 ) =>
   ({
-    name: input.name ?? 'quality',
+    name: input.name,
     label: input.label ?? 'label',
     description: input.description ?? '',
     enabled: input.enabled ?? true,
