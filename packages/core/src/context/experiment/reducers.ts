@@ -3,6 +3,7 @@ import { State } from './store'
 import { ExperimentAction, experimentReducer } from './experiment-reducers'
 import { validateExperiment, ValidationViolations } from './validation'
 import { validationReducer } from './validation-reducer'
+import { calculateChangeReducer } from './calculate-change-reducer'
 
 export type Action = ExperimentAction
 
@@ -36,7 +37,9 @@ export const rootReducer = (state: State, action: Action) => {
         validateExperiment(experiment)
       return {
         ...state,
-        experiment: validationReducer(experiment, validationViolations),
+        experiment: calculateChangeReducer(
+          validationReducer(experiment, validationViolations)
+        ),
       }
     }
     default:

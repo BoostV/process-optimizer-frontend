@@ -458,9 +458,6 @@ export const experimentReducer = produce(
       default:
         assertUnreachable(action)
     }
-    state.changedSinceLastEvaluation =
-      state.lastEvaluationHash !==
-      md5(JSON.stringify(createFetchExperimentResultRequest(state)))
     state.info.version = state.info.version + 1
   }
 )

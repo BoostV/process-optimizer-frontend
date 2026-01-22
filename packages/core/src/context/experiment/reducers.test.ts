@@ -10,7 +10,11 @@ import {
   scoreNames,
   ValueVariableType,
 } from '@core/common/types'
-import { emptyExperiment, State } from '@core/context/experiment'
+import {
+  createFetchExperimentResultRequest,
+  emptyExperiment,
+  State,
+} from '@core/context/experiment'
 import { versionInfo } from '@core/common'
 import _ from 'lodash'
 import { produce } from 'immer'
@@ -21,6 +25,7 @@ import {
   createValueVariable,
   dummyPayloads,
 } from '@core/context/experiment/test-utils'
+import md5 from 'md5'
 
 describe('experiment reducer', () => {
   const initState: State = {
@@ -116,6 +121,7 @@ describe('experiment reducer', () => {
       const payload: ExperimentType = {
         id: '5678',
         changedSinceLastEvaluation: false,
+        lastEvaluationHash: '5b4247caaa4e9a5a0c519a9017ccc547',
         info: {
           swVersion: versionInfo.version,
           name: 'Not cake',
@@ -169,6 +175,10 @@ describe('experiment reducer', () => {
         type: 'updateExperiment',
         payload,
       }
+      const hash = md5(
+        JSON.stringify(createFetchExperimentResultRequest(payload))
+      )
+      expect(hash).toEqual(payload.lastEvaluationHash)
 
       const actual = rootReducer(initState, action)
       expect(actual).toEqual({
