@@ -8,6 +8,7 @@ import {
   SpaceType,
   ValueVariableType,
   dataPointSchema,
+  scoreNames,
 } from '@core/common/types'
 
 /**
@@ -78,7 +79,9 @@ export const calculateData = (
             it.type === 'numeric' ? Number(it.value) : it.value
           ) as Array<string | number>, // This type cast is valid here because only scores can be number[] and they are filtered out
         yi: run
-          .filter(it => enabledScoreNames.includes(it.name))
+          .filter(it =>
+            enabledScoreNames.includes(it.name as (typeof scoreNames)[number])
+          )
           .map(it => it.value)
           .map(it => Number(it) * -1),
       })

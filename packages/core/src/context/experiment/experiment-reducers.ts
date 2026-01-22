@@ -400,8 +400,8 @@ export const experimentReducer = produce(
 
         if (state.scoreVariables.length < 2) {
           state.scoreVariables.push({
-            name: scoreNamesState[1] ?? '',
-            label: scoreLabels[1],
+            name: scoreNamesState[1],
+            label: scoreLabels[1] ?? 'score2',
             description: '',
             enabled: true,
           })
@@ -409,7 +409,11 @@ export const experimentReducer = produce(
           state.dataPoints.forEach(dataEntry => {
             const dp = dataEntry.data
             const containedScores = dp
-              .filter(it => scoreNames.includes(it.name))
+              .filter(
+                it =>
+                  it.type === 'score' &&
+                  scoreNames.includes(it.name as (typeof scoreNames)[number])
+              )
               .map(it => it.name)
             scoreNames.forEach(scoreName => {
               if (!containedScores.includes(scoreName))

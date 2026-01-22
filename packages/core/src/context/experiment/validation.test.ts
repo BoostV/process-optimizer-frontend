@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import { ExperimentType } from 'common'
 import { emptyExperiment } from './store'
 import {
   ValidationViolations,
@@ -12,6 +11,7 @@ import {
   validateLowerBoundary,
   validateUpperBoundary,
 } from './validation'
+import { ExperimentType, scoreNames } from '@core/common'
 
 describe('validateUpperBoundary', () => {
   it('should return empty array if no violations exist', () => {
@@ -330,7 +330,8 @@ describe('validateDataPointsUndefined', () => {
       ...emptyExperiment,
       scoreVariables: [
         {
-          name: 'score',
+          name: 'quality',
+          label: 'qualitylabel',
           description: '',
           enabled: true,
         },
@@ -344,7 +345,7 @@ describe('validateDataPointsUndefined', () => {
           },
           data: [
             { type: 'numeric', name: 'Water', value: 10 },
-            { type: 'score', name: 'score', value: 1 },
+            { type: 'score', name: 'quality', value: 1 },
           ],
         },
       ],
@@ -357,7 +358,8 @@ describe('validateDataPointsUndefined', () => {
       ...emptyExperiment,
       scoreVariables: [
         {
-          name: 'score',
+          name: 'quality',
+          label: 'qualitylabel',
           description: '',
           enabled: true,
         },
@@ -391,7 +393,8 @@ describe('validateDataPointsUndefined', () => {
       ],
       scoreVariables: [
         {
-          name: 'score',
+          name: 'quality',
+          label: 'qualitylabel',
           description: '',
           enabled: true,
         },
@@ -420,7 +423,7 @@ describe('validateDataPointsUndefined', () => {
           data: [
             {
               type: 'score',
-              name: 'score',
+              name: 'quality',
               value: 1,
             },
           ],
@@ -435,12 +438,14 @@ describe('validateDataPointsUndefined', () => {
       ...emptyExperiment,
       scoreVariables: [
         {
-          name: 'score',
+          name: 'quality',
+          label: 'qualitylabel',
           description: '',
           enabled: true,
         },
         {
-          name: 'score 2',
+          name: 'cost',
+          label: 'costlabel',
           description: '',
           enabled: false,
         },
@@ -460,7 +465,7 @@ describe('validateDataPointsUndefined', () => {
             },
             {
               type: 'score',
-              name: 'score',
+              name: scoreNames[0],
               value: 1,
             },
           ],

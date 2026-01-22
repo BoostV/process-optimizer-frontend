@@ -2,7 +2,7 @@
 
 exports[`converters > csvToDataPoints > should fail if duplicate ids are supplied 1`] = `[Error: Duplicate or missing IDs detected in input data]`;
 
-exports[`converters > csvToDataPoints > should fail if header is missing 1`] = `[Error: Headers does not match Sukker,Peber,Hvedemel,Kunde,score !== Sukker,Hvedemel,Kunde,score]`;
+exports[`converters > csvToDataPoints > should fail if header is missing 1`] = `[Error: Headers does not match Sukker,Peber,Hvedemel,Kunde,quality !== Sukker,Hvedemel,Kunde,quality]`;
 
 exports[`converters > csvToDataPoints > should fail if types does not match schema 1`] = `
 [ZodError: [

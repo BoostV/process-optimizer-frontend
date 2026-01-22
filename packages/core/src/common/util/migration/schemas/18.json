@@ -135,7 +135,16 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "quality"
+              },
+              {
+                "type": "string",
+                "const": "cost"
+              }
+            ]
           },
           "label": {
             "type": "string"
@@ -149,6 +158,7 @@
         },
         "required": [
           "name",
+          "label",
           "description",
           "enabled"
         ],

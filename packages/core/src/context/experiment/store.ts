@@ -18,8 +18,8 @@ export const emptyExperiment: ExperimentType = {
   valueVariables: [],
   scoreVariables: [
     {
-      name: scoreNames[0] ?? '',
-      label: scoreLabels[0],
+      name: scoreNames[0],
+      label: scoreLabels[0] ?? scoreNames[0],
       description: '',
       enabled: true,
     },
@@ -65,14 +65,14 @@ export const initialStateMultiObjective: State = {
     ...emptyExperiment,
     scoreVariables: [
       {
-        name: scoreNames[0] ?? '',
-        label: scoreLabels[0],
+        name: scoreNames[0],
+        label: scoreLabels[0] ?? scoreNames[0],
         description: '',
         enabled: true,
       },
       {
-        name: scoreNames[1] ?? '',
-        label: scoreLabels[1],
+        name: scoreNames[1],
+        label: scoreLabels[1] ?? scoreNames[1],
         description: '',
         enabled: true,
       },

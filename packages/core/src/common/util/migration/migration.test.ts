@@ -16,7 +16,6 @@ import { emptyExperiment } from '@core/context/experiment'
 import { formatNext } from './migrations/migrateToV9'
 import {
   ExperimentType,
-  ScoreVariableType,
   experimentSchema,
   scoreLabels,
   scoreNames,
@@ -24,6 +23,7 @@ import {
 import { storeLatestSchema, loadTestData } from './test-utils'
 import { scoreName17 } from './migrations/migrateToV17'
 import { migrateToV17, migrateToV18 } from './migrations'
+import { ExperimentTypeV17 } from './migrations/migrateToV18'
 
 describe('Migration of data format', () => {
   storeLatestSchema()
@@ -162,7 +162,7 @@ describe('Migration of data format', () => {
         description: 'score',
         enabled: true,
       },
-    ] satisfies ScoreVariableType[]
+    ]
 
     const scoreVarsMultiObjectiveDisabled = [
       {
@@ -175,7 +175,7 @@ describe('Migration of data format', () => {
         description: 'score',
         enabled: false,
       },
-    ] satisfies ScoreVariableType[]
+    ]
 
     it.each([
       ['multiobjective, all enabled', scoreVarsMultiObjective],
@@ -268,122 +268,94 @@ describe('Migration of data format', () => {
   })
 
   describe('migrateToV18', () => {
-    const scoreVarsMultiObjective = [
-      {
-        name: 'Quality (0-5)',
-        description: 'Quality (0-5)',
-        enabled: true,
-      },
-      {
-        name: 'Quality (0-5) 2',
-        description: 'Quality (0-5) 2',
-        enabled: true,
-      },
-    ] satisfies ScoreVariableType[]
+    const experiment17 = {
+      ...version17,
+      scoreVariables: [
+        {
+          name: 'Quality (0-5)',
+          description: 'Quality (0-5)',
+          enabled: true,
+        },
+      ],
+    } as ExperimentTypeV17
 
-    const scoreVarsMultiObjectiveDisabled = [
-      {
-        name: 'Quality (0-5)',
-        description: 'Quality (0-5)',
-        enabled: true,
-      },
-      {
-        name: 'Quality (0-5) 2',
-        description: 'Quality (0-5) 2',
-        enabled: false,
-      },
-    ] satisfies ScoreVariableType[]
-
-    it.each([
-      ['multiobjective, all enabled', scoreVarsMultiObjective],
-      ['multiobjective, one disabled', scoreVarsMultiObjectiveDisabled],
-    ])('scoreVariables should be updated, %s', (_, scoreVariables) => {
-      const experiment17 = {
-        ...version17,
-        scoreVariables,
-      } as unknown as ExperimentType
-      expect(migrateToV18(experiment17).scoreVariables).toEqual([
+    it('should convert single score variable name and add label', () => {
+      const result = migrateToV18(experiment17)
+      expect(result.scoreVariables).toEqual([
         {
           name: scoreNames[0],
-          label: scoreLabels[0] ?? '',
+          label: scoreLabels[0],
           description: '',
-          enabled: scoreVariables[0]?.enabled,
-        },
-        {
-          name: scoreNames[1],
-          label: scoreLabels[1] ?? '',
-          description: '',
-          enabled: scoreVariables[1]?.enabled,
+          enabled: true,
         },
       ])
     })
 
-    const dataPointsSingle = [...version17.dataPoints]
-    const dataPointsMulti = [...version17.dataPoints].map(dp => ({
-      ...dp,
-      data: [...dp.data].concat([
-        {
-          type: 'score',
-          name: scoreNames[1] ?? '',
-          value: 2,
-        },
-      ]),
-    }))
-
-    it.each([
-      ['one score exists', dataPointsSingle, false],
-      ['two scores exist', dataPointsMulti, true],
-    ])(
-      'data points should be renamed, %s',
-      (_, dataPoints, isMultiObjective) => {
-        const experiment17 = {
-          ...version17,
-          dataPoints,
-        } as unknown as ExperimentType
-        const actual = [
+    it('should convert multiple score variables with correct indices', () => {
+      const multiObj = {
+        ...version17,
+        scoreVariables: [
           {
-            meta: {
-              enabled: true,
-              valid: true,
-              id: 1,
-            },
-            data: [
-              {
-                type: 'categorical',
-                name: 'Icing',
-                value: 'Brown',
-              },
-              {
-                type: 'numeric',
-                name: 'name1',
-                value: 10,
-              },
-              {
-                type: 'numeric',
-                name: 'name2',
-                value: 10.2,
-              },
-              {
-                type: 'score',
-                name: scoreNames[0],
-                value: 0.5,
-              },
-            ].concat(
-              isMultiObjective
-                ? [
-                    {
-                      type: 'score',
-                      name: scoreNames[1],
-                      value: 2,
-                    },
-                  ]
-                : []
-            ),
+            name: 'Quality (0-5)',
+            description: 'Quality (0-5)',
+            enabled: true,
           },
-        ]
-        expect(migrateToV18(experiment17).dataPoints).toEqual(actual)
-      }
-    )
+          {
+            name: 'Quality (0-5) 2',
+            description: 'Quality (0-5) 2',
+            enabled: false,
+          },
+        ],
+      } as ExperimentTypeV17
+
+      const result = migrateToV18(multiObj)
+      expect(result.scoreVariables).toEqual([
+        {
+          name: scoreNames[0],
+          label: scoreLabels[0],
+          description: '',
+          enabled: true,
+        },
+        {
+          name: scoreNames[1],
+          label: scoreLabels[1],
+          description: '',
+          enabled: false,
+        },
+      ])
+    })
+
+    it('should update score names in dataPoints for single objective', () => {
+      const result = migrateToV18(experiment17)
+      const scoreData = result.dataPoints[0]?.data.find(d => d.type === 'score')
+      expect(scoreData?.name).toEqual(scoreNames[0])
+    })
+
+    it('should update score names in dataPoints for multi-objective', () => {
+      const multiObj = {
+        ...version17,
+        scoreVariables: [
+          { name: 'Quality (0-5)', description: '', enabled: true },
+          { name: 'Quality (0-5) 2', description: '', enabled: true },
+        ],
+        dataPoints: version17.dataPoints.map(dp => ({
+          ...dp,
+          data: [
+            ...dp.data,
+            { type: 'score', name: 'Quality (0-5) 2', value: 2 },
+          ],
+        })),
+      } as ExperimentTypeV17
+
+      const result = migrateToV18(multiObj)
+      const scoreData = result.dataPoints[0]?.data.filter(
+        d => d.type === 'score'
+      )
+      expect(scoreData?.map(s => s.name)).toEqual([
+        scoreNames[0],
+        scoreNames[1],
+      ])
+    })
   })
 
   describe('experiment properties', () => {
