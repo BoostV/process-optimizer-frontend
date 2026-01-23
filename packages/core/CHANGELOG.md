@@ -1,5 +1,16 @@
 # @process-optimizer-frontend/core
 
+## 2.12.0
+
+### Minor Changes
+
+- f4fba35: Add multiobjective experiment type to UI
+
+### Patch Changes
+
+- 9df0c2b: Export fetchExperimentResult
+- bb86856: Fix a 'race condition' in reducer where changes were not detected when a datapoint changes from invalid to valid
+
 ## 2.11.1
 
 ### Patch Changes

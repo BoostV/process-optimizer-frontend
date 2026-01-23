@@ -1,5 +1,19 @@
 # @process-optimizer-frontend/sample-app
 
+## 2.2.0
+
+### Minor Changes
+
+- f4fba35: Add multiobjective experiment type to UI
+
+### Patch Changes
+
+- Updated dependencies [f4fba35]
+- Updated dependencies [9df0c2b]
+- Updated dependencies [bb86856]
+  - @boostv/process-optimizer-frontend-core@2.12.0
+  - @boostv/process-optimizer-frontend-ui@2.12.0
+
 ## 2.1.2
 
 ### Patch Changes
