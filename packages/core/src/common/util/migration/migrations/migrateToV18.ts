@@ -1,73 +1,22 @@
 import { ExperimentType, scoreLabels, scoreNames } from '@core/common/types'
-import { produce } from 'immer'
+import sampleV17 from '../data-formats/17.json'
 
+// Use 17.json to define ExperimentTypeV17. Explicitly define string literals to make ts happy.
 // Avoid using current ExperimentType as that can change in the future
-export type ExperimentTypeV17 = {
-  id: string
-  lastEvaluationHash?: string
-  changedSinceLastEvaluation: boolean
-  info: {
-    name: string
-    description: string
-    swVersion: string
-    dataFormatVersion: '17'
-    version: number
-    extras: Record<string, unknown>
-  }
-  extras: Record<string, unknown>
-  categoricalVariables: {
-    name: string
-    description: string
-    options: string[]
-    enabled: boolean
-  }[]
-  valueVariables: {
+type ExperimentTypeV17 = Omit<
+  typeof sampleV17,
+  'valueVariables' | 'constraints' | 'dataPoints'
+> & {
+  valueVariables: (Omit<(typeof sampleV17.valueVariables)[number], 'type'> & {
     type: 'discrete' | 'continuous'
-    name: string
-    description: string
-    min: number
-    max: number
-    enabled: boolean
-  }[]
-  scoreVariables: {
-    name: string
-    label?: string
-    description: string
-    enabled: boolean
-  }[]
-  constraints: {
+  })[]
+  constraints: (Omit<(typeof sampleV17.constraints)[number], 'type'> & {
     type: 'sum'
-    value: number
-    dimensions: string[]
-  }[]
-  optimizerConfig: {
-    baseEstimator: string
-    acqFunc: string
-    initialPoints: number
-    kappa: number
-    xi: number
-  }
-  results: {
-    id: string
-    plots: {
-      id: string
-      plot: string
-    }[]
-    next: (number | string)[][]
-    pickled: string
-    expectedMinimum: ((number | string)[] | number)[]
-    extras: Record<string, unknown>
-  }
-  dataPoints: {
-    meta: {
-      id: number
-      enabled: boolean
-      valid: boolean
-      description?: string
-    }
+  })[]
+  dataPoints: (Omit<(typeof sampleV17.dataPoints)[number], 'data'> & {
     data: (
       | {
-          type: 'numeric'
+          type: 'numeric' | 'score'
           name: string
           value: number
         }
@@ -76,58 +25,43 @@ export type ExperimentTypeV17 = {
           name: string
           value: string
         }
-      | {
-          type: 'score'
-          name: string
-          value: number
-        }
     )[]
-  }[]
+  })[]
 }
 
-// TODO: multiobjective, try without immer
 // rename scores, change description to empty string, add labels
 export const migrateToV18 = (json: ExperimentTypeV17): ExperimentType => {
-  return produce(
-    json,
-    (draft: {
-      info: { dataFormatVersion: string }
-      scoreVariables: {
-        label?: string
-      }[]
-      dataPoints: {
-        data: { name: string; type: string }[]
-      }[]
-    }) => {
-      draft.info.dataFormatVersion = '18'
-      draft.scoreVariables = json.scoreVariables
-        .slice(0, scoreNames.length)
-        .map((s, i) => ({
-          name: scoreNames[i] as (typeof scoreNames)[number],
-          label: scoreLabels[i] ?? scoreNames[i],
-          description: '',
-          enabled: s.enabled,
-        }))
-      draft.dataPoints = json.dataPoints.map(dp => {
-        let scoreIndex = 0
-        return {
-          ...dp,
-          data: dp.data.flatMap(d => {
-            if (d.type === 'score') {
-              // empty result is filtered out by flatMap
-              return scoreIndex < scoreNames.length
-                ? {
-                    ...d,
-                    name: scoreNames[
-                      scoreIndex++
-                    ] as (typeof scoreNames)[number],
-                  }
-                : []
-            }
-            return d
-          }),
-        }
-      })
-    }
-  ) as unknown as ExperimentType
+  return {
+    ...json,
+    info: {
+      ...json.info,
+      dataFormatVersion: '18',
+    },
+    scoreVariables: json.scoreVariables
+      .slice(0, scoreNames.length)
+      .map((s, i) => ({
+        name: scoreNames[i] as (typeof scoreNames)[number],
+        label: scoreLabels[i] ?? (scoreNames[i] as (typeof scoreNames)[number]),
+        description: '',
+        enabled: s.enabled,
+      })),
+    dataPoints: json.dataPoints.map(dp => {
+      let scoreIndex = 0
+      return {
+        ...dp,
+        data: dp.data.flatMap(d => {
+          if (d.type === 'score') {
+            // empty result is filtered out by flatMap
+            return scoreIndex < scoreNames.length
+              ? {
+                  ...d,
+                  name: scoreNames[scoreIndex++] as (typeof scoreNames)[number],
+                }
+              : []
+          }
+          return d
+        }),
+      }
+    }),
+  }
 }
