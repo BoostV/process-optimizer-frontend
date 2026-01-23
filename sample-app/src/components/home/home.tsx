@@ -107,6 +107,11 @@ export default function Home() {
     navigate('/experiment/' + uuid())
   }
 
+  const createNewExperimentMultiobjective = () => {
+    deleteExperiments()
+    navigate('/experiment/' + uuid() + '?multiObjective=true')
+  }
+
   const openSavedExperiment = (key: string) => {
     deleteExperiments()
     console.log('TODO route to ' + key)
@@ -185,6 +190,19 @@ export default function Home() {
                   <ListItemText
                     primaryTypographyProps={{ variant: 'h6' }}
                     primary="Create new experiment"
+                    secondary="Single objective"
+                  />
+                  <ChevronRight />
+                </ListItemButton>
+              </ListItem>
+              <ListItem component="div">
+                <ListItemButton
+                  onClick={() => createNewExperimentMultiobjective()}
+                >
+                  <ListItemText
+                    primaryTypographyProps={{ variant: 'h6' }}
+                    primary="Create new experiment"
+                    secondary="Multi-objective"
                   />
                   <ChevronRight />
                 </ListItemButton>

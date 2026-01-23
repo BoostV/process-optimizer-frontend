@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { JSONSchemaFaker } from 'json-schema-faker'
 import { migrate, _migrate, MIGRATIONS } from './migration'
+import version18 from './data-formats/18.json'
 import version17 from './data-formats/17.json'
 import version16 from './data-formats/16.json'
 import version3 from './data-formats/3.json'
@@ -15,12 +16,14 @@ import { emptyExperiment } from '@core/context/experiment'
 import { formatNext } from './migrations/migrateToV9'
 import {
   ExperimentType,
-  ScoreVariableType,
   experimentSchema,
-  scoreName,
+  scoreLabels,
+  scoreNames,
 } from '@core/common/types'
 import { storeLatestSchema, loadTestData } from './test-utils'
-import { migrateToV17 } from './migrations/migrateToV17'
+import { scoreName17 } from './migrations/migrateToV17'
+import { migrateToV17, migrateToV18 } from './migrations'
+import { ExperimentTypeV17 } from './migrations/migrateToV18'
 
 describe('Migration of data format', () => {
   storeLatestSchema()
@@ -159,7 +162,7 @@ describe('Migration of data format', () => {
         description: 'score',
         enabled: true,
       },
-    ] satisfies ScoreVariableType[]
+    ]
 
     const scoreVarsMultiObjectiveDisabled = [
       {
@@ -170,9 +173,9 @@ describe('Migration of data format', () => {
       {
         name: 'score2',
         description: 'score',
-        enabled: true,
+        enabled: false,
       },
-    ] satisfies ScoreVariableType[]
+    ]
 
     it.each([
       ['multiobjective, all enabled', scoreVarsMultiObjective],
@@ -184,13 +187,13 @@ describe('Migration of data format', () => {
       } as unknown as ExperimentType
       expect(migrateToV17(experiment16).scoreVariables).toEqual([
         {
-          name: scoreName,
-          description: scoreName,
+          name: scoreName17,
+          description: scoreName17,
           enabled: scoreVariables[0]?.enabled,
         },
         {
-          name: scoreName + ' 2',
-          description: scoreName,
+          name: scoreName17 + ' 2',
+          description: scoreName17,
           enabled: scoreVariables[1]?.enabled,
         },
       ])
@@ -243,7 +246,7 @@ describe('Migration of data format', () => {
               },
               {
                 type: 'score',
-                name: scoreName,
+                name: scoreName17,
                 value: 0.5,
               },
             ].concat(
@@ -251,7 +254,7 @@ describe('Migration of data format', () => {
                 ? [
                     {
                       type: 'score',
-                      name: scoreName + ' 2',
+                      name: scoreName17 + ' 2',
                       value: 2,
                     },
                   ]
@@ -264,14 +267,105 @@ describe('Migration of data format', () => {
     )
   })
 
+  describe('migrateToV18', () => {
+    const experiment17 = {
+      ...version17,
+      scoreVariables: [
+        {
+          name: 'Quality (0-5)',
+          description: 'Quality (0-5)',
+          enabled: true,
+        },
+      ],
+    } as ExperimentTypeV17
+
+    it('should convert single score variable name and add label', () => {
+      const result = migrateToV18(experiment17)
+      expect(result.scoreVariables).toEqual([
+        {
+          name: scoreNames[0],
+          label: scoreLabels[0],
+          description: '',
+          enabled: true,
+        },
+      ])
+    })
+
+    it('should convert multiple score variables with correct indices', () => {
+      const multiObj = {
+        ...version17,
+        scoreVariables: [
+          {
+            name: 'Quality (0-5)',
+            description: 'Quality (0-5)',
+            enabled: true,
+          },
+          {
+            name: 'Quality (0-5) 2',
+            description: 'Quality (0-5) 2',
+            enabled: false,
+          },
+        ],
+      } as ExperimentTypeV17
+
+      const result = migrateToV18(multiObj)
+      expect(result.scoreVariables).toEqual([
+        {
+          name: scoreNames[0],
+          label: scoreLabels[0],
+          description: '',
+          enabled: true,
+        },
+        {
+          name: scoreNames[1],
+          label: scoreLabels[1],
+          description: '',
+          enabled: false,
+        },
+      ])
+    })
+
+    it('should update score names in dataPoints for single objective', () => {
+      const result = migrateToV18(experiment17)
+      const scoreData = result.dataPoints[0]?.data.find(d => d.type === 'score')
+      expect(scoreData?.name).toEqual(scoreNames[0])
+    })
+
+    it('should update score names in dataPoints for multi-objective', () => {
+      const multiObj = {
+        ...version17,
+        scoreVariables: [
+          { name: 'Quality (0-5)', description: '', enabled: true },
+          { name: 'Quality (0-5) 2', description: '', enabled: true },
+        ],
+        dataPoints: version17.dataPoints.map(dp => ({
+          ...dp,
+          data: [
+            ...dp.data,
+            { type: 'score', name: 'Quality (0-5) 2', value: 2 },
+          ],
+        })),
+      } as ExperimentTypeV17
+
+      const result = migrateToV18(multiObj)
+      const scoreData = result.dataPoints[0]?.data.filter(
+        d => d.type === 'score'
+      )
+      expect(scoreData?.map(s => s.name)).toEqual([
+        scoreNames[0],
+        scoreNames[1],
+      ])
+    })
+  })
+
   describe('experiment properties', () => {
-    //TODO: More/better tests - maybe this can be mabe obsolete by schema testing
+    //TODO: More/better tests - maybe this can be made obsolete by schema testing
     it('newest data format json should match default empty experiment', () => {
       expect(Object.keys(emptyExperiment).length).toBe(
-        Object.keys(version17).length
+        Object.keys(version18).length
       )
       Object.keys(emptyExperiment).forEach(p =>
-        expect(version17).toHaveProperty(p)
+        expect(version18).toHaveProperty(p)
       )
     })
   })

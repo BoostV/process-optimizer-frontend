@@ -3,6 +3,7 @@ import {
   DataEntry,
   DataPointType,
   ExperimentResultType,
+  scoreNames,
   ScoreVariableType,
   ValueVariableType,
 } from '@core/common'
@@ -29,9 +30,12 @@ export const createCategoricalVariable = (
     enabled: input.enabled ?? true,
   }) satisfies CategoricalVariableType
 
-export const createScoreVariable = (input: Partial<ScoreVariableType>) =>
+export const createScoreVariable = (
+  input: Partial<ScoreVariableType> & Pick<ScoreVariableType, 'name'>
+) =>
   ({
-    name: input.name ?? 'name',
+    name: input.name,
+    label: input.label ?? 'label',
     description: input.description ?? '',
     enabled: input.enabled ?? true,
   }) satisfies ScoreVariableType
@@ -40,7 +44,7 @@ export const createDataPoints = (
   count: number,
   values = ['Water'],
   categorical = ['Icing'],
-  scores = ['score'],
+  scores: (typeof scoreNames)[number][] = [scoreNames[0]],
   randomize = false,
   scoreValues: number[] | undefined = undefined
 ): DataEntry[] => {
@@ -67,7 +71,7 @@ export const createDataPoints = (
     return data.map((dp, i) => ({
       ...dp,
       data: dp.data.map(d => {
-        if (d.type === 'score' && d.name === 'score') {
+        if (d.type === 'score' && d.name === 'quality') {
           const score = scoreValues[i]
           return {
             ...d,

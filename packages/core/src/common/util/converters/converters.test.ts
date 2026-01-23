@@ -6,7 +6,7 @@ import {
   ExperimentType,
   ScoreVariableType,
   ValueVariableType,
-  scoreName,
+  scoreNames,
 } from '@core/common/types'
 import { initialState } from '@core/context'
 import {
@@ -26,14 +26,14 @@ describe('converters', () => {
       { type: 'numeric', name: 'Peber', value: 982 },
       { type: 'numeric', name: 'Hvedemel', value: 632 },
       { type: 'categorical', name: 'Kunde', value: 'Mus' },
-      { type: 'score', name: scoreName, value: 0.1 },
+      { type: 'score', name: scoreNames[0], value: 0.1 },
     ] satisfies DataPointType[],
     [
       { type: 'numeric', name: 'Sukker', value: 15 },
       { type: 'numeric', name: 'Peber', value: 123 },
       { type: 'numeric', name: 'Hvedemel', value: 324 },
       { type: 'categorical', name: 'Kunde', value: 'Ræv' },
-      { type: 'score', name: scoreName, value: 0.2 },
+      { type: 'score', name: scoreNames[0], value: 0.2 },
     ] satisfies DataPointType[],
   ].map((data, idx) => ({
     meta: { enabled: true, id: idx + 1, valid: true },
@@ -45,16 +45,16 @@ describe('converters', () => {
       { type: 'numeric', name: 'Peber', value: 982 },
       { type: 'numeric', name: 'Hvedemel', value: 632 },
       { type: 'categorical', name: 'Kunde', value: 'Mus' },
-      { type: 'score', name: scoreName, value: 0.1 },
-      { type: 'score', name: scoreName + ' 2', value: 0.3 },
+      { type: 'score', name: scoreNames[0], value: 0.1 },
+      { type: 'score', name: scoreNames[1], value: 0.3 },
     ] satisfies DataPointType[],
     [
       { type: 'numeric', name: 'Sukker', value: 15 },
       { type: 'numeric', name: 'Peber', value: 123 },
       { type: 'numeric', name: 'Hvedemel', value: 324 },
       { type: 'categorical', name: 'Kunde', value: 'Ræv' },
-      { type: 'score', name: scoreName, value: 0.2 },
-      { type: 'score', name: scoreName + ' 2', value: 0.4 },
+      { type: 'score', name: scoreNames[0], value: 0.2 },
+      { type: 'score', name: scoreNames[1], value: 0.4 },
     ] satisfies DataPointType[],
   ].map((data, idx) => ({
     meta: { enabled: true, id: idx + 1, valid: true },
@@ -248,8 +248,8 @@ describe('converters', () => {
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
         [
-          { name: scoreName, description: '', enabled: true },
-          { name: scoreName + ' 2', description: '', enabled: true },
+          { name: scoreNames[0], description: '', enabled: true, label: '' },
+          { name: scoreNames[1], description: '', enabled: true, label: '' },
         ],
         sampleMultiObjectiveDataPoints
       )
@@ -265,8 +265,8 @@ describe('converters', () => {
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
         [
-          { name: scoreName, description: '', enabled: true },
-          { name: scoreName + ' 2', description: '', enabled: false },
+          { name: scoreNames[0], description: '', enabled: true, label: '' },
+          { name: scoreNames[1], description: '', enabled: false, label: '' },
         ],
         sampleMultiObjectiveDataPoints
       )
@@ -397,7 +397,7 @@ describe('converters', () => {
             },
             {
               type: 'score',
-              name: 'score',
+              name: scoreNames[0],
               value: 1,
             },
           ],
@@ -431,14 +431,13 @@ describe('converters', () => {
             },
             {
               type: 'score',
-              name: 'score',
+              name: scoreNames[0],
               value: 2,
             },
           ],
         },
       ]
-      const expected =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;982;632;Mus;1;true;true\n3;15;986;5;Mus;2;false;true'
+      const expected = `id;Sukker;Peber;Hvedemel;Kunde;${scoreNames[0]};enabled;valid\n1;28;982;632;Mus;1;true;true\n3;15;986;5;Mus;2;false;true`
       const actual = dataPointsToCSV(input)
       expect(actual).toEqual(expected)
     })
@@ -469,7 +468,7 @@ describe('converters', () => {
             },
             {
               type: 'score',
-              name: 'score',
+              name: scoreNames[0],
               value: 1,
             },
           ],
@@ -503,14 +502,13 @@ describe('converters', () => {
             },
             {
               type: 'score',
-              name: 'score',
+              name: scoreNames[0],
               value: 2,
             },
           ],
         },
       ]
-      const expected =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;;632;Mus;1;true;true\n3;15;986;5;Mus;2;false;true'
+      const expected = `id;Sukker;Peber;Hvedemel;Kunde;${scoreNames[0]};enabled;valid\n1;28;;632;Mus;1;true;true\n3;15;986;5;Mus;2;false;true`
       const actual = dataPointsToCSV(input)
       expect(actual).toEqual(expected)
     })
@@ -531,7 +529,7 @@ describe('converters', () => {
             },
             {
               type: 'score',
-              name: 'score',
+              name: scoreNames[0],
               value: 2,
             },
           ],
@@ -550,7 +548,7 @@ describe('converters', () => {
             },
             {
               type: 'score',
-              name: 'score',
+              name: scoreNames[0],
               value: 0,
             },
           ],
@@ -569,14 +567,13 @@ describe('converters', () => {
             },
             {
               type: 'score',
-              name: 'score',
+              name: scoreNames[0],
               value: 1,
             },
           ],
         },
       ]
-      const expected =
-        'id;Sukker;score;enabled;valid\n3;282;2;true;true\n1;280;0;true;true\n2;281;1;true;true'
+      const expected = `id;Sukker;${scoreNames[0]};enabled;valid\n3;282;2;true;true\n1;280;0;true;true\n2;281;1;true;true`
       const actual = dataPointsToCSV(input)
       expect(actual).toEqual(expected)
     })
@@ -618,7 +615,12 @@ describe('converters', () => {
       },
     ]
     const scoreVariables: ScoreVariableType[] = [
-      { name: 'score', description: '', enabled: true },
+      {
+        name: scoreNames[0],
+        label: 'qualitylabel',
+        description: '',
+        enabled: true,
+      },
     ]
 
     const sampleDataPoints: DataEntry[] = [
@@ -647,7 +649,7 @@ describe('converters', () => {
           },
           {
             type: 'score',
-            name: 'score',
+            name: scoreNames[0],
             value: 1,
           },
         ],
@@ -677,7 +679,7 @@ describe('converters', () => {
           },
           {
             type: 'score',
-            name: 'score',
+            name: scoreNames[0],
             value: 2,
           },
         ],
@@ -692,8 +694,7 @@ describe('converters', () => {
     })
 
     it('should convert known value', () => {
-      const input =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;982;632;Mus;1;true;true\n2;15;986;5;Mus;2;false;true'
+      const input = `id;Sukker;Peber;Hvedemel;Kunde;${scoreNames[0]};enabled;valid\n1;28;982;632;Mus;1;true;true\n2;15;986;5;Mus;2;false;true`
       const expected = sampleDataPoints
       const actual = csvToDataPoints(
         input,
@@ -705,12 +706,9 @@ describe('converters', () => {
     })
 
     it('should interpret enabled field as case insensitive', () => {
-      const inputWithLowerCase =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;982;632;Mus;1;true\n2;15;986;5;Mus;2;false;true'
-      const inputWithUpperCase =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;982;632;Mus;1;TRUE\n2;15;986;5;Mus;2;FALSE;true'
-      const inputWithMixedCase =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid\n1;28;982;632;Mus;1;True\n2;15;986;5;Mus;2;False;true'
+      const inputWithLowerCase = `id;Sukker;Peber;Hvedemel;Kunde;${scoreNames[0]};enabled;valid\n1;28;982;632;Mus;1;true\n2;15;986;5;Mus;2;false;true`
+      const inputWithUpperCase = `id;Sukker;Peber;Hvedemel;Kunde;${scoreNames[0]};enabled;valid\n1;28;982;632;Mus;1;TRUE\n2;15;986;5;Mus;2;FALSE;true`
+      const inputWithMixedCase = `id;Sukker;Peber;Hvedemel;Kunde;${scoreNames[0]};enabled;valid\n1;28;982;632;Mus;1;True\n2;15;986;5;Mus;2;False;true`
       const expected = sampleDataPoints
       const actual = [
         inputWithLowerCase,
@@ -730,8 +728,7 @@ describe('converters', () => {
     })
 
     it('should use ID column from CSV', () => {
-      const input =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n42;28;982;632;Mus;1;true\n16;15;986;5;Mus;2;false'
+      const input = `id;Sukker;Peber;Hvedemel;Kunde;${scoreNames[0]};enabled\n42;28;982;632;Mus;1;true\n16;15;986;5;Mus;2;false`
       const ids = [42, 16]
       const expected = sampleDataPoints.map((dp, idx) => ({
         ...dp,
@@ -747,8 +744,7 @@ describe('converters', () => {
     })
 
     it('should fail if duplicate ids are supplied', () => {
-      const input =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n2;28;982;632;Mus;1;true\n2;15;986;5;Mus;2;false'
+      const input = `id;Sukker;Peber;Hvedemel;Kunde;${scoreNames[0]};enabled\n2;28;982;632;Mus;1;true\n2;15;986;5;Mus;2;false`
       expect(() =>
         csvToDataPoints(
           input,
@@ -760,8 +756,7 @@ describe('converters', () => {
     })
 
     it('should fail if types does not match schema', () => {
-      const input =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled\n1;fisk;982;632;Mus;1;true\n2;15;986;5;Mus;2;false'
+      const input = `id;Sukker;Peber;Hvedemel;Kunde;${scoreNames[0]};enabled\n1;fisk;982;632;Mus;1;true\n2;15;986;5;Mus;2;false`
       expect(() =>
         csvToDataPoints(
           input,
@@ -773,8 +768,7 @@ describe('converters', () => {
     })
 
     it('should work with no meta data columns (ID is generated based on line order)', () => {
-      const input =
-        'Sukker;Peber;Hvedemel;Kunde;score\n28;982;632;Mus;1\n15;986;5;Mus;2'
+      const input = `Sukker;Peber;Hvedemel;Kunde;${scoreNames[0]}\n28;982;632;Mus;1\n15;986;5;Mus;2`
       const expected = sampleDataPoints.map((dp, idx) => ({
         ...dp,
         meta: { enabled: true, id: idx + 1, valid: true },
@@ -789,8 +783,7 @@ describe('converters', () => {
     })
 
     it('should accept shuffled columns', () => {
-      const input =
-        'Sukker;score;id;Hvedemel;enabled;Peber;Kunde\n28;1;1;632;true;982;Mus\n15;2;2;5;false;986;Mus'
+      const input = `Sukker;${scoreNames[0]};id;Hvedemel;enabled;Peber;Kunde\n28;1;1;632;true;982;Mus\n15;2;2;5;false;986;Mus`
       const expected = sampleDataPoints
       const actual = csvToDataPoints(
         input,
@@ -802,7 +795,7 @@ describe('converters', () => {
     })
 
     it('should fail if header is missing', () => {
-      const input = 'Sukker;Hvedemel;Kunde;score\n28;632;Mus;1\n15;5;Mus;2'
+      const input = `Sukker;Hvedemel;Kunde;${scoreNames[0]}\n28;632;Mus;1\n15;5;Mus;2`
       expect(() =>
         csvToDataPoints(
           input,
@@ -814,8 +807,7 @@ describe('converters', () => {
     })
 
     it('should not fail if there are extra headers', () => {
-      const input =
-        'Sukker;Peber;Hvedemel;Halm;Kunde;score\n28;982;632;007;Mus;1\n15;986;5;008;Mus;2'
+      const input = `Sukker;Peber;Hvedemel;Halm;Kunde;${scoreNames[0]}\n28;982;632;007;Mus;1\n15;986;5;008;Mus;2`
       const expected = sampleDataPoints.map(d => d.data)
       const actual = csvToDataPoints(
         input,
@@ -827,8 +819,7 @@ describe('converters', () => {
     })
 
     it('should accept whitespace in headers', () => {
-      const input =
-        'id;Sukker ;Peber;Hvedemel;  Kunde;score;enabled;valid\n1;28;982;632;Mus;1;true;true\n2;15;986;5;Mus;2;false;true'
+      const input = `id;Sukker ;Peber;Hvedemel;  Kunde;${scoreNames[0]};enabled;valid\n1;28;982;632;Mus;1;true;true\n2;15;986;5;Mus;2;false;true`
       const expected = sampleDataPoints
       const actual = csvToDataPoints(
         input,
@@ -840,8 +831,7 @@ describe('converters', () => {
     })
 
     it('should add extra headers to meta', () => {
-      const input =
-        'Sukker;Peber;Hvedemel;Halm;Kunde;score;enabled;valid\n28;982;632;008;Mus;1;true;true\n15;986;5;008;Mus;2;false;true'
+      const input = `Sukker;Peber;Hvedemel;Halm;Kunde;${scoreNames[0]};enabled;valid\n28;982;632;008;Mus;1;true;true\n15;986;5;008;Mus;2;false;true`
       const expected = sampleDataPoints.map(d => ({
         ...d,
         meta: { ...d.meta, halm: '008' },
@@ -856,8 +846,7 @@ describe('converters', () => {
     })
 
     it('should parse optional meta data field (description)', () => {
-      const input =
-        'id;Sukker;Peber;Hvedemel;Kunde;score;enabled;valid;description\n1;28;982;632;Mus;1;true;true;I am a description\n2;15;986;5;Mus;2;false;true;I am also a description'
+      const input = `id;Sukker;Peber;Hvedemel;Kunde;${scoreNames[0]};enabled;valid;description\n1;28;982;632;Mus;1;true;true;I am a description\n2;15;986;5;Mus;2;false;true;I am also a description`
       const actual = csvToDataPoints(
         input,
         valueVariables,

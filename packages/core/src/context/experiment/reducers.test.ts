@@ -7,6 +7,7 @@ import {
   ExperimentResultType,
   ExperimentType,
   OptimizerConfig,
+  scoreNames,
   ValueVariableType,
 } from '@core/common/types'
 import { emptyExperiment, State } from '@core/context/experiment'
@@ -54,7 +55,8 @@ describe('experiment reducer', () => {
       ],
       scoreVariables: [
         {
-          name: 'score',
+          name: scoreNames[0],
+          label: 'qualitylabel',
           description: 'score',
           enabled: true,
         },
@@ -97,7 +99,7 @@ describe('experiment reducer', () => {
             },
             {
               type: 'score',
-              name: 'score',
+              name: scoreNames[0],
               value: 10,
             },
           ],
@@ -372,7 +374,7 @@ describe('experiment reducer', () => {
           },
           {
             type: 'score',
-            name: 'score',
+            name: scoreNames[0],
             value: 10,
           },
         ])
@@ -510,7 +512,7 @@ describe('experiment reducer', () => {
                     },
                     {
                       type: 'score',
-                      name: 'score',
+                      name: scoreNames[0],
                       value: 10,
                     },
                   ],
@@ -606,7 +608,7 @@ describe('experiment reducer', () => {
           },
           {
             type: 'score',
-            name: 'score',
+            name: scoreNames[0],
             value: 10,
           },
         ])
@@ -792,7 +794,7 @@ describe('experiment reducer', () => {
       () => {
         const values = ['value1', 'value2', 'value3']
         const cats = ['cat1', 'cat2', 'cat3']
-        const scores = ['score', 'score2']
+        const scores = scoreNames
 
         const testState = produce(initState, draft => {
           draft.experiment.valueVariables = values.map(name =>
@@ -817,7 +819,7 @@ describe('experiment reducer', () => {
           1,
           values,
           cats,
-          scores,
+          [...scoreNames],
           true
         ).map(dr => ({
           ...dr,
@@ -835,8 +837,8 @@ describe('experiment reducer', () => {
           'cat1',
           'cat2',
           'cat3',
-          'score',
-          'score2',
+          scoreNames[0],
+          scoreNames[1],
         ]
         const actual = rootReducer(testState, action).experiment.dataPoints.map(
           dr => dr.data.map(d => d.name)
@@ -949,12 +951,14 @@ describe('experiment reducer', () => {
         ...initState.experiment,
         scoreVariables: [
           {
-            name: 'score',
+            name: scoreNames[0],
+            label: 'qualitylabel',
             description: 'score',
             enabled: true,
           },
           {
-            name: 'score2',
+            name: scoreNames[1],
+            label: 'costlabel',
             description: 'score 2',
             enabled: true,
           },
@@ -986,12 +990,14 @@ describe('experiment reducer', () => {
         ...initState.experiment,
         scoreVariables: [
           {
-            name: 'score',
+            name: scoreNames[0],
+            label: 'qualitylabel',
             description: 'score',
             enabled: true,
           },
           {
-            name: 'score2',
+            name: scoreNames[1],
+            label: 'costlabel',
             description: 'score 2',
             enabled: false,
           },
@@ -1024,7 +1030,7 @@ describe('experiment reducer', () => {
       scores.length,
       ['Water'],
       ['Icing'],
-      ['score', 'score2'],
+      [...scoreNames],
       true,
       scores
     )
@@ -1035,12 +1041,14 @@ describe('experiment reducer', () => {
           ...initState.experiment,
           scoreVariables: [
             {
-              name: 'score',
+              name: scoreNames[0],
+              label: 'qualitylabel',
               description: 'score',
               enabled: true,
             },
             {
-              name: 'score2',
+              name: scoreNames[1],
+              label: 'costlabel',
               description: 'score 2',
               enabled: true,
             },
@@ -1062,7 +1070,7 @@ describe('experiment reducer', () => {
       scores.length,
       ['Water'],
       ['Icing'],
-      ['score', 'score2'],
+      [...scoreNames],
       true,
       scores
     )
@@ -1073,12 +1081,14 @@ describe('experiment reducer', () => {
           ...initState.experiment,
           scoreVariables: [
             {
-              name: 'score',
+              name: scoreNames[0],
+              label: 'qualitylabel',
               description: 'score',
               enabled: true,
             },
             {
-              name: 'score2',
+              name: scoreNames[1],
+              label: 'costlabel',
               description: 'score 2',
               enabled: true,
             },
