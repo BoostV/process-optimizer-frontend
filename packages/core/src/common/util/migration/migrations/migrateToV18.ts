@@ -1,36 +1,8 @@
 import { ExperimentType, scoreLabels, scoreNames } from '@core/common/types'
-import sampleV17 from '../data-formats/17.json'
-
-// Use 17.json to define ExperimentTypeV17. Explicitly define string literals to make ts happy.
-// Avoid using current ExperimentType as that can change in the future
-type ExperimentTypeV17 = Omit<
-  typeof sampleV17,
-  'valueVariables' | 'constraints' | 'dataPoints'
-> & {
-  valueVariables: (Omit<(typeof sampleV17.valueVariables)[number], 'type'> & {
-    type: 'discrete' | 'continuous'
-  })[]
-  constraints: (Omit<(typeof sampleV17.constraints)[number], 'type'> & {
-    type: 'sum'
-  })[]
-  dataPoints: (Omit<(typeof sampleV17.dataPoints)[number], 'data'> & {
-    data: (
-      | {
-          type: 'numeric' | 'score'
-          name: string
-          value: number
-        }
-      | {
-          type: 'categorical'
-          name: string
-          value: string
-        }
-    )[]
-  })[]
-}
 
 // rename scores, change description to empty string, add labels
-export const migrateToV18 = (json: ExperimentTypeV17): ExperimentType => {
+// Note: Json is v17 but casted as ExperimentType
+export const migrateToV18 = (json: ExperimentType): ExperimentType => {
   return {
     ...json,
     info: {
