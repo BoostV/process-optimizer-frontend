@@ -1,13 +1,14 @@
 import {
-  ScatterChart,
+  Area,
   Scatter,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
   Legend,
-  Label,
+  ComposedChart,
+  Line,
+  ErrorBar,
 } from 'recharts'
 
 type Props = {
@@ -29,128 +30,75 @@ type Props = {
   altText?: string
 }
 
-const CustomTooltip = ({
-  payload,
-  label,
-}: {
-  payload?: unknown
-  label?: string
-}) => {
-  console.log('payload', payload, label)
-  // if (active && payload && payload.length) {
-  //   return (
-  //     <div style={{ background: 'white', padding: '2px' }}>
-  //       <b>
-  //         {payload[0].value}, {payload[1].value}
-  //       </b>
-  //       <br />
-  //       {payload[0].payload.inputs !== undefined
-  //         ? payload[0].payload.inputs.map(p => (
-  //             <>
-  //               {p.name}: {p.value}
-  //               <br />
-  //             </>
-  //           ))
-  //         : ''}
-  //     </div>
-  //   )
-  // }
-  return null
-}
-
 export default function ParetoFrontPlot({ plot }: Props) {
-  const dataScore = [
-    {
-      x: 0.1,
-      y: 0.2,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
-    {
-      x: 0.12,
-      y: 0.1,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
-    {
-      x: 0.17,
-      y: 0.3,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
-    {
-      x: 0.14,
-      y: 0.25,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
-    {
-      x: 0.15,
-      y: 0.4,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
-    {
-      x: 0.11,
-      y: 0.28,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
-  ]
+  const chartData = plot.front_y_data.map((yPair, i) => ({
+    x: yPair[0],
+    y: yPair[1],
 
-  const dataPareto = plot.front_y_data.map(([x, y]) => ({ x, y }))
+    // Vertical uncertainty (orange band in matplotlib)
+    uncertaintyY: [
+      yPair[1] - plot.obj2_error[i],
+      yPair[1] + plot.obj2_error[i],
+    ],
+
+    // Horizontal uncertainty (green band in matplotlib)
+    uncertaintyX: plot.obj1_error[i],
+  }))
+
+  const best = [
+    plot.front_y_data[plot.best_idx][0],
+    plot.front_y_data[plot.best_idx][1],
+  ]
 
   return (
     <div style={{ height: '600px', width: '600px' }}>
       <ResponsiveContainer width="100%" height="100%">
-        <ScatterChart
-          margin={{
-            top: 20,
-            right: 20,
-            bottom: 20,
-            left: 20,
-          }}
+        <ComposedChart
+          width={600}
+          height={400}
+          data={chartData}
+          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
         >
-          <Legend wrapperStyle={{ position: 'relative' }} />
-          <CartesianGrid />
-          <XAxis tickCount={10} type="number" dataKey="x" name="score1">
-            <Label value="score1" position="bottom" />
-          </XAxis>
-          <YAxis tickCount={10} type="number" dataKey="y" name="score2">
-            <Label value="score2" position="insideLeft" angle={-90} />
-          </YAxis>
-          <Tooltip
-            isAnimationActive={false}
-            content={<CustomTooltip />}
-            cursor={{ strokeDasharray: '3 3' }}
+          {/* TODO: domain should be determined from the data, not hardcoded */}
+          <XAxis type="number" dataKey="x" domain={[-3.5, -1.9]} />
+          <YAxis type="number" domain={[0, 11]} />
+          <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+          <Legend />
+          <Area
+            type="linear"
+            dataKey="uncertaintyY"
+            fill="#f6c47e"
+            fillOpacity={0.4}
+            stroke="none"
+            name="UncertaintyY"
+          />
+          <Scatter type="linear" dataKey="y" fill="none" name="Data points">
+            <ErrorBar
+              dataKey="uncertaintyX"
+              width={0}
+              strokeWidth={10}
+              stroke="green"
+              opacity={0.2}
+              direction="x"
+              isAnimationActive={false}
+            />
+          </Scatter>
+
+          <Line
+            type="linear"
+            dataKey="y"
+            stroke="#000000"
+            strokeWidth={2}
+            dot={false}
+            name="Pareto front"
           />
           <Scatter
-            name="Observations"
-            data={dataScore}
-            fill="blue"
-            shape="circle"
-            legendType="circle"
-          />
-          <Scatter
-            name="Estimated pareto front"
-            data={dataPareto}
+            name="Best"
+            dataKey={'y'}
+            data={[{ x: best[0], y: best[1] }]}
             fill="red"
-            shape="diamond"
-            legendType="diamond"
           />
-        </ScatterChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   )
