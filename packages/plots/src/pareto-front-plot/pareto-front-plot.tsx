@@ -37,8 +37,8 @@ export default function ParetoFrontPlot({ plot }: Props) {
 
     // Vertical uncertainty (orange band in matplotlib)
     uncertaintyY: [
-      yPair[1] - plot.obj2_error[i],
-      yPair[1] + plot.obj2_error[i],
+      yPair[1] - Number(plot.obj2_error[i] || 0),
+      yPair[1] + Number(plot.obj2_error[i] || 0),
     ],
 
     // Horizontal uncertainty (green band in matplotlib)
@@ -46,8 +46,8 @@ export default function ParetoFrontPlot({ plot }: Props) {
   }))
 
   const best = [
-    plot.front_y_data[plot.best_idx][0],
-    plot.front_y_data[plot.best_idx][1],
+    plot.front_y_data[plot.best_idx]?.[0],
+    plot.front_y_data[plot.best_idx]?.[1],
   ]
 
   return (
