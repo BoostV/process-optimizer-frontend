@@ -66,12 +66,34 @@ export default function ParetoFrontPlot({ plot }: Props) {
           width={600}
           height={400}
           data={chartData}
-          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+          margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
         >
           {/* TODO: domain should be determined from the data, not hardcoded */}
           <XAxis type="number" dataKey="x" domain={[-3.5, -1.9]} />
           <YAxis type="number" domain={[0, 11]} />
-          <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+          <Tooltip
+            cursor={{ stroke: '#2B5879' }}
+            trigger="click"
+            content={({ payload }) => {
+              if (!payload || !payload.length) return null
+              const paretoFront = payload[1]
+              console.log('Tooltip payload:', payload)
+              return (
+                <div
+                  style={{
+                    backgroundColor: 'white',
+                    border: '1px solid #ccc',
+                    padding: '10px',
+                    borderRadius: '8px',
+                  }}
+                >
+                  <div>{paretoFront.payload.x}</div>
+                  <div>{paretoFront.payload.y}</div>
+                </div>
+              )
+            }}
+          />
+          {/* <Tooltip cursor={{ strokeDasharray: '3 3' }} /> */}
           <Legend />
           <Area
             type="linear"
@@ -81,7 +103,7 @@ export default function ParetoFrontPlot({ plot }: Props) {
             stroke="none"
             name="UncertaintyY"
           />
-          <Scatter type="linear" dataKey="y" fill="none" name="Data points">
+          <Scatter type="linear" dataKey="y" fill="none" name="UncertaintyX">
             <ErrorBar
               dataKey="uncertaintyX"
               width={0}
@@ -92,6 +114,12 @@ export default function ParetoFrontPlot({ plot }: Props) {
               isAnimationActive={false}
             />
           </Scatter>
+          <Scatter
+            name="Observations"
+            dataKey={'y'}
+            data={dummyObservations}
+            fill="grey"
+          />
           <Line
             type="linear"
             dataKey="y"
@@ -99,18 +127,13 @@ export default function ParetoFrontPlot({ plot }: Props) {
             strokeWidth={2}
             dot={{ r: 2, stroke: 'none', fill: 'black' }}
             name="Pareto front"
+            onClick={e => console.log(e)}
           />
           <Scatter
             name="Best"
             dataKey={'y'}
             data={[{ x: best[0], y: best[1] }]}
             fill="#EB9605"
-          />
-          <Scatter
-            name="Observations"
-            dataKey={'y'}
-            data={dummyObservations}
-            fill="grey"
           />
         </ComposedChart>
       </ResponsiveContainer>
