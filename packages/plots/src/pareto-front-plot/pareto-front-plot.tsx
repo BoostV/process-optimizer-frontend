@@ -30,6 +30,15 @@ type Props = {
   altText?: string
 }
 
+// TODO: Observations are missing?
+const dummyObservations = [
+  { x: -3, y: 7 },
+  { x: -2.5, y: 3 },
+  { x: -2, y: 2 },
+  { x: -1.9, y: 1 },
+  { x: -1.8, y: 5 },
+]
+
 export default function ParetoFrontPlot({ plot }: Props) {
   const chartData = plot.front_y_data.map((yPair, i) => ({
     x: yPair[0],
@@ -83,20 +92,25 @@ export default function ParetoFrontPlot({ plot }: Props) {
               isAnimationActive={false}
             />
           </Scatter>
-
           <Line
             type="linear"
             dataKey="y"
-            stroke="#000000"
+            stroke="black"
             strokeWidth={2}
-            dot={false}
+            dot={{ r: 2, stroke: 'none', fill: 'black' }}
             name="Pareto front"
           />
           <Scatter
             name="Best"
             dataKey={'y'}
             data={[{ x: best[0], y: best[1] }]}
-            fill="red"
+            fill="#EB9605"
+          />
+          <Scatter
+            name="Observations"
+            dataKey={'y'}
+            data={dummyObservations}
+            fill="grey"
           />
         </ComposedChart>
       </ResponsiveContainer>
