@@ -17,6 +17,7 @@ import {
   OptimizerConfigurator,
   DataPoints,
   ExperimentationGuide,
+  Result,
 } from '@boostv/process-optimizer-frontend-ui'
 import { Alert } from '@mui/material'
 import { useStyles } from './experiment.style'
@@ -401,8 +402,17 @@ const LegacyExperiment = () => {
                         violationsInTable={violationsInTable}
                       />
                     </Grid>
+                    <Grid item xs={12}>
+                      <Result
+                        id="multiobj-result"
+                        onParetoClick={payload =>
+                          console.log('Pareto front clicked', payload)
+                        }
+                      />
+                    </Grid>
                   </Grid>
                 </Grid>
+
                 <Grid item xs={UISizeValue.Big} xl={getSize(uiSizes, 'plots')}>
                   <Plots
                     id="plots"

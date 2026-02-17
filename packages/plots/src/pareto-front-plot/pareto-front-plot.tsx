@@ -10,6 +10,7 @@ import {
   Line,
   ErrorBar,
 } from 'recharts'
+import useStyles from './pareto-front-plot.style'
 
 type Props = {
   plot: {
@@ -28,6 +29,8 @@ type Props = {
   width?: number | string
   maxWidth?: number | string
   altText?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onClick?: (payload: any) => void
 }
 
 // TODO: Observations are missing?
@@ -39,7 +42,9 @@ const dummyObservations = [
   { x: -1.8, y: 5 },
 ]
 
-export default function ParetoFrontPlot({ plot }: Props) {
+export default function ParetoFrontPlot({ plot, onClick }: Props) {
+  const { classes } = useStyles()
+
   const chartData = plot.front_y_data.map((yPair, i) => ({
     x: yPair[0],
     y: yPair[1],
@@ -60,7 +65,10 @@ export default function ParetoFrontPlot({ plot }: Props) {
   ]
 
   return (
-    <div style={{ height: '600px', width: '600px' }}>
+    <div
+      style={{ height: '600px', width: '600px' }}
+      className={classes.container}
+    >
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           width={600}
@@ -75,9 +83,11 @@ export default function ParetoFrontPlot({ plot }: Props) {
             cursor={{ stroke: '#2B5879' }}
             trigger="click"
             content={({ payload }) => {
-              if (!payload || !payload.length) return null
+              if (!payload || !payload.length) {
+                return null
+              }
               const paretoFront = payload[1]
-              console.log('Tooltip payload:', payload)
+              onClick?.(payload)
               return (
                 <div
                   style={{

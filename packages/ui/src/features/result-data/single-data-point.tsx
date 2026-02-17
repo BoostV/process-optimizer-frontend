@@ -42,8 +42,6 @@ export const SingleDataPoint = ({
   const [isDialogOpen, setDialogOpen] = useState(false)
   const [bigPlot, setBigPlot] = useState<undefined | string>(undefined)
 
-  console.log('plotData', plotData)
-
   const handleDialogClose = () => {
     setDialogOpen(false)
     setBigPlot(undefined)
