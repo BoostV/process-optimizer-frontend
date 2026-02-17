@@ -12,7 +12,7 @@ import {
   Button,
 } from '@mui/material'
 import useStyles from './single-data-point.style'
-import { PNGPlot } from '@boostv/process-optimizer-frontend-plots'
+import { PNGPlot, OneDPlot } from '@boostv/process-optimizer-frontend-plots'
 import { useState } from 'react'
 import {
   scoreLabels,
@@ -24,6 +24,11 @@ interface SingleDataPointProps {
   headers: string[]
   dataPoint: (number | (string | number)[])[]
   plots?: string[]
+  plotData: {
+    data: { x: number; y: number | number[] }[]
+    type: 'score' | 'variable'
+    referenceLineX?: number
+  }[][]
 }
 
 export const SingleDataPoint = ({
@@ -31,10 +36,13 @@ export const SingleDataPoint = ({
   headers,
   dataPoint,
   plots,
+  plotData,
 }: SingleDataPointProps) => {
   const { classes } = useStyles()
   const [isDialogOpen, setDialogOpen] = useState(false)
   const [bigPlot, setBigPlot] = useState<undefined | string>(undefined)
+
+  console.log('plotData', plotData)
 
   const handleDialogClose = () => {
     setDialogOpen(false)
@@ -85,6 +93,29 @@ export const SingleDataPoint = ({
               ))}
             </TableRow>
           )}
+          {plotData &&
+            plotData.length > 0 &&
+            plotData.map((pd, idx) => (
+              <TableRow key={'plotDataRow' + idx}>
+                {pd.map((d, dIdx) => (
+                  <TableCell
+                    className={classes.cell}
+                    key={'plotData' + idx + '-' + dIdx}
+                  >
+                    <Box mt={1}>
+                      <OneDPlot
+                        data={d.data}
+                        type={d.type}
+                        width={'100%'}
+                        height={'140px'}
+                        maxWidth={400}
+                        referenceLineX={d.referenceLineX}
+                      />
+                    </Box>
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
       <Dialog onClose={handleDialogClose} open={isDialogOpen}>

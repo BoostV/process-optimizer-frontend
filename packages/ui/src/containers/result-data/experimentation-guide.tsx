@@ -108,6 +108,54 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         plots={experiment.results.plots
           .filter(p => p.id.includes('single'))
           .map(p => p.plot)}
+        plotData={[
+          [
+            {
+              data: [
+                { x: 1, y: [4, 2] },
+                { x: 2, y: [2, 6] },
+                { x: 3, y: [3, 5] },
+                { x: 4, y: [4, 7] },
+                { x: 5, y: [10, 11] },
+              ],
+              type: 'variable',
+              referenceLineX: 3,
+            },
+            {
+              data: [
+                { x: 1, y: 2 },
+                { x: 2, y: 3 },
+                { x: 3, y: 5 },
+                { x: 4, y: 3 },
+                { x: 5, y: 1 },
+              ],
+              type: 'score',
+            },
+          ],
+          [
+            {
+              data: [
+                { x: 1, y: [4, 2] },
+                { x: 2, y: [2, 6] },
+                { x: 3, y: [3, 5] },
+                { x: 4, y: [4, 7] },
+                { x: 5, y: [10, 11] },
+              ],
+              type: 'variable',
+              referenceLineX: 3,
+            },
+            {
+              data: [
+                { x: 1, y: 2 },
+                { x: 2, y: 3 },
+                { x: 3, y: 5 },
+                { x: 4, y: 3 },
+                { x: 5, y: 1 },
+              ],
+              type: 'score',
+            },
+          ],
+        ]}
       />
     </Box>
   ) : loading ? (

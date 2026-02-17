@@ -37,6 +37,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         height={'140px'}
         width={'140px'}
         referenceLineX={3}
+        type="variable"
       />
     </div>
   </React.StrictMode>
