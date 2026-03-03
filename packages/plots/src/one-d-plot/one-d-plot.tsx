@@ -13,7 +13,7 @@ type OneDPlotProps = {
     x: number
     y: number | number[]
   }[]
-  type?: 'score' | 'variable'
+  type?: 'score' | 'numeric'
   width?: number | string
   maxWidth?: number | string
   height?: number | string
@@ -26,7 +26,7 @@ export const OneDPlot = ({
   height,
   data,
   referenceLineX,
-  type = 'variable',
+  type = 'numeric',
 }: OneDPlotProps) => {
   return (
     <div style={{ width, maxWidth, height }}>

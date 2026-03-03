@@ -3,18 +3,17 @@ import {
   Scatter,
   XAxis,
   YAxis,
-  Tooltip,
   ResponsiveContainer,
   Legend,
   ComposedChart,
   Line,
-  ErrorBar,
+  ReferenceLine,
 } from 'recharts'
 import useStyles from './pareto-front-plot.style'
 
 type Props = {
   plot: {
-    front_x_data: [number, number][]
+    front_x_data: number[][]
     front_y_data: [number, number][]
     obj1_error: [number, number, number][]
     obj2_error: [number, number, number][]
@@ -29,34 +28,25 @@ type Props = {
   width?: number | string
   maxWidth?: number | string
   altText?: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onClick?: (payload: any) => void
+   
+  observations: { x: number; y: number }[]
+  colors?: {
+    best?: string
+  }
 }
 
-// TODO: Observations are missing?
-const dummyObservations = [
-  { x: -3, y: 7 },
-  { x: -2.5, y: 3 },
-  { x: -2, y: 2 },
-  { x: -1.9, y: 1 },
-  { x: -1.8, y: 5 },
-]
-
-export default function ParetoFrontPlot({ plot, onClick }: Props) {
+export default function ParetoFrontPlot({ plot, observations, colors }: Props) {
   const { classes } = useStyles()
+
+  console.log(plot.front_x_data)
 
   const chartData = plot.front_y_data.map((yPair, i) => ({
     x: yPair[0],
     y: yPair[1],
-
-    // Vertical uncertainty (orange band in matplotlib)
     uncertaintyY: [
       yPair[1] - Number(plot.obj2_error[i] || 0),
       yPair[1] + Number(plot.obj2_error[i] || 0),
     ],
-
-    // Horizontal uncertainty (green band in matplotlib)
-    uncertaintyX: plot.obj1_error[i],
   }))
 
   const best = [
@@ -64,29 +54,87 @@ export default function ParetoFrontPlot({ plot, onClick }: Props) {
     plot.front_y_data[plot.best_idx]?.[1],
   ]
 
+  const variablesAtBest = plot.front_x_data[plot.best_idx]
+
+  // Create separate datasets for X uncertainty bounds
+  const xLowerBoundData = plot.front_y_data.map((yPair, i) => ({
+    x:
+      yPair[0] -
+      (Array.isArray(plot.obj1_error[i])
+        ? plot.obj1_error[i][0]
+        : plot.obj1_error[i] || 0),
+    y: yPair[1],
+  }))
+
+  const xUpperBoundData = plot.front_y_data.map((yPair, i) => ({
+    x:
+      yPair[0] +
+      (Array.isArray(plot.obj1_error[i])
+        ? plot.obj1_error[i][0]
+        : plot.obj1_error[i] || 0),
+    y: yPair[1],
+  }))
+
+  // Calculate domain from all data sources
+  const allXValues = [
+    ...xLowerBoundData.map(d => d.x),
+    ...xUpperBoundData.map(d => d.x),
+    ...chartData.map(d => d.x),
+    ...observations.map(d => d.x),
+  ]
+  const allYValues = [
+    ...xLowerBoundData.map(d => d.y),
+    ...xUpperBoundData.map(d => d.y),
+    ...chartData.map(d => d.y),
+    ...observations.map(d => d.y),
+  ]
+
+  // Add 5% padding to the domain
+  const xMin = Math.min(...allXValues)
+  const xMax = Math.max(...allXValues)
+  const xRange = xMax - xMin
+  const xPadding = xRange * 0.05
+
+  const yMin = Math.min(...allYValues)
+  const yMax = Math.max(...allYValues)
+  const yRange = yMax - yMin
+  const yPadding = yRange * 0.05
+
+  const xDomain = [xMin - xPadding, xMax + xPadding]
+  const yDomain = [yMin - yPadding, yMax + yPadding]
+
+  // Format axis values to 2 decimal places
+  const formatTick = (value: number) => value.toFixed(2)
+
   return (
-    <div
-      style={{ height: '600px', width: '600px' }}
-      className={classes.container}
-    >
+    <div className={classes.container}>
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           width={600}
           height={400}
           data={chartData}
-          margin={{ top: 10, right: 10, bottom: 10, left: 0 }}
+          margin={{ top: 0, right: 0, bottom: 0, left: 4 }}
         >
-          {/* TODO: domain should be determined from the data, not hardcoded */}
-          <XAxis type="number" dataKey="x" domain={[-3.5, -1.9]} />
-          <YAxis type="number" domain={[0, 11]} />
-          <Tooltip
-            cursor={{ stroke: '#2B5879' }}
-            trigger="click"
+          <XAxis
+            type="number"
+            dataKey="x"
+            domain={xDomain}
+            tickFormatter={formatTick}
+            label={{ value: 'Quality', position: 'insideBottom', offset: -5 }}
+          />
+          <YAxis
+            type="number"
+            domain={yDomain}
+            tickFormatter={formatTick}
+            label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
+          />
+          {/* <Tooltip
             content={({ payload }) => {
+              console.log(payload)
               if (!payload || !payload.length) {
                 return null
               }
-              const paretoFront = payload[1]
+              
               onClick?.(payload)
               return (
                 <div
@@ -102,9 +150,8 @@ export default function ParetoFrontPlot({ plot, onClick }: Props) {
                 </div>
               )
             }}
-          />
-          {/* <Tooltip cursor={{ strokeDasharray: '3 3' }} /> */}
-          <Legend />
+          /> */}
+          <Legend wrapperStyle={{ paddingTop: '16px' }} />
           <Area
             type="linear"
             dataKey="uncertaintyY"
@@ -113,23 +160,12 @@ export default function ParetoFrontPlot({ plot, onClick }: Props) {
             stroke="none"
             name="UncertaintyY"
           />
-          <Scatter type="linear" dataKey="y" fill="none" name="UncertaintyX">
-            <ErrorBar
-              dataKey="uncertaintyX"
-              width={0}
-              strokeWidth={10}
-              stroke="green"
-              opacity={0.2}
-              direction="x"
-              isAnimationActive={false}
-            />
-          </Scatter>
           <Scatter
-            name="Observations"
+            name="Data points"
             dataKey={'y'}
-            data={dummyObservations}
+            data={observations}
             fill="grey"
-          />
+          ></Scatter>
           <Line
             type="linear"
             dataKey="y"
@@ -138,6 +174,47 @@ export default function ParetoFrontPlot({ plot, onClick }: Props) {
             dot={{ r: 2, stroke: 'none', fill: 'black' }}
             name="Pareto front"
             onClick={e => console.log(e)}
+          ></Line>
+          <Line
+            type="linear"
+            data={xLowerBoundData}
+            dataKey="y"
+            stroke="green"
+            strokeWidth={1}
+            dot={false}
+            activeDot={false}
+            name="Uncertainty X Lower Bound"
+            hide={false}
+          />
+          <Line
+            type="linear"
+            data={xUpperBoundData}
+            dataKey="y"
+            stroke="green"
+            strokeWidth={1}
+            dot={false}
+            activeDot={false}
+            name="Uncertainty X Upper Bound"
+            hide={false}
+          />
+          {/* Reference lines from Best point to axes */}
+          <ReferenceLine
+            segment={[
+              { x: best[0], y: best[1] },
+              { x: best[0], y: yDomain[0] },
+            ]}
+            stroke={colors?.best || '#EB9605'}
+            strokeWidth={1}
+            strokeDasharray="3 3"
+          />
+          <ReferenceLine
+            segment={[
+              { x: best[0], y: best[1] },
+              { x: xDomain[0], y: best[1] },
+            ]}
+            stroke="#EB9605"
+            strokeWidth={1}
+            strokeDasharray="3 3"
           />
           <Scatter
             name="Best"
@@ -147,6 +224,22 @@ export default function ParetoFrontPlot({ plot, onClick }: Props) {
           />
         </ComposedChart>
       </ResponsiveContainer>
+      <div className={classes.tooltipContainer}>
+        <div className={classes.tooltip}>
+          {best[0] !== undefined && best[1] !== undefined ? (
+            <>
+              <div>
+                <strong>Best point</strong>
+              </div>
+              {variablesAtBest?.map((v, i) => (
+                <div key={i}>{`Variable ${i + 1}: ${v.toFixed(8)}`}</div>
+              ))}
+            </>
+          ) : (
+            <div>No best point found</div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

@@ -9,9 +9,17 @@ const pareto = paretoJson as unknown as Parameters<
   typeof ParetoFrontPlot
 >[0]['plot']
 
+const dummyObservations = [
+  { x: -3, y: 7 },
+  { x: -2.5, y: 3 },
+  { x: -2, y: 2 },
+  { x: -1.9, y: 1 },
+  { x: -1.8, y: 5 },
+]
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ParetoFrontPlot plot={pareto} />
+    <ParetoFrontPlot plot={pareto} observations={dummyObservations} />
     <PNGPlot plot={singlePng} />
     <div style={{ display: 'flex' }}>
       <OneDPlot
@@ -37,7 +45,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         height={'140px'}
         width={'140px'}
         referenceLineX={3}
-        type="variable"
+        type="numeric"
       />
     </div>
   </React.StrictMode>
