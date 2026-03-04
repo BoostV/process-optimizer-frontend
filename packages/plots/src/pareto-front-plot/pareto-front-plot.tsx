@@ -9,6 +9,7 @@ import {
   Line,
   ReferenceLine,
 } from 'recharts'
+import type { DataEntry } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './pareto-front-plot.style'
 
 type Props = {
@@ -28,17 +29,27 @@ type Props = {
   width?: number | string
   maxWidth?: number | string
   altText?: string
-   
-  observations: { x: number; y: number }[]
-  colors?: {
-    best?: string
-  }
+  dataPoints: DataEntry[]
 }
 
-export default function ParetoFrontPlot({ plot, observations, colors }: Props) {
+export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
   const { classes } = useStyles()
 
-  console.log(plot.front_x_data)
+  console.log(dataPoints)
+
+  // Transform DataEntry[] to {x, y}[] format
+  const dataPointsMapped = dataPoints.map(entry => {
+    const qualityPoint = entry.data.find(
+      d => d.type === 'score' && d.name === 'quality'
+    )
+    const costPoint = entry.data.find(
+      d => d.type === 'score' && d.name === 'cost'
+    )
+    return {
+      x: qualityPoint?.value ?? 0,
+      y: costPoint?.value ?? 0,
+    }
+  })
 
   const chartData = plot.front_y_data.map((yPair, i) => ({
     x: yPair[0],
@@ -55,6 +66,10 @@ export default function ParetoFrontPlot({ plot, observations, colors }: Props) {
   ]
 
   const variablesAtBest = plot.front_x_data[plot.best_idx]
+
+  // Get variable names from dataPoints (excluding scores)
+  const variableNames =
+    dataPoints[0]?.data.filter(d => d.type !== 'score').map(d => d.name) ?? []
 
   // Create separate datasets for X uncertainty bounds
   const xLowerBoundData = plot.front_y_data.map((yPair, i) => ({
@@ -80,14 +95,15 @@ export default function ParetoFrontPlot({ plot, observations, colors }: Props) {
     ...xLowerBoundData.map(d => d.x),
     ...xUpperBoundData.map(d => d.x),
     ...chartData.map(d => d.x),
-    ...observations.map(d => d.x),
-  ]
+    ...dataPointsMapped.map(d => d.x),
+  ].filter((v): v is number => typeof v === 'number')
   const allYValues = [
     ...xLowerBoundData.map(d => d.y),
     ...xUpperBoundData.map(d => d.y),
     ...chartData.map(d => d.y),
-    ...observations.map(d => d.y),
-  ]
+    ...chartData.flatMap(d => d.uncertaintyY), // Include uncertainty bounds
+    ...dataPointsMapped.map(d => d.y),
+  ].filter((v): v is number => typeof v === 'number')
 
   // Add 5% padding to the domain
   const xMin = Math.min(...allXValues)
@@ -128,29 +144,6 @@ export default function ParetoFrontPlot({ plot, observations, colors }: Props) {
             tickFormatter={formatTick}
             label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
           />
-          {/* <Tooltip
-            content={({ payload }) => {
-              console.log(payload)
-              if (!payload || !payload.length) {
-                return null
-              }
-              
-              onClick?.(payload)
-              return (
-                <div
-                  style={{
-                    backgroundColor: 'white',
-                    border: '1px solid #ccc',
-                    padding: '10px',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <div>{paretoFront.payload.x}</div>
-                  <div>{paretoFront.payload.y}</div>
-                </div>
-              )
-            }}
-          /> */}
           <Legend wrapperStyle={{ paddingTop: '16px' }} />
           <Area
             type="linear"
@@ -163,7 +156,7 @@ export default function ParetoFrontPlot({ plot, observations, colors }: Props) {
           <Scatter
             name="Data points"
             dataKey={'y'}
-            data={observations}
+            data={dataPointsMapped}
             fill="grey"
           ></Scatter>
           <Line
@@ -203,7 +196,7 @@ export default function ParetoFrontPlot({ plot, observations, colors }: Props) {
               { x: best[0], y: best[1] },
               { x: best[0], y: yDomain[0] },
             ]}
-            stroke={colors?.best || '#EB9605'}
+            stroke={'#3d77ff'}
             strokeWidth={1}
             strokeDasharray="3 3"
           />
@@ -212,7 +205,7 @@ export default function ParetoFrontPlot({ plot, observations, colors }: Props) {
               { x: best[0], y: best[1] },
               { x: xDomain[0], y: best[1] },
             ]}
-            stroke="#EB9605"
+            stroke="#3d77ff"
             strokeWidth={1}
             strokeDasharray="3 3"
           />
@@ -220,7 +213,7 @@ export default function ParetoFrontPlot({ plot, observations, colors }: Props) {
             name="Best"
             dataKey={'y'}
             data={[{ x: best[0], y: best[1] }]}
-            fill="#EB9605"
+            fill="#3d77ff"
           />
         </ComposedChart>
       </ResponsiveContainer>
@@ -232,7 +225,11 @@ export default function ParetoFrontPlot({ plot, observations, colors }: Props) {
                 <strong>Best point</strong>
               </div>
               {variablesAtBest?.map((v, i) => (
-                <div key={i}>{`Variable ${i + 1}: ${v.toFixed(8)}`}</div>
+                <div key={i}>
+                  {variableNames[i]
+                    ? `${variableNames[i]}: ${v.toFixed(8)}`
+                    : `Variable ${i + 1}: ${v.toFixed(8)}`}
+                </div>
               ))}
             </>
           ) : (
