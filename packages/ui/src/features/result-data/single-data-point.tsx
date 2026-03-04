@@ -26,7 +26,7 @@ interface SingleDataPointProps {
   plots?: string[]
   plotData: {
     data: { x: number; y: number | number[] }[]
-    type: 'score' | 'variable'
+    type: 'score' | 'numeric' | 'categorical'
     referenceLineX?: number
   }[][]
 }

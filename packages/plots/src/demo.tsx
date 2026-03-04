@@ -213,6 +213,28 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         referenceLineX={3}
         type="numeric"
       />
+      <OneDPlot
+        data={[
+          { x: 1, y: [4, 2] },
+          { x: 3, y: [3, 5] },
+          { x: 4, y: [2, 6] },
+        ]}
+        height={'140px'}
+        width={'140px'}
+        referenceLineX={3}
+        type="categorical"
+      />
+      <OneDPlot
+        data={[
+          { x: 'red', y: [4, 2] },
+          { x: 'blue', y: [3, 5] },
+          { x: 'green', y: [2, 6] },
+        ]}
+        height={'140px'}
+        width={'140px'}
+        referenceLineX={'blue'}
+        type="categorical"
+      />
     </div>
   </React.StrictMode>
 )

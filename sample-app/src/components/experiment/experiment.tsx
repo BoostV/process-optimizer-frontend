@@ -403,12 +403,7 @@ const LegacyExperiment = () => {
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <Result
-                        id="multiobj-result"
-                        onParetoClick={payload =>
-                          console.log('Pareto front clicked', payload)
-                        }
-                      />
+                      <Result id="multiobjective-result" />
                     </Grid>
                   </Grid>
                 </Grid>
