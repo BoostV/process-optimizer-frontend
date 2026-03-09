@@ -4,7 +4,6 @@ import {
   XAxis,
   YAxis,
   ResponsiveContainer,
-  Legend,
   ComposedChart,
   Line,
   ReferenceLine,
@@ -127,7 +126,7 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
           width={600}
           height={400}
           data={chartData}
-          margin={{ top: 0, right: 0, bottom: 0, left: 4 }}
+          margin={{ top: 0, right: 0, bottom: 10, left: 4 }}
         >
           <XAxis
             type="number"
@@ -142,7 +141,6 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
             tickFormatter={formatTick}
             label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
           />
-          <Legend wrapperStyle={{ paddingTop: '16px' }} />
           <Area
             type="linear"
             dataKey="uncertaintyY"
@@ -223,7 +221,7 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
                 <strong>Best point</strong>
               </div>
               {variablesAtBest?.map((v, i) => (
-                <div key={i}>
+                <div key={i} className={classes.bestPointVariable}>
                   {variableNames[i]
                     ? `${variableNames[i]}: ${v.toFixed(8)}`
                     : `Variable ${i + 1}: ${v.toFixed(8)}`}
@@ -233,6 +231,44 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
           ) : (
             <div>No best point found</div>
           )}
+
+          <div className={classes.divider} />
+
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColorCircle}
+              style={{ background: '#3d77ff' }}
+            />
+            <span>Best</span>
+          </div>
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColorCircle}
+              style={{ background: 'grey' }}
+            />
+            <span>Data points</span>
+          </div>
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColorLine}
+              style={{ background: 'black' }}
+            />
+            <span>Pareto front</span>
+          </div>
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColor}
+              style={{ background: '#f6c47e', opacity: 0.6 }}
+            />
+            <span>Uncertainty quality</span>
+          </div>
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColorLine}
+              style={{ background: 'green' }}
+            />
+            <span>Uncertainty cost</span>
+          </div>
         </div>
       </div>
     </div>
