@@ -36,12 +36,12 @@ const dummyDataPoints: DataEntry[] = [
       {
         type: 'score',
         name: 'quality',
-        value: 2,
+        value: -2.5,
       },
       {
         type: 'score',
         name: 'cost',
-        value: 3,
+        value: 3.2,
       },
     ],
   },
@@ -70,12 +70,12 @@ const dummyDataPoints: DataEntry[] = [
       {
         type: 'score',
         name: 'quality',
-        value: 1,
+        value: -3.5,
       },
       {
         type: 'score',
         name: 'cost',
-        value: 2,
+        value: 1.8,
       },
     ],
   },
@@ -104,12 +104,12 @@ const dummyDataPoints: DataEntry[] = [
       {
         type: 'score',
         name: 'quality',
-        value: 3,
+        value: -1.65,
       },
       {
         type: 'score',
         name: 'cost',
-        value: 3,
+        value: 5.5,
       },
     ],
   },
@@ -138,12 +138,12 @@ const dummyDataPoints: DataEntry[] = [
       {
         type: 'score',
         name: 'quality',
-        value: 2,
+        value: -2.8,
       },
       {
         type: 'score',
         name: 'cost',
-        value: 4,
+        value: 7.3,
       },
     ],
   },
@@ -172,12 +172,12 @@ const dummyDataPoints: DataEntry[] = [
       {
         type: 'score',
         name: 'quality',
-        value: 4,
+        value: -1.7,
       },
       {
         type: 'score',
         name: 'cost',
-        value: 3,
+        value: 9.1,
       },
     ],
   },

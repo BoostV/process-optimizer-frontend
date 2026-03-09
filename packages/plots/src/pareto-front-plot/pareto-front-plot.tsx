@@ -35,8 +35,6 @@ type Props = {
 export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
   const { classes } = useStyles()
 
-  console.log(dataPoints)
-
   // Transform DataEntry[] to {x, y}[] format
   const dataPointsMapped = dataPoints.map(entry => {
     const qualityPoint = entry.data.find(
@@ -105,16 +103,16 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
     ...dataPointsMapped.map(d => d.y),
   ].filter((v): v is number => typeof v === 'number')
 
-  // Add 5% padding to the domain
+  // Add 2% padding to the domain
   const xMin = Math.min(...allXValues)
   const xMax = Math.max(...allXValues)
   const xRange = xMax - xMin
-  const xPadding = xRange * 0.05
+  const xPadding = xRange * 0.02
 
   const yMin = Math.min(...allYValues)
   const yMax = Math.max(...allYValues)
   const yRange = yMax - yMin
-  const yPadding = yRange * 0.05
+  const yPadding = yRange * 0.02
 
   const xDomain = [xMin - xPadding, xMax + xPadding]
   const yDomain = [yMin - yPadding, yMax + yPadding]
