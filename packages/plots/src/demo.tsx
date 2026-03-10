@@ -1,8 +1,13 @@
 import { PNGPlot, ParetoFrontPlot } from '.'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { singlePng, paretoJson } from './demo-data'
-import { OneDPlot, OneDData } from './one-d-plot/one-d-plot'
+import {
+  singlePng,
+  paretoJson2 as paretoJson,
+  plot_obj1_1d_json,
+  plot_obj2_1d_json,
+} from './demo-data'
+import { OneDPlot } from './one-d-plot/one-d-plot'
 import { DataEntry } from '@boostv/process-optimizer-frontend-core'
 
 // cast the dummy data. Real data will be zod parsed
@@ -34,6 +39,13 @@ const mapToOneDData = (entry: [...number[][], number]): OneDData => {
 }
 
 const obj1Plots = pareto.obj1_1D_data.map(mapToOneDData)
+
+const obj1_1d = plot_obj1_1d_json.data[0] as unknown as Parameters<
+  typeof OneDPlot
+>[0]['data']
+const obj2_1d = plot_obj2_1d_json.data[0][1] as unknown as Parameters<
+  typeof OneDPlot
+>[0]['data']
 
 const dummyDataPoints: DataEntry[] = [
   {
@@ -294,6 +306,39 @@ function App() {
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <ParetoFrontPlot plot={pareto} dataPoints={dummyDataPoints} />
+    {/* <PNGPlot plot={singlePng} /> */}
+    <div style={{ display: 'flex' }}>
+      <OneDPlot data={obj1_1d} height={'140px'} width={'140px'} type="score" />
+      <OneDPlot
+        data={obj2_1d}
+        height={'140px'}
+        width={'140px'}
+        referenceLineX={3}
+        type="numeric"
+      />
+      <OneDPlot
+        data={[
+          { x: 1, y: [4, 2] },
+          { x: 3, y: [3, 5] },
+          { x: 4, y: [2, 6] },
+        ]}
+        height={'140px'}
+        width={'140px'}
+        referenceLineX={3}
+        type="categorical"
+      />
+      <OneDPlot
+        data={[
+          { x: 'red', y: [4, 2] },
+          { x: 'blue', y: [3, 5] },
+          { x: 'green', y: [2, 6] },
+        ]}
+        height={'140px'}
+        width={'140px'}
+        referenceLineX={'blue'}
+        type="categorical"
+      />
+    </div>
   </React.StrictMode>
 )

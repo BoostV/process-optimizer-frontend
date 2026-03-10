@@ -34,27 +34,7 @@ export const OneDPlot = ({
   data: { points, type = 'numeric', referenceLineX },
 }: OneDPlotProps) => {
   const fillColor = type === 'score' ? '#76c7c0' : '#a3d764'
-  const resolvedReferenceLineX =
-    referenceLineX !== undefined ? points[referenceLineX]?.x : undefined
-  const formatValue = (value: number | string) =>
-    typeof value === 'number' ? value.toFixed(2) : value
-  const formatTooltip = (value: number | number[]) =>
-    Array.isArray(value)
-      ? value.map(v => v.toFixed(2)).join(', ')
-      : formatValue(value)
-
-  // Calculate Y-axis width based on the maximum absolute Y value to ensure labels fit
-  const yAxisWidth = (() => {
-    const allY = points.flatMap(p =>
-      Array.isArray(p.y) ? p.y : [p.y]
-    ) as number[]
-    if (allY.length === 0) {
-      return 30
-    }
-    const maxAbsVal = Math.max(...allY.map(Math.abs))
-    const formatted = maxAbsVal.toFixed(2)
-    return Math.max(30, formatted.length * 7 + 5)
-  })()
+  console.log('Rendering OneDPlot with data:', data)
 
   return (
     <div style={{ width, maxWidth, height }}>
