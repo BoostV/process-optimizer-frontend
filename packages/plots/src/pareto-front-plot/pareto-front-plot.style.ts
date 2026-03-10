@@ -51,7 +51,7 @@ export const useStyles = makeStyles()(() => ({
   },
   legendColorLine: {
     width: '10px',
-    height: '2px',
+    height: '4px',
     flexShrink: 0,
   },
 }))

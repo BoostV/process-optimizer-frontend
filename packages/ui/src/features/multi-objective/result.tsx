@@ -2,13 +2,13 @@ import { ParetoFrontPlot } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '../core'
 import { paretoJson } from './demo-data'
 import {
-  selectDataPoints,
+  selectActiveDataPoints,
   useSelector,
 } from '@boostv/process-optimizer-frontend-core'
 
 type ResultProps = {
   id?: string
-   
+
   // onParetoClick?: (payload: any) => void
 }
 
@@ -18,7 +18,7 @@ const pareto = paretoJson as unknown as Parameters<
 >[0]['plot']
 
 export const Result = ({ id }: ResultProps) => {
-  const dataPoints = useSelector(selectDataPoints)
+  const dataPoints = useSelector(selectActiveDataPoints)
 
   return (
     <TitleCard id={id} title="Result">

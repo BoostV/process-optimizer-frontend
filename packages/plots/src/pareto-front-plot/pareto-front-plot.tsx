@@ -34,7 +34,7 @@ type Props = {
 export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
   const { classes } = useStyles()
 
-  // Transform DataEntry[] to {x, y}[] format
+  // Transform DataEntry[] to {x, y, id}[] format
   const dataPointsMapped = dataPoints.map(entry => {
     const qualityPoint = entry.data.find(
       d => d.type === 'score' && d.name === 'quality'
@@ -45,6 +45,7 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
     return {
       x: qualityPoint?.value ?? 0,
       y: costPoint?.value ?? 0,
+      id: entry.meta.id,
     }
   })
 
@@ -154,6 +155,49 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
             dataKey={'y'}
             data={dataPointsMapped}
             fill="grey"
+            label={{
+              position: 'top',
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              content: (props: any) => {
+                console.log('y', props.id)
+                const { x, y, id } = props
+                if (!id) {
+                  return null
+                }
+                const text = `#${id}`
+                const padding = 4
+                const fontSize = 12
+                const width = text.length * 7 + padding * 2
+                const height = fontSize + padding * 2
+                const rectX = x - width / 2
+                const rectY = y - 10 - height
+
+                return (
+                  <g>
+                    <rect
+                      x={rectX}
+                      y={rectY}
+                      width={width}
+                      height={height}
+                      fill="white"
+                      stroke="#999"
+                      strokeWidth={1}
+                      rx={2}
+                    />
+                    <text
+                      x={x}
+                      y={rectY + height / 2}
+                      fill="#666"
+                      fontSize={fontSize}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      {text}
+                    </text>
+                  </g>
+                )
+              },
+            }}
           ></Scatter>
           <Line
             type="linear"
@@ -260,14 +304,14 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
               className={classes.legendColor}
               style={{ background: '#f6c47e', opacity: 0.6 }}
             />
-            <span>Uncertainty quality</span>
+            <span>Uncertainty (quality)</span>
           </div>
           <div className={classes.legendItem}>
             <div
               className={classes.legendColorLine}
               style={{ background: 'green' }}
             />
-            <span>Uncertainty cost</span>
+            <span>Uncertainty (cost)</span>
           </div>
         </div>
       </div>
