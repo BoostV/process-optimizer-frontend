@@ -485,8 +485,8 @@ export default function ParetoFrontPlot({
               {variablesAtSelected?.map((v, i) => (
                 <div key={i} className={classes.selectedPointVariable}>
                   {variableNames[i]
-                    ? `${variableNames[i]}: ${v.toFixed(8)}`
-                    : `Variable ${i + 1}: ${v.toFixed(8)}`}
+                    ? `${variableNames[i]}: ${typeof v === 'number' ? v.toFixed(8) : v}`
+                    : `Variable ${i + 1}: ${typeof v === 'number' ? v.toFixed(8) : v}`}
                 </div>
               ))}
             </>

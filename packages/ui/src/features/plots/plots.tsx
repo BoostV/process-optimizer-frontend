@@ -4,8 +4,11 @@ import { ZoomOutMap } from '@mui/icons-material'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
 import { isJSON, isPNG } from '@boostv/process-optimizer-frontend-core'
-import { BokehPlot } from '@boostv/process-optimizer-frontend-plots'
-import { PNGPlot, JsonPlot } from '@boostv/process-optimizer-frontend-plots'
+import {
+  BokehPlot,
+  ParetoFrontPlot,
+} from '@boostv/process-optimizer-frontend-plots'
+import { PNGPlot } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
 import { FC, ReactNode } from 'react'
 import { ExperimentType } from '@boostv/process-optimizer-frontend-core'
@@ -138,7 +141,10 @@ export const Plots: FC<Props> = ({
                   {isPNG(plot.plot) ? (
                     <PNGPlot plot={plot.plot} />
                   ) : isJSON(plot.plot) ? (
-                    <JsonPlot plot={plot.plot} />
+                    <ParetoFrontPlot
+                      plot={JSON.parse(plot.plot)}
+                      dataPoints={experiment.dataPoints}
+                    />
                   ) : (
                     <BokehPlot data={plot.plot} />
                   )}
@@ -158,7 +164,10 @@ export const Plots: FC<Props> = ({
                   {isPNG(plot.plot) ? (
                     <PNGPlot plot={plot.plot} />
                   ) : isJSON(plot.plot) ? (
-                    <JsonPlot plot={plot.plot} />
+                    <ParetoFrontPlot
+                      plot={JSON.parse(plot.plot)}
+                      dataPoints={experiment.dataPoints}
+                    />
                   ) : (
                     <BokehPlot data={plot.plot} />
                   )}

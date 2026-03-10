@@ -12,7 +12,10 @@ import {
 } from '@boostv/process-optimizer-frontend-core'
 
 import catapult from '@ui/testing/sample-data/catapult.json'
+import catapultJsonPlot from '@ui/testing/sample-data/catapult-json-plot.json'
+import catapultMulti from '@ui/testing/sample-data/catapult-multi.json'
 import cake from '@ui/testing/sample-data/cake.json'
+import cakeMulti from '@ui/testing/sample-data/cake-multi.json'
 import { DataPoints, ExperimentationGuide, Plots } from '..'
 import { OptimizerConfigurator } from '../features/experiment'
 import { InputModel } from '../features/input-model'
@@ -39,7 +42,16 @@ const Experiment = () => {
   return (
     <div>
       <button onClick={() => loadSample(catapult)}>Load Catapult</button>
+      <button onClick={() => loadSample(catapultJsonPlot)}>
+        Load Catapult JSON plots
+      </button>
+      <button onClick={() => loadSample(catapultMulti)}>
+        Load Multi Objective Catapult
+      </button>
       <button onClick={() => loadSample(cake)}>Load Cake</button>
+      <button onClick={() => loadSample(cakeMulti)}>
+        Load Multi Objective Cake
+      </button>
       <button disabled={loading} onClick={() => evaluate()}>
         Run experiment
       </button>
