@@ -159,7 +159,6 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
               position: 'top',
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               content: (props: any) => {
-                console.log('y', props.id)
                 const { x, y, id } = props
                 if (!id) {
                   return null
