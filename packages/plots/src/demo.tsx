@@ -208,79 +208,89 @@ const dummyDataPoints: DataEntry[] = [
   },
 ]
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <ParetoFrontPlot
-      indexOfSelected={pareto.best_idx}
-      plot={pareto}
-      dataPoints={dummyDataPoints}
-      onSelectIndex={index => console.log(`Selected point index: ${index}`)}
-    />
-    <PNGPlot plot={singlePng} />
-    <div style={{ display: 'flex' }}>
-      {obj1Plots.map((data, i) => (
+function App() {
+  const [selectedPoint, setSelectedPoint] = React.useState<number | null>(null)
+
+  return (
+    <>
+      <ParetoFrontPlot
+        indexOfSelected={selectedPoint ?? pareto.best_idx}
+        plot={pareto}
+        dataPoints={dummyDataPoints}
+        onSelectIndex={index => setSelectedPoint(index)}
+      />
+      <PNGPlot plot={singlePng} />
+      <div style={{ display: 'flex' }}>
+        {obj1Plots.map((data, i) => (
+          <OneDPlot
+            key={`obj1-${i}`}
+            data={data}
+            height={'140px'}
+            width={'140px'}
+          />
+        ))}
         <OneDPlot
-          key={`obj1-${i}`}
-          data={data}
+          data={{
+            points: [
+              { x: 1, y: 2 },
+              { x: 2, y: 3 },
+              { x: 3, y: 5 },
+              { x: 4, y: 3 },
+              { x: 5, y: 1 },
+            ],
+            type: 'score',
+          }}
           height={'140px'}
           width={'140px'}
         />
-      ))}
-      <OneDPlot
-        data={{
-          points: [
-            { x: 1, y: 2 },
-            { x: 2, y: 3 },
-            { x: 3, y: 5 },
-            { x: 4, y: 3 },
-            { x: 5, y: 1 },
-          ],
-          type: 'score',
-        }}
-        height={'140px'}
-        width={'140px'}
-      />
-      <OneDPlot
-        data={{
-          points: [
-            { x: 1, y: [4, 2] },
-            { x: 2, y: [2, 6] },
-            { x: 3, y: [3, 5] },
-            { x: 4, y: [4, 7] },
-            { x: 5, y: [10, 11] },
-          ],
-          type: 'numeric',
-          referenceLineX: 3,
-        }}
-        height={'140px'}
-        width={'140px'}
-      />
-      <OneDPlot
-        data={{
-          points: [
-            { x: 'Blue', y: [4, 2] },
-            { x: 'Green', y: [3, 5] },
-            { x: 'Red', y: [2, 6] },
-          ],
-          type: 'options',
-          referenceLineX: 3,
-        }}
-        height={'140px'}
-        width={'140px'}
-      />
-      <OneDPlot
-        data={{
-          points: [
-            { x: 'Blue', y: [4, 2] },
-            { x: 'Green', y: [3, 5] },
-            { x: 'Red', y: [2, 6] },
-          ],
-          type: 'options',
-          referenceLineX: 1,
-        }}
-        height={'140px'}
-        width={'140px'}
-      />
-    </div>
+        <OneDPlot
+          data={{
+            points: [
+              { x: 1, y: [4, 2] },
+              { x: 2, y: [2, 6] },
+              { x: 3, y: [3, 5] },
+              { x: 4, y: [4, 7] },
+              { x: 5, y: [10, 11] },
+            ],
+            type: 'numeric',
+            referenceLineX: 3,
+          }}
+          height={'140px'}
+          width={'140px'}
+        />
+        <OneDPlot
+          data={{
+            points: [
+              { x: 'Blue', y: [4, 2] },
+              { x: 'Green', y: [3, 5] },
+              { x: 'Red', y: [2, 6] },
+            ],
+            type: 'options',
+            referenceLineX: 3,
+          }}
+          height={'140px'}
+          width={'140px'}
+        />
+        <OneDPlot
+          data={{
+            points: [
+              { x: 'Blue', y: [4, 2] },
+              { x: 'Green', y: [3, 5] },
+              { x: 'Red', y: [2, 6] },
+            ],
+            type: 'options',
+            referenceLineX: 1,
+          }}
+          height={'140px'}
+          width={'140px'}
+        />
+      </div>
+    </>
+  )
+}
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <App />
   </React.StrictMode>
 )

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import {
   Area,
   Scatter,
@@ -41,8 +41,6 @@ export default function ParetoFrontPlot({
   onSelectIndex,
 }: Props) {
   const { classes } = useStyles()
-  const [hoverIdx, setHoverIdx] = useState<number | null>(null)
-  const hoverPoint = hoverIdx !== null ? plot.front_y_data[hoverIdx] : null
 
   // Transform DataEntry[] to {x, y, id}[] format
   const dataPointsMapped = dataPoints.map(entry => {
@@ -132,8 +130,11 @@ export default function ParetoFrontPlot({
   // Format axis values to 2 decimal places
   const formatTick = (value: number) => value.toFixed(2)
 
+  // START: AI-generated hover line
   const containerRef = useRef<HTMLDivElement>(null)
   const rafRef = useRef<number>(0)
+  const hoverLineRef = useRef<HTMLDivElement>(null)
+  const hoverLabelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     return () => cancelAnimationFrame(rafRef.current)
@@ -176,22 +177,80 @@ export default function ParetoFrontPlot({
     return nearest
   }
 
+  const showHover = (
+    pixelX: number,
+    chartTop: number,
+    point: [number, number]
+  ) => {
+    if (hoverLineRef.current) {
+      hoverLineRef.current.style.display = 'block'
+      hoverLineRef.current.style.left = `${pixelX}px`
+      hoverLineRef.current.style.top = `${chartTop}px`
+    }
+    if (hoverLabelRef.current) {
+      const children = hoverLabelRef.current.children
+      if (children[0]) {
+        children[0].textContent = `Quality: ${point[0].toFixed(2)}`
+      }
+      if (children[1]) {
+        children[1].textContent = `Cost: ${point[1].toFixed(2)}`
+      }
+      hoverLabelRef.current.style.display = 'block'
+      hoverLabelRef.current.style.left = `${pixelX + 6}px`
+      hoverLabelRef.current.style.top = `${chartTop + 4}px`
+    }
+  }
+
+  const hideHover = () => {
+    if (hoverLineRef.current) {
+      hoverLineRef.current.style.display = 'none'
+    }
+    if (hoverLabelRef.current) {
+      hoverLabelRef.current.style.display = 'none'
+    }
+  }
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { clientX } = e
     cancelAnimationFrame(rafRef.current)
     rafRef.current = requestAnimationFrame(() => {
+      const container = containerRef.current
+      if (!container) {
+        return
+      }
       const xValue = pixelToDataX(clientX)
       if (xValue === null) {
-        setHoverIdx(null)
-      } else {
-        setHoverIdx(findNearestFrontIndex(xValue))
+        hideHover()
+        return
       }
+      const idx = findNearestFrontIndex(xValue)
+      const point = plot.front_y_data[idx]
+      if (!point) {
+        hideHover()
+        return
+      }
+      const svg = container.querySelector('svg')
+      if (!svg) {
+        return
+      }
+      const svgRect = svg.getBoundingClientRect()
+      const containerRect = container.getBoundingClientRect()
+      const yAxisLine = container.querySelector(
+        '.recharts-yAxis .recharts-cartesian-axis-line'
+      ) as SVGLineElement | null
+      const y1 = yAxisLine ? parseFloat(yAxisLine.getAttribute('y1') || '0') : 0
+      const y2 = yAxisLine
+        ? parseFloat(yAxisLine.getAttribute('y2') || '0')
+        : svgRect.height
+      const pixelX = clientX - containerRect.left
+      const chartTop = svgRect.top - containerRect.top + Math.min(y1, y2)
+      showHover(pixelX, chartTop, point)
     })
   }
 
   const handleMouseLeave = () => {
     cancelAnimationFrame(rafRef.current)
-    setHoverIdx(null)
+    hideHover()
   }
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -204,6 +263,7 @@ export default function ParetoFrontPlot({
     }
     onSelectIndex(findNearestFrontIndex(xValue))
   }
+  // END: AI-generated hover line
 
   return (
     <div
@@ -212,7 +272,9 @@ export default function ParetoFrontPlot({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
-      style={{ cursor: onSelectIndex ? 'crosshair' : undefined }}
+      style={{
+        position: 'relative',
+      }}
     >
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
@@ -241,17 +303,19 @@ export default function ParetoFrontPlot({
             fillOpacity={0.4}
             stroke="none"
             name="UncertaintyY"
+            isAnimationActive={false}
           />
           <Scatter
             name="Data points"
             dataKey={'y'}
             data={dataPointsMapped}
             fill="grey"
+            isAnimationActive={false}
             label={{
               position: 'top',
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               content: (props: any) => {
-                // eslint-disable-next-line react/prop-types
+                 
                 const { x, y, id } = props
                 if (!id) {
                   return null
@@ -298,6 +362,7 @@ export default function ParetoFrontPlot({
             strokeWidth={2}
             dot={{ r: 2, stroke: 'none', fill: 'black' }}
             name="Pareto front"
+            isAnimationActive={false}
             onClick={e => console.log(e)}
           ></Line>
           <Line
@@ -309,6 +374,7 @@ export default function ParetoFrontPlot({
             dot={false}
             activeDot={false}
             name="Uncertainty X Lower Bound"
+            isAnimationActive={false}
             hide={false}
           />
           <Line
@@ -320,40 +386,16 @@ export default function ParetoFrontPlot({
             dot={false}
             activeDot={false}
             name="Uncertainty X Upper Bound"
+            isAnimationActive={false}
             hide={false}
           />
-          {/* Hover preview line with label */}
-          {hoverPoint && (
-            <ReferenceLine
-              x={hoverPoint[0]}
-              stroke="#3d77ff"
-              strokeWidth={1}
-              strokeOpacity={0.4}
-              strokeDasharray="3 3"
-              label={({ viewBox }: { viewBox: { x: number; y: number } }) => (
-                <text
-                  x={viewBox.x + 4}
-                  y={viewBox.y + 14}
-                  fill="#3d77ff"
-                  fontSize={12}
-                >
-                  <tspan x={viewBox.x + 4} dy={0}>
-                    Quality: {hoverPoint[0].toFixed(2)}
-                  </tspan>
-                  <tspan x={viewBox.x + 4} dy={14}>
-                    Cost: {hoverPoint[1].toFixed(2)}
-                  </tspan>
-                </text>
-              )}
-            />
-          )}
           {/* Reference lines from selected point to axes */}
           <ReferenceLine
             segment={[
               { x: selected[0], y: selected[1] },
               { x: selected[0], y: yDomain[0] },
             ]}
-            stroke={'#3d77ff'}
+            stroke={'#077ace'}
             strokeWidth={1}
             strokeDasharray="3 3"
           />
@@ -362,7 +404,7 @@ export default function ParetoFrontPlot({
               { x: selected[0], y: selected[1] },
               { x: xDomain[0], y: selected[1] },
             ]}
-            stroke="#3d77ff"
+            stroke="#077ace"
             strokeWidth={1}
             strokeDasharray="3 3"
           />
@@ -370,10 +412,36 @@ export default function ParetoFrontPlot({
             name="Selected"
             dataKey={'y'}
             data={[{ x: selected[0], y: selected[1] }]}
-            fill="#3d77ff"
+            fill="#077ace"
+            isAnimationActive={false}
           />
         </ComposedChart>
       </ResponsiveContainer>
+      <div
+        ref={hoverLineRef}
+        style={{
+          display: 'none',
+          position: 'absolute',
+          width: 0,
+          height: '100%',
+          borderLeft: '1px dashed rgba(43, 88, 121, 0.4)',
+          pointerEvents: 'none',
+        }}
+      />
+      <div
+        ref={hoverLabelRef}
+        style={{
+          display: 'none',
+          position: 'absolute',
+          color: '#077ace',
+          fontSize: 12,
+          pointerEvents: 'none',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        <div />
+        <div />
+      </div>
       <div className={classes.tooltipContainer}>
         <div className={classes.tooltip}>
           {selected[0] !== undefined && selected[1] !== undefined ? (
@@ -398,7 +466,7 @@ export default function ParetoFrontPlot({
           <div className={classes.legendItem}>
             <div
               className={classes.legendColorCircle}
-              style={{ background: '#3d77ff' }}
+              style={{ background: '#077ace' }}
             />
             <span>Selected point</span>
           </div>
