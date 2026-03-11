@@ -46,6 +46,11 @@ export const selectVariableNames = (state: State): string[] => {
     .concat(experiment.categoricalVariables.map(c => c.name))
 }
 
+export const selectActiveScoreVariableLabels = (state: State): string[] => {
+  const experiment = selectExperiment(state)
+  return experiment.scoreVariables.filter(s => s.enabled).map(s => s.label)
+}
+
 export const selectActiveVariableNames = (state: State): string[] => {
   const experiment = selectExperiment(state)
   return experiment.valueVariables

@@ -42,6 +42,7 @@ import {
   Message,
   findDataPointViolations,
   ValidationViolations,
+  selectIsMultiObjective,
 } from '@boostv/process-optimizer-frontend-core'
 
 type SnackbarMessage = {
@@ -108,6 +109,7 @@ const LegacyExperiment = () => {
 
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
+  const isMultiObjective = useSelector(selectIsMultiObjective)
 
   const dataPointsEditingDisabled =
     violations?.duplicateVariableNames.length > 0
@@ -402,9 +404,11 @@ const LegacyExperiment = () => {
                         violationsInTable={violationsInTable}
                       />
                     </Grid>
-                    <Grid item xs={12}>
-                      <Result id="multiobjective-result" />
-                    </Grid>
+                    {isMultiObjective && (
+                      <Grid item xs={12}>
+                        <Result id="multiobjective-result" />
+                      </Grid>
+                    )}
                   </Grid>
                 </Grid>
 

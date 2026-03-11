@@ -6,6 +6,7 @@ import {
   selectActiveVariableNames,
   selectDataPoints,
   selectIsMultiObjective,
+  selectActiveScoreVariableLabels,
 } from '@boostv/process-optimizer-frontend-core'
 import {
   Tooltip,
@@ -68,7 +69,8 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   } = useExperiment()
 
   const nextValues = useSelector(selectNextExperimentValues)
-  const headers = useSelector(selectActiveVariableNames)
+  const variableHeaders = useSelector(selectActiveVariableNames)
+  const scoreHeaders = useSelector(selectActiveScoreVariableLabels)
   // const expectedMinimum = useSelector(selectExpectedMinimum) //TODO: What do with this?
   const expectedMinimum = [1, 2, 3] // TODO: Remove
   const isInitializing = useSelector(selectIsInitializing)
@@ -146,7 +148,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     ],
   ]
 
-  const oneDPlots = dummyOneDPlots
+  const oneDPlots = isMultiObjective ? dummyOneDPlots : [dummyOneDPlots[0]]
 
   const defaultLoadingView = (
     <Stack direction="column" spacing={2} m={2}>
@@ -180,7 +182,10 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         <SingleDataPoint
           title={isMultiObjective ? undefined : 'Predicted best solution'}
           key={index}
-          headers={headers}
+          headers={[
+            ...variableHeaders,
+            `${scoreHeaders[index] ?? ''} (95% credible interval)`,
+          ]}
           dataPoint={convertExpectedMinimumToDisplayValue(expectedMinimum)}
           plotData={plot}
         />
@@ -241,7 +246,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           ))}
         <Suggestions
           values={nextValues}
-          headers={headers}
+          headers={variableHeaders}
           allowIndividualSuggestionCopy={allowIndividualSuggestionCopy}
           onCopyToDataPoints={index =>
             dispatchExperiment({

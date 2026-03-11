@@ -6,22 +6,9 @@ import {
   TableCell,
   Typography,
   Box,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  Button,
 } from '@mui/material'
 import useStyles from './single-data-point.style'
-import {
-  PNGPlot,
-  OneDPlot,
-  OneDData,
-} from '@boostv/process-optimizer-frontend-plots'
-import { useState } from 'react'
-import {
-  scoreLabels,
-  scoreNames,
-} from '@boostv/process-optimizer-frontend-core'
+import { OneDPlot, OneDData } from '@boostv/process-optimizer-frontend-plots'
 
 interface SingleDataPointProps {
   title?: string
@@ -37,13 +24,6 @@ export const SingleDataPoint = ({
   plotData,
 }: SingleDataPointProps) => {
   const { classes } = useStyles()
-  const [isDialogOpen, setDialogOpen] = useState(false)
-  const [bigPlot, setBigPlot] = useState<undefined | string>(undefined)
-
-  const handleDialogClose = () => {
-    setDialogOpen(false)
-    setBigPlot(undefined)
-  }
 
   return (
     <Box className={classes.tableContainer} pb={2}>
@@ -55,16 +35,11 @@ export const SingleDataPoint = ({
       <Table size="small">
         <TableHead>
           <TableRow>
-            {headers
-              .concat([
-                (scoreLabels[0] ?? scoreNames[0]) +
-                  ' (95 % credibility interval)',
-              ])
-              .map((h, idx) => (
-                <TableCell className={classes.cell} key={idx}>
-                  {h}
-                </TableCell>
-              ))}
+            {headers.map((h, idx) => (
+              <TableCell className={classes.cell} key={idx}>
+                {h}
+              </TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -75,22 +50,6 @@ export const SingleDataPoint = ({
               </TableCell>
             ))}
           </TableRow>
-          {/* {plots && plots.length > 0 && (
-            <TableRow>
-              {plots.map((p, idx) => (
-                <TableCell className={classes.cell} key={'plot' + idx}>
-                  <Box
-                    onClick={() => {
-                      setDialogOpen(true)
-                      setBigPlot(p)
-                    }}
-                  >
-                    <PNGPlot plot={p} width={'100%'} maxWidth={160} />
-                  </Box>
-                </TableCell>
-              ))}
-            </TableRow>
-          )} */}
           <TableRow>
             {plotData &&
               plotData.length > 0 &&
@@ -109,14 +68,6 @@ export const SingleDataPoint = ({
           </TableRow>
         </TableBody>
       </Table>
-      <Dialog onClose={handleDialogClose} open={isDialogOpen}>
-        <DialogContent>
-          <PNGPlot plot={bigPlot ?? ''} width={400} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Close</Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   )
 }
