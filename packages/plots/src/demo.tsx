@@ -2,7 +2,7 @@ import { PNGPlot, ParetoFrontPlot } from '.'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { singlePng, paretoJson } from './demo-data'
-import { OneDPlot } from './one-d-plot/one-d-plot'
+import { OneDPlot, OneDData } from './one-d-plot/one-d-plot'
 import { DataEntry } from '@boostv/process-optimizer-frontend-core'
 
 // cast the dummy data. Real data will be zod parsed
@@ -11,8 +11,8 @@ const pareto = paretoJson as unknown as {
   front_y_data: [number, number][]
   obj1_error: [number, number, number][]
   obj2_error: [number, number, number][]
-  obj1_1D_data: [[[number], [number], [number], number]]
-  obj2_1D_data: [[[number], [number], [number], number]]
+  obj1_1D_data: [...number[][], number][]
+  obj2_1D_data: [...number[][], number][]
   obj1_mean: number
   obj1_std: number
   obj2_mean: number
@@ -20,12 +20,20 @@ const pareto = paretoJson as unknown as {
   best_idx: number
 }
 
-const oned = {
-  obj1_1D_data: pareto.obj1_1D_data,
-  obj2_1D_data: pareto.obj2_1D_data,
+const mapToOneDData = (entry: [...number[][], number]): OneDData => {
+  const arrays = entry.slice(0, -1) as number[][]
+  const referenceLineX = entry[entry.length - 1] as number
+  const xValues = arrays[0]!
+  const yLow = arrays[1]!
+  const yHigh = arrays[2]!
+  return {
+    points: xValues.map((x, i) => ({ x, y: [yLow[i]!, yHigh[i]!] })),
+    type: 'numeric',
+    referenceLineX,
+  }
 }
 
-console.log('oned', oned)
+const obj1Plots = pareto.obj1_1D_data.map(mapToOneDData)
 
 const dummyDataPoints: DataEntry[] = [
   {
@@ -209,6 +217,14 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     />
     <PNGPlot plot={singlePng} />
     <div style={{ display: 'flex' }}>
+      {obj1Plots.map((data, i) => (
+        <OneDPlot
+          key={`obj1-${i}`}
+          data={data}
+          height={'140px'}
+          width={'140px'}
+        />
+      ))}
       <OneDPlot
         data={{
           points: [

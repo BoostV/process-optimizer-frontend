@@ -18,8 +18,8 @@ type Props = {
     front_y_data: [number, number][]
     obj1_error: [number, number, number][]
     obj2_error: [number, number, number][]
-    obj1_1D_data: [[[number], [number], [number], number]]
-    obj2_1D_data: [[[number], [number], [number], number]]
+    obj1_1D_data: [...number[][], number][]
+    obj2_1D_data: [...number[][], number][]
     obj1_mean: number
     obj1_std: number
     obj2_mean: number

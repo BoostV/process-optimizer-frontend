@@ -33,6 +33,12 @@ export const OneDPlot = ({
   data: { points, type = 'numeric', referenceLineX },
 }: OneDPlotProps) => {
   const fillColor = type === 'score' ? '#76c7c0' : '#a3d764'
+  const formatValue = (value: number | string) =>
+    typeof value === 'number' ? value.toFixed(2) : value
+  const formatTooltip = (value: number | number[]) =>
+    Array.isArray(value)
+      ? value.map(v => v.toFixed(2)).join(', ')
+      : formatValue(value)
 
   return (
     <div style={{ width, maxWidth, height }}>
@@ -42,9 +48,21 @@ export const OneDPlot = ({
             margin={{ top: 0, right: 0, bottom: 0, left: -32 }}
             data={points}
           >
-            <XAxis dataKey="x" tick={{ fontSize: 10 }} />
-            <YAxis dataKey="y" tick={{ fontSize: 10 }} />
-            <Tooltip />
+            <XAxis
+              dataKey="x"
+              tick={{ fontSize: 10 }}
+              tickFormatter={formatValue}
+            />
+            <YAxis
+              dataKey="y"
+              tick={{ fontSize: 10 }}
+              tickFormatter={formatValue}
+            />
+            <Tooltip
+              formatter={formatTooltip}
+              labelFormatter={formatValue}
+              contentStyle={{ background: 'white' }}
+            />
             <Bar dataKey="y" fill={fillColor} />
             {referenceLineX !== undefined && (
               <ReferenceLine
@@ -60,9 +78,21 @@ export const OneDPlot = ({
             margin={{ top: 0, right: 0, bottom: 0, left: -32 }}
             data={points}
           >
-            <XAxis dataKey="x" tick={{ fontSize: 10 }} />
-            <YAxis dataKey="y" tick={{ fontSize: 10 }} />
-            <Tooltip />
+            <XAxis
+              dataKey="x"
+              tick={{ fontSize: 10 }}
+              tickFormatter={formatValue}
+            />
+            <YAxis
+              dataKey="y"
+              tick={{ fontSize: 10 }}
+              tickFormatter={formatValue}
+            />
+            <Tooltip
+              formatter={formatTooltip}
+              labelFormatter={formatValue}
+              contentStyle={{ background: 'white' }}
+            />
             <Area
               type="monotone"
               dataKey="y"
