@@ -66,7 +66,7 @@ export const SingleDataPoint = ({
                           data={pd}
                           width={'100%'}
                           height={'140px'}
-                          maxWidth={140}
+                          maxWidth={160}
                         />
                       </Box>
                     </TableCell>

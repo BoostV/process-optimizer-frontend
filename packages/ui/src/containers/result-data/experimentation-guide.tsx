@@ -140,7 +140,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           { x: 2, y: [2, 6] },
           { x: 3, y: [3, 5] },
           { x: 4, y: [4, 7] },
-          { x: 5, y: [4, 8] },
+          { x: 5, y: [4, 100] },
         ],
         type: 'numeric' as const,
         referenceLineX: 3,

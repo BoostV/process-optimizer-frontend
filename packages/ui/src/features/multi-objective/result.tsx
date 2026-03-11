@@ -5,6 +5,7 @@ import {
   selectActiveDataPoints,
   useSelector,
 } from '@boostv/process-optimizer-frontend-core'
+import { useState } from 'react'
 
 type ResultProps = {
   id?: string
@@ -29,13 +30,16 @@ const pareto = paretoJson as unknown as {
 
 export const Result = ({ id }: ResultProps) => {
   const dataPoints = useSelector(selectActiveDataPoints)
+  const [selectedParetoPoint, setSelectedParetoPoint] = useState<number | null>(
+    null
+  )
 
   return (
     <TitleCard id={id} title="Result">
       <ParetoFrontPlot
-        indexOfSelected={pareto.best_idx}
+        onSelectIndex={index => setSelectedParetoPoint(index)}
+        indexOfSelected={selectedParetoPoint ?? pareto.best_idx}
         plot={pareto}
-        // onClick={onParetoClick}
         dataPoints={dataPoints}
       />
     </TitleCard>

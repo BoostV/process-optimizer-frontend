@@ -43,12 +43,25 @@ export const OneDPlot = ({
       ? value.map(v => v.toFixed(2)).join(', ')
       : formatValue(value)
 
+  // Calculate Y-axis width based on the maximum absolute Y value to ensure labels fit
+  const yAxisWidth = (() => {
+    const allY = points.flatMap(p =>
+      Array.isArray(p.y) ? p.y : [p.y]
+    ) as number[]
+    if (allY.length === 0) {
+      return 30
+    }
+    const maxAbsVal = Math.max(...allY.map(Math.abs))
+    const formatted = maxAbsVal.toFixed(2)
+    return Math.max(30, formatted.length * 7 + 5)
+  })()
+
   return (
     <div style={{ width, maxWidth, height }}>
       <ResponsiveContainer width="100%" height="100%">
         {type === 'options' ? (
           <BarChart
-            margin={{ top: 0, right: 0, bottom: 0, left: -32 }}
+            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
             data={points}
           >
             <XAxis
@@ -58,6 +71,7 @@ export const OneDPlot = ({
             />
             <YAxis
               dataKey="y"
+              width={yAxisWidth}
               tick={{ fontSize: 10 }}
               tickFormatter={formatValue}
             />
@@ -78,7 +92,7 @@ export const OneDPlot = ({
           </BarChart>
         ) : (
           <AreaChart
-            margin={{ top: 0, right: 0, bottom: 0, left: -32 }}
+            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
             data={points}
           >
             <XAxis
@@ -88,6 +102,7 @@ export const OneDPlot = ({
             />
             <YAxis
               dataKey="y"
+              width={yAxisWidth}
               tick={{ fontSize: 10 }}
               tickFormatter={formatValue}
             />
