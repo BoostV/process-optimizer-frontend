@@ -13,9 +13,19 @@ type ResultProps = {
 }
 
 // cast the dummy data. Real data will be zod parsed
-const pareto = paretoJson as unknown as Parameters<
-  typeof ParetoFrontPlot
->[0]['plot']
+const pareto = paretoJson as unknown as {
+  front_x_data: number[][]
+  front_y_data: [number, number][]
+  obj1_error: [number, number, number][]
+  obj2_error: [number, number, number][]
+  obj1_1D_data: [[[number], [number], [number], number]]
+  obj2_1D_data: [[[number], [number], [number], number]]
+  obj1_mean: number
+  obj1_std: number
+  obj2_mean: number
+  obj2_std: number
+  best_idx: number
+}
 
 export const Result = ({ id }: ResultProps) => {
   const dataPoints = useSelector(selectActiveDataPoints)
@@ -23,6 +33,7 @@ export const Result = ({ id }: ResultProps) => {
   return (
     <TitleCard id={id} title="Result">
       <ParetoFrontPlot
+        indexOfSelected={pareto.best_idx}
         plot={pareto}
         // onClick={onParetoClick}
         dataPoints={dataPoints}

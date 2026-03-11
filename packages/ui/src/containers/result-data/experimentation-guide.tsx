@@ -1,11 +1,11 @@
 import {
   useSelector,
   useExperiment,
-  selectExpectedMinimum,
   selectNextExperimentValues,
   selectIsInitializing,
   selectActiveVariableNames,
   selectDataPoints,
+  selectIsMultiObjective,
 } from '@boostv/process-optimizer-frontend-core'
 import {
   Tooltip,
@@ -69,9 +69,84 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
 
   const nextValues = useSelector(selectNextExperimentValues)
   const headers = useSelector(selectActiveVariableNames)
-  const expectedMinimum = useSelector(selectExpectedMinimum)
+  // const expectedMinimum = useSelector(selectExpectedMinimum) //TODO: What do with this?
+  const expectedMinimum = [1, 2, 3] // TODO: Remove
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
+  const isMultiObjective = useSelector(selectIsMultiObjective)
+
+  const dummyOneDPlots = [
+    [
+      {
+        points: [
+          { x: 1, y: [4, 2] },
+          { x: 2, y: [2, 6] },
+          { x: 3, y: [3, 5] },
+          { x: 4, y: [4, 7] },
+          { x: 5, y: [10, 11] },
+        ],
+        type: 'numeric' as const,
+        referenceLineX: 3,
+      },
+      {
+        points: [
+          { x: 1, y: [4, 2] },
+          { x: 2, y: [2, 6] },
+          { x: 3, y: [3, 5] },
+          { x: 4, y: [4, 7] },
+          { x: 5, y: [10, 11] },
+        ],
+        type: 'numeric' as const,
+        referenceLineX: 3,
+      },
+      {
+        points: [
+          { x: 1, y: 2 },
+          { x: 2, y: 3 },
+          { x: 3, y: 5 },
+          { x: 4, y: 3 },
+          { x: 5, y: 1 },
+        ],
+        type: 'score' as const,
+      },
+    ],
+    [
+      {
+        points: [
+          { x: 1, y: [4, 2] },
+          { x: 2, y: [2, 6] },
+          { x: 3, y: [3, 5] },
+          { x: 4, y: [4, 7] },
+          { x: 5, y: [4, 8] },
+        ],
+        type: 'numeric' as const,
+        referenceLineX: 3,
+      },
+      {
+        points: [
+          { x: 1, y: [4, 2] },
+          { x: 2, y: [2, 6] },
+          { x: 3, y: [3, 5] },
+          { x: 4, y: [4, 7] },
+          { x: 5, y: [4, 8] },
+        ],
+        type: 'numeric' as const,
+        referenceLineX: 3,
+      },
+      {
+        points: [
+          { x: 1, y: 2 },
+          { x: 2, y: 3 },
+          { x: 3, y: 5 },
+          { x: 4, y: 3 },
+          { x: 5, y: 1 },
+        ],
+        type: 'score' as const,
+      },
+    ],
+  ]
+
+  const oneDPlots = dummyOneDPlots
 
   const defaultLoadingView = (
     <Stack direction="column" spacing={2} m={2}>
@@ -101,62 +176,15 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     />
   ) : expectedMinimum && expectedMinimum.length > 0 ? (
     <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
-      <SingleDataPoint
-        title="Predicted best solution"
-        headers={headers}
-        dataPoint={convertExpectedMinimumToDisplayValue(expectedMinimum)}
-        plots={experiment.results.plots
-          .filter(p => p.id.includes('single'))
-          .map(p => p.plot)}
-        plotData={[
-          [
-            {
-              data: [
-                { x: 1, y: [4, 2] },
-                { x: 2, y: [2, 6] },
-                { x: 3, y: [3, 5] },
-                { x: 4, y: [4, 7] },
-                { x: 5, y: [10, 11] },
-              ],
-              type: 'variable',
-              referenceLineX: 3,
-            },
-            {
-              data: [
-                { x: 1, y: 2 },
-                { x: 2, y: 3 },
-                { x: 3, y: 5 },
-                { x: 4, y: 3 },
-                { x: 5, y: 1 },
-              ],
-              type: 'score',
-            },
-          ],
-          [
-            {
-              data: [
-                { x: 1, y: [4, 2] },
-                { x: 2, y: [2, 6] },
-                { x: 3, y: [3, 5] },
-                { x: 4, y: [4, 7] },
-                { x: 5, y: [10, 11] },
-              ],
-              type: 'variable',
-              referenceLineX: 3,
-            },
-            {
-              data: [
-                { x: 1, y: 2 },
-                { x: 2, y: 3 },
-                { x: 3, y: 5 },
-                { x: 4, y: 3 },
-                { x: 5, y: 1 },
-              ],
-              type: 'score',
-            },
-          ],
-        ]}
-      />
+      {oneDPlots.map((plot, index) => (
+        <SingleDataPoint
+          title={isMultiObjective ? undefined : 'Predicted best solution'}
+          key={index}
+          headers={headers}
+          dataPoint={convertExpectedMinimumToDisplayValue(expectedMinimum)}
+          plotData={plot}
+        />
+      ))}
     </Box>
   ) : loading ? (
     <></>

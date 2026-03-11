@@ -12,7 +12,11 @@ import {
   Button,
 } from '@mui/material'
 import useStyles from './single-data-point.style'
-import { PNGPlot, OneDPlot } from '@boostv/process-optimizer-frontend-plots'
+import {
+  PNGPlot,
+  OneDPlot,
+  OneDData,
+} from '@boostv/process-optimizer-frontend-plots'
 import { useState } from 'react'
 import {
   scoreLabels,
@@ -20,22 +24,16 @@ import {
 } from '@boostv/process-optimizer-frontend-core'
 
 interface SingleDataPointProps {
-  title: string
+  title?: string
   headers: string[]
   dataPoint: (number | (string | number)[])[]
-  plots?: string[]
-  plotData: {
-    data: { x: number; y: number | number[] }[]
-    type: 'score' | 'numeric' | 'categorical'
-    referenceLineX?: number
-  }[][]
+  plotData: OneDData[]
 }
 
 export const SingleDataPoint = ({
   title,
   headers,
   dataPoint,
-  plots,
   plotData,
 }: SingleDataPointProps) => {
   const { classes } = useStyles()
@@ -49,9 +47,11 @@ export const SingleDataPoint = ({
 
   return (
     <Box className={classes.tableContainer} pb={2}>
-      <Typography variant="caption" className={classes.title}>
-        {title}
-      </Typography>
+      {title && (
+        <Typography variant="caption" className={classes.title}>
+          {title}
+        </Typography>
+      )}
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -75,7 +75,7 @@ export const SingleDataPoint = ({
               </TableCell>
             ))}
           </TableRow>
-          {plots && plots.length > 0 && (
+          {/* {plots && plots.length > 0 && (
             <TableRow>
               {plots.map((p, idx) => (
                 <TableCell className={classes.cell} key={'plot' + idx}>
@@ -90,30 +90,23 @@ export const SingleDataPoint = ({
                 </TableCell>
               ))}
             </TableRow>
-          )}
-          {plotData &&
-            plotData.length > 0 &&
-            plotData.map((pd, idx) => (
-              <TableRow key={'plotDataRow' + idx}>
-                {pd.map((d, dIdx) => (
-                  <TableCell
-                    className={classes.cell}
-                    key={'plotData' + idx + '-' + dIdx}
-                  >
-                    <Box mt={1}>
-                      <OneDPlot
-                        data={d.data}
-                        type={d.type}
-                        width={'100%'}
-                        height={'140px'}
-                        maxWidth={400}
-                        referenceLineX={d.referenceLineX}
-                      />
-                    </Box>
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+          )} */}
+          <TableRow>
+            {plotData &&
+              plotData.length > 0 &&
+              plotData.map((pd, idx) => (
+                <TableCell className={classes.cell} key={'plotData' + idx}>
+                  <Box mt={1}>
+                    <OneDPlot
+                      data={pd}
+                      width={'100%'}
+                      height={'140px'}
+                      maxWidth={140}
+                    />
+                  </Box>
+                </TableCell>
+              ))}
+          </TableRow>
         </TableBody>
       </Table>
       <Dialog onClose={handleDialogClose} open={isDialogOpen}>

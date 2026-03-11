@@ -12,12 +12,12 @@ import type { DataEntry } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './pareto-front-plot.style'
 
 type Props = {
+  indexOfSelected: number
   plot: {
     front_x_data: number[][]
     front_y_data: [number, number][]
     obj1_error: [number, number, number][]
     obj2_error: [number, number, number][]
-    best_idx: number
     obj1_1D_data: [[[number], [number], [number], number]]
     obj2_1D_data: [[[number], [number], [number], number]]
     obj1_mean: number
@@ -31,7 +31,11 @@ type Props = {
   dataPoints: DataEntry[]
 }
 
-export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
+export default function ParetoFrontPlot({
+  indexOfSelected,
+  plot,
+  dataPoints,
+}: Props) {
   const { classes } = useStyles()
 
   // Transform DataEntry[] to {x, y, id}[] format
@@ -58,12 +62,12 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
     ],
   }))
 
-  const best = [
-    plot.front_y_data[plot.best_idx]?.[0],
-    plot.front_y_data[plot.best_idx]?.[1],
+  const selected = [
+    plot.front_y_data[indexOfSelected]?.[0],
+    plot.front_y_data[indexOfSelected]?.[1],
   ]
 
-  const variablesAtBest = plot.front_x_data[plot.best_idx]
+  const variablesAtSelected = plot.front_x_data[indexOfSelected]
 
   // Get variable names from dataPoints (excluding scores)
   const variableNames =
@@ -229,11 +233,11 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
             name="Uncertainty X Upper Bound"
             hide={false}
           />
-          {/* Reference lines from Best point to axes */}
+          {/* Reference lines from selected point to axes */}
           <ReferenceLine
             segment={[
-              { x: best[0], y: best[1] },
-              { x: best[0], y: yDomain[0] },
+              { x: selected[0], y: selected[1] },
+              { x: selected[0], y: yDomain[0] },
             ]}
             stroke={'#3d77ff'}
             strokeWidth={1}
@@ -241,8 +245,8 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
           />
           <ReferenceLine
             segment={[
-              { x: best[0], y: best[1] },
-              { x: xDomain[0], y: best[1] },
+              { x: selected[0], y: selected[1] },
+              { x: xDomain[0], y: selected[1] },
             ]}
             stroke="#3d77ff"
             strokeWidth={1}
@@ -251,20 +255,20 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
           <Scatter
             name="Best"
             dataKey={'y'}
-            data={[{ x: best[0], y: best[1] }]}
+            data={[{ x: selected[0], y: selected[1] }]}
             fill="#3d77ff"
           />
         </ComposedChart>
       </ResponsiveContainer>
       <div className={classes.tooltipContainer}>
         <div className={classes.tooltip}>
-          {best[0] !== undefined && best[1] !== undefined ? (
+          {selected[0] !== undefined && selected[1] !== undefined ? (
             <>
               <div>
-                <strong>Best point</strong>
+                <strong>Selected point</strong>
               </div>
-              {variablesAtBest?.map((v, i) => (
-                <div key={i} className={classes.bestPointVariable}>
+              {variablesAtSelected?.map((v, i) => (
+                <div key={i} className={classes.selectedPointVariable}>
                   {variableNames[i]
                     ? `${variableNames[i]}: ${v.toFixed(8)}`
                     : `Variable ${i + 1}: ${v.toFixed(8)}`}
@@ -272,7 +276,7 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
               ))}
             </>
           ) : (
-            <div>No best point found</div>
+            <div>No selected point found</div>
           )}
 
           <div className={classes.divider} />
@@ -282,7 +286,7 @@ export default function ParetoFrontPlot({ plot, dataPoints }: Props) {
               className={classes.legendColorCircle}
               style={{ background: '#3d77ff' }}
             />
-            <span>Best</span>
+            <span>Selected point</span>
           </div>
           <div className={classes.legendItem}>
             <div

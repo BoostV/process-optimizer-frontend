@@ -6,6 +6,7 @@ export const useStyles = makeStyles()(() => ({
   },
   cell: {
     minWidth: 48,
+    paddingRight: '16px',
   },
   title: {
     fontWeight: 'bold',

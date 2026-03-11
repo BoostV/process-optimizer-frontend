@@ -21,7 +21,7 @@ export const useStyles = makeStyles()(() => ({
     background: '#eee',
     width: 'fit-content',
   },
-  bestPointVariable: {
+  selectedPointVariable: {
     whiteSpace: 'nowrap',
   },
   divider: {
