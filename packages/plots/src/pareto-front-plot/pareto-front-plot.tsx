@@ -24,6 +24,7 @@ type Props = {
     obj1_std: number
     obj2_mean: number
     obj2_std: number
+    best_idx: number
   }
   width?: number | string
   maxWidth?: number | string
@@ -68,6 +69,8 @@ export default function ParetoFrontPlot({
   ]
 
   const variablesAtSelected = plot.front_x_data[indexOfSelected]
+  const isBest = indexOfSelected === plot.best_idx
+  const selectedLabel = isBest ? 'Selected point (best)' : 'Selected point'
 
   // Get variable names from dataPoints (excluding scores)
   const variableNames =
@@ -253,7 +256,7 @@ export default function ParetoFrontPlot({
             strokeDasharray="3 3"
           />
           <Scatter
-            name="Best"
+            name="Selected"
             dataKey={'y'}
             data={[{ x: selected[0], y: selected[1] }]}
             fill="#3d77ff"
@@ -265,7 +268,7 @@ export default function ParetoFrontPlot({
           {selected[0] !== undefined && selected[1] !== undefined ? (
             <>
               <div>
-                <strong>Selected point</strong>
+                <strong>{selectedLabel}</strong>
               </div>
               {variablesAtSelected?.map((v, i) => (
                 <div key={i} className={classes.selectedPointVariable}>

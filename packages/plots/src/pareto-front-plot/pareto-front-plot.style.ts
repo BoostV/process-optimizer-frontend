@@ -20,6 +20,7 @@ export const useStyles = makeStyles()(() => ({
     borderRadius: '4px',
     background: '#eee',
     width: 'fit-content',
+    whiteSpace: 'nowrap',
   },
   selectedPointVariable: {
     whiteSpace: 'nowrap',
