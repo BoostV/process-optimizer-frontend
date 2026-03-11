@@ -1,12 +1,15 @@
 import { makeStyles } from 'tss-react/mui'
 
 export const useStyles = makeStyles()(() => ({
-  tableContainer: {
+  container: {
     overflowX: 'auto',
+  },
+  grid: {
+    display: 'grid',
   },
   cell: {
     minWidth: 48,
-    paddingRight: '16px',
+    paddingRight: 16,
   },
   title: {
     fontWeight: 'bold',

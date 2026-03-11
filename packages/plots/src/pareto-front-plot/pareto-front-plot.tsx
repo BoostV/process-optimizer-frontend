@@ -286,6 +286,7 @@ export default function ParetoFrontPlot({
           <XAxis
             type="number"
             dataKey="x"
+            tick={{ fontSize: 12 }}
             domain={xDomain}
             tickFormatter={formatTick}
             label={{ value: 'Quality', position: 'insideBottom', offset: -5 }}
@@ -293,6 +294,7 @@ export default function ParetoFrontPlot({
           <YAxis
             type="number"
             domain={yDomain}
+            tick={{ fontSize: 12 }}
             tickFormatter={formatTick}
             label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
           />
@@ -315,7 +317,6 @@ export default function ParetoFrontPlot({
               position: 'top',
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               content: (props: any) => {
-                 
                 const { x, y, id } = props
                 if (!id) {
                   return null
