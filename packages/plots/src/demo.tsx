@@ -257,11 +257,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <OneDPlot
         data={{
           points: [
-            { x: 1, y: [4, 2] },
-            { x: 3, y: [3, 5] },
-            { x: 4, y: [2, 6] },
+            { x: 'Blue', y: [4, 2] },
+            { x: 'Green', y: [3, 5] },
+            { x: 'Red', y: [2, 6] },
           ],
-          type: 'categorical',
+          type: 'options',
           referenceLineX: 3,
         }}
         height={'140px'}
@@ -270,12 +270,12 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <OneDPlot
         data={{
           points: [
-            { x: 'red', y: [4, 2] },
-            { x: 'blue', y: [3, 5] },
-            { x: 'green', y: [2, 6] },
+            { x: 'Blue', y: [4, 2] },
+            { x: 'Green', y: [3, 5] },
+            { x: 'Red', y: [2, 6] },
           ],
-          type: 'categorical',
-          referenceLineX: 'blue',
+          type: 'options',
+          referenceLineX: 1,
         }}
         height={'140px'}
         width={'140px'}

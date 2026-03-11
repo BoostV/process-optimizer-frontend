@@ -7,6 +7,7 @@ import {
   selectDataPoints,
   selectIsMultiObjective,
   selectActiveScoreVariableLabels,
+  selectActiveVariablesFromExperiment,
 } from '@boostv/process-optimizer-frontend-core'
 import {
   Tooltip,
@@ -72,10 +73,11 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   const variableHeaders = useSelector(selectActiveVariableNames)
   const scoreHeaders = useSelector(selectActiveScoreVariableLabels)
   // const expectedMinimum = useSelector(selectExpectedMinimum) //TODO: What do with this?
-  const expectedMinimum = [1, 2, 3] // TODO: Remove
+  const expectedMinimum = [1, 2, 0, 3] // TODO: Remove
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
   const isMultiObjective = useSelector(selectIsMultiObjective)
+  const activeVariables = selectActiveVariablesFromExperiment(experiment)
 
   const dummyOneDPlots = [
     [
@@ -103,6 +105,14 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       },
       {
         points: [
+          { x: 0, y: [4, 2] },
+          { x: 1, y: [2, 6] },
+        ],
+        type: 'options' as const,
+        referenceLineX: 0,
+      },
+      {
+        points: [
           { x: 1, y: 2 },
           { x: 2, y: 3 },
           { x: 3, y: 5 },
@@ -137,6 +147,14 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       },
       {
         points: [
+          { x: 0, y: [4, 2] },
+          { x: 1, y: [2, 6] },
+        ],
+        type: 'options' as const,
+        referenceLineX: 1,
+      },
+      {
+        points: [
           { x: 1, y: 2 },
           { x: 2, y: 3 },
           { x: 3, y: 5 },
@@ -148,7 +166,28 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     ],
   ]
 
-  const oneDPlots = isMultiObjective ? dummyOneDPlots : [dummyOneDPlots[0]]
+  // Maps option indices to option labels for variables of type 'options'
+  const mapOptionsLabels = (plots: (typeof dummyOneDPlots)[0]) =>
+    plots.map((plot, i) => {
+      if (plot.type !== 'options') {
+        return plot
+      }
+      const options = activeVariables[i]?.options
+      if (!options) {
+        return plot
+      }
+      return {
+        ...plot,
+        points: plot.points.map(p => ({
+          ...p,
+          x: typeof p.x === 'number' ? (options[p.x] ?? p.x) : p.x,
+        })),
+      }
+    })
+
+  const oneDPlots = isMultiObjective
+    ? dummyOneDPlots.map(mapOptionsLabels)
+    : [mapOptionsLabels(dummyOneDPlots[0])]
 
   const defaultLoadingView = (
     <Stack direction="column" spacing={2} m={2}>

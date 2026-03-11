@@ -1,3 +1,4 @@
+import { CombinedVariableInputType } from '@boostv/process-optimizer-frontend-core'
 import {
   Area,
   AreaChart,
@@ -15,8 +16,8 @@ export type OneDData = {
     x: number | string
     y: number | number[]
   }[]
-  type?: 'score' | 'numeric' | 'categorical'
-  referenceLineX?: number | string
+  type?: CombinedVariableInputType | 'score'
+  referenceLineX?: number
 }
 
 type OneDPlotProps = {
@@ -33,6 +34,8 @@ export const OneDPlot = ({
   data: { points, type = 'numeric', referenceLineX },
 }: OneDPlotProps) => {
   const fillColor = type === 'score' ? '#76c7c0' : '#a3d764'
+  const resolvedReferenceLineX =
+    referenceLineX !== undefined ? points[referenceLineX]?.x : undefined
   const formatValue = (value: number | string) =>
     typeof value === 'number' ? value.toFixed(2) : value
   const formatTooltip = (value: number | number[]) =>
@@ -43,7 +46,7 @@ export const OneDPlot = ({
   return (
     <div style={{ width, maxWidth, height }}>
       <ResponsiveContainer width="100%" height="100%">
-        {type === 'categorical' ? (
+        {type === 'options' ? (
           <BarChart
             margin={{ top: 0, right: 0, bottom: 0, left: -32 }}
             data={points}
@@ -64,9 +67,9 @@ export const OneDPlot = ({
               contentStyle={{ background: 'white' }}
             />
             <Bar dataKey="y" fill={fillColor} />
-            {referenceLineX !== undefined && (
+            {resolvedReferenceLineX !== undefined && (
               <ReferenceLine
-                x={referenceLineX}
+                x={resolvedReferenceLineX}
                 stroke="black"
                 strokeWidth={2}
                 strokeDasharray="3 3"
@@ -100,9 +103,9 @@ export const OneDPlot = ({
               fillOpacity={1}
               fill={fillColor}
             />
-            {referenceLineX !== undefined && (
+            {resolvedReferenceLineX !== undefined && (
               <ReferenceLine
-                x={referenceLineX}
+                x={resolvedReferenceLineX}
                 stroke="black"
                 strokeWidth={2}
                 strokeDasharray="3 3"
