@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import {
   Area,
   Scatter,
@@ -30,14 +31,18 @@ type Props = {
   maxWidth?: number | string
   altText?: string
   dataPoints: DataEntry[]
+  onSelectIndex?: (index: number) => void
 }
 
 export default function ParetoFrontPlot({
   indexOfSelected,
   plot,
   dataPoints,
+  onSelectIndex,
 }: Props) {
   const { classes } = useStyles()
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null)
+  const hoverPoint = hoverIdx !== null ? plot.front_y_data[hoverIdx] : null
 
   // Transform DataEntry[] to {x, y, id}[] format
   const dataPointsMapped = dataPoints.map(entry => {
@@ -127,8 +132,88 @@ export default function ParetoFrontPlot({
   // Format axis values to 2 decimal places
   const formatTick = (value: number) => value.toFixed(2)
 
+  const containerRef = useRef<HTMLDivElement>(null)
+  const rafRef = useRef<number>(0)
+
+  useEffect(() => {
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [])
+
+  const pixelToDataX = (clientX: number): number | null => {
+    const container = containerRef.current
+    if (!container) {
+      return null
+    }
+    const axisLine = container.querySelector(
+      '.recharts-xAxis .recharts-cartesian-axis-line'
+    ) as SVGLineElement | null
+    const svg = container.querySelector('svg')
+    if (!axisLine || !svg) {
+      return null
+    }
+    const svgRect = svg.getBoundingClientRect()
+    const x1 = parseFloat(axisLine.getAttribute('x1') || '0')
+    const x2 = parseFloat(axisLine.getAttribute('x2') || '0')
+    const relX = (clientX - svgRect.left - x1) / (x2 - x1)
+    if (relX < 0 || relX > 1) {
+      return null
+    }
+    const dMin = xDomain[0]!
+    const dMax = xDomain[1]!
+    return dMin + relX * (dMax - dMin)
+  }
+
+  const findNearestFrontIndex = (xValue: number) => {
+    let nearest = 0
+    let minDist = Infinity
+    for (let i = 0; i < plot.front_y_data.length; i++) {
+      const dist = Math.abs(plot.front_y_data[i]![0] - xValue)
+      if (dist < minDist) {
+        minDist = dist
+        nearest = i
+      }
+    }
+    return nearest
+  }
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { clientX } = e
+    cancelAnimationFrame(rafRef.current)
+    rafRef.current = requestAnimationFrame(() => {
+      const xValue = pixelToDataX(clientX)
+      if (xValue === null) {
+        setHoverIdx(null)
+      } else {
+        setHoverIdx(findNearestFrontIndex(xValue))
+      }
+    })
+  }
+
+  const handleMouseLeave = () => {
+    cancelAnimationFrame(rafRef.current)
+    setHoverIdx(null)
+  }
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!onSelectIndex) {
+      return
+    }
+    const xValue = pixelToDataX(e.clientX)
+    if (xValue === null) {
+      return
+    }
+    onSelectIndex(findNearestFrontIndex(xValue))
+  }
+
   return (
-    <div className={classes.container}>
+    <div
+      className={classes.container}
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+      style={{ cursor: onSelectIndex ? 'crosshair' : undefined }}
+    >
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           width={600}
@@ -166,6 +251,7 @@ export default function ParetoFrontPlot({
               position: 'top',
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               content: (props: any) => {
+                // eslint-disable-next-line react/prop-types
                 const { x, y, id } = props
                 if (!id) {
                   return null
@@ -236,6 +322,31 @@ export default function ParetoFrontPlot({
             name="Uncertainty X Upper Bound"
             hide={false}
           />
+          {/* Hover preview line with label */}
+          {hoverPoint && (
+            <ReferenceLine
+              x={hoverPoint[0]}
+              stroke="#3d77ff"
+              strokeWidth={1}
+              strokeOpacity={0.4}
+              strokeDasharray="3 3"
+              label={({ viewBox }: { viewBox: { x: number; y: number } }) => (
+                <text
+                  x={viewBox.x + 4}
+                  y={viewBox.y + 14}
+                  fill="#3d77ff"
+                  fontSize={12}
+                >
+                  <tspan x={viewBox.x + 4} dy={0}>
+                    Quality: {hoverPoint[0].toFixed(2)}
+                  </tspan>
+                  <tspan x={viewBox.x + 4} dy={14}>
+                    Cost: {hoverPoint[1].toFixed(2)}
+                  </tspan>
+                </text>
+              )}
+            />
+          )}
           {/* Reference lines from selected point to axes */}
           <ReferenceLine
             segment={[

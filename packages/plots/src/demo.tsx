@@ -214,6 +214,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       indexOfSelected={pareto.best_idx}
       plot={pareto}
       dataPoints={dummyDataPoints}
+      onSelectIndex={index => console.log(`Selected point index: ${index}`)}
     />
     <PNGPlot plot={singlePng} />
     <div style={{ display: 'flex' }}>
