@@ -23,6 +23,7 @@ export const useStyles = makeStyles()(() => ({
     whiteSpace: 'nowrap',
   },
   selectedPointVariable: {
+    fontSize: '14px',
     whiteSpace: 'nowrap',
   },
   divider: {
