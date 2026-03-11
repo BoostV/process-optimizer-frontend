@@ -217,18 +217,15 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     />
   ) : expectedMinimum && expectedMinimum.length > 0 ? (
     <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
-      {oneDPlots.map((plot, index) => (
-        <SingleDataPoint
-          title={isMultiObjective ? undefined : 'Predicted best solution'}
-          key={index}
-          headers={[
-            ...variableHeaders,
-            `${scoreHeaders[index] ?? ''} (95% credible interval)`,
-          ]}
-          dataPoint={convertExpectedMinimumToDisplayValue(expectedMinimum)}
-          plotData={plot}
-        />
-      ))}
+      <SingleDataPoint
+        title={isMultiObjective ? undefined : 'Predicted best solution'}
+        variableHeaders={variableHeaders}
+        rows={oneDPlots.map((plot, index) => ({
+          scoreHeader: `${scoreHeaders[index] ?? ''} (95% credible interval)`,
+          dataPoint: convertExpectedMinimumToDisplayValue(expectedMinimum),
+          plotData: plot,
+        }))}
+      />
     </Box>
   ) : loading ? (
     <></>
