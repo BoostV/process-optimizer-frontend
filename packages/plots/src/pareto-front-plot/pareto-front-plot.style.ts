@@ -13,7 +13,9 @@ export const useStyles = makeStyles()(() => ({
   },
   tooltipContainer: {
     display: 'flex',
+    flexDirection: 'column' as const,
     alignItems: 'flex-start',
+    paddingLeft: '8px',
   },
   tooltip: {
     padding: '16px',
@@ -55,6 +57,12 @@ export const useStyles = makeStyles()(() => ({
     width: '10px',
     height: '4px',
     flexShrink: 0,
+  },
+  buttonColumn: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '8px',
+    marginTop: '8px',
   },
 }))
 

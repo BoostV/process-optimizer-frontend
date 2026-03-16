@@ -1,4 +1,11 @@
-import { useEffect, useRef } from 'react'
+import {
+  cloneElement,
+  isValidElement,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import {
   Area,
   Scatter,
@@ -32,15 +39,25 @@ type Props = {
   altText?: string
   dataPoints: DataEntry[]
   onSelectIndex?: (index: number) => void
+  fitToFrontButton?: ReactNode
+  resetToBestButton?: ReactNode
+  onResetToBest?: () => void
 }
+
+const defaultFitBtn = <button>Toggle to fit front</button>
+const defaultResetBtn = <button>Reset to best</button>
 
 export default function ParetoFrontPlot({
   indexOfSelected,
   plot,
   dataPoints,
   onSelectIndex,
+  fitToFrontButton = defaultFitBtn,
+  resetToBestButton = defaultResetBtn,
+  onResetToBest,
 }: Props) {
   const { classes } = useStyles()
+  const [fitToFront, setFitToFront] = useState(false)
 
   // Transform DataEntry[] to {x, y, id}[] format
   const dataPointsMapped = dataPoints.map(entry => {
@@ -113,14 +130,27 @@ export default function ParetoFrontPlot({
     ...dataPointsMapped.map(d => d.y),
   ].filter((v): v is number => typeof v === 'number')
 
+  const frontXValues = [
+    ...xLowerBoundData.map(d => d.x),
+    ...xUpperBoundData.map(d => d.x),
+    ...chartData.map(d => d.x),
+  ].filter((v): v is number => typeof v === 'number')
+  const frontYValues = [
+    ...chartData.map(d => d.y),
+    ...chartData.flatMap(d => d.uncertaintyY),
+  ]
+
+  const xValues = fitToFront ? frontXValues : allXValues
+  const yValues = fitToFront ? frontYValues : allYValues
+
   // Add 2% padding to the domain
-  const xMin = Math.min(...allXValues)
-  const xMax = Math.max(...allXValues)
+  const xMin = Math.min(...xValues)
+  const xMax = Math.max(...xValues)
   const xRange = xMax - xMin
   const xPadding = xRange * 0.02
 
-  const yMin = Math.min(...allYValues)
-  const yMax = Math.max(...allYValues)
+  const yMin = Math.min(...yValues)
+  const yMax = Math.max(...yValues)
   const yRange = yMax - yMin
   const yPadding = yRange * 0.02
 
@@ -288,12 +318,14 @@ export default function ParetoFrontPlot({
             dataKey="x"
             tick={{ fontSize: 12 }}
             domain={xDomain}
+            allowDataOverflow={fitToFront}
             tickFormatter={formatTick}
             label={{ value: 'Quality', position: 'insideBottom', offset: -5 }}
           />
           <YAxis
             type="number"
             domain={yDomain}
+            allowDataOverflow={fitToFront}
             tick={{ fontSize: 12 }}
             tickFormatter={formatTick}
             label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
@@ -500,6 +532,20 @@ export default function ParetoFrontPlot({
             <span>Uncertainty (cost)</span>
           </div>
         </div>
+        {(fitToFrontButton || resetToBestButton) && (
+          <>
+            <div className={classes.buttonColumn}>
+              {fitToFrontButton &&
+                isValidElement<{ onClick?: () => void }>(fitToFrontButton) &&
+                cloneElement(fitToFrontButton, {
+                  onClick: () => setFitToFront(f => !f),
+                })}
+              {resetToBestButton &&
+                isValidElement<{ onClick?: () => void }>(resetToBestButton) &&
+                cloneElement(resetToBestButton, { onClick: onResetToBest })}
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
