@@ -59,6 +59,11 @@ export const SingleDataPoint = ({
               row.plotData.map((pd, idx) => (
                 <Box className={classes.cell} key={'plotData' + idx}>
                   <Box mt={1}>
+                    {/* TODO: 1d plots
+                    isPNG(plot) ? (
+                      <PNGPlot data={plot} />
+                    ) : isJSON(plot) : (
+                    */}
                     <OneDPlot
                       data={pd}
                       width={'100%'}
