@@ -218,7 +218,7 @@ function App() {
         plot={pareto}
         dataPoints={dummyDataPoints}
         onSelectIndex={index => setSelectedPoint(index)}
-        fitToFrontButton={<button>Toggle to fit front</button>}
+        fitToFrontButton={<button>Toggle front fit</button>}
         resetToBestButton={<button>Reset to best</button>}
         onResetToBest={() => setSelectedPoint(pareto.best_idx)}
       />

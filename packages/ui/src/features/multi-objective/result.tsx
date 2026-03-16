@@ -6,6 +6,7 @@ import {
   useSelector,
 } from '@boostv/process-optimizer-frontend-core'
 import { useState } from 'react'
+import { Button } from '@mui/material'
 
 type ResultProps = {
   id?: string
@@ -41,6 +42,17 @@ export const Result = ({ id }: ResultProps) => {
         indexOfSelected={selectedParetoPoint ?? pareto.best_idx}
         plot={pareto}
         dataPoints={dataPoints}
+        fitToFrontButton={
+          <Button variant="outlined" size="small">
+            Toggle front fit
+          </Button>
+        }
+        resetToBestButton={
+          <Button variant="outlined" size="small">
+            Reset to best
+          </Button>
+        }
+        onResetToBest={() => setSelectedParetoPoint(pareto.best_idx)}
       />
     </TitleCard>
   )
