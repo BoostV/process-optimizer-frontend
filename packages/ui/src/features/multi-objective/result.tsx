@@ -49,7 +49,7 @@ export const Result = ({ id }: ResultProps) => {
         }
         resetToBestButton={
           <Button variant="outlined" size="small">
-            Reset to best
+            Reset to default
           </Button>
         }
         onResetToBest={() => setSelectedParetoPoint(pareto.best_idx)}

@@ -45,7 +45,7 @@ type Props = {
 }
 
 const defaultFitBtn = <button>Toggle to fit front</button>
-const defaultResetBtn = <button>Reset to best</button>
+const defaultResetBtn = <button>Reset to default</button>
 
 export default function ParetoFrontPlot({
   indexOfSelected,
@@ -90,7 +90,7 @@ export default function ParetoFrontPlot({
 
   const variablesAtSelected = plot.front_x_data[indexOfSelected]
   const isBest = indexOfSelected === plot.best_idx
-  const selectedLabel = isBest ? 'Selected point (best)' : 'Selected point'
+  const selectedLabel = isBest ? 'Selected point (default)' : 'Selected point'
 
   // Get variable names from dataPoints (excluding scores)
   const variableNames =
