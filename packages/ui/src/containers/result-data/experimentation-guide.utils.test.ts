@@ -56,11 +56,36 @@ describe('convertJsonPlotToOneDData', () => {
 
   it('should handle data array without reference line when refXValue not found', () => {
     const plotJson = JSON.stringify({
-      data: [[1, 2, 3], [10, 20, 30], [40, 50, 60], 999], // 999 not in xValues
+      data: [[1, 2, 3], [10, 20, 30], [40, 50, 60], 999], // 999 not in xValues, but closest is 3 at index 2
     })
     const result = convertJsonPlotToOneDData(plotJson, false)
     expect(result.type).toBe('numeric')
     expect(result.points).toHaveLength(3)
+    expect(result.referenceLineX).toBe(2) // closest value to 999 is 3 at index 2
+  })
+
+  it('should find closest xValue when refXValue does not exactly match (linspace data)', () => {
+    // Generate 60-point linspace from 100 to 200
+    const xValues = Array.from({ length: 60 }, (_, i) => 100 + i * (100 / 59))
+    const yLow = Array(60).fill(0)
+    const yHigh = Array(60).fill(0)
+    const plotJson = JSON.stringify({
+      data: [xValues, yLow, yHigh, 131],
+    })
+    const result = convertJsonPlotToOneDData(plotJson, false)
+    expect(result.type).toBe('numeric')
+    expect(result.points).toHaveLength(60)
+    // Index 18 has value ~130.508, which is closest to refXValue 131
+    expect(result.referenceLineX).toBe(18)
+  })
+
+  it('should handle empty xValues array gracefully', () => {
+    const plotJson = JSON.stringify({
+      data: [[], [], [], 0],
+    })
+    const result = convertJsonPlotToOneDData(plotJson, false)
+    expect(result.type).toBe('numeric')
+    expect(result.points).toHaveLength(0)
     expect(result.referenceLineX).toBeUndefined()
   })
 })

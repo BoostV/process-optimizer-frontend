@@ -31,7 +31,16 @@ export const convertJsonPlotToOneDData = (
       x,
       y: [yLow[i] as number, yHigh[i] as number] as [number, number],
     }))
-    const refIndex = xValues.findIndex(x => x === refXValue)
+    const refIndex =
+      xValues.length > 0
+        ? xValues.reduce(
+            (closest, x, i) =>
+              Math.abs(x - refXValue) < Math.abs(xValues[closest]! - refXValue)
+                ? i
+                : closest,
+            0
+          )
+        : -1
     const referenceLineX = refIndex >= 0 ? refIndex : undefined
     return {
       type: isOptionsVariable ? 'options' : 'numeric',
