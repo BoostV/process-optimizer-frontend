@@ -1,12 +1,23 @@
-import { Fragment } from 'react'
-import { Typography, Box } from '@mui/material'
+import { Fragment, useState } from 'react'
+import {
+  Typography,
+  Box,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  Button,
+} from '@mui/material'
 import useStyles from './single-data-point.style'
-import { OneDPlot, OneDData } from '@boostv/process-optimizer-frontend-plots'
+import {
+  OneDPlot,
+  OneDData,
+  PNGPlot,
+} from '@boostv/process-optimizer-frontend-plots'
 
 interface SingleDataPointRow {
   scoreHeader: string
   dataPoint: (number | (string | number)[])[]
-  plotData: OneDData[]
+  plotData: (string | OneDData)[]
 }
 
 interface SingleDataPointProps {
@@ -22,6 +33,8 @@ export const SingleDataPoint = ({
 }: SingleDataPointProps) => {
   const { classes } = useStyles()
   const columnCount = variableHeaders.length + 1
+  const [isDialogOpen, setDialogOpen] = useState(false)
+  const [bigPlot, setBigPlot] = useState<string | null>(null)
 
   return (
     <Box className={classes.container} pb={2}>
@@ -59,23 +72,47 @@ export const SingleDataPoint = ({
               row.plotData.map((pd, idx) => (
                 <Box className={classes.cell} key={'plotData' + idx}>
                   <Box mt={1}>
-                    {/* TODO: 1d plots
-                    isPNG(plot) ? (
-                      <PNGPlot data={plot} />
-                    ) : isJSON(plot) : (
-                    */}
-                    <OneDPlot
-                      data={pd}
-                      width={'100%'}
-                      height={'140px'}
-                      maxWidth={160}
-                    />
+                    {typeof pd === 'string' ? (
+                      <Box
+                        onClick={() => {
+                          setDialogOpen(true)
+                          setBigPlot(pd)
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <PNGPlot plot={pd} width={'100%'} maxWidth={160} />
+                      </Box>
+                    ) : (
+                      <OneDPlot
+                        data={pd}
+                        width={'100%'}
+                        height={'140px'}
+                        maxWidth={160}
+                      />
+                    )}
                   </Box>
                 </Box>
               ))}
           </Box>
         </Fragment>
       ))}
+      <Dialog
+        open={isDialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogContent>
+          <Box display="flex" justifyContent="center">
+            {bigPlot && <PNGPlot plot={bigPlot} width={'100%'} />}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

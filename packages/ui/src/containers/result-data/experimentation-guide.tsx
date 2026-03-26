@@ -8,6 +8,7 @@ import {
   selectIsMultiObjective,
   selectActiveScoreVariableLabels,
   selectActiveVariablesFromExperiment,
+  selectExpectedMinimum,
 } from '@boostv/process-optimizer-frontend-core'
 import {
   Tooltip,
@@ -29,9 +30,11 @@ import {
 import { CopySuggested } from '@ui/features/result-data/copy-suggested'
 import { ReactNode } from 'react'
 import { experimentResultSchema } from '@boostv/process-optimizer-frontend-core'
+import { OneDData } from '@boostv/process-optimizer-frontend-plots'
 import { z } from 'zod'
 import { isArray } from 'remeda'
 import _ from 'lodash'
+import { groupSinglePlots } from './experimentation-guide.utils'
 
 interface ResultDataProps {
   id?: string
@@ -72,103 +75,17 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   const nextValues = useSelector(selectNextExperimentValues)
   const variableHeaders = useSelector(selectActiveVariableNames)
   const scoreHeaders = useSelector(selectActiveScoreVariableLabels)
-  // const expectedMinimum = useSelector(selectExpectedMinimum) //TODO: What do with this?
-  const expectedMinimum = [1, 2, 0, 3] // TODO: Remove
+  const expectedMinimum = useSelector(selectExpectedMinimum)
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
   const isMultiObjective = useSelector(selectIsMultiObjective)
   const activeVariables = selectActiveVariablesFromExperiment(experiment)
 
-  const dummyOneDPlots = [
-    [
-      {
-        points: [
-          { x: 1, y: [4, 2] },
-          { x: 2, y: [2, 6] },
-          { x: 3, y: [3, 5] },
-          { x: 4, y: [4, 7] },
-          { x: 5, y: [10, 11] },
-        ],
-        type: 'numeric' as const,
-        referenceLineX: 3,
-      },
-      {
-        points: [
-          { x: 1, y: [4, 2] },
-          { x: 2, y: [2, 6] },
-          { x: 3, y: [3, 5] },
-          { x: 4, y: [4, 7] },
-          { x: 5, y: [10, 11] },
-        ],
-        type: 'numeric' as const,
-        referenceLineX: 3,
-      },
-      {
-        points: [
-          { x: 0, y: [4, 2] },
-          { x: 1, y: [2, 6] },
-        ],
-        type: 'options' as const,
-        referenceLineX: 0,
-      },
-      {
-        points: [
-          { x: 1, y: 2 },
-          { x: 2, y: 3 },
-          { x: 3, y: 5 },
-          { x: 4, y: 3 },
-          { x: 5, y: 1 },
-        ],
-        type: 'score' as const,
-      },
-    ],
-    [
-      {
-        points: [
-          { x: 1, y: [4, 2] },
-          { x: 2, y: [2, 6] },
-          { x: 3, y: [3, 5] },
-          { x: 4, y: [4, 7] },
-          { x: 5, y: [4, 8] },
-        ],
-        type: 'numeric' as const,
-        referenceLineX: 3,
-      },
-      {
-        points: [
-          { x: 1, y: [4, 2] },
-          { x: 2, y: [2, 6] },
-          { x: 3, y: [3, 5] },
-          { x: 4, y: [4, 7] },
-          { x: 5, y: [4, 100] },
-        ],
-        type: 'numeric' as const,
-        referenceLineX: 3,
-      },
-      {
-        points: [
-          { x: 0, y: [4, 2] },
-          { x: 1, y: [2, 6] },
-        ],
-        type: 'options' as const,
-        referenceLineX: 1,
-      },
-      {
-        points: [
-          { x: 1, y: 2 },
-          { x: 2, y: 3 },
-          { x: 3, y: 5 },
-          { x: 4, y: 3 },
-          { x: 5, y: 1 },
-        ],
-        type: 'score' as const,
-      },
-    ],
-  ]
-
-  // Maps option indices to option labels for variables of type 'options'
-  const mapOptionsLabels = (plots: (typeof dummyOneDPlots)[0]) =>
+  const mapOptionsLabels = (
+    plots: (string | OneDData)[]
+  ): (string | OneDData)[] =>
     plots.map((plot, i) => {
+      if (typeof plot === 'string') return plot
       if (plot.type !== 'options') {
         return plot
       }
@@ -185,9 +102,13 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       }
     })
 
-  const oneDPlots = isMultiObjective
-    ? dummyOneDPlots.map(mapOptionsLabels)
-    : [mapOptionsLabels(dummyOneDPlots[0])]
+  const rawOneDGroups = groupSinglePlots(
+    experiment.results.plots,
+    activeVariables
+  )
+  const oneDPlots: (string | OneDData)[][] = isMultiObjective
+    ? rawOneDGroups.map(mapOptionsLabels)
+    : [mapOptionsLabels(rawOneDGroups[0] ?? [])]
 
   const defaultLoadingView = (
     <Stack direction="column" spacing={2} m={2}>
@@ -205,6 +126,9 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         ? loadingView
         : defaultLoadingView
 
+  const hasPlots = oneDPlots.length > 0
+  const hasExpectedMinimum = !!(expectedMinimum && expectedMinimum.length > 0)
+
   const summary = isInitializing ? (
     <InitializationProgress
       experiment={experiment}
@@ -215,14 +139,16 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         })
       }
     />
-  ) : expectedMinimum && expectedMinimum.length > 0 ? (
+  ) : hasExpectedMinimum || hasPlots ? (
     <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
       <SingleDataPoint
         title={isMultiObjective ? undefined : 'Predicted best solution'}
         variableHeaders={variableHeaders}
         rows={oneDPlots.map((plot, index) => ({
           scoreHeader: `${scoreHeaders[index] ?? ''} (95% credible interval)`,
-          dataPoint: convertExpectedMinimumToDisplayValue(expectedMinimum),
+          dataPoint: hasExpectedMinimum
+            ? convertExpectedMinimumToDisplayValue(expectedMinimum!)
+            : [],
           plotData: plot,
         }))}
       />

@@ -142,6 +142,7 @@ export const Plots: FC<Props> = ({
                     <PNGPlot plot={plot.plot} />
                   ) : isJSON(plot.plot) ? (
                     <ParetoFrontPlot
+                      indexOfSelected={0}
                       plot={JSON.parse(plot.plot)}
                       dataPoints={experiment.dataPoints}
                     />
@@ -150,6 +151,7 @@ export const Plots: FC<Props> = ({
                   )}
                 </PlotItem>
               ))}
+
             {experiment.results.plots
               .filter(plot => plot.id.includes('pareto'))
               .map(plot => (
@@ -165,6 +167,7 @@ export const Plots: FC<Props> = ({
                     <PNGPlot plot={plot.plot} />
                   ) : isJSON(plot.plot) ? (
                     <ParetoFrontPlot
+                      indexOfSelected={0}
                       plot={JSON.parse(plot.plot)}
                       dataPoints={experiment.dataPoints}
                     />
