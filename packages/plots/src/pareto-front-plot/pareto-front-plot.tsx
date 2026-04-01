@@ -40,8 +40,8 @@ type Props = {
   dataPoints: DataEntry[]
   onSelectIndex?: (index: number) => void
   fitToFrontButton?: ReactNode
-  resetToBestButton?: ReactNode
-  onResetToBest?: () => void
+  resetToDefaultButton?: ReactNode
+  onResetToDefault?: () => void
 }
 
 const defaultFitBtn = <button>Toggle to fit front</button>
@@ -53,8 +53,8 @@ export default function ParetoFrontPlot({
   dataPoints,
   onSelectIndex,
   fitToFrontButton = defaultFitBtn,
-  resetToBestButton = defaultResetBtn,
-  onResetToBest,
+  resetToDefaultButton = defaultResetBtn,
+  onResetToDefault,
 }: Props) {
   const { classes } = useStyles()
   const [fitToFront, setFitToFront] = useState(false)
@@ -532,7 +532,7 @@ export default function ParetoFrontPlot({
             <span>Uncertainty (cost)</span>
           </div>
         </div>
-        {(fitToFrontButton || resetToBestButton) && (
+        {(fitToFrontButton || resetToDefaultButton) && (
           <>
             <div className={classes.buttonColumn}>
               {fitToFrontButton &&
@@ -540,9 +540,13 @@ export default function ParetoFrontPlot({
                 cloneElement(fitToFrontButton, {
                   onClick: () => setFitToFront(f => !f),
                 })}
-              {resetToBestButton &&
-                isValidElement<{ onClick?: () => void }>(resetToBestButton) &&
-                cloneElement(resetToBestButton, { onClick: onResetToBest })}
+              {resetToDefaultButton &&
+                isValidElement<{ onClick?: () => void }>(
+                  resetToDefaultButton
+                ) &&
+                cloneElement(resetToDefaultButton, {
+                  onClick: onResetToDefault,
+                })}
             </div>
           </>
         )}

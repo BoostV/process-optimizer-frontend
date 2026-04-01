@@ -47,12 +47,12 @@ export const Result = ({ id }: ResultProps) => {
             Toggle front fit
           </Button>
         }
-        resetToBestButton={
+        resetToDefaultButton={
           <Button variant="outlined" size="small">
             Reset to default
           </Button>
         }
-        onResetToBest={() => setSelectedParetoPoint(pareto.best_idx)}
+        onResetToDefault={() => setSelectedParetoPoint(pareto.best_idx)}
       />
     </TitleCard>
   )
