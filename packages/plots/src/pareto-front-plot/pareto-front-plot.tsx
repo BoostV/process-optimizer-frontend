@@ -165,6 +165,7 @@ export default function ParetoFrontPlot({
   const rafRef = useRef<number>(0)
   const hoverLineRef = useRef<HTMLDivElement>(null)
   const hoverLabelRef = useRef<HTMLDivElement>(null)
+  const hoverDotRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     return () => cancelAnimationFrame(rafRef.current)
@@ -210,7 +211,9 @@ export default function ParetoFrontPlot({
   const showHover = (
     pixelX: number,
     chartTop: number,
-    point: [number, number]
+    point: [number, number],
+    dotPixelX: number,
+    dotPixelY: number
   ) => {
     if (hoverLineRef.current) {
       hoverLineRef.current.style.display = 'block'
@@ -229,6 +232,11 @@ export default function ParetoFrontPlot({
       hoverLabelRef.current.style.left = `${pixelX + 6}px`
       hoverLabelRef.current.style.top = `${chartTop + 4}px`
     }
+    if (hoverDotRef.current) {
+      hoverDotRef.current.style.display = 'block'
+      hoverDotRef.current.style.left = `${dotPixelX}px`
+      hoverDotRef.current.style.top = `${dotPixelY}px`
+    }
   }
 
   const hideHover = () => {
@@ -237,6 +245,9 @@ export default function ParetoFrontPlot({
     }
     if (hoverLabelRef.current) {
       hoverLabelRef.current.style.display = 'none'
+    }
+    if (hoverDotRef.current) {
+      hoverDotRef.current.style.display = 'none'
     }
   }
 
@@ -265,16 +276,32 @@ export default function ParetoFrontPlot({
       }
       const svgRect = svg.getBoundingClientRect()
       const containerRect = container.getBoundingClientRect()
+      const xAxisLine = container.querySelector(
+        '.recharts-xAxis .recharts-cartesian-axis-line'
+      ) as SVGLineElement | null
       const yAxisLine = container.querySelector(
         '.recharts-yAxis .recharts-cartesian-axis-line'
       ) as SVGLineElement | null
+      const xAxisX1 = parseFloat(xAxisLine?.getAttribute('x1') || '0')
+      const xAxisX2 = parseFloat(xAxisLine?.getAttribute('x2') || '0')
       const y1 = yAxisLine ? parseFloat(yAxisLine.getAttribute('y1') || '0') : 0
       const y2 = yAxisLine
         ? parseFloat(yAxisLine.getAttribute('y2') || '0')
         : svgRect.height
       const pixelX = clientX - containerRect.left
       const chartTop = svgRect.top - containerRect.top + Math.min(y1, y2)
-      showHover(pixelX, chartTop, point)
+
+      // Convert nearest point's data coordinates to pixel coordinates
+      const svgOffsetX = svgRect.left - containerRect.left
+      const svgOffsetY = svgRect.top - containerRect.top
+      const relPointX = (point[0] - xDomain[0]!) / (xDomain[1]! - xDomain[0]!)
+      const dotPixelX = svgOffsetX + xAxisX1 + relPointX * (xAxisX2 - xAxisX1)
+      const yTop = Math.min(y1, y2)
+      const yBottom = Math.max(y1, y2)
+      const relPointY = (point[1] - yDomain[0]!) / (yDomain[1]! - yDomain[0]!)
+      const dotPixelY = svgOffsetY + yBottom - relPointY * (yBottom - yTop)
+
+      showHover(pixelX, chartTop, point, dotPixelX, dotPixelY)
     })
   }
 
@@ -475,6 +502,21 @@ export default function ParetoFrontPlot({
         <div />
         <div />
       </div>
+      <div
+        ref={hoverDotRef}
+        style={{
+          display: 'none',
+          position: 'absolute',
+          width: 10,
+          height: 10,
+          borderRadius: '50%',
+          background: '#077ace',
+          border: '2px solid white',
+          boxShadow: '0 0 3px rgba(0,0,0,0.3)',
+          pointerEvents: 'none',
+          transform: 'translate(-50%, -50%)',
+        }}
+      />
       <div className={classes.tooltipContainer}>
         <div className={classes.tooltip}>
           {selected[0] !== undefined && selected[1] !== undefined ? (
