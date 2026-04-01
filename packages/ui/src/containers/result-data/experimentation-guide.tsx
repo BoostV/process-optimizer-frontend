@@ -5,10 +5,6 @@ import {
   selectIsInitializing,
   selectActiveVariableNames,
   selectDataPoints,
-  selectIsMultiObjective,
-  selectActiveScoreVariableLabels,
-  selectActiveVariablesFromExperiment,
-  selectExpectedMinimum,
 } from '@boostv/process-optimizer-frontend-core'
 import {
   Tooltip,
@@ -23,18 +19,12 @@ import useStyles from './experimentation-guide.style'
 import {
   InitializationProgress,
   NextExperiments,
-  SingleDataPoint,
   Suggestions,
   TitleCard,
 } from '@ui/features'
 import { CopySuggested } from '@ui/features/result-data/copy-suggested'
 import { ReactNode } from 'react'
-import { experimentResultSchema } from '@boostv/process-optimizer-frontend-core'
-import { OneDData } from '@boostv/process-optimizer-frontend-plots'
-import { z } from 'zod'
-import { isArray } from 'remeda'
 import _ from 'lodash'
-import { groupSinglePlots } from './experimentation-guide.utils'
 
 interface ResultDataProps {
   id?: string
@@ -74,41 +64,8 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
 
   const nextValues = useSelector(selectNextExperimentValues)
   const variableHeaders = useSelector(selectActiveVariableNames)
-  const scoreHeaders = useSelector(selectActiveScoreVariableLabels)
-  const expectedMinimum = useSelector(selectExpectedMinimum)
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
-  const isMultiObjective = useSelector(selectIsMultiObjective)
-  const activeVariables = selectActiveVariablesFromExperiment(experiment)
-
-  const mapOptionsLabels = (
-    plots: (string | OneDData)[]
-  ): (string | OneDData)[] =>
-    plots.map((plot, i) => {
-      if (typeof plot === 'string') return plot
-      if (plot.type !== 'options') {
-        return plot
-      }
-      const options = activeVariables[i]?.options
-      if (!options) {
-        return plot
-      }
-      return {
-        ...plot,
-        points: plot.points.map(p => ({
-          ...p,
-          x: typeof p.x === 'number' ? (options[p.x] ?? p.x) : p.x,
-        })),
-      }
-    })
-
-  const rawOneDGroups = groupSinglePlots(
-    experiment.results.plots,
-    activeVariables
-  )
-  const oneDPlots: (string | OneDData)[][] = isMultiObjective
-    ? rawOneDGroups.map(mapOptionsLabels)
-    : [mapOptionsLabels(rawOneDGroups[0] ?? [])]
 
   const defaultLoadingView = (
     <Stack direction="column" spacing={2} m={2}>
@@ -126,8 +83,9 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         ? loadingView
         : defaultLoadingView
 
-  const hasPlots = oneDPlots.length > 0
-  const hasExpectedMinimum = !!(expectedMinimum && expectedMinimum.length > 0)
+  const hasResults =
+    experiment.results.plots.length > 0 ||
+    (experiment.results.expectedMinimum?.length ?? 0) > 0
 
   const summary = isInitializing ? (
     <InitializationProgress
@@ -139,23 +97,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         })
       }
     />
-  ) : hasExpectedMinimum || hasPlots ? (
-    <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
-      <SingleDataPoint
-        title={isMultiObjective ? undefined : 'Predicted best solution'}
-        variableHeaders={variableHeaders}
-        rows={oneDPlots.map((plot, index) => ({
-          scoreHeader: `${scoreHeaders[index] ?? ''} (95% credible interval)`,
-          dataPoint: hasExpectedMinimum
-            ? convertExpectedMinimumToDisplayValue(expectedMinimum!)
-            : [],
-          plotData: plot,
-        }))}
-      />
-    </Box>
-  ) : loading ? (
-    <></>
-  ) : (
+  ) : hasResults || loading ? null : (
     <Box p={2}>Please run optimizer</Box>
   )
 
@@ -255,32 +197,4 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       {summary}
     </TitleCard>
   )
-}
-// value - 1.96 * std <-> value + 1.96 * std
-const convertScoreToString = (data: number[]) => {
-  const [value, stdDev] = data
-  if (value && stdDev) {
-    return `[${(-value - 1.96 * stdDev).toFixed(2)}, ${(
-      -value +
-      1.96 * stdDev
-    ).toFixed(2)}]`
-  }
-  return ''
-}
-
-const convertExpectedMinimumToDisplayValue = (
-  expectedMinimum: z.infer<typeof experimentResultSchema.shape.expectedMinimum>
-) => {
-  if (
-    expectedMinimum.length === 2 &&
-    isArray(expectedMinimum[0]) &&
-    isArray(expectedMinimum[1])
-  ) {
-    return [
-      expectedMinimum[0].concat(
-        convertScoreToString(expectedMinimum[1] as number[])
-      ),
-    ]
-  }
-  return expectedMinimum ?? []
 }
