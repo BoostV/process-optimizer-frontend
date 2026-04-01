@@ -119,97 +119,9 @@ export const Result = ({ id, title = 'Results', loading }: ResultProps) => {
     experiment.results.plots,
     activeVariables
   )
-  let oneDPlots: (string | OneDData)[][] = isMultiObjective
+  const oneDPlots: (string | OneDData)[][] = isMultiObjective
     ? rawOneDGroups.map(mapOptionsLabels)
     : [mapOptionsLabels(rawOneDGroups[0] ?? [])]
-
-  // TODO: multi Remove dummy data
-  oneDPlots = isMultiObjective
-    ? [
-        // cost objective
-        [
-          {
-            points: [
-              { x: 0, y: 10 },
-              { x: 1, y: 8 },
-              { x: 2, y: 5 },
-              { x: 3, y: 3 },
-              { x: 4, y: 2 },
-              { x: 5, y: 1.5 },
-            ],
-            type: 'numeric' as const,
-            referenceLineX: 4,
-          } satisfies OneDData,
-          {
-            points: [
-              { x: 0, y: 9 },
-              { x: 1, y: 7 },
-              { x: 2, y: 6 },
-              { x: 3, y: 4 },
-              { x: 4, y: 3.5 },
-              { x: 5, y: 3 },
-            ],
-            type: 'numeric' as const,
-            referenceLineX: 3,
-          } satisfies OneDData,
-        ],
-        // quality objective
-        [
-          {
-            points: [
-              { x: 0, y: 2 },
-              { x: 1, y: 4 },
-              { x: 2, y: 7 },
-              { x: 3, y: 8.5 },
-              { x: 4, y: 9 },
-              { x: 5, y: 9.2 },
-            ],
-            type: 'numeric' as const,
-            referenceLineX: 3,
-          } satisfies OneDData,
-          {
-            points: [
-              { x: 0, y: 3 },
-              { x: 1, y: 5 },
-              { x: 2, y: 6.5 },
-              { x: 3, y: 7 },
-              { x: 4, y: 8 },
-              { x: 5, y: 8.5 },
-            ],
-            type: 'numeric' as const,
-            referenceLineX: 4,
-          } satisfies OneDData,
-        ],
-      ]
-    : [
-        // single objective
-        [
-          {
-            points: [
-              { x: 0, y: 10 },
-              { x: 1, y: 8 },
-              { x: 2, y: 5 },
-              { x: 3, y: 3 },
-              { x: 4, y: 2 },
-              { x: 5, y: 1.5 },
-            ],
-            type: 'numeric' as const,
-            referenceLineX: 4,
-          } satisfies OneDData,
-          {
-            points: [
-              { x: 0, y: 9 },
-              { x: 1, y: 7 },
-              { x: 2, y: 6 },
-              { x: 3, y: 4 },
-              { x: 4, y: 3.5 },
-              { x: 5, y: 3 },
-            ],
-            type: 'numeric' as const,
-            referenceLineX: 3,
-          } satisfies OneDData,
-        ],
-      ]
 
   const hasPlots = oneDPlots.length > 0
   const hasExpectedMinimum = !!(expectedMinimum && expectedMinimum.length > 0)
