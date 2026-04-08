@@ -8,6 +8,9 @@ export const useStyles = makeStyles()(() => ({
     paddingLeft: 16,
     paddingRight: 16,
   },
+  paretoContainer: {
+    overflowX: 'auto',
+  },
 }))
 
 export default useStyles

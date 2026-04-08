@@ -28,6 +28,7 @@ type ResultProps = {
   title?: string
   id?: string
   loading?: boolean
+  loadingMode?: 'skeleton' | 'overlay' | 'custom'
 }
 
 // cast the dummy data. Real data will be zod parsed
@@ -75,7 +76,12 @@ const convertExpectedMinimumToDisplayValue = (
 }
 
 // TODO: multi handle loading
-export const Result = ({ id, title = 'Results', loading }: ResultProps) => {
+export const Result = ({
+  id,
+  title = 'Results',
+  loading,
+  loadingMode,
+}: ResultProps) => {
   const { classes } = useStyles()
 
   const {
@@ -133,7 +139,13 @@ export const Result = ({ id, title = 'Results', loading }: ResultProps) => {
   }
 
   return (
-    <TitleCard id={id} title={title} padding={0} loading={loading}>
+    <TitleCard
+      id={id}
+      title={title}
+      padding={0}
+      loading={loading}
+      loadingMode={loadingMode}
+    >
       {showSingleDataPoint && (
         <Box className={classes.container}>
           <SingleDataPoint
@@ -150,7 +162,7 @@ export const Result = ({ id, title = 'Results', loading }: ResultProps) => {
         </Box>
       )}
       {isMultiObjective && (
-        <Box p={2}>
+        <Box p={2} className={classes.paretoContainer}>
           <ParetoFrontPlot
             onSelectIndex={index => setSelectedParetoPoint(index)}
             indexOfSelected={selectedParetoPoint ?? pareto.best_idx}
