@@ -82,6 +82,12 @@ export const selectActiveVariablesFromExperiment = (
   return valueVars.concat(catVars)
 }
 
+export const selectPlotsFromExperiment = (experiment: ExperimentType) =>
+  experiment.results.plots
+
+export const selectPlots = (state: State) =>
+  selectPlotsFromExperiment(selectExperiment(state))
+
 export const selectSumConstraint = (state: State) =>
   selectSumConstraintFromExperiment(selectExperiment(state))
 
