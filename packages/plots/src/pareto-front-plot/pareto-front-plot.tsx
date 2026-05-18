@@ -338,7 +338,7 @@ export default function ParetoFrontPlot({
           width={600}
           height={400}
           data={chartData}
-          margin={{ top: 0, right: 0, bottom: 10, left: 4 }}
+          margin={{ top: 32, right: 0, bottom: 10, left: 4 }}
         >
           <XAxis
             type="number"
@@ -527,8 +527,8 @@ export default function ParetoFrontPlot({
               {variablesAtSelected?.map((v, i) => (
                 <div key={i} className={classes.selectedPointVariable}>
                   {variableNames[i]
-                    ? `${variableNames[i]}: ${typeof v === 'number' ? v.toFixed(8) : v}`
-                    : `Variable ${i + 1}: ${typeof v === 'number' ? v.toFixed(8) : v}`}
+                    ? `${variableNames[i]}: ${typeof v === 'number' ? v.toFixed(4) : v}`
+                    : `Variable ${i + 1}: ${typeof v === 'number' ? v.toFixed(4) : v}`}
                 </div>
               ))}
             </>
