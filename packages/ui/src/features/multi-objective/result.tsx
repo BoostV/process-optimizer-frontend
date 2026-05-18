@@ -130,6 +130,10 @@ export const Result = ({
     plot => plot.id.includes('pareto') && typeof plot.plot === 'string'
   )
   const pareto = JSON.parse(paretoRaw?.plot ?? '{}')
+
+  if (Object.keys(pareto).length === 0) {
+    return null
+  }
   return (
     <TitleCard
       id={id}
