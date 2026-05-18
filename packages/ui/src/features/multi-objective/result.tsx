@@ -102,6 +102,11 @@ export const Result = ({
     null
   )
 
+  const onSetSelectedParetoPoint = (index: number) => {
+    setSelectedParetoPoint(index)
+    // TODO: multi - dispatch based onpareto point selection change
+  }
+
   const mapOptionsLabels = (
     plots: (string | OneDData)[]
   ): (string | OneDData)[] =>
@@ -251,7 +256,7 @@ export const Result = ({
       {isMultiObjective && (
         <Box p={2} className={classes.paretoContainer}>
           <ParetoFrontPlot
-            onSelectIndex={index => setSelectedParetoPoint(index)}
+            onSelectIndex={onSetSelectedParetoPoint}
             indexOfSelected={selectedParetoPoint ?? pareto.best_idx}
             plot={pareto}
             dataPoints={dataPoints}
@@ -265,7 +270,7 @@ export const Result = ({
                 Reset to default
               </Button>
             }
-            onResetToDefault={() => setSelectedParetoPoint(pareto.best_idx)}
+            onResetToDefault={() => onSetSelectedParetoPoint(pareto.best_idx)}
           />
         </Box>
       )}
