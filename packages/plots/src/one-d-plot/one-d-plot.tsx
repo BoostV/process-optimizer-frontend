@@ -105,11 +105,13 @@ export const OneDPlot = ({
               width={yAxisWidth}
               tick={{ fontSize: 10 }}
               tickFormatter={formatValue}
+              hide={type === 'score'}
             />
             <Tooltip
               formatter={formatTooltip}
               labelFormatter={formatValue}
               contentStyle={{ background: 'white' }}
+              itemStyle={type === 'score' ? { display: 'none' } : undefined}
             />
             <Area
               type="monotone"

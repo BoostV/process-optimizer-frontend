@@ -122,10 +122,6 @@ export const Result = ({
   const showSingleDataPoint =
     !isInitializing && (hasExpectedMinimum || hasPlots)
 
-  if (!showSingleDataPoint && !isMultiObjective) {
-    return null
-  }
-
   const paretoRaw = plots.find(
     plot => plot.id.includes('pareto') && typeof plot.plot === 'string'
   )
@@ -142,41 +138,49 @@ export const Result = ({
       loading={loading}
       loadingMode={loadingMode}
     >
-      {showSingleDataPoint && (
-        <Box className={classes.container}>
-          <SingleDataPoint
-            title={isMultiObjective ? undefined : 'Predicted best solution'}
-            variableHeaders={variableHeaders}
-            rows={oneDPlots.map((plot, index) => ({
-              scoreHeader: `${scoreHeaders[index] ?? ''} (95% credible interval)`,
-              dataPoint: hasExpectedMinimum
-                ? convertExpectedMinimumToDisplayValue(expectedMinimum!)
-                : [],
-              plotData: plot,
-            }))}
-          />
-        </Box>
+      {!showSingleDataPoint && (
+        <Box className={classes.noResults}>No results to show yet</Box>
       )}
-      {isMultiObjective && (
-        <Box p={2} className={classes.paretoContainer}>
-          <ParetoFrontPlot
-            onSelectIndex={onSetSelectedParetoPoint}
-            indexOfSelected={selectedParetoPoint ?? pareto.best_idx}
-            plot={pareto}
-            dataPoints={dataPoints}
-            fitToFrontButton={
-              <Button variant="outlined" size="small">
-                Toggle front fit
-              </Button>
-            }
-            resetToDefaultButton={
-              <Button variant="outlined" size="small">
-                Reset to default
-              </Button>
-            }
-            onResetToDefault={() => onSetSelectedParetoPoint(pareto.best_idx)}
-          />
-        </Box>
+      {showSingleDataPoint && (
+        <>
+          <Box className={classes.container}>
+            <SingleDataPoint
+              title={isMultiObjective ? undefined : 'Predicted best solution'}
+              variableHeaders={variableHeaders}
+              rows={oneDPlots.map((plot, index) => ({
+                scoreHeader: `${scoreHeaders[index] ?? ''} (95% credible interval)`,
+                dataPoint: hasExpectedMinimum
+                  ? convertExpectedMinimumToDisplayValue(expectedMinimum!)
+                  : [],
+                plotData: plot,
+              }))}
+            />
+          </Box>
+
+          {isMultiObjective && (
+            <Box p={2} className={classes.paretoContainer}>
+              <ParetoFrontPlot
+                onSelectIndex={onSetSelectedParetoPoint}
+                indexOfSelected={selectedParetoPoint ?? pareto.best_idx}
+                plot={pareto}
+                dataPoints={dataPoints}
+                fitToFrontButton={
+                  <Button variant="outlined" size="small">
+                    Toggle front fit
+                  </Button>
+                }
+                resetToDefaultButton={
+                  <Button variant="outlined" size="small">
+                    Reset to default
+                  </Button>
+                }
+                onResetToDefault={() =>
+                  onSetSelectedParetoPoint(pareto.best_idx)
+                }
+              />
+            </Box>
+          )}
+        </>
       )}
     </TitleCard>
   )
