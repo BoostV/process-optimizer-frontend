@@ -11,6 +11,8 @@ import {
   ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
 
+import multiFilled from '@ui/testing/sample-data/multi-new-first-filled.json'
+import multiFilledRun from '@ui/testing/sample-data/multi-new-first-filled-run.json'
 import catapult from '@ui/testing/sample-data/catapult.json'
 import catapultJsonPlot from '@ui/testing/sample-data/catapult-json-plot.json'
 import catapultMulti from '@ui/testing/sample-data/catapult-multi.json'
@@ -41,6 +43,8 @@ const Experiment = () => {
   }
   return (
     <div>
+      <button onClick={() => loadSample(multiFilled)}>Load Multi test</button>
+      <button onClick={() => loadSample(multiFilledRun)}>Load Multi run</button>
       <button onClick={() => loadSample(catapult)}>Load Catapult</button>
       <button onClick={() => loadSample(catapultJsonPlot)}>
         Load Catapult JSON plots
