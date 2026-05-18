@@ -56,7 +56,7 @@ export const groupSinglePlots = (
   plots: PlotEntry[],
   activeVariables: ActiveVariable[]
 ): (string | OneDData)[][] => {
-  const regex = /^single_(\d+)_(\d+)$/
+  const regex = /^objective_(\d+)_(\d+)$/
   const grouped = new Map<
     number,
     Array<{ m: number; data: string | OneDData }>

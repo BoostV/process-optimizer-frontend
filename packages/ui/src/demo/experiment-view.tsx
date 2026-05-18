@@ -16,7 +16,7 @@ import catapultJsonPlot from '@ui/testing/sample-data/catapult-json-plot.json'
 import catapultMulti from '@ui/testing/sample-data/catapult-multi.json'
 import cake from '@ui/testing/sample-data/cake.json'
 import cakeMulti from '@ui/testing/sample-data/cake-multi.json'
-import { DataPoints, ExperimentationGuide, Plots } from '..'
+import { DataPoints, ExperimentationGuide, Plots, Result } from '..'
 import { OptimizerConfigurator } from '../features/experiment'
 import { InputModel } from '../features/input-model'
 import { Switch } from '@mui/material'
@@ -157,6 +157,7 @@ const Experiment = () => {
             debug={false}
             config={experiment.optimizerConfig}
           />
+          <Result id={experiment.id} />
           <Plots experiment={experiment} />
         </Stack>
         <Stack spacing={2} direction="row"></Stack>

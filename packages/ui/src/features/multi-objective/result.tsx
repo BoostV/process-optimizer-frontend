@@ -4,7 +4,6 @@ import {
 } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '../core'
 import { SingleDataPoint } from '../result-data/single-data-point'
-import { paretoJson } from './demo-data'
 import {
   selectActiveDataPoints,
   selectActiveVariableNames,
@@ -30,21 +29,6 @@ type ResultProps = {
   id?: string
   loading?: boolean
   loadingMode?: 'skeleton' | 'overlay' | 'custom'
-}
-
-// cast the dummy data. Real data will be zod parsed
-const pareto = paretoJson as unknown as {
-  front_x_data: number[][]
-  front_y_data: [number, number][]
-  obj1_error: [number, number, number][]
-  obj2_error: [number, number, number][]
-  obj1_1D_data: [[[number], [number], [number], number]]
-  obj2_1D_data: [[[number], [number], [number], number]]
-  obj1_mean: number
-  obj1_std: number
-  obj2_mean: number
-  obj2_std: number
-  best_idx: number
 }
 
 // value - 1.96 * std <-> value + 1.96 * std
@@ -133,94 +117,6 @@ export const Result = ({
     ? rawOneDGroups.map(mapOptionsLabels)
     : [mapOptionsLabels(rawOneDGroups[0] ?? [])]
 
-  // TODO: multi Remove dummy data
-  // oneDPlots = isMultiObjective
-  //   ? [
-  //       // cost objective
-  //       [
-  //         {
-  //           points: [
-  //             { x: 0, y: 10 },
-  //             { x: 1, y: 8 },
-  //             { x: 2, y: 5 },
-  //             { x: 3, y: 3 },
-  //             { x: 4, y: 2 },
-  //             { x: 5, y: 1.5 },
-  //           ],
-  //           type: 'numeric' as const,
-  //           referenceLineX: 4,
-  //         } satisfies OneDData,
-  //         {
-  //           points: [
-  //             { x: 0, y: 9 },
-  //             { x: 1, y: 7 },
-  //             { x: 2, y: 6 },
-  //             { x: 3, y: 4 },
-  //             { x: 4, y: 3.5 },
-  //             { x: 5, y: 3 },
-  //           ],
-  //           type: 'numeric' as const,
-  //           referenceLineX: 3,
-  //         } satisfies OneDData,
-  //       ],
-  //       // quality objective
-  //       [
-  //         {
-  //           points: [
-  //             { x: 0, y: 2 },
-  //             { x: 1, y: 4 },
-  //             { x: 2, y: 7 },
-  //             { x: 3, y: 8.5 },
-  //             { x: 4, y: 9 },
-  //             { x: 5, y: 9.2 },
-  //           ],
-  //           type: 'numeric' as const,
-  //           referenceLineX: 3,
-  //         } satisfies OneDData,
-  //         {
-  //           points: [
-  //             { x: 0, y: 3 },
-  //             { x: 1, y: 5 },
-  //             { x: 2, y: 6.5 },
-  //             { x: 3, y: 7 },
-  //             { x: 4, y: 8 },
-  //             { x: 5, y: 8.5 },
-  //           ],
-  //           type: 'numeric' as const,
-  //           referenceLineX: 4,
-  //         } satisfies OneDData,
-  //       ],
-  //     ]
-  //   : [
-  //       // single objective
-  //       [
-  //         {
-  //           points: [
-  //             { x: 0, y: 10 },
-  //             { x: 1, y: 8 },
-  //             { x: 2, y: 5 },
-  //             { x: 3, y: 3 },
-  //             { x: 4, y: 2 },
-  //             { x: 5, y: 1.5 },
-  //           ],
-  //           type: 'numeric' as const,
-  //           referenceLineX: 4,
-  //         } satisfies OneDData,
-  //         {
-  //           points: [
-  //             { x: 0, y: 9 },
-  //             { x: 1, y: 7 },
-  //             { x: 2, y: 6 },
-  //             { x: 3, y: 4 },
-  //             { x: 4, y: 3.5 },
-  //             { x: 5, y: 3 },
-  //           ],
-  //           type: 'numeric' as const,
-  //           referenceLineX: 3,
-  //         } satisfies OneDData,
-  //       ],
-  //     ]
-
   const hasPlots = oneDPlots.length > 0
   const hasExpectedMinimum = !!(expectedMinimum && expectedMinimum.length > 0)
   const showSingleDataPoint =
@@ -230,6 +126,10 @@ export const Result = ({
     return null
   }
 
+  const paretoRaw = plots.find(
+    plot => plot.id.includes('pareto') && typeof plot.plot === 'string'
+  )
+  const pareto = JSON.parse(paretoRaw?.plot ?? '{}')
   return (
     <TitleCard
       id={id}
