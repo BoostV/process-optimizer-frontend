@@ -111,18 +111,20 @@ export const OneDPlot = ({
               tickFormatter={formatValue}
               hide={type === 'score'}
             />
-            <Tooltip
-              formatter={formatTooltip}
-              labelFormatter={formatTooltipLabel}
-              contentStyle={{ background: 'white' }}
-              itemStyle={type === 'score' ? { display: 'none' } : undefined}
-            />
+            {type !== 'score' && (
+              <Tooltip
+                formatter={formatTooltip}
+                labelFormatter={formatTooltipLabel}
+                contentStyle={{ background: 'white' }}
+              />
+            )}
             <Area
               type="monotone"
               dataKey="y"
               stroke="none"
               fillOpacity={1}
               fill={fillColor}
+              activeDot={type === 'score' ? false : undefined}
             />
             {resolvedReferenceLineX !== undefined && (
               <ReferenceLine
