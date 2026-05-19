@@ -10,6 +10,10 @@ export const useStyles = makeStyles()(() => ({
   cell: {
     minWidth: 48,
     paddingRight: 16,
+    position: 'relative',
+    '&:hover': {
+      zIndex: 10,
+    },
   },
   title: {
     fontWeight: 'bold',
