@@ -386,7 +386,7 @@ export default function ParetoFrontPlot({
                 const width = text.length * 7 + padding * 2
                 const height = fontSize + padding * 2
                 const rectX = x - width / 2
-                const rectY = y - 10 - height
+                const rectY = y - 5 - height
 
                 return (
                   <g>

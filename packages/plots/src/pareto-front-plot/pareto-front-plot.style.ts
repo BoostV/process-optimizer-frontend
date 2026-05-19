@@ -1,6 +1,6 @@
 import { makeStyles } from 'tss-react/mui'
 
-export const useStyles = makeStyles()(() => ({
+export const useStyles = makeStyles()(theme => ({
   container: {
     display: 'flex',
     height: '600px',
@@ -18,9 +18,10 @@ export const useStyles = makeStyles()(() => ({
     paddingLeft: '8px',
   },
   tooltip: {
+    background: 'white',
+    border: `1px solid ${theme.palette.primary.main}`,
     padding: '16px',
     borderRadius: '4px',
-    background: '#eee',
     width: 'fit-content',
     whiteSpace: 'nowrap',
   },
