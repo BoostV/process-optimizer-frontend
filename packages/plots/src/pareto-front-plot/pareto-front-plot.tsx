@@ -42,6 +42,9 @@ type Props = {
   fitToFrontButton?: ReactNode
   resetToDefaultButton?: ReactNode
   onResetToDefault?: () => void
+  styles?: {
+    legendBorderColor?: string
+  }
 }
 
 const defaultFitBtn = <button>Toggle to fit front</button>
@@ -55,6 +58,7 @@ export default function ParetoFrontPlot({
   fitToFrontButton = defaultFitBtn,
   resetToDefaultButton = defaultResetBtn,
   onResetToDefault,
+  styles,
 }: Props) {
   const { classes } = useStyles()
   const [fitToFront, setFitToFront] = useState(false)
@@ -518,7 +522,14 @@ export default function ParetoFrontPlot({
         }}
       />
       <div className={classes.tooltipContainer}>
-        <div className={classes.tooltip}>
+        <div
+          className={classes.tooltip}
+          style={
+            styles?.legendBorderColor
+              ? { borderColor: styles.legendBorderColor }
+              : undefined
+          }
+        >
           {selected[0] !== undefined && selected[1] !== undefined ? (
             <>
               <div>

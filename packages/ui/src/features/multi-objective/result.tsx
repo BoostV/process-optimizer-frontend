@@ -29,6 +29,11 @@ type ResultProps = {
   id?: string
   loading?: boolean
   loadingMode?: 'skeleton' | 'overlay' | 'custom'
+  styles?: {
+    pareto?: {
+      legendBorderColor?: string
+    }
+  }
 }
 
 // value - 1.96 * std <-> value + 1.96 * std
@@ -66,6 +71,7 @@ export const Result = ({
   title = 'Results',
   loading,
   loadingMode,
+  styles,
 }: ResultProps) => {
   const { classes } = useStyles()
 
@@ -177,6 +183,7 @@ export const Result = ({
                 onResetToDefault={() =>
                   onSetSelectedParetoPoint(pareto.best_idx)
                 }
+                styles={styles?.pareto}
               />
             </Box>
           )}
