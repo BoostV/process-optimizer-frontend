@@ -42,6 +42,10 @@ export const OneDPlot = ({
     Array.isArray(value)
       ? value.map(v => v.toFixed(2)).join(', ')
       : formatValue(value)
+  const formatTooltipLabel = (value: number | string) =>
+    resolvedReferenceLineX !== undefined && value === resolvedReferenceLineX
+      ? `${formatValue(value)} (best)`
+      : formatValue(value)
 
   // Calculate Y-axis width based on the maximum absolute Y value to ensure labels fit
   const yAxisWidth = (() => {
@@ -77,7 +81,7 @@ export const OneDPlot = ({
             />
             <Tooltip
               formatter={formatTooltip}
-              labelFormatter={formatValue}
+              labelFormatter={formatTooltipLabel}
               contentStyle={{ background: 'white' }}
             />
             <Bar dataKey="y" fill={fillColor} />
@@ -109,7 +113,7 @@ export const OneDPlot = ({
             />
             <Tooltip
               formatter={formatTooltip}
-              labelFormatter={formatValue}
+              labelFormatter={formatTooltipLabel}
               contentStyle={{ background: 'white' }}
               itemStyle={type === 'score' ? { display: 'none' } : undefined}
             />
