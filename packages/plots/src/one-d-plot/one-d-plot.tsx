@@ -18,6 +18,7 @@ export type OneDData = {
   }[]
   type?: CombinedVariableInputType | 'score'
   referenceLineX?: number
+  xDomain?: [number, number]
 }
 
 type OneDPlotProps = {
@@ -31,7 +32,7 @@ export const OneDPlot = ({
   width,
   maxWidth,
   height,
-  data: { points, type = 'numeric', referenceLineX },
+  data: { points, type = 'numeric', referenceLineX, xDomain },
 }: OneDPlotProps) => {
   const fillColor = type === 'score' ? '#76c7c0' : '#a3d764'
   const resolvedReferenceLineX =
@@ -103,6 +104,13 @@ export const OneDPlot = ({
               dataKey="x"
               tick={{ fontSize: 10 }}
               tickFormatter={formatValue}
+              {...(xDomain
+                ? {
+                    type: 'number' as const,
+                    domain: xDomain,
+                    allowDataOverflow: true,
+                  }
+                : {})}
             />
             <YAxis
               dataKey="y"

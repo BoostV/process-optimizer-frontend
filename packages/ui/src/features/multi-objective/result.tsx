@@ -153,13 +153,32 @@ export const Result = ({
             <SingleDataPoint
               title={isMultiObjective ? undefined : 'Predicted best solution'}
               variableHeaders={variableHeaders}
-              rows={oneDPlots.map((plot, index) => ({
-                scoreHeader: `${scoreHeaders[index] ?? ''} (95% credible interval)`,
-                dataPoint: hasExpectedMinimum
-                  ? convertExpectedMinimumToDisplayValue(expectedMinimum!)
-                  : [],
-                plotData: plot,
-              }))}
+              rows={oneDPlots.map((plot, index) => {
+                const header = scoreHeaders[index] ?? ''
+                const isCost = header.toLowerCase().includes('quality')
+                const plotData: (string | OneDData)[] = isCost
+                  ? plot.map(p => {
+                      if (typeof p === 'string' || p.type !== 'score') {
+                        return p
+                      }
+                      const xs = p.points
+                        .map(pt => (typeof pt.x === 'number' ? pt.x : NaN))
+                        .filter(n => !Number.isNaN(n))
+                      const maxX = xs.length ? Math.max(...xs) : 0
+                      return {
+                        ...p,
+                        xDomain: [0, Math.max(5, maxX)] as [number, number],
+                      }
+                    })
+                  : plot
+                return {
+                  scoreHeader: `${header} (95% credible interval)`,
+                  dataPoint: hasExpectedMinimum
+                    ? convertExpectedMinimumToDisplayValue(expectedMinimum!)
+                    : [],
+                  plotData,
+                }
+              })}
             />
           </Box>
 
