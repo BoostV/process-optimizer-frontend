@@ -155,8 +155,8 @@ export const Result = ({
               variableHeaders={variableHeaders}
               rows={oneDPlots.map((plot, index) => {
                 const header = scoreHeaders[index] ?? ''
-                const isCost = header.toLowerCase().includes('quality')
-                const plotData: (string | OneDData)[] = isCost
+                const isQuality = header.toLowerCase().includes('quality')
+                const plotData: (string | OneDData)[] = isQuality
                   ? plot.map(p => {
                       if (typeof p === 'string' || p.type !== 'score') {
                         return p
