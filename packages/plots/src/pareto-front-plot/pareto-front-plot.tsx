@@ -575,14 +575,14 @@ export default function ParetoFrontPlot({
               className={classes.legendColor}
               style={{ background: '#f6c47e', opacity: 0.6 }}
             />
-            <span>Uncertainty (quality)</span>
+            <span>Uncertainty (cost)</span>
           </div>
           <div className={classes.legendItem}>
             <div
               className={classes.legendColorLine}
               style={{ background: 'green' }}
             />
-            <span>Uncertainty (cost)</span>
+            <span>Uncertainty (quality)</span>
           </div>
         </div>
         {(fitToFrontButton || resetToDefaultButton) && (
