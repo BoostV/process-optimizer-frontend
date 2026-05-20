@@ -136,6 +136,33 @@ export const Result = ({
   if (Object.keys(pareto).length === 0) {
     return null
   }
+
+  const costDomain: [number, number] | undefined = (() => {
+    const frontPairs = pareto?.front_y_data
+    const errs = pareto?.obj2_error
+    if (!Array.isArray(frontPairs)) {
+      return undefined
+    }
+    const getCostErr = (i: number) => {
+      const e = Array.isArray(errs) ? errs[i] : undefined
+      if (Array.isArray(e)) {
+        return Number(e[0]) || 0
+      }
+      return Number(e) || 0
+    }
+    const frontLower = frontPairs.map(
+      (p: number[], i: number) => (p[1] ?? 0) - getCostErr(i)
+    )
+    const frontUpper = frontPairs.map(
+      (p: number[], i: number) => (p[1] ?? 0) + getCostErr(i)
+    )
+    const all = [...frontLower, ...frontUpper]
+    if (all.length === 0) {
+      return undefined
+    }
+    return [Math.min(...all), Math.max(...all)]
+  })()
+
   return (
     <TitleCard
       id={id}
@@ -155,9 +182,12 @@ export const Result = ({
               variableHeaders={variableHeaders}
               rows={oneDPlots.map((plot, index) => {
                 const header = scoreHeaders[index] ?? ''
-                const isQuality = header.toLowerCase().includes('quality')
-                const plotData: (string | OneDData)[] = isQuality
-                  ? plot.map(p => {
+                const lower = header.toLowerCase()
+                const isQuality = lower.includes('quality')
+                const isCost = lower.includes('cost')
+                const plotData: (string | OneDData)[] = (() => {
+                  if (isQuality) {
+                    return plot.map(p => {
                       if (typeof p === 'string' || p.type !== 'score') {
                         return p
                       }
@@ -170,7 +200,17 @@ export const Result = ({
                         xDomain: [0, Math.max(5, maxX)] as [number, number],
                       }
                     })
-                  : plot
+                  }
+                  if (isCost && costDomain) {
+                    return plot.map(p => {
+                      if (typeof p === 'string' || p.type !== 'score') {
+                        return p
+                      }
+                      return { ...p, xDomain: costDomain }
+                    })
+                  }
+                  return plot
+                })()
                 return {
                   scoreHeader: `${header} (95% credible interval)`,
                   dataPoint: hasExpectedMinimum
