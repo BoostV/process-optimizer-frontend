@@ -395,11 +395,11 @@ export const experimentReducer = produce(
         if (state.info.version !== action.payload.experimentVersion) {
           return state
         }
-        state.lastEvaluationHash = md5(
-          JSON.stringify(createFetchExperimentResultRequest(state))
-        )
         state.results = experimentSchema.shape.results.parse(
           action.payload.result
+        )
+        state.lastEvaluationHash = md5(
+          JSON.stringify(createFetchExperimentResultRequest(state))
         )
         break
       case 'setSelectedParetoPoint':

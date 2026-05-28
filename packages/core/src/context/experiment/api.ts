@@ -1,5 +1,6 @@
 import {
   DefaultApi,
+  ExperimentExtrasSelectedPointInner,
   RunOptimizerRequest,
 } from '@boostv/process-optimizer-frontend-api'
 import {
@@ -18,6 +19,11 @@ export const createFetchExperimentResultRequest = (
   const extras = experiment.extras || {}
   const space = calculateSpace(experiment)
 
+  const selectedPoint = experiment.extras.selectedPoint as
+    | Array<number | string>
+    | undefined
+  const previousPickled = experiment.results.pickled || undefined
+
   const request: RunOptimizerRequest = {
     experiment: {
       data: calculateData(
@@ -30,6 +36,13 @@ export const createFetchExperimentResultRequest = (
         ...extras,
         experimentSuggestionCount:
           selectCalculatedSuggestionCountFromExperiment(experiment),
+        ...(selectedPoint
+          ? {
+              selectedPoint:
+                selectedPoint as unknown as ExperimentExtrasSelectedPointInner[],
+            }
+          : {}),
+        ...(previousPickled ? { pickled: previousPickled } : {}),
       },
       optimizerConfig: {
         acqFunc: cfg.acqFunc,
@@ -59,6 +72,6 @@ export const fetchExperimentResult = async (
     next: result.result?.next ?? [],
     pickled: result.result?.pickled ?? '',
     expectedMinimum: result.result?.expectedMinimum ?? [],
-    extras: result.result?.extras ?? {},
+    extras: { ...(result.result?.extras ?? {}) },
   })
 }

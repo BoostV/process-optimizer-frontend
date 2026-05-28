@@ -121,7 +121,7 @@ describe('experiment reducer', () => {
       const payload: ExperimentType = {
         id: '5678',
         changedSinceLastEvaluation: false,
-        lastEvaluationHash: '5b4247caaa4e9a5a0c519a9017ccc547',
+        lastEvaluationHash: '28b40edcdad6b7b8a060891db9e7e733',
         info: {
           swVersion: versionInfo.version,
           name: 'Not cake',
