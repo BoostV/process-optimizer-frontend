@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { initialState, State } from '@core/context/experiment/store'
 import {
   selectActiveScoreVariableLabels,
+  selectActiveScoreVariableNames,
   selectActiveVariablesFromExperiment,
   selectCalculatedSuggestionCount,
   selectId,
@@ -210,6 +211,46 @@ describe('Experiment selectors', () => {
 
     it('should return label for initial state', () => {
       expect(selectActiveScoreVariableLabels(state)).toEqual(['Quality (0-5)'])
+    })
+  })
+
+  describe('selectActiveScoreVariableNames', () => {
+    it('returns names of enabled score variables in order', () => {
+      state.experiment.scoreVariables = [
+        {
+          name: 'quality',
+          label: 'Quality (0-5)',
+          description: '',
+          enabled: true,
+        },
+        { name: 'cost', label: 'Cost', description: '', enabled: false },
+      ]
+      expect(selectActiveScoreVariableNames(state)).toEqual(['quality'])
+    })
+
+    it('returns all names when all score variables are enabled', () => {
+      state.experiment.scoreVariables = [
+        {
+          name: 'quality',
+          label: 'Quality (0-5)',
+          description: '',
+          enabled: true,
+        },
+        { name: 'cost', label: 'Cost', description: '', enabled: true },
+      ]
+      expect(selectActiveScoreVariableNames(state)).toEqual(['quality', 'cost'])
+    })
+
+    it('returns empty array when no score variables are enabled', () => {
+      state.experiment.scoreVariables = [
+        {
+          name: 'quality',
+          label: 'Quality (0-5)',
+          description: '',
+          enabled: false,
+        },
+      ]
+      expect(selectActiveScoreVariableNames(state)).toEqual([])
     })
   })
 

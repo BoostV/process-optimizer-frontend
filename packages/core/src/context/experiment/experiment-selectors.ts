@@ -51,6 +51,11 @@ export const selectActiveScoreVariableLabels = (state: State): string[] => {
   return experiment.scoreVariables.filter(s => s.enabled).map(s => s.label)
 }
 
+export const selectActiveScoreVariableNames = (state: State): string[] => {
+  const experiment = selectExperiment(state)
+  return experiment.scoreVariables.filter(s => s.enabled).map(s => s.name)
+}
+
 export const selectActiveVariableNames = (state: State): string[] => {
   const experiment = selectExperiment(state)
   return experiment.valueVariables
