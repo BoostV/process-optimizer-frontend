@@ -302,6 +302,66 @@ export default function ParetoFrontPlot({
     )
   }
 
+  // Smooth filled band for the quality-axis uncertainty. Drawn as a closed
+  // SVG <path> via Customized so we can use cubic Bezier interpolation
+  // between adjacent front points — softer than Recharts' polyline join.
+  const QualityUncertaintyBand = () => {
+    const plotArea = usePlotArea()
+    if (!plotArea || plotArea.width === 0 || plotArea.height === 0) return null
+    if (xLowerBoundData.length === 0) return null
+    const xToPx = (x: number) =>
+      plotArea.x +
+      ((x - xDomain[0]!) / (xDomain[1]! - xDomain[0]!)) * plotArea.width
+    const yToPx = (y: number) =>
+      plotArea.y +
+      (1 - (y - yDomain[0]!) / (yDomain[1]! - yDomain[0]!)) * plotArea.height
+
+    // Build a single closed contour: upper bounds left-to-right, then lower
+    // bounds right-to-left. Connecting the two creates a filled band.
+    const contour: { x: number; y: number }[] = []
+    for (let i = 0; i < xUpperBoundData.length; i++) {
+      contour.push({
+        x: xToPx(xUpperBoundData[i]!.x),
+        y: yToPx(xUpperBoundData[i]!.y),
+      })
+    }
+    for (let i = xLowerBoundData.length - 1; i >= 0; i--) {
+      contour.push({
+        x: xToPx(xLowerBoundData[i]!.x),
+        y: yToPx(xLowerBoundData[i]!.y),
+      })
+    }
+
+    // Build a smoothed path using Catmull-Rom-style cubic Beziers. For each
+    // pair (P0, P1), use control points derived from (P-1, P0, P1, P2).
+    const tension = 0.5 // 0 = sharp corners, 1 = very loose; 0.5 is a sweet spot.
+    const segments: string[] = []
+    for (let i = 0; i < contour.length; i++) {
+      const p0 = contour[(i - 1 + contour.length) % contour.length]!
+      const p1 = contour[i]!
+      const p2 = contour[(i + 1) % contour.length]!
+      const p3 = contour[(i + 2) % contour.length]!
+      if (i === 0) {
+        segments.push(`M ${p1.x} ${p1.y}`)
+      }
+      const cp1x = p1.x + ((p2.x - p0.x) * tension) / 6
+      const cp1y = p1.y + ((p2.y - p0.y) * tension) / 6
+      const cp2x = p2.x - ((p3.x - p1.x) * tension) / 6
+      const cp2y = p2.y - ((p3.y - p1.y) * tension) / 6
+      segments.push(`C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`)
+    }
+    segments.push('Z')
+
+    return (
+      <path
+        d={segments.join(' ')}
+        fill="rgba(144, 194, 144, 0.3)"
+        stroke="none"
+        pointerEvents="none"
+      />
+    )
+  }
+
   // Renders the spaghetti samples as thin polylines.
   const SpaghettiLines = () => {
     const plotArea = usePlotArea()
@@ -540,15 +600,18 @@ export default function ParetoFrontPlot({
           />
           {/* Uncertainty visualization — switches with visualizationMode */}
           {visualizationMode === 'band' && (
-            <Area
-              type="linear"
-              dataKey="uncertaintyY"
-              fill="#f6c47e"
-              fillOpacity={0.4}
-              stroke="none"
-              name="UncertaintyY"
-              isAnimationActive={false}
-            />
+            <>
+              <Customized component={QualityUncertaintyBand} />
+              <Area
+                type="monotone"
+                dataKey="uncertaintyY"
+                fill="#f6c47e"
+                fillOpacity={0.3}
+                stroke="none"
+                name="UncertaintyY"
+                isAnimationActive={false}
+              />
+            </>
           )}
           {visualizationMode === 'ellipses' && (
             <Customized component={ConfidenceEllipses} />
@@ -667,34 +730,6 @@ export default function ParetoFrontPlot({
             isAnimationActive={false}
             onClick={e => console.log(e)}
           ></Line>
-          {visualizationMode === 'band' && (
-            <Line
-              type="linear"
-              data={xLowerBoundData}
-              dataKey="y"
-              stroke="green"
-              strokeWidth={1}
-              dot={false}
-              activeDot={false}
-              name="Uncertainty X Lower Bound"
-              isAnimationActive={false}
-              hide={false}
-            />
-          )}
-          {visualizationMode === 'band' && (
-            <Line
-              type="linear"
-              data={xUpperBoundData}
-              dataKey="y"
-              stroke="green"
-              strokeWidth={1}
-              dot={false}
-              activeDot={false}
-              name="Uncertainty X Upper Bound"
-              isAnimationActive={false}
-              hide={false}
-            />
-          )}
           {/* Reference lines from selected point to axes */}
           <ReferenceLine
             segment={[
@@ -847,14 +882,14 @@ export default function ParetoFrontPlot({
               <div className={classes.legendItem}>
                 <div
                   className={classes.legendColor}
-                  style={{ background: '#f6c47e', opacity: 0.6 }}
+                  style={{ background: 'rgba(246, 196, 126, 0.6)' }}
                 />
                 <span>Uncertainty (cost)</span>
               </div>
               <div className={classes.legendItem}>
                 <div
-                  className={classes.legendColorLine}
-                  style={{ background: 'green' }}
+                  className={classes.legendColor}
+                  style={{ background: 'rgba(144, 194, 144, 0.6)' }}
                 />
                 <span>Uncertainty (quality)</span>
               </div>
