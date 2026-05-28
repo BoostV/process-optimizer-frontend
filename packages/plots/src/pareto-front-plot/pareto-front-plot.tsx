@@ -15,6 +15,7 @@ import {
   ComposedChart,
   Line,
   ReferenceLine,
+  usePlotArea,
 } from 'recharts'
 import type { DataEntry } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './pareto-front-plot.style'
@@ -197,6 +198,49 @@ export default function ParetoFrontPlot({
 
   // Format axis values to 2 decimal places
   const formatTick = (value: number) => value.toFixed(2)
+
+  // Renders sampled 95% confidence ellipses along the front. Defined inside
+  // ParetoFrontPlot so it can close over `plot`, `ellipseIndices`, and the
+  // domain. Recharts <Customized> wraps the return in a <Layer> (an SVG <g>),
+  // so we render plain SVG <ellipse> elements positioned in pixel space.
+  const ConfidenceEllipses = () => {
+    const plotArea = usePlotArea()
+    if (!plotArea || plotArea.width === 0 || plotArea.height === 0) return null
+    const xToPx = (x: number) =>
+      plotArea.x +
+      ((x - xDomain[0]!) / (xDomain[1]! - xDomain[0]!)) * plotArea.width
+    const yToPx = (y: number) =>
+      plotArea.y +
+      (1 - (y - yDomain[0]!) / (yDomain[1]! - yDomain[0]!)) * plotArea.height
+    return (
+      <g pointerEvents="none">
+        {ellipseIndices.map(i => {
+          const yPair = plot.front_y_data[i]
+          if (!yPair) return null
+          const cxData = displayQuality(yPair[0])
+          const cyData = yPair[1]
+          const e1 = scalarError(plot.obj1_error[i])
+          const e2 = scalarError(plot.obj2_error[i])
+          const cx = xToPx(cxData)
+          const cy = yToPx(cyData)
+          const rx = Math.abs(xToPx(cxData + e1) - cx)
+          const ry = Math.abs(yToPx(cyData + e2) - cy)
+          return (
+            <ellipse
+              key={i}
+              cx={cx}
+              cy={cy}
+              rx={rx}
+              ry={ry}
+              fill="rgba(7, 122, 206, 0.08)"
+              stroke="rgba(7, 122, 206, 0.5)"
+              strokeWidth={1}
+            />
+          )
+        })}
+      </g>
+    )
+  }
 
   // START: AI-generated hover line
   const containerRef = useRef<HTMLDivElement>(null)
@@ -410,42 +454,7 @@ export default function ParetoFrontPlot({
             label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
           />
           {/* Confidence ellipses replace the continuous uncertainty band */}
-          <Customized
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            component={(props: any) => {
-              const xScale = props?.xAxisMap?.[0]?.scale
-              const yScale = props?.yAxisMap?.[0]?.scale
-              if (!xScale || !yScale) return null
-              return (
-                <g pointerEvents="none">
-                  {ellipseIndices.map(i => {
-                    const yPair = plot.front_y_data[i]
-                    if (!yPair) return null
-                    const cxData = displayQuality(yPair[0])
-                    const cyData = yPair[1]
-                    const e1 = scalarError(plot.obj1_error[i])
-                    const e2 = scalarError(plot.obj2_error[i])
-                    const cx = xScale(cxData)
-                    const cy = yScale(cyData)
-                    const rx = Math.abs(xScale(cxData + e1) - cx)
-                    const ry = Math.abs(yScale(cyData + e2) - cy)
-                    return (
-                      <ellipse
-                        key={i}
-                        cx={cx}
-                        cy={cy}
-                        rx={rx}
-                        ry={ry}
-                        fill="rgba(7, 122, 206, 0.08)"
-                        stroke="rgba(7, 122, 206, 0.5)"
-                        strokeWidth={1}
-                      />
-                    )
-                  })}
-                </g>
-              )
-            }}
-          />
+          <Customized component={ConfidenceEllipses} />
           <Scatter
             name="Dominated observations"
             dataKey={'y'}
