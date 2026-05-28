@@ -67,12 +67,6 @@ const calculateXi = (state: ExperimentType) => {
   )
 }
 
-const clearParetoSelection = (state: ExperimentType) => {
-  if ('selectedPoint' in state.extras) {
-    delete state.extras.selectedPoint
-  }
-}
-
 export type ExperimentAction =
   | {
       type: 'setSwVersion'
@@ -180,7 +174,7 @@ export type ExperimentAction =
       payload: string
     }
 
-export const experimentReducer = produce(
+const experimentReducerInner = produce(
   (state: ExperimentType, action: ExperimentAction): void | ExperimentType => {
     switch (action.type) {
       case 'setSwVersion':
@@ -259,7 +253,6 @@ export const experimentReducer = produce(
         break
       }
       case 'addValueVariable':
-        clearParetoSelection(state)
         state.valueVariables.splice(
           state.valueVariables.length,
           0,
@@ -270,7 +263,6 @@ export const experimentReducer = produce(
           state.optimizerConfig.initialPoints
         break
       case 'editValueVariable': {
-        clearParetoSelection(state)
         const oldVariable = state.valueVariables[action.payload.index]
         const newVariable = action.payload.newVariable
         state.valueVariables[action.payload.index] =
@@ -300,7 +292,6 @@ export const experimentReducer = produce(
         break
       }
       case 'deleteValueVariable': {
-        clearParetoSelection(state)
         const oldValueVariables = [...state.valueVariables]
         state.valueVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
@@ -320,7 +311,6 @@ export const experimentReducer = produce(
         break
       }
       case 'setValueVariableEnabled': {
-        clearParetoSelection(state)
         const valueVariable = state.valueVariables[action.payload.index]
         if (valueVariable !== undefined) {
           state.valueVariables[action.payload.index] = {
@@ -331,7 +321,6 @@ export const experimentReducer = produce(
         break
       }
       case 'addCategorialVariable':
-        clearParetoSelection(state)
         state.categoricalVariables.splice(
           state.categoricalVariables.length,
           0,
@@ -344,7 +333,6 @@ export const experimentReducer = produce(
           state.optimizerConfig.initialPoints
         break
       case 'editCategoricalVariable': {
-        clearParetoSelection(state)
         const oldVariableName =
           state.categoricalVariables[action.payload.index]?.name
         state.categoricalVariables[action.payload.index] =
@@ -361,7 +349,6 @@ export const experimentReducer = produce(
         break
       }
       case 'deleteCategorialVariable': {
-        clearParetoSelection(state)
         const oldCategoricalVariables = [...state.categoricalVariables]
         state.categoricalVariables.splice(action.payload, 1)
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
@@ -375,7 +362,6 @@ export const experimentReducer = produce(
         break
       }
       case 'setCategoricalVariableEnabled': {
-        clearParetoSelection(state)
         const catVariable = state.categoricalVariables[action.payload.index]
         if (catVariable !== undefined) {
           state.categoricalVariables[action.payload.index] = {
@@ -386,7 +372,6 @@ export const experimentReducer = produce(
         break
       }
       case 'updateConfiguration':
-        clearParetoSelection(state)
         state.optimizerConfig = experimentSchema.shape.optimizerConfig.parse(
           action.payload
         )
@@ -410,7 +395,6 @@ export const experimentReducer = produce(
         }
         break
       case 'updateDataPoints':
-        clearParetoSelection(state)
         experimentSchema.shape.dataPoints.parse(action.payload)
         state.dataPoints = defaultSorted(
           state.valueVariables,
@@ -421,7 +405,6 @@ export const experimentReducer = produce(
         state.optimizerConfig.xi = calculateXi(state)
         break
       case 'experiment/toggleMultiObjective':
-        clearParetoSelection(state)
         state.scoreVariables = state.scoreVariables.map((it, idx) => ({
           ...it,
           enabled: idx < 1 || !it.enabled,
@@ -489,6 +472,34 @@ export const experimentReducer = produce(
     state.info.version = state.info.version + 1
   }
 )
+const STRUCTURAL_KEYS = [
+  'valueVariables',
+  'categoricalVariables',
+  'scoreVariables',
+  'dataPoints',
+  'optimizerConfig',
+] as const
+
+// Single invalidation policy: any action that changes a structural field
+// invalidates a stored pareto selection, whose coordinates would otherwise go
+// stale. Replaces the 11 per-case clearParetoSelection(state) calls.
+export const experimentReducer = (
+  state: ExperimentType,
+  action: ExperimentAction
+): ExperimentType => {
+  if (action.type === 'setSelectedParetoPoint') {
+    return experimentReducerInner(state, action) as ExperimentType
+  }
+  const next = experimentReducerInner(state, action) as ExperimentType
+  const changed = STRUCTURAL_KEYS.some(key => next[key] !== state[key])
+  if (changed && 'selectedPoint' in next.extras) {
+    return produce(next, draft => {
+      delete draft.extras.selectedPoint
+    })
+  }
+  return next
+}
+
 const updateNamesInConstraints = (
   state: ExperimentType,
   oldVariableName: string,
