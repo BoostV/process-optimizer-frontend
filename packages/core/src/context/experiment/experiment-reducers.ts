@@ -472,6 +472,7 @@ const experimentReducerInner = produce(
     state.info.version = state.info.version + 1
   }
 )
+
 const STRUCTURAL_KEYS = [
   'valueVariables',
   'categoricalVariables',
@@ -480,17 +481,21 @@ const STRUCTURAL_KEYS = [
   'optimizerConfig',
 ] as const
 
-// Single invalidation policy: any action that changes a structural field
-// invalidates a stored pareto selection, whose coordinates would otherwise go
-// stale. Replaces the 11 per-case clearParetoSelection(state) calls.
+// Single invalidation policy: ANY action that changes a structural field
+// (variables, score variables, data points, or optimizer config) invalidates a
+// stored pareto selection, whose coordinates would otherwise go stale. This
+// replaces the 11 per-case clearParetoSelection(state) calls and intentionally
+// also covers actions they missed (e.g. updateExperiment replacing the whole
+// experiment, or copySuggestedToDataPoints appending data points).
+// setSelectedParetoPoint is exempt so setting a selection isn't self-invalidated.
 export const experimentReducer = (
   state: ExperimentType,
   action: ExperimentAction
 ): ExperimentType => {
   if (action.type === 'setSelectedParetoPoint') {
-    return experimentReducerInner(state, action) as ExperimentType
+    return experimentReducerInner(state, action)
   }
-  const next = experimentReducerInner(state, action) as ExperimentType
+  const next = experimentReducerInner(state, action)
   const changed = STRUCTURAL_KEYS.some(key => next[key] !== state[key])
   if (changed && 'selectedPoint' in next.extras) {
     return produce(next, draft => {
