@@ -153,13 +153,15 @@ export default function ParetoFrontPlot({
   const xValues = fitToFront ? frontXValues : allXValues
   const yValues = fitToFront ? frontYValues : allYValues
 
-  // Add 2% padding to the domain
-  const xMin = Math.min(...xValues)
+  // Quality and cost are both non-negative by definition. Clamp the lower
+  // bound of each axis to 0 so the uncertainty band extending into negative
+  // territory doesn't stretch the visible region away from real data.
+  const xMin = Math.max(0, Math.min(...xValues))
   const xMax = Math.max(...xValues)
   const xRange = xMax - xMin
   const xPadding = xRange * 0.02
 
-  const yMin = Math.min(...yValues)
+  const yMin = Math.max(0, Math.min(...yValues))
   const yMax = Math.max(...yValues)
   const yRange = yMax - yMin
   const yPadding = yRange * 0.02
