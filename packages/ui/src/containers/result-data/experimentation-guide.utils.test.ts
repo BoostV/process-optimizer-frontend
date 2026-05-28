@@ -93,9 +93,12 @@ describe('convertJsonPlotToOneDData', () => {
 describe('groupSinglePlots', () => {
   it('should group single-objective JSON plots correctly', () => {
     const plots: PlotEntry[] = [
-      { id: 'single_0_0', plot: JSON.stringify({ data: [[1], [2], [3], 1] }) },
       {
-        id: 'single_0_1',
+        id: 'objective_0_0',
+        plot: JSON.stringify({ data: [[1], [2], [3], 1] }),
+      },
+      {
+        id: 'objective_0_1',
         plot: JSON.stringify({ histogram: { mean: 5, std: 1 } }),
       },
       { id: 'convergence_0', plot: 'somedata' }, // non-matching id, should be ignored
@@ -123,8 +126,14 @@ describe('groupSinglePlots', () => {
 
   it('should group multi-objective JSON plots into separate objective groups', () => {
     const plots: PlotEntry[] = [
-      { id: 'single_1_0', plot: JSON.stringify({ data: [[1], [2], [3], 1] }) },
-      { id: 'single_2_0', plot: JSON.stringify({ data: [[4], [5], [6], 4] }) },
+      {
+        id: 'objective_1_0',
+        plot: JSON.stringify({ data: [[1], [2], [3], 1] }),
+      },
+      {
+        id: 'objective_2_0',
+        plot: JSON.stringify({ data: [[4], [5], [6], 4] }),
+      },
       { id: 'pareto_data', plot: 'ignored' },
     ]
     const activeVariables: ActiveVariable[] = [{ type: 'numeric' }]
@@ -137,7 +146,7 @@ describe('groupSinglePlots', () => {
   it('should preserve PNG strings and not try to parse them', () => {
     const plots: PlotEntry[] = [
       {
-        id: 'single_0_0',
+        id: 'objective_0_0',
         plot: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
       },
     ]
@@ -168,9 +177,18 @@ describe('groupSinglePlots', () => {
 
   it('should sort plots by variable index (m) within each objective group', () => {
     const plots: PlotEntry[] = [
-      { id: 'single_0_2', plot: JSON.stringify({ data: [[1], [2], [3], 1] }) }, // m=2
-      { id: 'single_0_0', plot: JSON.stringify({ data: [[1], [2], [3], 1] }) }, // m=0
-      { id: 'single_0_1', plot: JSON.stringify({ data: [[1], [2], [3], 1] }) }, // m=1
+      {
+        id: 'objective_0_2',
+        plot: JSON.stringify({ data: [[1], [2], [3], 1] }),
+      }, // m=2
+      {
+        id: 'objective_0_0',
+        plot: JSON.stringify({ data: [[1], [2], [3], 1] }),
+      }, // m=0
+      {
+        id: 'objective_0_1',
+        plot: JSON.stringify({ data: [[1], [2], [3], 1] }),
+      }, // m=1
     ]
     const activeVariables: ActiveVariable[] = [
       { type: 'numeric' },
@@ -190,7 +208,7 @@ describe('groupSinglePlots', () => {
   it('should correctly identify options variables and convert appropriately', () => {
     const plots: PlotEntry[] = [
       {
-        id: 'single_0_0',
+        id: 'objective_0_0',
         plot: JSON.stringify({ data: [[0, 1, 2], [5, 6, 7], [8, 9, 10], 1] }),
       },
     ]
