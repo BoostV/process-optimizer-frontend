@@ -1,11 +1,4 @@
-import {
-  cloneElement,
-  isValidElement,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { cloneElement, isValidElement, ReactNode, useState } from 'react'
 import {
   Area,
   Customized,
@@ -26,6 +19,7 @@ import useStyles from './pareto-front-plot.style'
 import { makePointLabel } from './point-label'
 import { ConfidenceEllipses } from './overlays/confidence-ellipses'
 import { QualityUncertaintyBand } from './overlays/uncertainty-band'
+import { HoverOverlay } from './hover-overlay'
 
 // Available uncertainty visualization modes for the Pareto plot.
 // Exported so parent components can drive a mode selector UI.
@@ -210,189 +204,11 @@ export default function ParetoFrontPlot({
   const xDomainT: [number, number] = [xDomain[0]!, xDomain[1]!]
   const yDomainT: [number, number] = [yDomain[0]!, yDomain[1]!]
 
-  // START: AI-generated hover line
-  const containerRef = useRef<HTMLDivElement>(null)
-  const rafRef = useRef<number>(0)
-  const hoverLineRef = useRef<HTMLDivElement>(null)
-  const hoverLabelRef = useRef<HTMLDivElement>(null)
-  const hoverDotRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    return () => cancelAnimationFrame(rafRef.current)
-  }, [])
-
-  const pixelToDataX = (clientX: number): number | null => {
-    const container = containerRef.current
-    if (!container) {
-      return null
-    }
-    const axisLine = container.querySelector(
-      '.recharts-xAxis .recharts-cartesian-axis-line'
-    ) as SVGLineElement | null
-    const svg = container.querySelector('svg')
-    if (!axisLine || !svg) {
-      return null
-    }
-    const svgRect = svg.getBoundingClientRect()
-    const x1 = parseFloat(axisLine.getAttribute('x1') || '0')
-    const x2 = parseFloat(axisLine.getAttribute('x2') || '0')
-    const relX = (clientX - svgRect.left - x1) / (x2 - x1)
-    if (relX < 0 || relX > 1) {
-      return null
-    }
-    const dMin = xDomain[0]!
-    const dMax = xDomain[1]!
-    return dMin + relX * (dMax - dMin)
-  }
-
-  const findNearestFrontIndex = (xValue: number) => {
-    // xValue is in display units (positive quality); front_y_data[i][0] is in
-    // backend units (negated quality). Compare in display units.
-    let nearest = 0
-    let minDist = Infinity
-    for (let i = 0; i < plot.front_y_data.length; i++) {
-      const dist = Math.abs(displayQuality(plot.front_y_data[i]![0]) - xValue)
-      if (dist < minDist) {
-        minDist = dist
-        nearest = i
-      }
-    }
-    return nearest
-  }
-
-  const showHover = (
-    pixelX: number,
-    chartTop: number,
-    point: [number, number],
-    xVars: ReadonlyArray<number | string> | undefined,
-    dotPixelX: number,
-    dotPixelY: number
-  ) => {
-    if (hoverLineRef.current) {
-      hoverLineRef.current.style.display = 'block'
-      hoverLineRef.current.style.left = `${pixelX}px`
-      hoverLineRef.current.style.top = `${chartTop}px`
-    }
-    if (hoverLabelRef.current) {
-      const children = hoverLabelRef.current.children
-      if (children[0]) {
-        children[0].textContent = `Quality: ${displayQuality(point[0]).toFixed(2)}`
-      }
-      if (children[1]) {
-        children[1].textContent = `Cost: ${point[1].toFixed(2)}`
-      }
-      variableNames.forEach((name, i) => {
-        const child = children[i + 2]
-        if (!child) return
-        const v = xVars?.[i]
-        child.textContent =
-          v === undefined
-            ? ''
-            : `${name}: ${typeof v === 'number' ? v.toFixed(4) : v}`
-      })
-      hoverLabelRef.current.style.display = 'block'
-      hoverLabelRef.current.style.left = `${pixelX + 6}px`
-      hoverLabelRef.current.style.top = `${chartTop + 4}px`
-    }
-    if (hoverDotRef.current) {
-      hoverDotRef.current.style.display = 'block'
-      hoverDotRef.current.style.left = `${dotPixelX}px`
-      hoverDotRef.current.style.top = `${dotPixelY}px`
-    }
-  }
-
-  const hideHover = () => {
-    if (hoverLineRef.current) {
-      hoverLineRef.current.style.display = 'none'
-    }
-    if (hoverLabelRef.current) {
-      hoverLabelRef.current.style.display = 'none'
-    }
-    if (hoverDotRef.current) {
-      hoverDotRef.current.style.display = 'none'
-    }
-  }
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { clientX } = e
-    cancelAnimationFrame(rafRef.current)
-    rafRef.current = requestAnimationFrame(() => {
-      const container = containerRef.current
-      if (!container) {
-        return
-      }
-      const xValue = pixelToDataX(clientX)
-      if (xValue === null) {
-        hideHover()
-        return
-      }
-      const idx = findNearestFrontIndex(xValue)
-      const point = plot.front_y_data[idx]
-      if (!point) {
-        hideHover()
-        return
-      }
-      const svg = container.querySelector('svg')
-      if (!svg) {
-        return
-      }
-      const svgRect = svg.getBoundingClientRect()
-      const containerRect = container.getBoundingClientRect()
-      const xAxisLine = container.querySelector(
-        '.recharts-xAxis .recharts-cartesian-axis-line'
-      ) as SVGLineElement | null
-      const yAxisLine = container.querySelector(
-        '.recharts-yAxis .recharts-cartesian-axis-line'
-      ) as SVGLineElement | null
-      const xAxisX1 = parseFloat(xAxisLine?.getAttribute('x1') || '0')
-      const xAxisX2 = parseFloat(xAxisLine?.getAttribute('x2') || '0')
-      const y1 = yAxisLine ? parseFloat(yAxisLine.getAttribute('y1') || '0') : 0
-      const y2 = yAxisLine
-        ? parseFloat(yAxisLine.getAttribute('y2') || '0')
-        : svgRect.height
-      const pixelX = clientX - containerRect.left
-      const chartTop = svgRect.top - containerRect.top + Math.min(y1, y2)
-
-      // Convert nearest point's data coordinates to pixel coordinates
-      const svgOffsetX = svgRect.left - containerRect.left
-      const svgOffsetY = svgRect.top - containerRect.top
-      const relPointX =
-        (displayQuality(point[0]) - xDomain[0]!) / (xDomain[1]! - xDomain[0]!)
-      const dotPixelX = svgOffsetX + xAxisX1 + relPointX * (xAxisX2 - xAxisX1)
-      const yTop = Math.min(y1, y2)
-      const yBottom = Math.max(y1, y2)
-      const relPointY = (point[1] - yDomain[0]!) / (yDomain[1]! - yDomain[0]!)
-      const dotPixelY = svgOffsetY + yBottom - relPointY * (yBottom - yTop)
-
-      const xVars = plot.front_x_data[idx]
-      showHover(pixelX, chartTop, point, xVars, dotPixelX, dotPixelY)
-    })
-  }
-
-  const handleMouseLeave = () => {
-    cancelAnimationFrame(rafRef.current)
-    hideHover()
-  }
-
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!onSelectIndex) {
-      return
-    }
-    const xValue = pixelToDataX(e.clientX)
-    if (xValue === null) {
-      return
-    }
-    onSelectIndex(findNearestFrontIndex(xValue))
-  }
-  // END: AI-generated hover line
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null)
 
   return (
     <div
       className={classes.container}
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
       style={{
         position: 'relative',
       }}
@@ -527,54 +343,22 @@ export default function ParetoFrontPlot({
             fill="#077ace"
             isAnimationActive={false}
           />
+          <Customized
+            component={() => (
+              <HoverOverlay
+                hoverIndex={hoverIndex}
+                setHoverIndex={setHoverIndex}
+                onSelectIndex={onSelectIndex}
+                frontYData={plot.front_y_data}
+                frontXData={plot.front_x_data}
+                variableNames={variableNames}
+                xDomain={xDomainT}
+                yDomain={yDomainT}
+              />
+            )}
+          />
         </ComposedChart>
       </ResponsiveContainer>
-      <div
-        ref={hoverLineRef}
-        style={{
-          display: 'none',
-          position: 'absolute',
-          width: 0,
-          height: '100%',
-          borderLeft: '1px dashed rgba(43, 88, 121, 0.4)',
-          pointerEvents: 'none',
-        }}
-      />
-      <div
-        ref={hoverLabelRef}
-        style={{
-          display: 'none',
-          position: 'absolute',
-          color: '#077ace',
-          fontSize: 12,
-          pointerEvents: 'none',
-          whiteSpace: 'nowrap',
-          background: 'rgba(255, 255, 255, 0.85)',
-          padding: '2px 6px',
-          borderRadius: 3,
-        }}
-      >
-        <div />
-        <div />
-        {variableNames.map((_, i) => (
-          <div key={i} />
-        ))}
-      </div>
-      <div
-        ref={hoverDotRef}
-        style={{
-          display: 'none',
-          position: 'absolute',
-          width: 10,
-          height: 10,
-          borderRadius: '50%',
-          background: '#077ace',
-          border: '2px solid white',
-          boxShadow: '0 0 3px rgba(0,0,0,0.3)',
-          pointerEvents: 'none',
-          transform: 'translate(-50%, -50%)',
-        }}
-      />
       <div className={classes.tooltipContainer}>
         <div
           className={classes.tooltip}

@@ -3,7 +3,7 @@ import { usePlotArea } from 'recharts'
 export type PixelProjector = {
   xToPx: (x: number) => number
   yToPx: (y: number) => number
-  plotArea: ReturnType<typeof usePlotArea>
+  plotArea: NonNullable<ReturnType<typeof usePlotArea>>
 } | null
 
 // Maps data coordinates to pixel coordinates within the Recharts plot area.
