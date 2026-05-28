@@ -78,8 +78,13 @@ export default function ParetoFrontPlot({
     }
   })
 
+  // Quality is sent to the backend negated (we want to maximize); cost is sent
+  // as-is (we want to minimize). The backend echoes both back in those units,
+  // so for display we flip quality but leave cost alone.
+  const displayQuality = (q: number) => -q
+
   const chartData = plot.front_y_data.map((yPair, i) => ({
-    x: yPair[0],
+    x: displayQuality(yPair[0]),
     y: yPair[1],
     uncertaintyY: [
       yPair[1] - Number(plot.obj2_error[i] || 0),
@@ -87,9 +92,10 @@ export default function ParetoFrontPlot({
     ],
   }))
 
+  const rawSelected = plot.front_y_data[indexOfSelected]
   const selected = [
-    plot.front_y_data[indexOfSelected]?.[0],
-    plot.front_y_data[indexOfSelected]?.[1],
+    rawSelected !== undefined ? displayQuality(rawSelected[0]) : undefined,
+    rawSelected?.[1],
   ]
 
   const variablesAtSelected = plot.front_x_data[indexOfSelected]
@@ -103,7 +109,7 @@ export default function ParetoFrontPlot({
   // Create separate datasets for X uncertainty bounds
   const xLowerBoundData = plot.front_y_data.map((yPair, i) => ({
     x:
-      yPair[0] -
+      displayQuality(yPair[0]) -
       (Array.isArray(plot.obj1_error[i])
         ? plot.obj1_error[i][0]
         : plot.obj1_error[i] || 0),
@@ -112,7 +118,7 @@ export default function ParetoFrontPlot({
 
   const xUpperBoundData = plot.front_y_data.map((yPair, i) => ({
     x:
-      yPair[0] +
+      displayQuality(yPair[0]) +
       (Array.isArray(plot.obj1_error[i])
         ? plot.obj1_error[i][0]
         : plot.obj1_error[i] || 0),
@@ -200,10 +206,12 @@ export default function ParetoFrontPlot({
   }
 
   const findNearestFrontIndex = (xValue: number) => {
+    // xValue is in display units (positive quality); front_y_data[i][0] is in
+    // backend units (negated quality). Compare in display units.
     let nearest = 0
     let minDist = Infinity
     for (let i = 0; i < plot.front_y_data.length; i++) {
-      const dist = Math.abs(plot.front_y_data[i]![0] - xValue)
+      const dist = Math.abs(displayQuality(plot.front_y_data[i]![0]) - xValue)
       if (dist < minDist) {
         minDist = dist
         nearest = i
@@ -227,7 +235,7 @@ export default function ParetoFrontPlot({
     if (hoverLabelRef.current) {
       const children = hoverLabelRef.current.children
       if (children[0]) {
-        children[0].textContent = `Quality: ${point[0].toFixed(2)}`
+        children[0].textContent = `Quality: ${displayQuality(point[0]).toFixed(2)}`
       }
       if (children[1]) {
         children[1].textContent = `Cost: ${point[1].toFixed(2)}`
@@ -298,7 +306,8 @@ export default function ParetoFrontPlot({
       // Convert nearest point's data coordinates to pixel coordinates
       const svgOffsetX = svgRect.left - containerRect.left
       const svgOffsetY = svgRect.top - containerRect.top
-      const relPointX = (point[0] - xDomain[0]!) / (xDomain[1]! - xDomain[0]!)
+      const relPointX =
+        (displayQuality(point[0]) - xDomain[0]!) / (xDomain[1]! - xDomain[0]!)
       const dotPixelX = svgOffsetX + xAxisX1 + relPointX * (xAxisX2 - xAxisX1)
       const yTop = Math.min(y1, y2)
       const yBottom = Math.max(y1, y2)
