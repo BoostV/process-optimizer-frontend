@@ -18,13 +18,18 @@ import {
   useExperiment,
   useSelector,
   experimentResultSchema,
+  parseParetoPlot,
+  costDomain,
+  displayQualityCI,
+  selectActiveScoreVariableNames,
+  type SelectedPoint,
 } from '@boostv/process-optimizer-frontend-core'
 import { Box, Button, MenuItem, Select } from '@mui/material'
 import { groupSinglePlots } from '../../containers/result-data/experimentation-guide.utils'
-import { matchFrontIndex } from './result.utils'
+import { resolveSelectedIndex } from './result.utils'
 import { z } from 'zod'
 import { isArray } from 'remeda'
-import { useState } from 'react'
+import { useState, type ComponentProps } from 'react'
 import useStyles from './result.style'
 
 type ResultProps = {
@@ -40,16 +45,8 @@ type ResultProps = {
 }
 
 // value - 1.96 * std <-> value + 1.96 * std
-const convertScoreToString = (data: number[]) => {
-  const [value, stdDev] = data
-  if (value && stdDev) {
-    return `[${(-value - 1.96 * stdDev).toFixed(2)}, ${(
-      -value +
-      1.96 * stdDev
-    ).toFixed(2)}]`
-  }
-  return ''
-}
+const convertScoreToString = (data: number[]) =>
+  displayQualityCI(data[0] ?? 0, data[1] ?? 0)
 
 const convertExpectedMinimumToDisplayValue = (
   expectedMinimum: z.infer<typeof experimentResultSchema.shape.expectedMinimum>
@@ -86,6 +83,7 @@ export const Result = ({
   const dataPoints = useSelector(selectActiveDataPoints)
   const variableHeaders = useSelector(selectActiveVariableNames)
   const scoreHeaders = useSelector(selectActiveScoreVariableLabels)
+  const scoreVarNames = useSelector(selectActiveScoreVariableNames)
   const expectedMinimum = useSelector(selectExpectedMinimum)
   const isInitializing = useSelector(selectIsInitializing)
   const isMultiObjective = useSelector(selectIsMultiObjective)
@@ -93,14 +91,14 @@ export const Result = ({
   const plots = useSelector(selectPlots)
 
   const selectedCoords = experiment.extras.selectedPoint as
-    | Array<number | string>
+    | SelectedPoint
     | undefined
 
   const [paretoVizMode, setParetoVizMode] =
     useState<ParetoVisualizationMode>('ellipses')
 
   const onSetSelectedParetoPoint = (index: number) => {
-    const coords = pareto.front_x_data[index]
+    const coords = pareto?.front_x_data[index]
     if (!coords) return
     dispatch({ type: 'setSelectedParetoPoint', payload: coords })
   }
@@ -139,37 +137,15 @@ export const Result = ({
   const paretoRaw = plots.find(
     plot => plot.id.includes('pareto') && typeof plot.plot === 'string'
   )
-  const pareto = JSON.parse(paretoRaw?.plot ?? '{}')
+  const pareto = parseParetoPlot(
+    paretoRaw?.plot ? JSON.parse(paretoRaw.plot) : null
+  )
 
-  if (Object.keys(pareto).length === 0) {
+  if (!pareto) {
     return null
   }
 
-  const costDomain: [number, number] | undefined = (() => {
-    const frontPairs = pareto?.front_y_data
-    const errs = pareto?.obj2_error
-    if (!Array.isArray(frontPairs)) {
-      return undefined
-    }
-    const getCostErr = (i: number) => {
-      const e = Array.isArray(errs) ? errs[i] : undefined
-      if (Array.isArray(e)) {
-        return Number(e[0]) || 0
-      }
-      return Number(e) || 0
-    }
-    const frontLower = frontPairs.map(
-      (p: number[], i: number) => (p[1] ?? 0) - getCostErr(i)
-    )
-    const frontUpper = frontPairs.map(
-      (p: number[], i: number) => (p[1] ?? 0) + getCostErr(i)
-    )
-    const all = [...frontLower, ...frontUpper]
-    if (all.length === 0) {
-      return undefined
-    }
-    return [Math.min(...all), Math.max(...all)]
-  })()
+  const cost = costDomain(pareto)
 
   return (
     <TitleCard
@@ -190,9 +166,9 @@ export const Result = ({
               variableHeaders={variableHeaders}
               rows={oneDPlots.map((plot, index) => {
                 const header = scoreHeaders[index] ?? ''
-                const lower = header.toLowerCase()
-                const isQuality = lower.includes('quality')
-                const isCost = lower.includes('cost')
+                const role = scoreVarNames[index]
+                const isQuality = role === 'quality'
+                const isCost = role === 'cost'
                 const plotData: (string | OneDData)[] = (() => {
                   if (isQuality) {
                     return plot.map(p => {
@@ -209,12 +185,12 @@ export const Result = ({
                       }
                     })
                   }
-                  if (isCost && costDomain) {
+                  if (isCost && cost) {
                     return plot.map(p => {
                       if (typeof p === 'string' || p.type !== 'score') {
                         return p
                       }
-                      return { ...p, xDomain: costDomain }
+                      return { ...p, xDomain: cost }
                     })
                   }
                   return plot
@@ -234,18 +210,21 @@ export const Result = ({
             <Box p={2} className={classes.paretoContainer}>
               <ParetoFrontPlot
                 onSelectIndex={onSetSelectedParetoPoint}
-                indexOfSelected={
-                  selectedCoords
-                    ? (() => {
-                        const idx = matchFrontIndex(
-                          pareto.front_x_data,
-                          selectedCoords
-                        )
-                        return idx >= 0 ? idx : pareto.best_idx
-                      })()
-                    : pareto.best_idx
+                indexOfSelected={resolveSelectedIndex(
+                  pareto.front_x_data,
+                  selectedCoords,
+                  pareto.best_idx
+                )}
+                // The core ParetoPlot is the verified backend shape (scalar
+                // errors, no 1D/mean/std fields). ParetoFrontPlot's prop type
+                // over-specifies those fields but only reads the ones present
+                // here (and handles scalar errors defensively). Adapt at the
+                // boundary until the plots prop type is aligned with core.
+                plot={
+                  pareto as unknown as ComponentProps<
+                    typeof ParetoFrontPlot
+                  >['plot']
                 }
-                plot={pareto}
                 dataPoints={dataPoints}
                 fitToFrontButton={
                   <Button variant="outlined" size="small">
