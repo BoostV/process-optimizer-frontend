@@ -1,5 +1,7 @@
 import {
   ParetoFrontPlot,
+  paretoVisualizationModes,
+  type ParetoVisualizationMode,
   OneDData,
 } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '../core'
@@ -17,11 +19,12 @@ import {
   useSelector,
   experimentResultSchema,
 } from '@boostv/process-optimizer-frontend-core'
-import { Box, Button } from '@mui/material'
+import { Box, Button, MenuItem, Select } from '@mui/material'
 import { groupSinglePlots } from '../../containers/result-data/experimentation-guide.utils'
 import { matchFrontIndex } from './result.utils'
 import { z } from 'zod'
 import { isArray } from 'remeda'
+import { useState } from 'react'
 import useStyles from './result.style'
 
 type ResultProps = {
@@ -92,6 +95,9 @@ export const Result = ({
   const selectedCoords = experiment.extras.selectedPoint as
     | Array<number | string>
     | undefined
+
+  const [paretoVizMode, setParetoVizMode] =
+    useState<ParetoVisualizationMode>('ellipses')
 
   const onSetSelectedParetoPoint = (index: number) => {
     const coords = pareto.front_x_data[index]
@@ -253,6 +259,24 @@ export const Result = ({
                 }
                 onResetToDefault={() =>
                   dispatch({ type: 'setSelectedParetoPoint', payload: null })
+                }
+                visualizationMode={paretoVizMode}
+                visualizationModeSelector={
+                  <Select
+                    size="small"
+                    value={paretoVizMode}
+                    onChange={e =>
+                      setParetoVizMode(
+                        e.target.value as ParetoVisualizationMode
+                      )
+                    }
+                  >
+                    {paretoVisualizationModes.map(m => (
+                      <MenuItem key={m.id} value={m.id}>
+                        {m.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 }
                 styles={styles?.pareto}
               />

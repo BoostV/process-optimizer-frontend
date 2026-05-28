@@ -3,10 +3,12 @@ import {
   isValidElement,
   ReactNode,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
 import {
+  Area,
   Customized,
   Scatter,
   XAxis,
@@ -19,6 +21,18 @@ import {
 } from 'recharts'
 import type { DataEntry } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './pareto-front-plot.style'
+
+// Available uncertainty visualization modes for the Pareto plot.
+// Exported so parent components can drive a mode selector UI.
+export const paretoVisualizationModes = [
+  { id: 'ellipses', label: 'Confidence ellipses' },
+  { id: 'band', label: 'Uncertainty band' },
+  { id: 'spaghetti', label: 'Posterior samples' },
+  { id: 'minimal', label: 'Minimal' },
+] as const
+
+export type ParetoVisualizationMode =
+  (typeof paretoVisualizationModes)[number]['id']
 
 type Props = {
   indexOfSelected: number
@@ -43,6 +57,8 @@ type Props = {
   fitToFrontButton?: ReactNode
   resetToDefaultButton?: ReactNode
   onResetToDefault?: () => void
+  visualizationMode?: ParetoVisualizationMode
+  visualizationModeSelector?: ReactNode
   styles?: {
     legendBorderColor?: string
   }
@@ -59,6 +75,8 @@ export default function ParetoFrontPlot({
   fitToFrontButton = defaultFitBtn,
   resetToDefaultButton = defaultResetBtn,
   onResetToDefault,
+  visualizationMode = 'ellipses',
+  visualizationModeSelector,
   styles,
 }: Props) {
   const { classes } = useStyles()
@@ -199,6 +217,48 @@ export default function ParetoFrontPlot({
   // Format axis values to 2 decimal places
   const formatTick = (value: number) => value.toFixed(2)
 
+  // 15 sample fronts from the per-point Gaussian posterior, memoized so the
+  // visual is stable across re-renders. Each sample line draws independent
+  // (q, c) draws at every NSGA-II front point, capped at ±1.96σ so we stay
+  // within the same credible region the band/ellipses depict.
+  const spaghettiSamples = useMemo(() => {
+    if (visualizationMode !== 'spaghetti')
+      return [] as { x: number; y: number }[][]
+    const N = 15
+    const len = plot.front_y_data.length
+    let seed = (len * 1000 + Math.floor((plot.obj1_mean ?? 0) * 1000)) >>> 0
+    if (seed === 0) seed = 1
+    const rng = () => {
+      seed = (seed * 1664525 + 1013904223) >>> 0
+      return (seed + 1) / 4294967297
+    }
+    const gauss = (mean: number, std: number) => {
+      const u = Math.max(1e-9, rng())
+      const v = rng()
+      const z = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v)
+      const clamped = Math.max(-1.96, Math.min(1.96, z))
+      return mean + std * clamped
+    }
+    const lines: { x: number; y: number }[][] = []
+    for (let s = 0; s < N; s++) {
+      const line: { x: number; y: number }[] = []
+      for (let i = 0; i < len; i++) {
+        const yPair = plot.front_y_data[i]
+        if (!yPair) continue
+        const meanX = displayQuality(yPair[0])
+        const meanY = yPair[1]
+        // obj{1,2}_error is 1.96σ per the upstream docs, so divide for σ.
+        const stdX = scalarError(plot.obj1_error[i]) / 1.96
+        const stdY = scalarError(plot.obj2_error[i]) / 1.96
+        line.push({ x: gauss(meanX, stdX), y: gauss(meanY, stdY) })
+      }
+      lines.push(line)
+    }
+    return lines
+    // Re-sample only when the front data changes or when entering spaghetti mode.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visualizationMode, plot.front_y_data, plot.obj1_error, plot.obj2_error])
+
   // Renders sampled 95% confidence ellipses along the front. Defined inside
   // ParetoFrontPlot so it can close over `plot`, `ellipseIndices`, and the
   // domain. Recharts <Customized> wraps the return in a <Layer> (an SVG <g>),
@@ -238,6 +298,31 @@ export default function ParetoFrontPlot({
             />
           )
         })}
+      </g>
+    )
+  }
+
+  // Renders the spaghetti samples as thin polylines.
+  const SpaghettiLines = () => {
+    const plotArea = usePlotArea()
+    if (!plotArea || plotArea.width === 0 || plotArea.height === 0) return null
+    const xToPx = (x: number) =>
+      plotArea.x +
+      ((x - xDomain[0]!) / (xDomain[1]! - xDomain[0]!)) * plotArea.width
+    const yToPx = (y: number) =>
+      plotArea.y +
+      (1 - (y - yDomain[0]!) / (yDomain[1]! - yDomain[0]!)) * plotArea.height
+    return (
+      <g pointerEvents="none">
+        {spaghettiSamples.map((line, s) => (
+          <polyline
+            key={s}
+            points={line.map(p => `${xToPx(p.x)},${yToPx(p.y)}`).join(' ')}
+            stroke="rgba(7, 122, 206, 0.18)"
+            strokeWidth={1}
+            fill="none"
+          />
+        ))}
       </g>
     )
   }
@@ -453,8 +538,24 @@ export default function ParetoFrontPlot({
             tickFormatter={formatTick}
             label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
           />
-          {/* Confidence ellipses replace the continuous uncertainty band */}
-          <Customized component={ConfidenceEllipses} />
+          {/* Uncertainty visualization — switches with visualizationMode */}
+          {visualizationMode === 'band' && (
+            <Area
+              type="linear"
+              dataKey="uncertaintyY"
+              fill="#f6c47e"
+              fillOpacity={0.4}
+              stroke="none"
+              name="UncertaintyY"
+              isAnimationActive={false}
+            />
+          )}
+          {visualizationMode === 'ellipses' && (
+            <Customized component={ConfidenceEllipses} />
+          )}
+          {visualizationMode === 'spaghetti' && (
+            <Customized component={SpaghettiLines} />
+          )}
           <Scatter
             name="Dominated observations"
             dataKey={'y'}
@@ -566,6 +667,34 @@ export default function ParetoFrontPlot({
             isAnimationActive={false}
             onClick={e => console.log(e)}
           ></Line>
+          {visualizationMode === 'band' && (
+            <Line
+              type="linear"
+              data={xLowerBoundData}
+              dataKey="y"
+              stroke="green"
+              strokeWidth={1}
+              dot={false}
+              activeDot={false}
+              name="Uncertainty X Lower Bound"
+              isAnimationActive={false}
+              hide={false}
+            />
+          )}
+          {visualizationMode === 'band' && (
+            <Line
+              type="linear"
+              data={xUpperBoundData}
+              dataKey="y"
+              stroke="green"
+              strokeWidth={1}
+              dot={false}
+              activeDot={false}
+              name="Uncertainty X Upper Bound"
+              isAnimationActive={false}
+              hide={false}
+            />
+          )}
           {/* Reference lines from selected point to axes */}
           <ReferenceLine
             segment={[
@@ -700,21 +829,53 @@ export default function ParetoFrontPlot({
             />
             <span>Pareto front</span>
           </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColorCircle}
-              style={{
-                background: 'rgba(7, 122, 206, 0.08)',
-                border: '1px solid rgba(7, 122, 206, 0.5)',
-                boxSizing: 'border-box',
-              }}
-            />
-            <span>95% credible region</span>
-          </div>
+          {visualizationMode === 'ellipses' && (
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColorCircle}
+                style={{
+                  background: 'rgba(7, 122, 206, 0.08)',
+                  border: '1px solid rgba(7, 122, 206, 0.5)',
+                  boxSizing: 'border-box',
+                }}
+              />
+              <span>95% credible region</span>
+            </div>
+          )}
+          {visualizationMode === 'band' && (
+            <>
+              <div className={classes.legendItem}>
+                <div
+                  className={classes.legendColor}
+                  style={{ background: '#f6c47e', opacity: 0.6 }}
+                />
+                <span>Uncertainty (cost)</span>
+              </div>
+              <div className={classes.legendItem}>
+                <div
+                  className={classes.legendColorLine}
+                  style={{ background: 'green' }}
+                />
+                <span>Uncertainty (quality)</span>
+              </div>
+            </>
+          )}
+          {visualizationMode === 'spaghetti' && (
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColorLine}
+                style={{ background: 'rgba(7, 122, 206, 0.4)' }}
+              />
+              <span>Posterior samples</span>
+            </div>
+          )}
         </div>
-        {(fitToFrontButton || resetToDefaultButton) && (
+        {(fitToFrontButton ||
+          resetToDefaultButton ||
+          visualizationModeSelector) && (
           <>
             <div className={classes.buttonColumn}>
+              {visualizationModeSelector}
               {fitToFrontButton &&
                 isValidElement<{ onClick?: () => void }>(fitToFrontButton) &&
                 cloneElement(fitToFrontButton, {
