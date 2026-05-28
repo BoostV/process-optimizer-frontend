@@ -140,15 +140,13 @@ export default function ParetoFrontPlot({
     ...dataPointsMapped.map(d => d.y),
   ].filter((v): v is number => typeof v === 'number')
 
-  const frontXValues = [
-    ...xLowerBoundData.map(d => d.x),
-    ...xUpperBoundData.map(d => d.x),
-    ...chartData.map(d => d.x),
-  ].filter((v): v is number => typeof v === 'number')
-  const frontYValues = [
-    ...chartData.map(d => d.y),
-    ...chartData.flatMap(d => d.uncertaintyY),
-  ]
+  // fitToFront fits the chart tightly to the front line itself, excluding
+  // the uncertainty bands. The bands still render but may extend past the
+  // axes — that's the trade-off for a readable front.
+  const frontXValues = chartData
+    .map(d => d.x)
+    .filter((v): v is number => typeof v === 'number')
+  const frontYValues = chartData.map(d => d.y)
 
   const xValues = fitToFront ? frontXValues : allXValues
   const yValues = fitToFront ? frontYValues : allYValues
