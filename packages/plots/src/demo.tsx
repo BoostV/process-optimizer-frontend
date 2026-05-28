@@ -3,21 +3,15 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { singlePng, paretoJson } from './demo-data'
 import { OneDPlot, OneDData } from './one-d-plot/one-d-plot'
-import { DataEntry } from '@boostv/process-optimizer-frontend-core'
+import { DataEntry, ParetoPlot } from '@boostv/process-optimizer-frontend-core'
 
-// cast the dummy data. Real data will be zod parsed
-const pareto = paretoJson as unknown as {
-  front_x_data: number[][]
-  front_y_data: [number, number][]
-  obj1_error: [number, number, number][]
-  obj2_error: [number, number, number][]
+// cast the dummy data to the canonical ParetoPlot type. Real data is zod parsed.
+const pareto = paretoJson as unknown as ParetoPlot
+
+// obj1_1D_data is not part of the canonical ParetoPlot type; extract it
+// directly from the raw fixture for the demo OneDPlot previews only.
+const paretoRaw = paretoJson as unknown as {
   obj1_1D_data: [...number[][], number][]
-  obj2_1D_data: [...number[][], number][]
-  obj1_mean: number
-  obj1_std: number
-  obj2_mean: number
-  obj2_std: number
-  best_idx: number
 }
 
 const mapToOneDData = (entry: [...number[][], number]): OneDData => {
@@ -33,7 +27,7 @@ const mapToOneDData = (entry: [...number[][], number]): OneDData => {
   }
 }
 
-const obj1Plots = pareto.obj1_1D_data.map(mapToOneDData)
+const obj1Plots = paretoRaw.obj1_1D_data.map(mapToOneDData)
 
 const dummyDataPoints: DataEntry[] = [
   {

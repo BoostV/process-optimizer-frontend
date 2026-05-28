@@ -18,7 +18,10 @@ import {
   ReferenceLine,
   usePlotArea,
 } from 'recharts'
-import type { DataEntry } from '@boostv/process-optimizer-frontend-core'
+import type {
+  DataEntry,
+  ParetoPlot,
+} from '@boostv/process-optimizer-frontend-core'
 import useStyles from './pareto-front-plot.style'
 
 // Available uncertainty visualization modes for the Pareto plot.
@@ -33,19 +36,7 @@ export type ParetoVisualizationMode =
 
 type Props = {
   indexOfSelected: number
-  plot: {
-    front_x_data: number[][]
-    front_y_data: [number, number][]
-    obj1_error: [number, number, number][]
-    obj2_error: [number, number, number][]
-    obj1_1D_data: [...number[][], number][]
-    obj2_1D_data: [...number[][], number][]
-    obj1_mean: number
-    obj1_std: number
-    obj2_mean: number
-    obj2_std: number
-    best_idx: number
-  }
+  plot: ParetoPlot
   width?: number | string
   maxWidth?: number | string
   altText?: string
