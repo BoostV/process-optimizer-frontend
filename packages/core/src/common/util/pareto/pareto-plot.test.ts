@@ -34,10 +34,10 @@ describe('parseParetoPlot', () => {
 })
 
 describe('costDomain', () => {
-  it('spans min/max cost ± obj2 error', () => {
+  it('spans min/max cost ± obj2 error (absolute)', () => {
     const d = costDomain(parseParetoPlot(REAL)!)
     expect(d).not.toBeUndefined()
-    expect(d![0]).toBeLessThan(-24)
-    expect(d![1]).toBeGreaterThan(-16)
+    expect(d![0]).toBeCloseTo(-25.18, 5)
+    expect(d![1]).toBeCloseTo(-16.8, 5)
   })
 })

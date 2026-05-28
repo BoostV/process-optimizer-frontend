@@ -26,10 +26,10 @@ export const costDomain = (plot: ParetoPlot): [number, number] | undefined => {
     return undefined
   }
   const lowers = plot.front_y_data.map(
-    (yPair, i) => yPair[1] - Math.abs(yPair[1]) * (plot.obj2_error[i] ?? 0)
+    (yPair, i) => yPair[1] - (plot.obj2_error[i] ?? 0)
   )
   const uppers = plot.front_y_data.map(
-    (yPair, i) => yPair[1] + Math.abs(yPair[1]) * (plot.obj2_error[i] ?? 0)
+    (yPair, i) => yPair[1] + (plot.obj2_error[i] ?? 0)
   )
   const all = [...lowers, ...uppers]
   return [Math.min(...all), Math.max(...all)]
