@@ -17,9 +17,9 @@ import {
   useSelector,
   experimentResultSchema,
 } from '@boostv/process-optimizer-frontend-core'
-import { useState } from 'react'
 import { Box, Button } from '@mui/material'
 import { groupSinglePlots } from '../../containers/result-data/experimentation-guide.utils'
+import { matchFrontIndex } from './result.utils'
 import { z } from 'zod'
 import { isArray } from 'remeda'
 import useStyles from './result.style'
@@ -77,6 +77,7 @@ export const Result = ({
 
   const {
     state: { experiment },
+    dispatch,
   } = useExperiment()
 
   const dataPoints = useSelector(selectActiveDataPoints)
@@ -88,13 +89,14 @@ export const Result = ({
   const activeVariables = selectActiveVariablesFromExperiment(experiment)
   const plots = useSelector(selectPlots)
 
-  const [selectedParetoPoint, setSelectedParetoPoint] = useState<number | null>(
-    null
-  )
+  const selectedCoords = experiment.extras.selectedPoint as
+    | Array<number | string>
+    | undefined
 
   const onSetSelectedParetoPoint = (index: number) => {
-    setSelectedParetoPoint(index)
-    // TODO: multi - dispatch based onpareto point selection change
+    const coords = pareto.front_x_data[index]
+    if (!coords) return
+    dispatch({ type: 'setSelectedParetoPoint', payload: coords })
   }
 
   const mapOptionsLabels = (
@@ -226,7 +228,17 @@ export const Result = ({
             <Box p={2} className={classes.paretoContainer}>
               <ParetoFrontPlot
                 onSelectIndex={onSetSelectedParetoPoint}
-                indexOfSelected={selectedParetoPoint ?? pareto.best_idx}
+                indexOfSelected={
+                  selectedCoords
+                    ? (() => {
+                        const idx = matchFrontIndex(
+                          pareto.front_x_data,
+                          selectedCoords
+                        )
+                        return idx >= 0 ? idx : pareto.best_idx
+                      })()
+                    : pareto.best_idx
+                }
                 plot={pareto}
                 dataPoints={dataPoints}
                 fitToFrontButton={
@@ -240,7 +252,7 @@ export const Result = ({
                   </Button>
                 }
                 onResetToDefault={() =>
-                  onSetSelectedParetoPoint(pareto.best_idx)
+                  dispatch({ type: 'setSelectedParetoPoint', payload: null })
                 }
                 styles={styles?.pareto}
               />
