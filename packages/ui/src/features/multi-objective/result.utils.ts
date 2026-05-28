@@ -22,3 +22,15 @@ export const matchFrontIndex = (
   }
   return -1
 }
+
+export const resolveSelectedIndex = (
+  front: Array<Array<number | string>>,
+  selectedCoords: Array<number | string> | undefined,
+  bestIdx: number
+): number => {
+  if (!selectedCoords) {
+    return bestIdx
+  }
+  const idx = matchFrontIndex(front, selectedCoords)
+  return idx >= 0 ? idx : bestIdx
+}
