@@ -16,13 +16,16 @@ import {
   ComposedChart,
   Line,
   ReferenceLine,
-  usePlotArea,
 } from 'recharts'
-import type {
-  DataEntry,
-  ParetoPlot,
+import {
+  displayQuality,
+  type DataEntry,
+  type ParetoPlot,
 } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './pareto-front-plot.style'
+import { makePointLabel } from './point-label'
+import { ConfidenceEllipses } from './overlays/confidence-ellipses'
+import { QualityUncertaintyBand } from './overlays/uncertainty-band'
 
 // Available uncertainty visualization modes for the Pareto plot.
 // Exported so parent components can drive a mode selector UI.
@@ -100,9 +103,8 @@ export default function ParetoFrontPlot({
 
   // Quality is sent to the backend negated (we want to maximize); cost is sent
   // as-is (we want to minimize). The backend echoes both back in those units,
-  // so for display we flip quality but leave cost alone.
-  const displayQuality = (q: number) => -q
-
+  // so for display we flip quality but leave cost alone — see core
+  // `displayQuality`.
   const chartData = plot.front_y_data.map((yPair, i) => ({
     x: displayQuality(yPair[0]),
     y: yPair[1],
@@ -150,8 +152,6 @@ export default function ParetoFrontPlot({
   // shape communicates joint uncertainty along the front without the continuous
   // band overpowering the rest of the chart.
   const ELLIPSE_COUNT = 10
-  const scalarError = (e: number | number[] | undefined): number =>
-    Array.isArray(e) ? Number(e[0] ?? 0) : Number(e ?? 0)
   const frontLen = plot.front_y_data.length
   const ellipseIndices =
     frontLen <= ELLIPSE_COUNT
@@ -205,108 +205,10 @@ export default function ParetoFrontPlot({
   // Format axis values to 2 decimal places
   const formatTick = (value: number) => value.toFixed(2)
 
-  // Renders sampled 95% confidence ellipses along the front. Defined inside
-  // ParetoFrontPlot so it can close over `plot`, `ellipseIndices`, and the
-  // domain. Recharts <Customized> wraps the return in a <Layer> (an SVG <g>),
-  // so we render plain SVG <ellipse> elements positioned in pixel space.
-  const ConfidenceEllipses = () => {
-    const plotArea = usePlotArea()
-    if (!plotArea || plotArea.width === 0 || plotArea.height === 0) return null
-    const xToPx = (x: number) =>
-      plotArea.x +
-      ((x - xDomain[0]!) / (xDomain[1]! - xDomain[0]!)) * plotArea.width
-    const yToPx = (y: number) =>
-      plotArea.y +
-      (1 - (y - yDomain[0]!) / (yDomain[1]! - yDomain[0]!)) * plotArea.height
-    return (
-      <g pointerEvents="none">
-        {ellipseIndices.map(i => {
-          const yPair = plot.front_y_data[i]
-          if (!yPair) return null
-          const cxData = displayQuality(yPair[0])
-          const cyData = yPair[1]
-          const e1 = scalarError(plot.obj1_error[i])
-          const e2 = scalarError(plot.obj2_error[i])
-          const cx = xToPx(cxData)
-          const cy = yToPx(cyData)
-          const rx = Math.abs(xToPx(cxData + e1) - cx)
-          const ry = Math.abs(yToPx(cyData + e2) - cy)
-          return (
-            <ellipse
-              key={i}
-              cx={cx}
-              cy={cy}
-              rx={rx}
-              ry={ry}
-              fill="rgba(7, 122, 206, 0.08)"
-              stroke="rgba(7, 122, 206, 0.5)"
-              strokeWidth={1}
-            />
-          )
-        })}
-      </g>
-    )
-  }
-
-  // Smooth filled band for the quality-axis uncertainty. Drawn as a closed
-  // SVG <path> via Customized so we can use cubic Bezier interpolation
-  // between adjacent front points — softer than Recharts' polyline join.
-  const QualityUncertaintyBand = () => {
-    const plotArea = usePlotArea()
-    if (!plotArea || plotArea.width === 0 || plotArea.height === 0) return null
-    if (xLowerBoundData.length === 0) return null
-    const xToPx = (x: number) =>
-      plotArea.x +
-      ((x - xDomain[0]!) / (xDomain[1]! - xDomain[0]!)) * plotArea.width
-    const yToPx = (y: number) =>
-      plotArea.y +
-      (1 - (y - yDomain[0]!) / (yDomain[1]! - yDomain[0]!)) * plotArea.height
-
-    // Build a single closed contour: upper bounds left-to-right, then lower
-    // bounds right-to-left. Connecting the two creates a filled band.
-    const contour: { x: number; y: number }[] = []
-    for (let i = 0; i < xUpperBoundData.length; i++) {
-      contour.push({
-        x: xToPx(xUpperBoundData[i]!.x),
-        y: yToPx(xUpperBoundData[i]!.y),
-      })
-    }
-    for (let i = xLowerBoundData.length - 1; i >= 0; i--) {
-      contour.push({
-        x: xToPx(xLowerBoundData[i]!.x),
-        y: yToPx(xLowerBoundData[i]!.y),
-      })
-    }
-
-    // Build a smoothed path using Catmull-Rom-style cubic Beziers. For each
-    // pair (P0, P1), use control points derived from (P-1, P0, P1, P2).
-    const tension = 0.5 // 0 = sharp corners, 1 = very loose; 0.5 is a sweet spot.
-    const segments: string[] = []
-    for (let i = 0; i < contour.length; i++) {
-      const p0 = contour[(i - 1 + contour.length) % contour.length]!
-      const p1 = contour[i]!
-      const p2 = contour[(i + 1) % contour.length]!
-      const p3 = contour[(i + 2) % contour.length]!
-      if (i === 0) {
-        segments.push(`M ${p1.x} ${p1.y}`)
-      }
-      const cp1x = p1.x + ((p2.x - p0.x) * tension) / 6
-      const cp1y = p1.y + ((p2.y - p0.y) * tension) / 6
-      const cp2x = p2.x - ((p3.x - p1.x) * tension) / 6
-      const cp2y = p2.y - ((p3.y - p1.y) * tension) / 6
-      segments.push(`C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`)
-    }
-    segments.push('Z')
-
-    return (
-      <path
-        d={segments.join(' ')}
-        fill="rgba(144, 194, 144, 0.3)"
-        stroke="none"
-        pointerEvents="none"
-      />
-    )
-  }
+  // Narrow the computed domains to fixed-length tuples for the overlay props.
+  // Both are derived from data via Math.min/Math.max, so they are defined.
+  const xDomainT: [number, number] = [xDomain[0]!, xDomain[1]!]
+  const yDomainT: [number, number] = [yDomain[0]!, yDomain[1]!]
 
   // START: AI-generated hover line
   const containerRef = useRef<HTMLDivElement>(null)
@@ -522,7 +424,16 @@ export default function ParetoFrontPlot({
           {/* Uncertainty visualization — switches with visualizationMode */}
           {visualizationMode === 'band' && (
             <>
-              <Customized component={QualityUncertaintyBand} />
+              <Customized
+                component={() => (
+                  <QualityUncertaintyBand
+                    xLowerBoundData={xLowerBoundData}
+                    xUpperBoundData={xUpperBoundData}
+                    xDomain={xDomainT}
+                    yDomain={yDomainT}
+                  />
+                )}
+              />
               <Area
                 type="monotone"
                 dataKey="uncertaintyY"
@@ -535,7 +446,18 @@ export default function ParetoFrontPlot({
             </>
           )}
           {visualizationMode === 'ellipses' && (
-            <Customized component={ConfidenceEllipses} />
+            <Customized
+              component={() => (
+                <ConfidenceEllipses
+                  ellipseIndices={ellipseIndices}
+                  frontYData={plot.front_y_data}
+                  obj1Error={plot.obj1_error}
+                  obj2Error={plot.obj2_error}
+                  xDomain={xDomainT}
+                  yDomain={yDomainT}
+                />
+              )}
+            />
           )}
           <Scatter
             name="Dominated observations"
@@ -547,45 +469,11 @@ export default function ParetoFrontPlot({
             isAnimationActive={false}
             label={{
               position: 'top',
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              content: (props: any) => {
-                const { x, y, id } = props
-                if (!id) {
-                  return null
-                }
-                const text = `#${id}`
-                const padding = 4
-                const fontSize = 12
-                const width = text.length * 7 + padding * 2
-                const height = fontSize + padding * 2
-                const rectX = x - width / 2
-                const rectY = y - 5 - height
-
-                return (
-                  <g>
-                    <rect
-                      x={rectX}
-                      y={rectY}
-                      width={width}
-                      height={height}
-                      fill="white"
-                      stroke="#bbb"
-                      strokeWidth={1}
-                      rx={2}
-                    />
-                    <text
-                      x={x}
-                      y={rectY + height / 2}
-                      fill="#888"
-                      fontSize={fontSize}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                    >
-                      {text}
-                    </text>
-                  </g>
-                )
-              },
+              content: makePointLabel({
+                fill: 'white',
+                stroke: '#bbb',
+                textFill: '#888',
+              }),
             }}
           />
           <Scatter
@@ -597,45 +485,11 @@ export default function ParetoFrontPlot({
             isAnimationActive={false}
             label={{
               position: 'top',
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              content: (props: any) => {
-                const { x, y, id } = props
-                if (!id) {
-                  return null
-                }
-                const text = `#${id}`
-                const padding = 4
-                const fontSize = 12
-                const width = text.length * 7 + padding * 2
-                const height = fontSize + padding * 2
-                const rectX = x - width / 2
-                const rectY = y - 5 - height
-
-                return (
-                  <g>
-                    <rect
-                      x={rectX}
-                      y={rectY}
-                      width={width}
-                      height={height}
-                      fill="#2b5879"
-                      stroke="#2b5879"
-                      strokeWidth={1}
-                      rx={2}
-                    />
-                    <text
-                      x={x}
-                      y={rectY + height / 2}
-                      fill="white"
-                      fontSize={fontSize}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                    >
-                      {text}
-                    </text>
-                  </g>
-                )
-              },
+              content: makePointLabel({
+                fill: '#2b5879',
+                stroke: '#2b5879',
+                textFill: 'white',
+              }),
             }}
           />
           <Line
