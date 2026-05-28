@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime'
+import type { ExperimentExtrasSelectedPointInner } from './ExperimentExtrasSelectedPointInner'
+import {
+  ExperimentExtrasSelectedPointInnerFromJSON,
+  ExperimentExtrasSelectedPointInnerFromJSONTyped,
+  ExperimentExtrasSelectedPointInnerToJSON,
+} from './ExperimentExtrasSelectedPointInner'
+
 /**
  * A plain JSON object that can contain arbitrary values
  * @export
@@ -50,6 +57,18 @@ export interface ExperimentExtras {
    * @memberof ExperimentExtras
    */
   graphs?: Array<string>
+  /**
+   * Override the highlight point in single plots with explicit X-space coordinates. Honored only when graphFormat is "json"; ignored on the PNG path.
+   * @type {Array<ExperimentExtrasSelectedPointInner>}
+   * @memberof ExperimentExtras
+   */
+  selectedPoint?: Array<ExperimentExtrasSelectedPointInner>
+  /**
+   * Opaque cache hint produced by a previous response. The server validates it matches the current data / optimizerConfig; on mismatch it is ignored and a full run is performed.
+   * @type {string}
+   * @memberof ExperimentExtras
+   */
+  pickled?: string
 }
 
 /**
@@ -93,6 +112,12 @@ export function ExperimentExtrasFromJSONTyped(
       : json['experimentSuggestionCount'],
     maxQuality: !exists(json, 'maxQuality') ? undefined : json['maxQuality'],
     graphs: !exists(json, 'graphs') ? undefined : json['graphs'],
+    selectedPoint: !exists(json, 'selectedPoint')
+      ? undefined
+      : (json['selectedPoint'] as Array<any>).map(
+          ExperimentExtrasSelectedPointInnerFromJSON
+        ),
+    pickled: !exists(json, 'pickled') ? undefined : json['pickled'],
   }
 }
 
@@ -110,5 +135,12 @@ export function ExperimentExtrasToJSON(value?: ExperimentExtras | null): any {
     experimentSuggestionCount: value.experimentSuggestionCount,
     maxQuality: value.maxQuality,
     graphs: value.graphs,
+    selectedPoint:
+      value.selectedPoint === undefined
+        ? undefined
+        : (value.selectedPoint as Array<any>).map(
+            ExperimentExtrasSelectedPointInnerToJSON
+          ),
+    pickled: value.pickled,
   }
 }

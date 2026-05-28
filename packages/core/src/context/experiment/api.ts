@@ -1,6 +1,6 @@
 import {
   DefaultApi,
-  OptimizerapiOptimizerRunRequest,
+  RunOptimizerRequest,
 } from '@boostv/process-optimizer-frontend-api'
 import {
   ExperimentType,
@@ -18,7 +18,7 @@ export const createFetchExperimentResultRequest = (
   const extras = experiment.extras || {}
   const space = calculateSpace(experiment)
 
-  const request: OptimizerapiOptimizerRunRequest = {
+  const request: RunOptimizerRequest = {
     experiment: {
       data: calculateData(
         experiment.categoricalVariables,
@@ -50,7 +50,7 @@ export const fetchExperimentResult = async (
   api: DefaultApi
 ) => {
   const request = createFetchExperimentResultRequest(experiment)
-  const result = await api.optimizerapiOptimizerRun(request)
+  const result = await api.runOptimizer(request)
 
   return experimentResultSchema.parse({
     id: experiment.id,

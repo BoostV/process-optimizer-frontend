@@ -30,7 +30,7 @@
   "repository": "BoostV/process-optimizer-frontend.git",
   "scripts": {
     "build": "tsc && vite build",
-    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/v3.4.0/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi",
+    "openapi": "openapi-generator-cli generate  -i https://raw.githubusercontent.com/BoostV/process-optimizer-api/refs/heads/langdal/ai-restructure/optimizerapi/openapi/specification.yml -g typescript-fetch -o ./openapi --additional-properties=nullSafeAdditionalProps && prettier --write ./openapi",
     "prepublishOnly": "vite build"
   },
   "type": "module",
