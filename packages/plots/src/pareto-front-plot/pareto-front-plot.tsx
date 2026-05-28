@@ -1,4 +1,4 @@
-import { cloneElement, isValidElement, ReactNode, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import {
   Area,
   Customized,
@@ -39,9 +39,12 @@ type Props = {
   altText?: string
   dataPoints: DataEntry[]
   onSelectIndex?: (index: number) => void
-  fitToFrontButton?: ReactNode
-  resetToDefaultButton?: ReactNode
   onResetToDefault?: () => void
+  onToggleFitToFront?: () => void
+  renderControls?: (api: {
+    onToggleFitToFront: () => void
+    onResetToDefault: () => void
+  }) => ReactNode
   visualizationMode?: ParetoVisualizationMode
   visualizationModeSelector?: ReactNode
   styles?: {
@@ -49,17 +52,13 @@ type Props = {
   }
 }
 
-const defaultFitBtn = <button>Toggle to fit front</button>
-const defaultResetBtn = <button>Reset to default</button>
-
 export default function ParetoFrontPlot({
   indexOfSelected,
   plot,
   dataPoints,
   onSelectIndex,
-  fitToFrontButton = defaultFitBtn,
-  resetToDefaultButton = defaultResetBtn,
   onResetToDefault,
+  renderControls,
   visualizationMode = 'ellipses',
   visualizationModeSelector,
   styles,
@@ -124,20 +123,12 @@ export default function ParetoFrontPlot({
 
   // Create separate datasets for X uncertainty bounds
   const xLowerBoundData = plot.front_y_data.map((yPair, i) => ({
-    x:
-      displayQuality(yPair[0]) -
-      (Array.isArray(plot.obj1_error[i])
-        ? plot.obj1_error[i][0]
-        : plot.obj1_error[i] || 0),
+    x: displayQuality(yPair[0]) - (plot.obj1_error[i] ?? 0),
     y: yPair[1],
   }))
 
   const xUpperBoundData = plot.front_y_data.map((yPair, i) => ({
-    x:
-      displayQuality(yPair[0]) +
-      (Array.isArray(plot.obj1_error[i])
-        ? plot.obj1_error[i][0]
-        : plot.obj1_error[i] || 0),
+    x: displayQuality(yPair[0]) + (plot.obj1_error[i] ?? 0),
     y: yPair[1],
   }))
 
@@ -154,16 +145,24 @@ export default function ParetoFrontPlot({
           Math.round((k * (frontLen - 1)) / (ELLIPSE_COUNT - 1))
         )
 
-  // Calculate domain from all data sources
+  // Calculate domain from all data sources. The band-uncertainty bounds only
+  // render in 'band' mode, so they should only influence the axis domain in
+  // that mode — otherwise switching modes silently rescales the chart.
+  const bandX =
+    visualizationMode === 'band'
+      ? [...xLowerBoundData.map(d => d.x), ...xUpperBoundData.map(d => d.x)]
+      : []
+  const bandY =
+    visualizationMode === 'band'
+      ? [...xLowerBoundData.map(d => d.y), ...xUpperBoundData.map(d => d.y)]
+      : []
   const allXValues = [
-    ...xLowerBoundData.map(d => d.x),
-    ...xUpperBoundData.map(d => d.x),
+    ...bandX,
     ...chartData.map(d => d.x),
     ...dataPointsMapped.map(d => d.x),
   ].filter((v): v is number => typeof v === 'number')
   const allYValues = [
-    ...xLowerBoundData.map(d => d.y),
-    ...xUpperBoundData.map(d => d.y),
+    ...bandY,
     ...chartData.map(d => d.y),
     ...chartData.flatMap(d => d.uncertaintyY), // Include uncertainty bounds
     ...dataPointsMapped.map(d => d.y),
@@ -451,26 +450,14 @@ export default function ParetoFrontPlot({
             </>
           )}
         </div>
-        {(fitToFrontButton ||
-          resetToDefaultButton ||
-          visualizationModeSelector) && (
-          <>
-            <div className={classes.buttonColumn}>
-              {visualizationModeSelector}
-              {fitToFrontButton &&
-                isValidElement<{ onClick?: () => void }>(fitToFrontButton) &&
-                cloneElement(fitToFrontButton, {
-                  onClick: () => setFitToFront(f => !f),
-                })}
-              {resetToDefaultButton &&
-                isValidElement<{ onClick?: () => void }>(
-                  resetToDefaultButton
-                ) &&
-                cloneElement(resetToDefaultButton, {
-                  onClick: onResetToDefault,
-                })}
-            </div>
-          </>
+        {(renderControls || visualizationModeSelector) && (
+          <div className={classes.buttonColumn}>
+            {visualizationModeSelector}
+            {renderControls?.({
+              onToggleFitToFront: () => setFitToFront(f => !f),
+              onResetToDefault: () => onResetToDefault?.(),
+            })}
+          </div>
         )}
       </div>
     </div>

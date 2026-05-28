@@ -29,7 +29,7 @@ import { groupSinglePlots } from '../../containers/result-data/experimentation-g
 import { resolveSelectedIndex } from './result.utils'
 import { z } from 'zod'
 import { isArray } from 'remeda'
-import { useState, type ComponentProps } from 'react'
+import { useState } from 'react'
 import useStyles from './result.style'
 
 type ResultProps = {
@@ -215,27 +215,26 @@ export const Result = ({
                   selectedCoords,
                   pareto.best_idx
                 )}
-                // The core ParetoPlot is the verified backend shape (scalar
-                // errors, no 1D/mean/std fields). ParetoFrontPlot's prop type
-                // over-specifies those fields but only reads the ones present
-                // here (and handles scalar errors defensively). Adapt at the
-                // boundary until the plots prop type is aligned with core.
-                plot={
-                  pareto as unknown as ComponentProps<
-                    typeof ParetoFrontPlot
-                  >['plot']
-                }
+                plot={pareto}
                 dataPoints={dataPoints}
-                fitToFrontButton={
-                  <Button variant="outlined" size="small">
-                    Toggle front fit
-                  </Button>
-                }
-                resetToDefaultButton={
-                  <Button variant="outlined" size="small">
-                    Reset to default
-                  </Button>
-                }
+                renderControls={({ onToggleFitToFront, onResetToDefault }) => (
+                  <>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={onToggleFitToFront}
+                    >
+                      Toggle front fit
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={onResetToDefault}
+                    >
+                      Reset to default
+                    </Button>
+                  </>
+                )}
                 onResetToDefault={() =>
                   dispatch({ type: 'setSelectedParetoPoint', payload: null })
                 }

@@ -212,8 +212,12 @@ function App() {
         plot={pareto}
         dataPoints={dummyDataPoints}
         onSelectIndex={index => setSelectedPoint(index)}
-        fitToFrontButton={<button>Toggle front fit</button>}
-        resetToDefaultButton={<button>Reset to default</button>}
+        renderControls={({ onToggleFitToFront, onResetToDefault }) => (
+          <>
+            <button onClick={onToggleFitToFront}>Toggle front fit</button>
+            <button onClick={onResetToDefault}>Reset to default</button>
+          </>
+        )}
         onResetToDefault={() => setSelectedPoint(pareto.best_idx)}
       />
       <PNGPlot plot={singlePng} />
