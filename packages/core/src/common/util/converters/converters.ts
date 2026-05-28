@@ -83,8 +83,9 @@ export const calculateData = (
             it =>
               isValidScoreName(it.name) && enabledScoreNames.includes(it.name)
           )
-          .map(it => it.value)
-          .map(it => Number(it) * -1),
+          .map(it =>
+            it.name === 'quality' ? Number(it.value) * -1 : Number(it.value)
+          ),
       })
     )
 }
