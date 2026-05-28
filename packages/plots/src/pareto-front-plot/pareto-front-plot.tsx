@@ -3,7 +3,6 @@ import {
   isValidElement,
   ReactNode,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -27,8 +26,6 @@ import useStyles from './pareto-front-plot.style'
 export const paretoVisualizationModes = [
   { id: 'ellipses', label: 'Confidence ellipses' },
   { id: 'band', label: 'Uncertainty band' },
-  { id: 'spaghetti', label: 'Posterior samples' },
-  { id: 'minimal', label: 'Minimal' },
 ] as const
 
 export type ParetoVisualizationMode =
@@ -217,48 +214,6 @@ export default function ParetoFrontPlot({
   // Format axis values to 2 decimal places
   const formatTick = (value: number) => value.toFixed(2)
 
-  // 15 sample fronts from the per-point Gaussian posterior, memoized so the
-  // visual is stable across re-renders. Each sample line draws independent
-  // (q, c) draws at every NSGA-II front point, capped at ±1.96σ so we stay
-  // within the same credible region the band/ellipses depict.
-  const spaghettiSamples = useMemo(() => {
-    if (visualizationMode !== 'spaghetti')
-      return [] as { x: number; y: number }[][]
-    const N = 15
-    const len = plot.front_y_data.length
-    let seed = (len * 1000 + Math.floor((plot.obj1_mean ?? 0) * 1000)) >>> 0
-    if (seed === 0) seed = 1
-    const rng = () => {
-      seed = (seed * 1664525 + 1013904223) >>> 0
-      return (seed + 1) / 4294967297
-    }
-    const gauss = (mean: number, std: number) => {
-      const u = Math.max(1e-9, rng())
-      const v = rng()
-      const z = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v)
-      const clamped = Math.max(-1.96, Math.min(1.96, z))
-      return mean + std * clamped
-    }
-    const lines: { x: number; y: number }[][] = []
-    for (let s = 0; s < N; s++) {
-      const line: { x: number; y: number }[] = []
-      for (let i = 0; i < len; i++) {
-        const yPair = plot.front_y_data[i]
-        if (!yPair) continue
-        const meanX = displayQuality(yPair[0])
-        const meanY = yPair[1]
-        // obj{1,2}_error is 1.96σ per the upstream docs, so divide for σ.
-        const stdX = scalarError(plot.obj1_error[i]) / 1.96
-        const stdY = scalarError(plot.obj2_error[i]) / 1.96
-        line.push({ x: gauss(meanX, stdX), y: gauss(meanY, stdY) })
-      }
-      lines.push(line)
-    }
-    return lines
-    // Re-sample only when the front data changes or when entering spaghetti mode.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visualizationMode, plot.front_y_data, plot.obj1_error, plot.obj2_error])
-
   // Renders sampled 95% confidence ellipses along the front. Defined inside
   // ParetoFrontPlot so it can close over `plot`, `ellipseIndices`, and the
   // domain. Recharts <Customized> wraps the return in a <Layer> (an SVG <g>),
@@ -359,31 +314,6 @@ export default function ParetoFrontPlot({
         stroke="none"
         pointerEvents="none"
       />
-    )
-  }
-
-  // Renders the spaghetti samples as thin polylines.
-  const SpaghettiLines = () => {
-    const plotArea = usePlotArea()
-    if (!plotArea || plotArea.width === 0 || plotArea.height === 0) return null
-    const xToPx = (x: number) =>
-      plotArea.x +
-      ((x - xDomain[0]!) / (xDomain[1]! - xDomain[0]!)) * plotArea.width
-    const yToPx = (y: number) =>
-      plotArea.y +
-      (1 - (y - yDomain[0]!) / (yDomain[1]! - yDomain[0]!)) * plotArea.height
-    return (
-      <g pointerEvents="none">
-        {spaghettiSamples.map((line, s) => (
-          <polyline
-            key={s}
-            points={line.map(p => `${xToPx(p.x)},${yToPx(p.y)}`).join(' ')}
-            stroke="rgba(7, 122, 206, 0.18)"
-            strokeWidth={1}
-            fill="none"
-          />
-        ))}
-      </g>
     )
   }
 
@@ -616,9 +546,6 @@ export default function ParetoFrontPlot({
           {visualizationMode === 'ellipses' && (
             <Customized component={ConfidenceEllipses} />
           )}
-          {visualizationMode === 'spaghetti' && (
-            <Customized component={SpaghettiLines} />
-          )}
           <Scatter
             name="Dominated observations"
             dataKey={'y'}
@@ -728,7 +655,6 @@ export default function ParetoFrontPlot({
             dot={{ r: 2, stroke: 'none', fill: 'black' }}
             name="Pareto front"
             isAnimationActive={false}
-            onClick={e => console.log(e)}
           ></Line>
           {/* Reference lines from selected point to axes */}
           <ReferenceLine
@@ -894,15 +820,6 @@ export default function ParetoFrontPlot({
                 <span>Uncertainty (quality)</span>
               </div>
             </>
-          )}
-          {visualizationMode === 'spaghetti' && (
-            <div className={classes.legendItem}>
-              <div
-                className={classes.legendColorLine}
-                style={{ background: 'rgba(7, 122, 206, 0.4)' }}
-              />
-              <span>Posterior samples</span>
-            </div>
           )}
         </div>
         {(fitToFrontButton ||
