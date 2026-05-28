@@ -243,6 +243,16 @@ Use whatever render-test pattern already exists in the package; otherwise add a 
 - **Server returns `pickledUsed: false`:** No special UI treatment in v1. Visible via `results.extras.pickledUsed` for debug.
 - **Stale `extras.selectedPoint` from prior session that no longer matches the front:** `matchFrontIndex` returns no match → fall back to `best_idx`. The next Run sends the stale coords, but the server only uses them for the per-dimension highlight; the visual reverts to `best_idx` once `Result.tsx` re-derives the index.
 
+## End-to-end verification
+
+A live backend runs at `http://127.0.0.1:9090/v1.0` with `apikey=none`. The implementation agent must exercise the full happy path against it before declaring done:
+
+1. Configure a multi-objective experiment and run an initial evaluation. Confirm `result.pickled` is non-empty and `result.extras.pickledUsed` is `false`.
+2. Click a Pareto point in the UI. Confirm `experiment.extras.selectedPoint` is set, dirty flag flips, and the highlight on the Pareto plot moves.
+3. Trigger Run. Confirm the outgoing request body contains both `extras.selectedPoint` and `extras.pickled`. Confirm `result.extras.pickledUsed` is `true` in the response, the per-dimension single plots refresh, and `lastEvaluationHash` resets to match.
+4. Add a measurement. Confirm `extras.selectedPoint` is cleared and the next request omits the key.
+5. Run again with the new data; the server reports `pickledUsed: false` (fingerprint mismatch fallback), and a new `result.pickled` is stored for the next round.
+
 ## Files touched
 
 - `packages/core/src/context/experiment/experiment-reducers.ts` — new action, clear-on-dirty helper, calls in 9 reducers.
