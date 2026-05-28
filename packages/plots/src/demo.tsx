@@ -1,33 +1,23 @@
 import { PNGPlot, ParetoFrontPlot } from '.'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { singlePng, paretoJson } from './demo-data'
-import { OneDPlot, OneDData } from './one-d-plot/one-d-plot'
-import { DataEntry, ParetoPlot } from '@boostv/process-optimizer-frontend-core'
+import { OneDPlot } from './one-d-plot/one-d-plot'
+import {
+  DataEntry,
+  parseParetoPlot,
+} from '@boostv/process-optimizer-frontend-core'
+import paretoDemo from './sample-data/pareto-demo.json'
+import singlePngJson from './sample-data/single-png.json'
 
-// cast the dummy data to the canonical ParetoPlot type. Real data is zod parsed.
-const pareto = paretoJson as unknown as ParetoPlot
-
-// obj1_1D_data is not part of the canonical ParetoPlot type; extract it
-// directly from the raw fixture for the demo OneDPlot previews only.
-const paretoRaw = paretoJson as unknown as {
-  obj1_1D_data: [...number[][], number][]
+const parsedPareto = parseParetoPlot(paretoDemo)
+if (!parsedPareto) {
+  throw new Error('pareto-demo.json is not a valid pareto payload')
 }
-
-const mapToOneDData = (entry: [...number[][], number]): OneDData => {
-  const arrays = entry.slice(0, -1) as number[][]
-  const referenceLineX = entry[entry.length - 1] as number
-  const xValues = arrays[0]!
-  const yLow = arrays[1]!
-  const yHigh = arrays[2]!
-  return {
-    points: xValues.map((x, i) => ({ x, y: [yLow[i]!, yHigh[i]!] })),
-    type: 'numeric',
-    referenceLineX,
-  }
-}
-
-const obj1Plots = paretoRaw.obj1_1D_data.map(mapToOneDData)
+// Bind to a non-null const so the type stays narrowed inside the App closure
+// (TypeScript drops module-level narrowing of the guarded binding within
+// nested function bodies).
+const pareto = parsedPareto
+const singlePng = (singlePngJson as { png: string }).png
 
 const dummyDataPoints: DataEntry[] = [
   {
@@ -222,14 +212,6 @@ function App() {
       />
       <PNGPlot plot={singlePng} />
       <div style={{ display: 'flex' }}>
-        {obj1Plots.map((data, i) => (
-          <OneDPlot
-            key={`obj1-${i}`}
-            data={data}
-            height={'140px'}
-            width={'140px'}
-          />
-        ))}
         <OneDPlot
           data={{
             points: [

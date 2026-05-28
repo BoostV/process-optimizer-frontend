@@ -40,7 +40,6 @@ type Props = {
   dataPoints: DataEntry[]
   onSelectIndex?: (index: number) => void
   onResetToDefault?: () => void
-  onToggleFitToFront?: () => void
   renderControls?: (api: {
     onToggleFitToFront: () => void
     onResetToDefault: () => void
