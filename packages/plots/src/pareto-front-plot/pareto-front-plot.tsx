@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react'
 import {
-  Area,
+  Customized,
   Scatter,
   XAxis,
   YAxis,
@@ -64,19 +64,32 @@ export default function ParetoFrontPlot({
   const [fitToFront, setFitToFront] = useState(false)
 
   // Transform DataEntry[] to {x, y, id}[] format
-  const dataPointsMapped = dataPoints.map(entry => {
-    const qualityPoint = entry.data.find(
-      d => d.type === 'score' && d.name === 'quality'
+  const dataPointsMapped: { x: number; y: number; id: number }[] =
+    dataPoints.map(entry => {
+      const qualityPoint = entry.data.find(
+        d => d.type === 'score' && d.name === 'quality'
+      )
+      const costPoint = entry.data.find(
+        d => d.type === 'score' && d.name === 'cost'
+      )
+      return {
+        x: Number(qualityPoint?.value ?? 0),
+        y: Number(costPoint?.value ?? 0),
+        id: entry.meta.id,
+      }
+    })
+
+  // Split observed points by Pareto-optimality (in observed quality/cost space:
+  // higher quality, lower cost is better). Optimal points render filled in
+  // brand color; dominated points stay muted gray.
+  const isObservedParetoOptimal = (p: { x: number; y: number }) =>
+    !dataPointsMapped.some(
+      o => o !== p && o.x >= p.x && o.y <= p.y && (o.x > p.x || o.y < p.y)
     )
-    const costPoint = entry.data.find(
-      d => d.type === 'score' && d.name === 'cost'
-    )
-    return {
-      x: qualityPoint?.value ?? 0,
-      y: costPoint?.value ?? 0,
-      id: entry.meta.id,
-    }
-  })
+  const observedParetoOptimal = dataPointsMapped.filter(isObservedParetoOptimal)
+  const observedDominated = dataPointsMapped.filter(
+    p => !isObservedParetoOptimal(p)
+  )
 
   // Quality is sent to the backend negated (we want to maximize); cost is sent
   // as-is (we want to minimize). The backend echoes both back in those units,
@@ -124,6 +137,21 @@ export default function ParetoFrontPlot({
         : plot.obj1_error[i] || 0),
     y: yPair[1],
   }))
+
+  // Sample ~10 front points to draw 95% confidence ellipses at. Each ellipse's
+  // semi-axes are the per-objective 1.96-sigma errors at that point, so the
+  // shape communicates joint uncertainty along the front without the continuous
+  // band overpowering the rest of the chart.
+  const ELLIPSE_COUNT = 10
+  const scalarError = (e: number | number[] | undefined): number =>
+    Array.isArray(e) ? Number(e[0] ?? 0) : Number(e ?? 0)
+  const frontLen = plot.front_y_data.length
+  const ellipseIndices =
+    frontLen <= ELLIPSE_COUNT
+      ? plot.front_y_data.map((_, i) => i)
+      : Array.from({ length: ELLIPSE_COUNT }, (_, k) =>
+          Math.round((k * (frontLen - 1)) / (ELLIPSE_COUNT - 1))
+        )
 
   // Calculate domain from all data sources
   const allXValues = [
@@ -381,20 +409,50 @@ export default function ParetoFrontPlot({
             tickFormatter={formatTick}
             label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
           />
-          <Area
-            type="linear"
-            dataKey="uncertaintyY"
-            fill="#f6c47e"
-            fillOpacity={0.4}
-            stroke="none"
-            name="UncertaintyY"
-            isAnimationActive={false}
+          {/* Confidence ellipses replace the continuous uncertainty band */}
+          <Customized
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            component={(props: any) => {
+              const xScale = props?.xAxisMap?.[0]?.scale
+              const yScale = props?.yAxisMap?.[0]?.scale
+              if (!xScale || !yScale) return null
+              return (
+                <g pointerEvents="none">
+                  {ellipseIndices.map(i => {
+                    const yPair = plot.front_y_data[i]
+                    if (!yPair) return null
+                    const cxData = displayQuality(yPair[0])
+                    const cyData = yPair[1]
+                    const e1 = scalarError(plot.obj1_error[i])
+                    const e2 = scalarError(plot.obj2_error[i])
+                    const cx = xScale(cxData)
+                    const cy = yScale(cyData)
+                    const rx = Math.abs(xScale(cxData + e1) - cx)
+                    const ry = Math.abs(yScale(cyData + e2) - cy)
+                    return (
+                      <ellipse
+                        key={i}
+                        cx={cx}
+                        cy={cy}
+                        rx={rx}
+                        ry={ry}
+                        fill="rgba(7, 122, 206, 0.08)"
+                        stroke="rgba(7, 122, 206, 0.5)"
+                        strokeWidth={1}
+                      />
+                    )
+                  })}
+                </g>
+              )
+            }}
           />
           <Scatter
-            name="Data points"
+            name="Dominated observations"
             dataKey={'y'}
-            data={dataPointsMapped}
-            fill="grey"
+            data={observedDominated}
+            fill="white"
+            stroke="#999"
+            strokeWidth={1.5}
             isAnimationActive={false}
             label={{
               position: 'top',
@@ -420,14 +478,14 @@ export default function ParetoFrontPlot({
                       width={width}
                       height={height}
                       fill="white"
-                      stroke="#999"
+                      stroke="#bbb"
                       strokeWidth={1}
                       rx={2}
                     />
                     <text
                       x={x}
                       y={rectY + height / 2}
-                      fill="#666"
+                      fill="#888"
                       fontSize={fontSize}
                       textAnchor="middle"
                       dominantBaseline="middle"
@@ -438,7 +496,57 @@ export default function ParetoFrontPlot({
                 )
               },
             }}
-          ></Scatter>
+          />
+          <Scatter
+            name="Pareto-optimal observations"
+            dataKey={'y'}
+            data={observedParetoOptimal}
+            fill="#2b5879"
+            stroke="#2b5879"
+            isAnimationActive={false}
+            label={{
+              position: 'top',
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              content: (props: any) => {
+                const { x, y, id } = props
+                if (!id) {
+                  return null
+                }
+                const text = `#${id}`
+                const padding = 4
+                const fontSize = 12
+                const width = text.length * 7 + padding * 2
+                const height = fontSize + padding * 2
+                const rectX = x - width / 2
+                const rectY = y - 5 - height
+
+                return (
+                  <g>
+                    <rect
+                      x={rectX}
+                      y={rectY}
+                      width={width}
+                      height={height}
+                      fill="#2b5879"
+                      stroke="#2b5879"
+                      strokeWidth={1}
+                      rx={2}
+                    />
+                    <text
+                      x={x}
+                      y={rectY + height / 2}
+                      fill="white"
+                      fontSize={fontSize}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      {text}
+                    </text>
+                  </g>
+                )
+              },
+            }}
+          />
           <Line
             type="linear"
             dataKey="y"
@@ -449,30 +557,6 @@ export default function ParetoFrontPlot({
             isAnimationActive={false}
             onClick={e => console.log(e)}
           ></Line>
-          <Line
-            type="linear"
-            data={xLowerBoundData}
-            dataKey="y"
-            stroke="green"
-            strokeWidth={1}
-            dot={false}
-            activeDot={false}
-            name="Uncertainty X Lower Bound"
-            isAnimationActive={false}
-            hide={false}
-          />
-          <Line
-            type="linear"
-            data={xUpperBoundData}
-            dataKey="y"
-            stroke="green"
-            strokeWidth={1}
-            dot={false}
-            activeDot={false}
-            name="Uncertainty X Upper Bound"
-            isAnimationActive={false}
-            hide={false}
-          />
           {/* Reference lines from selected point to axes */}
           <ReferenceLine
             segment={[
@@ -585,9 +669,20 @@ export default function ParetoFrontPlot({
           <div className={classes.legendItem}>
             <div
               className={classes.legendColorCircle}
-              style={{ background: 'grey' }}
+              style={{ background: '#2b5879' }}
             />
-            <span>Data points</span>
+            <span>Pareto-optimal observation</span>
+          </div>
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColorCircle}
+              style={{
+                background: 'white',
+                border: '1.5px solid #999',
+                boxSizing: 'border-box',
+              }}
+            />
+            <span>Dominated observation</span>
           </div>
           <div className={classes.legendItem}>
             <div
@@ -598,17 +693,14 @@ export default function ParetoFrontPlot({
           </div>
           <div className={classes.legendItem}>
             <div
-              className={classes.legendColor}
-              style={{ background: '#f6c47e', opacity: 0.6 }}
+              className={classes.legendColorCircle}
+              style={{
+                background: 'rgba(7, 122, 206, 0.08)',
+                border: '1px solid rgba(7, 122, 206, 0.5)',
+                boxSizing: 'border-box',
+              }}
             />
-            <span>Uncertainty (cost)</span>
-          </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColorLine}
-              style={{ background: 'green' }}
-            />
-            <span>Uncertainty (quality)</span>
+            <span>95% credible region</span>
           </div>
         </div>
         {(fitToFrontButton || resetToDefaultButton) && (
