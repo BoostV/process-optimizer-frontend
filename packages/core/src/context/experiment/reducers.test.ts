@@ -223,6 +223,105 @@ describe('experiment reducer', () => {
     })
   })
 
+  describe('clearing extras.selectedPoint on structural mutations', () => {
+    const seededState: State = produce(initState, draft => {
+      draft.experiment.extras.selectedPoint = [120, 'Vanilla']
+    })
+
+    const cases: { name: string; action: ExperimentAction }[] = [
+      {
+        name: 'updateDataPoints',
+        action: { type: 'updateDataPoints', payload: [] },
+      },
+      {
+        name: 'updateConfiguration',
+        action: {
+          type: 'updateConfiguration',
+          payload: initState.experiment.optimizerConfig,
+        },
+      },
+      {
+        name: 'addCategorialVariable',
+        action: {
+          type: 'addCategorialVariable',
+          payload: createCategoricalVariable({ name: 'New' }),
+        },
+      },
+      {
+        name: 'editCategoricalVariable',
+        action: {
+          type: 'editCategoricalVariable',
+          payload: { index: 0, newVariable: createCategoricalVariable({}) },
+        },
+      },
+      {
+        name: 'deleteCategorialVariable',
+        action: { type: 'deleteCategorialVariable', payload: 0 },
+      },
+      {
+        name: 'setCategoricalVariableEnabled',
+        action: {
+          type: 'setCategoricalVariableEnabled',
+          payload: { index: 0, enabled: false },
+        },
+      },
+      {
+        name: 'addValueVariable',
+        action: {
+          type: 'addValueVariable',
+          payload: createValueVariable({ name: 'Flour' }),
+        },
+      },
+      {
+        name: 'editValueVariable',
+        action: {
+          type: 'editValueVariable',
+          payload: { index: 0, newVariable: createValueVariable({}) },
+        },
+      },
+      {
+        name: 'deleteValueVariable',
+        action: { type: 'deleteValueVariable', payload: 0 },
+      },
+      {
+        name: 'setValueVariableEnabled',
+        action: {
+          type: 'setValueVariableEnabled',
+          payload: { index: 0, enabled: false },
+        },
+      },
+      {
+        name: 'experiment/toggleMultiObjective',
+        action: { type: 'experiment/toggleMultiObjective' },
+      },
+    ]
+
+    cases.forEach(({ name, action }) => {
+      it(`should clear extras.selectedPoint on ${name}`, () => {
+        const actual = rootReducer(seededState, action)
+        expect('selectedPoint' in actual.experiment.extras).toBe(false)
+      })
+    })
+
+    it('should NOT clear extras.selectedPoint on registerResult', () => {
+      const actual = rootReducer(seededState, {
+        type: 'registerResult',
+        payload: {
+          experimentVersion: seededState.experiment.info.version,
+          result: {
+            id: 'r',
+            next: [],
+            plots: [],
+            pickled: 'p',
+            expectedMinimum: [],
+            extras: {},
+          },
+        },
+      })
+      expect(actual.experiment.extras.selectedPoint).toEqual([120, 'Vanilla'])
+    })
+  })
+
   describe('updateExperimentName', () => {
     it('should update name', async () => {
       const actual = rootReducer(initState, {
