@@ -1,6 +1,10 @@
 import { displayQuality } from '@boostv/process-optimizer-frontend-core'
 import { useDataToPixel } from './use-data-to-pixel'
 
+const LABEL_WIDTH = 140
+const LABEL_GAP = 6
+const LINE_HEIGHT = 16
+
 type Props = {
   hoverIndex: number | null
   setHoverIndex: (i: number | null) => void
@@ -101,6 +105,21 @@ export const HoverOverlay = ({
       ].filter(Boolean)
     : []
 
+  // Place the label to the right of the point by default, but flip it to the
+  // left when it would overflow the plot's right edge (where it would be
+  // clipped or collide with the legend panel). Clamp within the plot area as a
+  // final guard for very narrow charts.
+  const labelHeight = labelLines.length * LINE_HEIGHT + 6
+  const rawLabelX =
+    cx + LABEL_GAP + LABEL_WIDTH <= plotArea.x + plotArea.width
+      ? cx + LABEL_GAP
+      : cx - LABEL_GAP - LABEL_WIDTH
+  const labelX = Math.max(
+    plotArea.x,
+    Math.min(rawLabelX, plotArea.x + plotArea.width - LABEL_WIDTH)
+  )
+  const labelY = plotArea.y + 4
+
   return (
     <g>
       {point && (
@@ -121,17 +140,23 @@ export const HoverOverlay = ({
             stroke="white"
             strokeWidth={2}
           />
-          <g transform={`translate(${cx + 6}, ${plotArea.y + 4})`}>
+          <g transform={`translate(${labelX}, ${labelY})`}>
             <rect
               x={0}
               y={0}
-              width={140}
-              height={labelLines.length * 16 + 6}
+              width={LABEL_WIDTH}
+              height={labelHeight}
               fill="rgba(255,255,255,0.85)"
               rx={3}
             />
             {labelLines.map((t, i) => (
-              <text key={i} x={6} y={16 + i * 16} fontSize={12} fill="#2b5879">
+              <text
+                key={i}
+                x={6}
+                y={16 + i * LINE_HEIGHT}
+                fontSize={12}
+                fill="#2b5879"
+              >
                 {t}
               </text>
             ))}
