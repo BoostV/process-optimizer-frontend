@@ -164,8 +164,8 @@ export default function ParetoFrontPlot({
   const yRange = yMax - yMin
   const yPadding = yRange * 0.02
 
-  const xDomain = [xMin - xPadding, xMax + xPadding]
-  const yDomain = [yMin - yPadding, yMax + yPadding]
+  const xDomain = [Math.max(0, xMin - xPadding), xMax + xPadding]
+  const yDomain = [Math.max(0, yMin - yPadding), yMax + yPadding]
 
   // Format axis values to 2 decimal places
   const formatTick = (value: number) => value.toFixed(2)
@@ -224,6 +224,7 @@ export default function ParetoFrontPlot({
     pixelX: number,
     chartTop: number,
     point: [number, number],
+    xVars: ReadonlyArray<number | string> | undefined,
     dotPixelX: number,
     dotPixelY: number
   ) => {
@@ -240,6 +241,15 @@ export default function ParetoFrontPlot({
       if (children[1]) {
         children[1].textContent = `Cost: ${point[1].toFixed(2)}`
       }
+      variableNames.forEach((name, i) => {
+        const child = children[i + 2]
+        if (!child) return
+        const v = xVars?.[i]
+        child.textContent =
+          v === undefined
+            ? ''
+            : `${name}: ${typeof v === 'number' ? v.toFixed(4) : v}`
+      })
       hoverLabelRef.current.style.display = 'block'
       hoverLabelRef.current.style.left = `${pixelX + 6}px`
       hoverLabelRef.current.style.top = `${chartTop + 4}px`
@@ -314,7 +324,8 @@ export default function ParetoFrontPlot({
       const relPointY = (point[1] - yDomain[0]!) / (yDomain[1]! - yDomain[0]!)
       const dotPixelY = svgOffsetY + yBottom - relPointY * (yBottom - yTop)
 
-      showHover(pixelX, chartTop, point, dotPixelX, dotPixelY)
+      const xVars = plot.front_x_data[idx]
+      showHover(pixelX, chartTop, point, xVars, dotPixelX, dotPixelY)
     })
   }
 
@@ -510,10 +521,16 @@ export default function ParetoFrontPlot({
           fontSize: 12,
           pointerEvents: 'none',
           whiteSpace: 'nowrap',
+          background: 'rgba(255, 255, 255, 0.85)',
+          padding: '2px 6px',
+          borderRadius: 3,
         }}
       >
         <div />
         <div />
+        {variableNames.map((_, i) => (
+          <div key={i} />
+        ))}
       </div>
       <div
         ref={hoverDotRef}
