@@ -56,7 +56,11 @@ export const groupSinglePlots = (
   plots: PlotEntry[],
   activeVariables: ActiveVariable[]
 ): (string | OneDData)[][] => {
-  const regex = /^objective_(\d+)_(\d+)$/
+  // The backend emits per-objective single plots under either an
+  // `objective_<n>_<m>` or a `single_<n>_<m>` prefix (the latter is also used
+  // by saved experiments such as the catapult sample). Match both so their
+  // plots aren't silently dropped from the "Predicted best solution" panel.
+  const regex = /^(?:objective|single)_(\d+)_(\d+)$/
   const grouped = new Map<
     number,
     Array<{ m: number; data: string | OneDData }>

@@ -141,11 +141,10 @@ export const Result = ({
     paretoRaw?.plot ? JSON.parse(paretoRaw.plot) : null
   )
 
-  if (!pareto) {
-    return null
-  }
-
-  const cost = costDomain(pareto)
+  // A single-objective experiment has no pareto plot; it still renders the
+  // "Predicted best solution" panel (with its PNG plots) below. Only the
+  // multi-objective ParetoFrontPlot rendering requires `pareto`.
+  const cost = pareto ? costDomain(pareto) : undefined
 
   return (
     <TitleCard
@@ -206,7 +205,7 @@ export const Result = ({
             />
           </Box>
 
-          {isMultiObjective && (
+          {isMultiObjective && pareto && (
             <Box p={2} className={classes.paretoContainer}>
               <ParetoFrontPlot
                 onSelectIndex={onSetSelectedParetoPoint}
