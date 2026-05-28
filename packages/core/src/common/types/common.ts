@@ -15,6 +15,10 @@ export const isValidScoreName = (
   return (scoreNames as readonly string[]).includes(name)
 }
 
+// A selected pareto point: one coordinate per optimizer-space dimension,
+// matching the backend's front_x_data row shape (mixed numeric/categorical).
+export type SelectedPoint = Array<number | string>
+
 const infoSchema = z.object({
   name: z.string(),
   description: z.string(),
