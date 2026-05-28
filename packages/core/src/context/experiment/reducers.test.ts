@@ -187,6 +187,42 @@ describe('experiment reducer', () => {
     })
   })
 
+  describe('setSelectedParetoPoint', () => {
+    it('should set extras.selectedPoint to the coord array', () => {
+      const actual = rootReducer(initState, {
+        type: 'setSelectedParetoPoint',
+        payload: [120, 'Chocolate'],
+      })
+      expect(actual.experiment.extras.selectedPoint).toEqual([120, 'Chocolate'])
+    })
+
+    it('should delete extras.selectedPoint when payload is null', () => {
+      const seeded = produce(initState, draft => {
+        draft.experiment.extras.selectedPoint = [120, 'Chocolate']
+      })
+      const actual = rootReducer(seeded, {
+        type: 'setSelectedParetoPoint',
+        payload: null,
+      })
+      expect('selectedPoint' in actual.experiment.extras).toBe(false)
+    })
+
+    it('should mark experiment as changed when a selection is set', () => {
+      const startHash = md5(
+        JSON.stringify(createFetchExperimentResultRequest(initState.experiment))
+      )
+      const cleanStart = produce(initState, draft => {
+        draft.experiment.lastEvaluationHash = startHash
+        draft.experiment.changedSinceLastEvaluation = false
+      })
+      const actual = rootReducer(cleanStart, {
+        type: 'setSelectedParetoPoint',
+        payload: [120, 'Chocolate'],
+      })
+      expect(actual.experiment.changedSinceLastEvaluation).toBe(true)
+    })
+  })
+
   describe('updateExperimentName', () => {
     it('should update name', async () => {
       const actual = rootReducer(initState, {

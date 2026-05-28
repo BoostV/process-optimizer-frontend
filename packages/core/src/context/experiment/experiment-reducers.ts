@@ -80,6 +80,10 @@ export type ExperimentAction =
       }
     }
   | {
+      type: 'setSelectedParetoPoint'
+      payload: Array<number | string> | null
+    }
+  | {
       type: 'addCategorialVariable'
       payload: CategoricalVariableType
     }
@@ -382,6 +386,13 @@ export const experimentReducer = produce(
         state.results = experimentSchema.shape.results.parse(
           action.payload.result
         )
+        break
+      case 'setSelectedParetoPoint':
+        if (action.payload === null) {
+          delete state.extras.selectedPoint
+        } else {
+          state.extras.selectedPoint = action.payload
+        }
         break
       case 'updateDataPoints':
         experimentSchema.shape.dataPoints.parse(action.payload)

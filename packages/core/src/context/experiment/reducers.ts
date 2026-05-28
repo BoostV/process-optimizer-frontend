@@ -26,6 +26,7 @@ export const rootReducer = (state: State, action: Action) => {
     case 'setValueVariableEnabled':
     case 'updateConfiguration':
     case 'registerResult':
+    case 'setSelectedParetoPoint':
     case 'updateDataPoints':
     case 'copySuggestedToDataPoints':
     case 'experiment/toggleMultiObjective':
