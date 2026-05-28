@@ -1,0 +1,222 @@
+{
+  "id": "clean-multi-trade-off-01",
+  "lastEvaluationHash": "",
+  "changedSinceLastEvaluation": true,
+  "info": {
+    "name": "Multi-objective clean trade-off",
+    "description": "12 measurements designed to produce a sensible Pareto front: a budget tier (red, low water/temp, q~3, cheap), a balanced tier (green, moderate everything, q~4-4.6), and a premium tier (blue, high water/temp, q~5, expensive). Six points are Pareto-optimal; six are dominated.",
+    "swVersion": "@boostv/process-optimizer-frontend-core@2.12.0",
+    "dataFormatVersion": "18",
+    "version": 1,
+    "extras": {}
+  },
+  "extras": {
+    "experimentSuggestionCount": 1,
+    "graphs": ["pareto", "single"],
+    "graphFormat": "json"
+  },
+  "categoricalVariables": [
+    {
+      "name": "color",
+      "description": "",
+      "options": ["red", "green", "blue"],
+      "enabled": true
+    }
+  ],
+  "valueVariables": [
+    {
+      "type": "discrete",
+      "name": "water",
+      "description": "",
+      "min": 0,
+      "max": 100,
+      "enabled": true
+    },
+    {
+      "type": "discrete",
+      "name": "temperature",
+      "description": "",
+      "min": -50,
+      "max": 120,
+      "enabled": true
+    },
+    {
+      "type": "continuous",
+      "name": "angle",
+      "description": "",
+      "min": 0,
+      "max": 360,
+      "enabled": true
+    }
+  ],
+  "scoreVariables": [
+    {
+      "name": "quality",
+      "label": "Quality (0-5)",
+      "description": "",
+      "enabled": true
+    },
+    {
+      "name": "cost",
+      "label": "Cost",
+      "description": "",
+      "enabled": true
+    }
+  ],
+  "constraints": [
+    {
+      "type": "sum",
+      "value": 0,
+      "dimensions": []
+    }
+  ],
+  "optimizerConfig": {
+    "baseEstimator": "GP",
+    "acqFunc": "gp_hedge",
+    "initialPoints": 5,
+    "kappa": 1.96,
+    "xi": 0.01
+  },
+  "results": {
+    "id": "",
+    "next": [],
+    "plots": [],
+    "pickled": "",
+    "expectedMinimum": [],
+    "extras": {}
+  },
+  "dataPoints": [
+    {
+      "meta": { "id": 1, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 80 },
+        { "type": "numeric", "name": "temperature", "value": 70 },
+        { "type": "numeric", "name": "angle", "value": 180 },
+        { "type": "categorical", "name": "color", "value": "blue" },
+        { "type": "score", "name": "quality", "value": 5.0 },
+        { "type": "score", "name": "cost", "value": 50 }
+      ]
+    },
+    {
+      "meta": { "id": 2, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 60 },
+        { "type": "numeric", "name": "temperature", "value": 55 },
+        { "type": "numeric", "name": "angle", "value": 170 },
+        { "type": "categorical", "name": "color", "value": "green" },
+        { "type": "score", "name": "quality", "value": 4.6 },
+        { "type": "score", "name": "cost", "value": 25 }
+      ]
+    },
+    {
+      "meta": { "id": 3, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 40 },
+        { "type": "numeric", "name": "temperature", "value": 50 },
+        { "type": "numeric", "name": "angle", "value": 190 },
+        { "type": "categorical", "name": "color", "value": "green" },
+        { "type": "score", "name": "quality", "value": 4.4 },
+        { "type": "score", "name": "cost", "value": 20 }
+      ]
+    },
+    {
+      "meta": { "id": 4, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 30 },
+        { "type": "numeric", "name": "temperature", "value": 55 },
+        { "type": "numeric", "name": "angle", "value": 180 },
+        { "type": "categorical", "name": "color", "value": "green" },
+        { "type": "score", "name": "quality", "value": 4.0 },
+        { "type": "score", "name": "cost", "value": 12 }
+      ]
+    },
+    {
+      "meta": { "id": 5, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 20 },
+        { "type": "numeric", "name": "temperature", "value": 45 },
+        { "type": "numeric", "name": "angle", "value": 200 },
+        { "type": "categorical", "name": "color", "value": "red" },
+        { "type": "score", "name": "quality", "value": 3.5 },
+        { "type": "score", "name": "cost", "value": 6 }
+      ]
+    },
+    {
+      "meta": { "id": 6, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 10 },
+        { "type": "numeric", "name": "temperature", "value": 40 },
+        { "type": "numeric", "name": "angle", "value": 210 },
+        { "type": "categorical", "name": "color", "value": "red" },
+        { "type": "score", "name": "quality", "value": 2.8 },
+        { "type": "score", "name": "cost", "value": 3 }
+      ]
+    },
+    {
+      "meta": { "id": 7, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 85 },
+        { "type": "numeric", "name": "temperature", "value": 85 },
+        { "type": "numeric", "name": "angle", "value": 170 },
+        { "type": "categorical", "name": "color", "value": "blue" },
+        { "type": "score", "name": "quality", "value": 4.5 },
+        { "type": "score", "name": "cost", "value": 52 }
+      ]
+    },
+    {
+      "meta": { "id": 8, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 50 },
+        { "type": "numeric", "name": "temperature", "value": 20 },
+        { "type": "numeric", "name": "angle", "value": 100 },
+        { "type": "categorical", "name": "color", "value": "red" },
+        { "type": "score", "name": "quality", "value": 2.5 },
+        { "type": "score", "name": "cost", "value": 10 }
+      ]
+    },
+    {
+      "meta": { "id": 9, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 70 },
+        { "type": "numeric", "name": "temperature", "value": 60 },
+        { "type": "numeric", "name": "angle", "value": 300 },
+        { "type": "categorical", "name": "color", "value": "blue" },
+        { "type": "score", "name": "quality", "value": 4.2 },
+        { "type": "score", "name": "cost", "value": 40 }
+      ]
+    },
+    {
+      "meta": { "id": 10, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 25 },
+        { "type": "numeric", "name": "temperature", "value": 30 },
+        { "type": "numeric", "name": "angle", "value": 85 },
+        { "type": "categorical", "name": "color", "value": "red" },
+        { "type": "score", "name": "quality", "value": 2.6 },
+        { "type": "score", "name": "cost", "value": 5 }
+      ]
+    },
+    {
+      "meta": { "id": 11, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 35 },
+        { "type": "numeric", "name": "temperature", "value": 60 },
+        { "type": "numeric", "name": "angle", "value": 240 },
+        { "type": "categorical", "name": "color", "value": "green" },
+        { "type": "score", "name": "quality", "value": 3.8 },
+        { "type": "score", "name": "cost", "value": 22 }
+      ]
+    },
+    {
+      "meta": { "id": 12, "enabled": true, "valid": true },
+      "data": [
+        { "type": "numeric", "name": "water", "value": 45 },
+        { "type": "numeric", "name": "temperature", "value": 100 },
+        { "type": "numeric", "name": "angle", "value": 350 },
+        { "type": "categorical", "name": "color", "value": "blue" },
+        { "type": "score", "name": "quality", "value": 3.7 },
+        { "type": "score", "name": "cost", "value": 30 }
+      ]
+    }
+  ]
+}
