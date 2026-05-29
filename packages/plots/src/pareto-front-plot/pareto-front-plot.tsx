@@ -184,7 +184,7 @@ export default function ParetoFrontPlot({
   const xMin = Math.max(0, Math.min(...xValues))
   const xMax = Math.max(...xValues)
   const xRange = xMax - xMin
-  const xPadding = xRange * 0.02
+  const xPadding = xRange * 0.05
 
   const yMin = Math.max(0, Math.min(...yValues))
   const yMax = Math.max(...yValues)
@@ -216,7 +216,7 @@ export default function ParetoFrontPlot({
           width={600}
           height={400}
           data={chartData}
-          margin={{ top: 32, right: 0, bottom: 10, left: 4 }}
+          margin={{ top: 32, right: 16, bottom: 10, left: 4 }}
         >
           <XAxis
             type="number"
