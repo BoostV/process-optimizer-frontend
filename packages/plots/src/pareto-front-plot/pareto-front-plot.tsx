@@ -178,20 +178,24 @@ export default function ParetoFrontPlot({
   const xValues = fitToFront ? frontXValues : allXValues
   const yValues = fitToFront ? frontYValues : allYValues
 
-  // Quality and cost are both non-negative by definition. Clamp the lower
-  // bound of each axis to 0 so the uncertainty band extending into negative
-  // territory doesn't stretch the visible region away from real data.
-  const xMin = Math.max(0, Math.min(...xValues))
+  // X (quality) spans the actual data range with padding and is NOT floored at
+  // 0: quality can be stored negated for "maximize" objectives (e.g. the
+  // catapult "shoot far" sample). Flooring it produced a degenerate, inverted
+  // domain that detached the front from the observed points.
+  const xMin = Math.min(...xValues)
   const xMax = Math.max(...xValues)
   const xRange = xMax - xMin
   const xPadding = xRange * 0.05
 
+  // Y (cost) keeps a 0 floor: cost is non-negative by nature, and the cost
+  // uncertainty band (front_cost - obj2_error) can dip below 0 as a model
+  // artifact — clamp so the axis never shows meaningless negative cost.
   const yMin = Math.max(0, Math.min(...yValues))
   const yMax = Math.max(...yValues)
   const yRange = yMax - yMin
   const yPadding = yRange * 0.02
 
-  const xDomain = [Math.max(0, xMin - xPadding), xMax + xPadding]
+  const xDomain = [xMin - xPadding, xMax + xPadding]
   const yDomain = [Math.max(0, yMin - yPadding), yMax + yPadding]
 
   // Format axis values to 2 decimal places
