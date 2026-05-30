@@ -12,5 +12,5 @@
       "@plots/*": ["./*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "src/**/*.json"]
 }

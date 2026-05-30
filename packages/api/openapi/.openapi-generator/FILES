@@ -4,13 +4,14 @@ index.ts
 models/Constraint.ts
 models/Experiment.ts
 models/ExperimentDataInner.ts
-models/ExperimentDataInnerXiInner.ts
 models/ExperimentExtras.ts
+models/ExperimentExtrasSelectedPointInner.ts
 models/ExperimentOptimizerConfig.ts
 models/ModelError.ts
 models/Result.ts
 models/ResultPlotsInner.ts
 models/ResultResult.ts
+models/ResultResultExtras.ts
 models/ResultResultModelsInner.ts
 models/SpaceInner.ts
 models/index.ts

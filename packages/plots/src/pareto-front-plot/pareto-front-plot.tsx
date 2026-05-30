@@ -1,145 +1,436 @@
+import { ReactNode, useState } from 'react'
 import {
-  ScatterChart,
+  Area,
+  Customized,
   Scatter,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
-  Legend,
-  Label,
+  ComposedChart,
+  Line,
+  ReferenceLine,
 } from 'recharts'
+import {
+  displayQuality,
+  type DataEntry,
+  type ParetoPlot,
+} from '@boostv/process-optimizer-frontend-core'
+import useStyles from './pareto-front-plot.style'
+import { makePointLabel } from './point-label'
+import { ConfidenceEllipses } from './overlays/confidence-ellipses'
+import { QualityUncertaintyBand } from './overlays/uncertainty-band'
+import { HoverOverlay } from './hover-overlay'
 
-const CustomTooltip = ({
-  payload,
-  label,
-}: {
-  payload?: unknown
-  label?: string
-}) => {
-  console.log('payload', payload, label)
-  // if (active && payload && payload.length) {
-  //   return (
-  //     <div style={{ background: 'white', padding: '2px' }}>
-  //       <b>
-  //         {payload[0].value}, {payload[1].value}
-  //       </b>
-  //       <br />
-  //       {payload[0].payload.inputs !== undefined
-  //         ? payload[0].payload.inputs.map(p => (
-  //             <>
-  //               {p.name}: {p.value}
-  //               <br />
-  //             </>
-  //           ))
-  //         : ''}
-  //     </div>
-  //   )
-  // }
-  return null
+type Props = {
+  indexOfSelected: number
+  plot: ParetoPlot
+  width?: number | string
+  maxWidth?: number | string
+  altText?: string
+  dataPoints: DataEntry[]
+  onSelectIndex?: (index: number) => void
+  onResetToDefault?: () => void
+  renderControls?: (api: {
+    onToggleFitToFront: () => void
+    onResetToDefault: () => void
+  }) => ReactNode
+  // Show a 95% confidence ellipse for the hovered front point. Defaults to
+  // false so consumers opt in explicitly.
+  showHoverEllipse?: boolean
+  styles?: {
+    legendBorderColor?: string
+  }
 }
 
-export default function ParetoFrontPlot() {
-  const dataScore = [
-    {
-      x: 0.1,
-      y: 0.2,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
-    {
-      x: 0.12,
-      y: 0.1,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
-    {
-      x: 0.17,
-      y: 0.3,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
-    {
-      x: 0.14,
-      y: 0.25,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
-    {
-      x: 0.15,
-      y: 0.4,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
-    {
-      x: 0.11,
-      y: 0.28,
-      inputs: [
-        { name: 'inputA', value: 1 },
-        { name: 'inputB', value: 2 },
-      ],
-    },
+export default function ParetoFrontPlot({
+  indexOfSelected,
+  plot,
+  dataPoints,
+  onSelectIndex,
+  onResetToDefault,
+  renderControls,
+  showHoverEllipse = false,
+  styles,
+}: Props) {
+  const { classes } = useStyles()
+  const [fitToFront, setFitToFront] = useState(false)
+
+  // Transform DataEntry[] to {x, y, id}[] format
+  const dataPointsMapped: { x: number; y: number; id: number }[] =
+    dataPoints.map(entry => {
+      const qualityPoint = entry.data.find(
+        d => d.type === 'score' && d.name === 'quality'
+      )
+      const costPoint = entry.data.find(
+        d => d.type === 'score' && d.name === 'cost'
+      )
+      return {
+        x: Number(qualityPoint?.value ?? 0),
+        y: Number(costPoint?.value ?? 0),
+        id: entry.meta.id,
+      }
+    })
+
+  // Split observed points by Pareto-optimality (in observed quality/cost space:
+  // higher quality, lower cost is better). Optimal points render filled in
+  // brand color; dominated points stay muted gray.
+  const isObservedParetoOptimal = (p: { x: number; y: number }) =>
+    !dataPointsMapped.some(
+      o => o !== p && o.x >= p.x && o.y <= p.y && (o.x > p.x || o.y < p.y)
+    )
+  const observedParetoOptimal = dataPointsMapped.filter(isObservedParetoOptimal)
+  const observedDominated = dataPointsMapped.filter(
+    p => !isObservedParetoOptimal(p)
+  )
+
+  // Quality is sent to the backend negated (we want to maximize); cost is sent
+  // as-is (we want to minimize). The backend echoes both back in those units,
+  // so for display we flip quality but leave cost alone — see core
+  // `displayQuality`.
+  const chartData = plot.front_y_data.map((yPair, i) => ({
+    x: displayQuality(yPair[0]),
+    y: yPair[1],
+    uncertaintyY: [
+      yPair[1] - Number(plot.obj2_error[i] || 0),
+      yPair[1] + Number(plot.obj2_error[i] || 0),
+    ],
+  }))
+
+  const rawSelected = plot.front_y_data[indexOfSelected]
+  const selected = [
+    rawSelected !== undefined ? displayQuality(rawSelected[0]) : undefined,
+    rawSelected?.[1],
   ]
 
-  const dataPareto = [
-    { x: 0.11, y: 0.25 },
-    { x: 0.12, y: 0.26 },
-    { x: 0.13, y: 0.27 },
-    { x: 0.14, y: 0.28 },
-    { x: 0.15, y: 0.29 },
-    { x: 0.16, y: 0.3 },
+  const variablesAtSelected = plot.front_x_data[indexOfSelected]
+  const isBest = indexOfSelected === plot.best_idx
+  const selectedLabel = isBest ? 'Selected point (default)' : 'Selected point'
+
+  // Get variable names from dataPoints (excluding scores)
+  const variableNames =
+    dataPoints[0]?.data.filter(d => d.type !== 'score').map(d => d.name) ?? []
+
+  // Create separate datasets for X uncertainty bounds
+  const xLowerBoundData = plot.front_y_data.map((yPair, i) => ({
+    x: displayQuality(yPair[0]) - (plot.obj1_error[i] ?? 0),
+    y: yPair[1],
+  }))
+
+  const xUpperBoundData = plot.front_y_data.map((yPair, i) => ({
+    x: displayQuality(yPair[0]) + (plot.obj1_error[i] ?? 0),
+    y: yPair[1],
+  }))
+
+  // Band overlays always render now, so their bounds always inform the domain.
+  const bandX = [
+    ...xLowerBoundData.map(d => d.x),
+    ...xUpperBoundData.map(d => d.x),
   ]
+  const bandY = [
+    ...xLowerBoundData.map(d => d.y),
+    ...xUpperBoundData.map(d => d.y),
+  ]
+  const allXValues = [
+    ...bandX,
+    ...chartData.map(d => d.x),
+    ...dataPointsMapped.map(d => d.x),
+  ].filter((v): v is number => typeof v === 'number')
+  const allYValues = [
+    ...bandY,
+    ...chartData.map(d => d.y),
+    ...chartData.flatMap(d => d.uncertaintyY), // Include uncertainty bounds
+    ...dataPointsMapped.map(d => d.y),
+  ].filter((v): v is number => typeof v === 'number')
+
+  // fitToFront fits the chart tightly to the front line itself, excluding
+  // the uncertainty bands. The bands still render but may extend past the
+  // axes — that's the trade-off for a readable front.
+  const frontXValues = chartData
+    .map(d => d.x)
+    .filter((v): v is number => typeof v === 'number')
+  const frontYValues = chartData.map(d => d.y)
+
+  const xValues = fitToFront ? frontXValues : allXValues
+  const yValues = fitToFront ? frontYValues : allYValues
+
+  // X (quality) spans the actual data range with padding and is NOT floored at
+  // 0: quality can be stored negated for "maximize" objectives (e.g. the
+  // catapult "shoot far" sample). Flooring it produced a degenerate, inverted
+  // domain that detached the front from the observed points.
+  const xMin = Math.min(...xValues)
+  const xMax = Math.max(...xValues)
+  const xRange = xMax - xMin
+  const xPadding = xRange * 0.05
+
+  // Y (cost) keeps a 0 floor: cost is non-negative by nature, and the cost
+  // uncertainty band (front_cost - obj2_error) can dip below 0 as a model
+  // artifact — clamp so the axis never shows meaningless negative cost.
+  const yMin = Math.max(0, Math.min(...yValues))
+  const yMax = Math.max(...yValues)
+  const yRange = yMax - yMin
+  const yPadding = yRange * 0.02
+
+  const xDomain = [xMin - xPadding, xMax + xPadding]
+  const yDomain = [Math.max(0, yMin - yPadding), yMax + yPadding]
+
+  // Format axis values to 2 decimal places
+  const formatTick = (value: number) => value.toFixed(2)
+
+  // Narrow the computed domains to fixed-length tuples for the overlay props.
+  // Both are derived from data via Math.min/Math.max, so they are defined.
+  const xDomainT: [number, number] = [xDomain[0]!, xDomain[1]!]
+  const yDomainT: [number, number] = [yDomain[0]!, yDomain[1]!]
+
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null)
 
   return (
-    <div style={{ height: '600px', width: '600px' }}>
+    <div
+      className={classes.container}
+      data-testid="pareto-front-plot"
+      style={{
+        position: 'relative',
+      }}
+    >
       <ResponsiveContainer width="100%" height="100%">
-        <ScatterChart
-          margin={{
-            top: 20,
-            right: 20,
-            bottom: 20,
-            left: 20,
-          }}
+        <ComposedChart
+          width={600}
+          height={400}
+          data={chartData}
+          margin={{ top: 32, right: 16, bottom: 10, left: 4 }}
         >
-          <Legend wrapperStyle={{ position: 'relative' }} />
-          <CartesianGrid />
-          <XAxis tickCount={10} type="number" dataKey="x" name="score1">
-            <Label value="score1" position="bottom" />
-          </XAxis>
-          <YAxis tickCount={10} type="number" dataKey="y" name="score2">
-            <Label value="score2" position="insideLeft" angle={-90} />
-          </YAxis>
-          <Tooltip
+          <XAxis
+            type="number"
+            dataKey="x"
+            tick={{ fontSize: 12 }}
+            domain={xDomain}
+            allowDataOverflow={fitToFront}
+            tickFormatter={formatTick}
+            label={{ value: 'Quality', position: 'insideBottom', offset: -5 }}
+          />
+          <YAxis
+            type="number"
+            domain={yDomain}
+            allowDataOverflow={fitToFront}
+            tick={{ fontSize: 12 }}
+            tickFormatter={formatTick}
+            label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
+          />
+          {/* Uncertainty band — always shown */}
+          <Customized
+            component={() => (
+              <QualityUncertaintyBand
+                xLowerBoundData={xLowerBoundData}
+                xUpperBoundData={xUpperBoundData}
+                xDomain={xDomainT}
+                yDomain={yDomainT}
+              />
+            )}
+          />
+          <Area
+            type="monotone"
+            dataKey="uncertaintyY"
+            fill="#f6c47e"
+            fillOpacity={0.3}
+            stroke="none"
+            name="UncertaintyY"
             isAnimationActive={false}
-            content={<CustomTooltip />}
-            cursor={{ strokeDasharray: '3 3' }}
+          />
+          {/* Single 95% confidence ellipse for the hovered front point */}
+          {showHoverEllipse && hoverIndex !== null && (
+            <Customized
+              component={() => (
+                <ConfidenceEllipses
+                  ellipseIndices={[hoverIndex]}
+                  frontYData={plot.front_y_data}
+                  obj1Error={plot.obj1_error}
+                  obj2Error={plot.obj2_error}
+                  xDomain={xDomainT}
+                  yDomain={yDomainT}
+                />
+              )}
+            />
+          )}
+          <Scatter
+            name="Dominated observations"
+            dataKey={'y'}
+            data={observedDominated}
+            fill="white"
+            stroke="#999"
+            strokeWidth={1.5}
+            isAnimationActive={false}
+            label={{
+              position: 'top',
+              content: makePointLabel({
+                fill: 'white',
+                stroke: '#bbb',
+                textFill: '#888',
+              }),
+            }}
           />
           <Scatter
-            name="Observations"
-            data={dataScore}
-            fill="blue"
-            shape="circle"
-            legendType="circle"
+            name="Pareto-optimal observations"
+            dataKey={'y'}
+            data={observedParetoOptimal}
+            fill="#2b5879"
+            stroke="#2b5879"
+            isAnimationActive={false}
+            label={{
+              position: 'top',
+              content: makePointLabel({
+                fill: '#2b5879',
+                stroke: '#2b5879',
+                textFill: 'white',
+              }),
+            }}
+          />
+          <Line
+            type="linear"
+            dataKey="y"
+            stroke="black"
+            strokeWidth={2}
+            dot={{ r: 2, stroke: 'none', fill: 'black' }}
+            name="Pareto front"
+            isAnimationActive={false}
+          ></Line>
+          {/* Reference lines from selected point to axes */}
+          <ReferenceLine
+            segment={[
+              { x: selected[0], y: selected[1] },
+              { x: selected[0], y: yDomain[0] },
+            ]}
+            stroke={'#077ace'}
+            strokeWidth={1}
+            strokeDasharray="3 3"
+          />
+          <ReferenceLine
+            segment={[
+              { x: selected[0], y: selected[1] },
+              { x: xDomain[0], y: selected[1] },
+            ]}
+            stroke="#077ace"
+            strokeWidth={1}
+            strokeDasharray="3 3"
           />
           <Scatter
-            name="Estimated pareto front"
-            data={dataPareto}
-            fill="red"
-            shape="diamond"
-            legendType="diamond"
+            name="Selected"
+            dataKey={'y'}
+            data={[{ x: selected[0], y: selected[1] }]}
+            fill="#077ace"
+            isAnimationActive={false}
           />
-        </ScatterChart>
+          <Customized
+            component={() => (
+              <HoverOverlay
+                hoverIndex={hoverIndex}
+                setHoverIndex={setHoverIndex}
+                onSelectIndex={onSelectIndex}
+                frontYData={plot.front_y_data}
+                frontXData={plot.front_x_data}
+                variableNames={variableNames}
+                xDomain={xDomainT}
+                yDomain={yDomainT}
+              />
+            )}
+          />
+        </ComposedChart>
       </ResponsiveContainer>
+      <div className={classes.tooltipContainer}>
+        <div
+          className={classes.tooltip}
+          style={
+            styles?.legendBorderColor
+              ? { borderColor: styles.legendBorderColor }
+              : undefined
+          }
+        >
+          {selected[0] !== undefined && selected[1] !== undefined ? (
+            <>
+              <div>
+                <strong>{selectedLabel}</strong>
+              </div>
+              {variablesAtSelected?.map((v, i) => (
+                <div key={i} className={classes.selectedPointVariable}>
+                  {variableNames[i]
+                    ? `${variableNames[i]}: ${typeof v === 'number' ? v.toFixed(4) : v}`
+                    : `Variable ${i + 1}: ${typeof v === 'number' ? v.toFixed(4) : v}`}
+                </div>
+              ))}
+            </>
+          ) : (
+            <div>No selected point found</div>
+          )}
+
+          <div className={classes.divider} />
+
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColorCircle}
+              style={{ background: '#077ace' }}
+            />
+            <span>Selected point</span>
+          </div>
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColorCircle}
+              style={{ background: '#2b5879' }}
+            />
+            <span>Pareto-optimal observation</span>
+          </div>
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColorCircle}
+              style={{
+                background: 'white',
+                border: '1.5px solid #999',
+                boxSizing: 'border-box',
+              }}
+            />
+            <span>Dominated observation</span>
+          </div>
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColorLine}
+              style={{ background: 'black' }}
+            />
+            <span>Pareto front</span>
+          </div>
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColor}
+              style={{ background: 'rgba(246, 196, 126, 0.6)' }}
+            />
+            <span>Uncertainty (cost)</span>
+          </div>
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColor}
+              style={{ background: 'rgba(144, 194, 144, 0.6)' }}
+            />
+            <span>Uncertainty (quality)</span>
+          </div>
+          {showHoverEllipse && (
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColorCircle}
+                style={{
+                  background: 'rgba(7, 122, 206, 0.08)',
+                  border: '1px solid rgba(7, 122, 206, 0.5)',
+                  boxSizing: 'border-box',
+                }}
+              />
+              <span>95% credible region (hover a point)</span>
+            </div>
+          )}
+        </div>
+        {renderControls && (
+          <div className={classes.buttonColumn}>
+            {renderControls({
+              onToggleFitToFront: () => setFitToFront(f => !f),
+              onResetToDefault: () => onResetToDefault?.(),
+            })}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

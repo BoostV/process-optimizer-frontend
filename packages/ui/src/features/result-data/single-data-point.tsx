@@ -1,9 +1,5 @@
+import { Fragment, useState } from 'react'
 import {
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableCell,
   Typography,
   Box,
   Dialog,
@@ -12,87 +8,109 @@ import {
   Button,
 } from '@mui/material'
 import useStyles from './single-data-point.style'
-import { PNGPlot } from '@boostv/process-optimizer-frontend-plots'
-import { useState } from 'react'
 import {
-  scoreLabels,
-  scoreNames,
-} from '@boostv/process-optimizer-frontend-core'
+  OneDPlot,
+  OneDData,
+  PNGPlot,
+} from '@boostv/process-optimizer-frontend-plots'
+
+interface SingleDataPointRow {
+  scoreHeader: string
+  dataPoint: (number | (string | number)[])[]
+  plotData: (string | OneDData)[]
+}
 
 interface SingleDataPointProps {
-  title: string
-  headers: string[]
-  dataPoint: (number | (string | number)[])[]
-  plots?: string[]
+  title?: string
+  variableHeaders: string[]
+  rows: SingleDataPointRow[]
 }
 
 export const SingleDataPoint = ({
   title,
-  headers,
-  dataPoint,
-  plots,
+  variableHeaders,
+  rows,
 }: SingleDataPointProps) => {
   const { classes } = useStyles()
+  const columnCount = variableHeaders.length + 1
   const [isDialogOpen, setDialogOpen] = useState(false)
-  const [bigPlot, setBigPlot] = useState<undefined | string>(undefined)
-
-  const handleDialogClose = () => {
-    setDialogOpen(false)
-    setBigPlot(undefined)
-  }
+  const [bigPlot, setBigPlot] = useState<string | null>(null)
 
   return (
-    <Box className={classes.tableContainer} pb={2}>
-      <Typography variant="caption" className={classes.title}>
-        {title}
-      </Typography>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            {headers
-              .concat([
-                (scoreLabels[0] ?? scoreNames[0]) +
-                  ' (95 % credibility interval)',
-              ])
-              .map((h, idx) => (
-                <TableCell className={classes.cell} key={idx}>
+    <Box className={classes.container} pb={2}>
+      {title && (
+        <Typography variant="caption" className={classes.title}>
+          {title}
+        </Typography>
+      )}
+      {rows.map((row, rowIndex) => (
+        <Fragment key={rowIndex}>
+          <Box
+            className={classes.grid}
+            style={{
+              gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
+            }}
+          >
+            {variableHeaders.map((h, idx) => (
+              <Box className={classes.cell} key={idx}>
+                <Typography variant="body2" fontWeight="bold">
                   {h}
-                </TableCell>
-              ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            {dataPoint.flat().map((dp, idx) => (
-              <TableCell className={classes.cell} key={'dp' + idx}>
-                {dp}
-              </TableCell>
+                </Typography>
+              </Box>
             ))}
-          </TableRow>
-          {plots && plots.length > 0 && (
-            <TableRow>
-              {plots.map((p, idx) => (
-                <TableCell className={classes.cell} key={'plot' + idx}>
-                  <Box
-                    onClick={() => {
-                      setDialogOpen(true)
-                      setBigPlot(p)
-                    }}
-                  >
-                    <PNGPlot plot={p} width={'100%'} maxWidth={160} />
+            <Box className={classes.cell}>
+              <Typography variant="body2" fontWeight="bold">
+                {row.scoreHeader}
+              </Typography>
+            </Box>
+            {row.dataPoint.flat().map((dp, idx) => (
+              <Box className={classes.cell} key={'dp' + idx}>
+                <Typography variant="body2">{dp}</Typography>
+              </Box>
+            ))}
+            {row.plotData.length > 0 &&
+              row.plotData.map((pd, idx) => (
+                <Box className={classes.cell} key={'plotData' + idx}>
+                  <Box mt={1}>
+                    {typeof pd === 'string' ? (
+                      <Box
+                        onClick={() => {
+                          setDialogOpen(true)
+                          setBigPlot(pd)
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <PNGPlot plot={pd} width={'100%'} maxWidth={160} />
+                      </Box>
+                    ) : (
+                      <OneDPlot
+                        data={pd}
+                        width={'100%'}
+                        height={'140px'}
+                        maxWidth={160}
+                      />
+                    )}
                   </Box>
-                </TableCell>
+                </Box>
               ))}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <Dialog onClose={handleDialogClose} open={isDialogOpen}>
+          </Box>
+        </Fragment>
+      ))}
+      <Dialog
+        open={isDialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
         <DialogContent>
-          <PNGPlot plot={bigPlot ?? ''} width={400} />
+          <Box display="flex" justifyContent="center">
+            {bigPlot && <PNGPlot plot={bigPlot} width={'100%'} />}
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose}>Close</Button>
+          <Button onClick={() => setDialogOpen(false)} color="primary">
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

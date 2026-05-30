@@ -241,8 +241,8 @@ describe('converters', () => {
 
     it('should include enabled score values', () => {
       const expectedData = [
-        { xi: [23, 982, 632, 'Mus'], yi: [-0.1, -0.3] },
-        { xi: [15, 123, 324, 'Ræv'], yi: [-0.2, -0.4] },
+        { xi: [23, 982, 632, 'Mus'], yi: [-0.1, 0.3] },
+        { xi: [15, 123, 324, 'Ræv'], yi: [-0.2, 0.4] },
       ]
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
@@ -271,6 +271,20 @@ describe('converters', () => {
         sampleMultiObjectiveDataPoints
       )
       expect(actualData).toEqual(expectedData)
+    })
+
+    it('should negate only quality, not cost', () => {
+      const actualData = calculateData(
+        sampleExperiment.categoricalVariables,
+        sampleExperiment.valueVariables,
+        [
+          { name: scoreNames[0], description: '', enabled: true, label: '' },
+          { name: scoreNames[1], description: '', enabled: true, label: '' },
+        ],
+        sampleMultiObjectiveDataPoints
+      )
+      expect(actualData[0]?.yi).toEqual([-0.1, 0.3])
+      expect(actualData[1]?.yi).toEqual([-0.2, 0.4])
     })
   })
 

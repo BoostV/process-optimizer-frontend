@@ -11,13 +11,12 @@ import {
   ValueVariableType,
 } from '@boostv/process-optimizer-frontend-core'
 
-import catapult from '@ui/testing/sample-data/catapult.json'
-import cake from '@ui/testing/sample-data/cake.json'
-import { DataPoints, ExperimentationGuide, Plots } from '..'
+import { samples, sampleLabels, type SampleName } from './samples'
+import { DataPoints, ExperimentationGuide, Plots, Result } from '..'
 import { OptimizerConfigurator } from '../features/experiment'
 import { InputModel } from '../features/input-model'
 import { Switch } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const Experiment = () => {
   const {
@@ -36,10 +35,30 @@ const Experiment = () => {
       payload: migrate(data),
     })
   }
+
+  // Deterministic addressing for the inspection harness: ?sample=<name> loads a
+  // registry sample on mount. Dev/demo affordance only.
+  useEffect(() => {
+    const name = new URLSearchParams(window.location.search).get('sample')
+    if (name && name in samples) {
+      loadSample(samples[name as SampleName])
+    }
+    ;(window as unknown as { __SAMPLE_NAMES__?: string[] }).__SAMPLE_NAMES__ =
+      Object.keys(samples)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div>
-      <button onClick={() => loadSample(catapult)}>Load Catapult</button>
-      <button onClick={() => loadSample(cake)}>Load Cake</button>
+      {(Object.keys(samples) as SampleName[]).map(name => (
+        <button
+          key={name}
+          data-testid={`load-sample-${name}`}
+          onClick={() => loadSample(samples[name])}
+        >
+          Load {sampleLabels[name]}
+        </button>
+      ))}
       <button disabled={loading} onClick={() => evaluate()}>
         Run experiment
       </button>
@@ -145,7 +164,12 @@ const Experiment = () => {
             debug={false}
             config={experiment.optimizerConfig}
           />
-          <Plots experiment={experiment} />
+          <div data-testid="result-region">
+            <Result id={experiment.id} showParetoHoverEllipse />
+          </div>
+          <div data-testid="plots-region">
+            <Plots experiment={experiment} />
+          </div>
         </Stack>
         <Stack spacing={2} direction="row"></Stack>
       </Box>

@@ -1,7 +1,6 @@
 import {
   useSelector,
   useExperiment,
-  selectExpectedMinimum,
   selectNextExperimentValues,
   selectIsInitializing,
   selectActiveVariableNames,
@@ -20,15 +19,11 @@ import useStyles from './experimentation-guide.style'
 import {
   InitializationProgress,
   NextExperiments,
-  SingleDataPoint,
   Suggestions,
   TitleCard,
 } from '@ui/features'
 import { CopySuggested } from '@ui/features/result-data/copy-suggested'
 import { ReactNode } from 'react'
-import { experimentResultSchema } from '@boostv/process-optimizer-frontend-core'
-import { z } from 'zod'
-import { isArray } from 'remeda'
 import _ from 'lodash'
 
 interface ResultDataProps {
@@ -68,8 +63,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   } = useExperiment()
 
   const nextValues = useSelector(selectNextExperimentValues)
-  const headers = useSelector(selectActiveVariableNames)
-  const expectedMinimum = useSelector(selectExpectedMinimum)
+  const variableHeaders = useSelector(selectActiveVariableNames)
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
 
@@ -89,6 +83,10 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         ? loadingView
         : defaultLoadingView
 
+  const hasResults =
+    experiment.results.plots.length > 0 ||
+    (experiment.results.expectedMinimum?.length ?? 0) > 0
+
   const summary = isInitializing ? (
     <InitializationProgress
       experiment={experiment}
@@ -99,20 +97,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         })
       }
     />
-  ) : expectedMinimum && expectedMinimum.length > 0 ? (
-    <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
-      <SingleDataPoint
-        title="Predicted best solution"
-        headers={headers}
-        dataPoint={convertExpectedMinimumToDisplayValue(expectedMinimum)}
-        plots={experiment.results.plots
-          .filter(p => p.id.includes('single'))
-          .map(p => p.plot)}
-      />
-    </Box>
-  ) : loading ? (
-    <></>
-  ) : (
+  ) : hasResults || loading ? null : (
     <Box p={2}>Please run optimizer</Box>
   )
 
@@ -165,7 +150,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           ))}
         <Suggestions
           values={nextValues}
-          headers={headers}
+          headers={variableHeaders}
           allowIndividualSuggestionCopy={allowIndividualSuggestionCopy}
           onCopyToDataPoints={index =>
             dispatchExperiment({
@@ -212,32 +197,4 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       {summary}
     </TitleCard>
   )
-}
-// value - 1.96 * std <-> value + 1.96 * std
-const convertScoreToString = (data: number[]) => {
-  const [value, stdDev] = data
-  if (value && stdDev) {
-    return `[${(-value - 1.96 * stdDev).toFixed(2)}, ${(
-      -value +
-      1.96 * stdDev
-    ).toFixed(2)}]`
-  }
-  return ''
-}
-
-const convertExpectedMinimumToDisplayValue = (
-  expectedMinimum: z.infer<typeof experimentResultSchema.shape.expectedMinimum>
-) => {
-  if (
-    expectedMinimum.length === 2 &&
-    isArray(expectedMinimum[0]) &&
-    isArray(expectedMinimum[1])
-  ) {
-    return [
-      expectedMinimum[0].concat(
-        convertScoreToString(expectedMinimum[1] as number[])
-      ),
-    ]
-  }
-  return expectedMinimum ?? []
 }

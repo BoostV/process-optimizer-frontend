@@ -37,37 +37,37 @@ export interface ExperimentOptimizerConfig {
    * @type {string}
    * @memberof ExperimentOptimizerConfig
    */
-  baseEstimator?: string
+  baseEstimator: string
   /**
    *
    * @type {string}
    * @memberof ExperimentOptimizerConfig
    */
-  acqFunc?: string
+  acqFunc: string
   /**
    *
    * @type {number}
    * @memberof ExperimentOptimizerConfig
    */
-  initialPoints?: number
+  initialPoints: number
   /**
    *
    * @type {number}
    * @memberof ExperimentOptimizerConfig
    */
-  kappa?: number
+  kappa: number
   /**
    *
    * @type {number}
    * @memberof ExperimentOptimizerConfig
    */
-  xi?: number
+  xi: number
   /**
    *
    * @type {Array<SpaceInner>}
    * @memberof ExperimentOptimizerConfig
    */
-  space?: Array<SpaceInner>
+  space: Array<SpaceInner>
   /**
    *
    * @type {Array<Constraint>}
@@ -81,6 +81,12 @@ export interface ExperimentOptimizerConfig {
  */
 export function instanceOfExperimentOptimizerConfig(value: object): boolean {
   let isInstance = true
+  isInstance = isInstance && 'baseEstimator' in value
+  isInstance = isInstance && 'acqFunc' in value
+  isInstance = isInstance && 'initialPoints' in value
+  isInstance = isInstance && 'kappa' in value
+  isInstance = isInstance && 'xi' in value
+  isInstance = isInstance && 'space' in value
 
   return isInstance
 }
@@ -99,18 +105,12 @@ export function ExperimentOptimizerConfigFromJSONTyped(
     return json
   }
   return {
-    baseEstimator: !exists(json, 'baseEstimator')
-      ? undefined
-      : json['baseEstimator'],
-    acqFunc: !exists(json, 'acqFunc') ? undefined : json['acqFunc'],
-    initialPoints: !exists(json, 'initialPoints')
-      ? undefined
-      : json['initialPoints'],
-    kappa: !exists(json, 'kappa') ? undefined : json['kappa'],
-    xi: !exists(json, 'xi') ? undefined : json['xi'],
-    space: !exists(json, 'space')
-      ? undefined
-      : (json['space'] as Array<any>).map(SpaceInnerFromJSON),
+    baseEstimator: json['baseEstimator'],
+    acqFunc: json['acqFunc'],
+    initialPoints: json['initialPoints'],
+    kappa: json['kappa'],
+    xi: json['xi'],
+    space: (json['space'] as Array<any>).map(SpaceInnerFromJSON),
     constraints: !exists(json, 'constraints')
       ? undefined
       : (json['constraints'] as Array<any>).map(ConstraintFromJSON),
@@ -132,10 +132,7 @@ export function ExperimentOptimizerConfigToJSON(
     initialPoints: value.initialPoints,
     kappa: value.kappa,
     xi: value.xi,
-    space:
-      value.space === undefined
-        ? undefined
-        : (value.space as Array<any>).map(SpaceInnerToJSON),
+    space: (value.space as Array<any>).map(SpaceInnerToJSON),
     constraints:
       value.constraints === undefined
         ? undefined

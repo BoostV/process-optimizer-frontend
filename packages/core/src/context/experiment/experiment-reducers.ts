@@ -80,6 +80,10 @@ export type ExperimentAction =
       }
     }
   | {
+      type: 'setSelectedParetoPoint'
+      payload: Array<number | string> | null
+    }
+  | {
       type: 'addCategorialVariable'
       payload: CategoricalVariableType
     }
@@ -170,7 +174,7 @@ export type ExperimentAction =
       payload: string
     }
 
-export const experimentReducer = produce(
+const experimentReducerInner = produce(
   (state: ExperimentType, action: ExperimentAction): void | ExperimentType => {
     switch (action.type) {
       case 'setSwVersion':
@@ -376,12 +380,19 @@ export const experimentReducer = produce(
         if (state.info.version !== action.payload.experimentVersion) {
           return state
         }
-        state.lastEvaluationHash = md5(
-          JSON.stringify(createFetchExperimentResultRequest(state))
-        )
         state.results = experimentSchema.shape.results.parse(
           action.payload.result
         )
+        state.lastEvaluationHash = md5(
+          JSON.stringify(createFetchExperimentResultRequest(state))
+        )
+        break
+      case 'setSelectedParetoPoint':
+        if (action.payload === null) {
+          delete state.extras.selectedPoint
+        } else {
+          state.extras.selectedPoint = action.payload
+        }
         break
       case 'updateDataPoints':
         experimentSchema.shape.dataPoints.parse(action.payload)
@@ -461,6 +472,39 @@ export const experimentReducer = produce(
     state.info.version = state.info.version + 1
   }
 )
+
+const STRUCTURAL_KEYS = [
+  'valueVariables',
+  'categoricalVariables',
+  'scoreVariables',
+  'dataPoints',
+  'optimizerConfig',
+] as const
+
+// Single invalidation policy: ANY action that changes a structural field
+// (variables, score variables, data points, or optimizer config) invalidates a
+// stored pareto selection, whose coordinates would otherwise go stale. This
+// replaces the 11 per-case clearParetoSelection(state) calls and intentionally
+// also covers actions they missed (e.g. updateExperiment replacing the whole
+// experiment, or copySuggestedToDataPoints appending data points).
+// setSelectedParetoPoint is exempt so setting a selection isn't self-invalidated.
+export const experimentReducer = (
+  state: ExperimentType,
+  action: ExperimentAction
+): ExperimentType => {
+  if (action.type === 'setSelectedParetoPoint') {
+    return experimentReducerInner(state, action)
+  }
+  const next = experimentReducerInner(state, action)
+  const changed = STRUCTURAL_KEYS.some(key => next[key] !== state[key])
+  if (changed && 'selectedPoint' in next.extras) {
+    return produce(next, draft => {
+      delete draft.extras.selectedPoint
+    })
+  }
+  return next
+}
+
 const updateNamesInConstraints = (
   state: ExperimentType,
   oldVariableName: string,

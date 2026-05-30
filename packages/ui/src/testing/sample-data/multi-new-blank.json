@@ -1,0 +1,87 @@
+{
+  "id": "7284fa83-30ee-4bf4-857c-ce7f3e1567bb",
+  "lastEvaluationHash": "",
+  "changedSinceLastEvaluation": true,
+  "info": {
+    "name": "Sample multiobjective",
+    "description": "",
+    "swVersion": "@boostv/process-optimizer-frontend-core@2.12.0-43-g0dd68d9",
+    "dataFormatVersion": "18",
+    "version": 27,
+    "extras": {}
+  },
+  "extras": {
+    "experimentSuggestionCount": 5
+  },
+  "categoricalVariables": [
+    {
+      "name": "color",
+      "description": "",
+      "options": ["red", "green", "blue"],
+      "enabled": true
+    }
+  ],
+  "valueVariables": [
+    {
+      "type": "discrete",
+      "name": "water",
+      "description": "",
+      "min": 0,
+      "max": 100,
+      "enabled": true
+    },
+    {
+      "type": "discrete",
+      "name": "temperature",
+      "description": "",
+      "min": -50,
+      "max": 120,
+      "enabled": true
+    },
+    {
+      "type": "continuous",
+      "name": "angle",
+      "description": "",
+      "min": 0,
+      "max": 360,
+      "enabled": true
+    }
+  ],
+  "scoreVariables": [
+    {
+      "name": "quality",
+      "label": "Quality (0-5)",
+      "description": "",
+      "enabled": true
+    },
+    {
+      "name": "cost",
+      "label": "Cost",
+      "description": "",
+      "enabled": true
+    }
+  ],
+  "constraints": [
+    {
+      "type": "sum",
+      "value": 0,
+      "dimensions": []
+    }
+  ],
+  "optimizerConfig": {
+    "baseEstimator": "GP",
+    "acqFunc": "EI",
+    "initialPoints": 5,
+    "kappa": 1.96,
+    "xi": 0.01
+  },
+  "results": {
+    "id": "",
+    "plots": [],
+    "next": [],
+    "pickled": "",
+    "expectedMinimum": [],
+    "extras": {}
+  },
+  "dataPoints": []
+}

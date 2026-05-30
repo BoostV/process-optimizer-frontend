@@ -13,12 +13,18 @@
  */
 
 import { exists, mapValues } from '../runtime'
-import type { ExperimentDataInnerXiInner } from './ExperimentDataInnerXiInner'
+import type { ExperimentExtrasSelectedPointInner } from './ExperimentExtrasSelectedPointInner'
 import {
-  ExperimentDataInnerXiInnerFromJSON,
-  ExperimentDataInnerXiInnerFromJSONTyped,
-  ExperimentDataInnerXiInnerToJSON,
-} from './ExperimentDataInnerXiInner'
+  ExperimentExtrasSelectedPointInnerFromJSON,
+  ExperimentExtrasSelectedPointInnerFromJSONTyped,
+  ExperimentExtrasSelectedPointInnerToJSON,
+} from './ExperimentExtrasSelectedPointInner'
+import type { ResultResultExtras } from './ResultResultExtras'
+import {
+  ResultResultExtrasFromJSON,
+  ResultResultExtrasFromJSONTyped,
+  ResultResultExtrasToJSON,
+} from './ResultResultExtras'
 import type { ResultResultModelsInner } from './ResultResultModelsInner'
 import {
   ResultResultModelsInnerFromJSON,
@@ -34,10 +40,10 @@ import {
 export interface ResultResult {
   /**
    *
-   * @type {Array<Array<ExperimentDataInnerXiInner>>}
+   * @type {Array<Array<ExperimentExtrasSelectedPointInner>>}
    * @memberof ResultResult
    */
-  expectedMinimum?: Array<Array<ExperimentDataInnerXiInner>>
+  expectedMinimum?: Array<Array<ExperimentExtrasSelectedPointInner>>
   /**
    *
    * @type {string}
@@ -46,10 +52,10 @@ export interface ResultResult {
   pickled?: string
   /**
    *
-   * @type {Array<Array<ExperimentDataInnerXiInner>>}
+   * @type {Array<Array<ExperimentExtrasSelectedPointInner>>}
    * @memberof ResultResult
    */
-  next?: Array<Array<ExperimentDataInnerXiInner>>
+  next?: Array<Array<ExperimentExtrasSelectedPointInner>>
   /**
    *
    * @type {Array<ResultResultModelsInner>}
@@ -58,10 +64,10 @@ export interface ResultResult {
   models?: Array<ResultResultModelsInner>
   /**
    *
-   * @type {object}
+   * @type {ResultResultExtras}
    * @memberof ResultResult
    */
-  extras?: object
+  extras?: ResultResultExtras
 }
 
 /**
@@ -93,7 +99,9 @@ export function ResultResultFromJSONTyped(
     models: !exists(json, 'models')
       ? undefined
       : (json['models'] as Array<any>).map(ResultResultModelsInnerFromJSON),
-    extras: !exists(json, 'extras') ? undefined : json['extras'],
+    extras: !exists(json, 'extras')
+      ? undefined
+      : ResultResultExtrasFromJSON(json['extras']),
   }
 }
 
@@ -112,6 +120,6 @@ export function ResultResultToJSON(value?: ResultResult | null): any {
       value.models === undefined
         ? undefined
         : (value.models as Array<any>).map(ResultResultModelsInnerToJSON),
-    extras: value.extras,
+    extras: ResultResultExtrasToJSON(value.extras),
   }
 }

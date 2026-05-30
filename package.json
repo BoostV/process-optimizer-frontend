@@ -43,6 +43,9 @@
     "dev:core": "npm run dev --workspace @boostv/process-optimizer-frontend-core",
     "dev:ui": "npm run dev --workspace @boostv/process-optimizer-frontend-ui",
     "formatAll": "prettier --write .",
+    "inspect": "playwright test --config inspection/playwright.config.ts",
+    "inspect:setup": "playwright install chromium",
+    "inspect:docker": "bash inspection/run-in-docker.sh",
     "lint": "eslint",
     "openapi": "npm run openapi --workspace @boostv/process-optimizer-frontend-api",
     "prepare": "husky",
@@ -55,6 +58,7 @@
   "workspaces": [
     "scaffold",
     "packages/*",
-    "sample-app"
+    "sample-app",
+    "inspection"
   ]
 }

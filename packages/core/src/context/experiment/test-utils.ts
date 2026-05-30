@@ -112,6 +112,7 @@ export const dummyPayloads: Payloads = {
       plots: [{ id: 'sample', plot: 'base64encodedData' }],
     } satisfies ExperimentResultType,
   },
+  setSelectedParetoPoint: [1, 'option1'] as Array<number | string> | null,
   addCategorialVariable: createCategoricalVariable({}),
   editCategoricalVariable: {
     index: 0,

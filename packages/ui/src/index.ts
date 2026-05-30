@@ -14,5 +14,6 @@ export {
   Suggestions,
   TitleCard,
   InfoBox,
+  Result,
 } from './features'
 export { ExperimentationGuide } from './containers'

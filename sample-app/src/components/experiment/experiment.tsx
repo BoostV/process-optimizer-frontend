@@ -17,6 +17,7 @@ import {
   OptimizerConfigurator,
   DataPoints,
   ExperimentationGuide,
+  Result,
 } from '@boostv/process-optimizer-frontend-ui'
 import { Alert } from '@mui/material'
 import { useStyles } from './experiment.style'
@@ -377,6 +378,12 @@ const LegacyExperiment = () => {
                       />
                     </Grid>
                     <Grid item xs={12}>
+                      <Result
+                        id="result"
+                        loading={experiment.changedSinceLastEvaluation}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
                       <DataPoints
                         id="data-points"
                         experimentId={experiment.id}
@@ -403,6 +410,7 @@ const LegacyExperiment = () => {
                     </Grid>
                   </Grid>
                 </Grid>
+
                 <Grid item xs={UISizeValue.Big} xl={getSize(uiSizes, 'plots')}>
                   <Plots
                     id="plots"

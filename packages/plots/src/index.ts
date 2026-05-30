@@ -7,3 +7,5 @@ window.$ = window.jQuery = jQuery
 export * from './bokeh-plot'
 export * from './pareto-front-plot'
 export * from './png-plot'
+export * from './json-plot'
+export * from './one-d-plot'

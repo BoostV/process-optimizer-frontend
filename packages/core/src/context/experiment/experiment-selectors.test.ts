@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { initialState, State } from '@core/context/experiment/store'
 import {
+  selectActiveScoreVariableLabels,
+  selectActiveScoreVariableNames,
   selectActiveVariablesFromExperiment,
   selectCalculatedSuggestionCount,
   selectId,
@@ -8,6 +10,8 @@ import {
   selectIsInitializing,
   selectIsMultiObjective,
   selectIsSuggestionCountEditable,
+  selectPlots,
+  selectPlotsFromExperiment,
 } from './experiment-selectors'
 import { rootReducer } from './reducers'
 import { createDataPoints } from './test-utils'
@@ -176,6 +180,110 @@ describe('Experiment selectors', () => {
         expect(editable).toBe(result)
       }
     )
+  })
+
+  describe('selectActiveScoreVariableLabels', () => {
+    it('should return only enabled score variable labels', () => {
+      state.experiment.scoreVariables = [
+        { name: 'quality', label: 'Quality', description: '', enabled: true },
+        { name: 'cost', label: 'Cost', description: '', enabled: false },
+      ]
+      expect(selectActiveScoreVariableLabels(state)).toEqual(['Quality'])
+    })
+
+    it('should return all score variable labels when all are enabled', () => {
+      state.experiment.scoreVariables = [
+        { name: 'quality', label: 'Quality', description: '', enabled: true },
+        { name: 'cost', label: 'Cost', description: '', enabled: true },
+      ]
+      expect(selectActiveScoreVariableLabels(state)).toEqual([
+        'Quality',
+        'Cost',
+      ])
+    })
+
+    it('should return empty array when no score variables are enabled', () => {
+      state.experiment.scoreVariables = [
+        { name: 'quality', label: 'Quality', description: '', enabled: false },
+      ]
+      expect(selectActiveScoreVariableLabels(state)).toEqual([])
+    })
+
+    it('should return label for initial state', () => {
+      expect(selectActiveScoreVariableLabels(state)).toEqual(['Quality (0-5)'])
+    })
+  })
+
+  describe('selectActiveScoreVariableNames', () => {
+    it('returns names of enabled score variables in order', () => {
+      state.experiment.scoreVariables = [
+        {
+          name: 'quality',
+          label: 'Quality (0-5)',
+          description: '',
+          enabled: true,
+        },
+        { name: 'cost', label: 'Cost', description: '', enabled: false },
+      ]
+      expect(selectActiveScoreVariableNames(state)).toEqual(['quality'])
+    })
+
+    it('returns all names when all score variables are enabled', () => {
+      state.experiment.scoreVariables = [
+        {
+          name: 'quality',
+          label: 'Quality (0-5)',
+          description: '',
+          enabled: true,
+        },
+        { name: 'cost', label: 'Cost', description: '', enabled: true },
+      ]
+      expect(selectActiveScoreVariableNames(state)).toEqual(['quality', 'cost'])
+    })
+
+    it('returns empty array when no score variables are enabled', () => {
+      state.experiment.scoreVariables = [
+        {
+          name: 'quality',
+          label: 'Quality (0-5)',
+          description: '',
+          enabled: false,
+        },
+      ]
+      expect(selectActiveScoreVariableNames(state)).toEqual([])
+    })
+  })
+
+  describe('selectPlots', () => {
+    it('should return plots from experiment results', () => {
+      state.experiment.results.plots = [
+        { id: 'single_1_0', plot: '{"data": []}' },
+        { id: 'pareto_data', plot: '{"front": []}' },
+      ]
+      expect(selectPlots(state)).toEqual([
+        { id: 'single_1_0', plot: '{"data": []}' },
+        { id: 'pareto_data', plot: '{"front": []}' },
+      ])
+    })
+
+    it('should return empty array for initial state', () => {
+      expect(selectPlots(state)).toEqual([])
+    })
+  })
+
+  describe('selectPlotsFromExperiment', () => {
+    it('should return plots directly from experiment', () => {
+      const experiment: ExperimentType = {
+        ...initialState.experiment,
+        results: {
+          ...initialState.experiment.results,
+          plots: [{ id: 'single_0_0', plot: '{"data": []}' }],
+        },
+      }
+      expect(selectPlotsFromExperiment(experiment)).toEqual([
+        { id: 'single_0_0', plot: '{"data": []}' },
+      ])
+    })
   })
 
   describe('selectActiveVariablesFromExperiment', () => {

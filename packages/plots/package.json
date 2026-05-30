@@ -36,6 +36,7 @@
   "repository": "BoostV/process-optimizer-frontend.git",
   "scripts": {
     "build": "tsc && vite build",
+    "dev": "vite --host",
     "prepublishOnly": "vite build"
   },
   "type": "module",
