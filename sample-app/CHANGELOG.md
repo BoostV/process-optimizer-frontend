@@ -1,5 +1,22 @@
 # @process-optimizer-frontend/sample-app
 
+## 2.3.0
+
+### Minor Changes
+
+- 62b6153: Add multi-objective functionality
+
+### Patch Changes
+
+- Updated dependencies [75fa90f]
+- Updated dependencies [e1ed33e]
+- Updated dependencies [796a24e]
+- Updated dependencies [c46297d]
+- Updated dependencies [62b6153]
+  - @boostv/process-optimizer-frontend-core@2.13.0
+  - @boostv/process-optimizer-frontend-plots@1.1.0
+  - @boostv/process-optimizer-frontend-ui@2.13.0
+
 ## 2.2.0
 
 ### Minor Changes
