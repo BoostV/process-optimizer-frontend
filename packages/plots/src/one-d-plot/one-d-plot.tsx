@@ -1,4 +1,5 @@
 import { CombinedVariableInputType } from '@boostv/process-optimizer-frontend-core'
+import { ReactNode } from 'react'
 import {
   Area,
   AreaChart,
@@ -7,6 +8,7 @@ import {
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
+  TooltipValueType,
   XAxis,
   YAxis,
 } from 'recharts'
@@ -39,14 +41,20 @@ export const OneDPlot = ({
     referenceLineX !== undefined ? points[referenceLineX]?.x : undefined
   const formatValue = (value: number | string) =>
     typeof value === 'number' ? value.toFixed(2) : value
-  const formatTooltip = (value: number | number[]) =>
-    Array.isArray(value)
-      ? value.map(v => v.toFixed(2)).join(', ')
-      : formatValue(value)
-  const formatTooltipLabel = (value: number | string) =>
-    resolvedReferenceLineX !== undefined && value === resolvedReferenceLineX
-      ? `${formatValue(value)} (best)`
-      : formatValue(value)
+  const formatTooltip = (value: TooltipValueType | undefined) => {
+    if (Array.isArray(value)) {
+      return value.map(v => formatValue(v)).join(', ')
+    }
+    return typeof value === 'number' || typeof value === 'string'
+      ? formatValue(value)
+      : ''
+  }
+  const formatTooltipLabel = (label: ReactNode) =>
+    typeof label !== 'number' && typeof label !== 'string'
+      ? label
+      : resolvedReferenceLineX !== undefined && label === resolvedReferenceLineX
+        ? `${formatValue(label)} (best)`
+        : formatValue(label)
 
   // Calculate Y-axis width based on the maximum absolute Y value to ensure labels fit
   const yAxisWidth = (() => {
