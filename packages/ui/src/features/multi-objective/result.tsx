@@ -1,7 +1,5 @@
 import {
   ParetoFrontPlot,
-  paretoVisualizationModes,
-  type ParetoVisualizationMode,
   OneDData,
 } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '../core'
@@ -24,12 +22,11 @@ import {
   selectActiveScoreVariableNames,
   type SelectedPoint,
 } from '@boostv/process-optimizer-frontend-core'
-import { Box, Button, MenuItem, Select } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { groupSinglePlots } from '../../containers/result-data/experimentation-guide.utils'
 import { resolveSelectedIndex } from './result.utils'
 import { z } from 'zod'
 import { isArray } from 'remeda'
-import { useState } from 'react'
 import useStyles from './result.style'
 
 type ResultProps = {
@@ -37,6 +34,9 @@ type ResultProps = {
   id?: string
   loading?: boolean
   loadingMode?: 'skeleton' | 'overlay' | 'custom'
+  // Opt in to the per-point 95% confidence ellipse shown on hover over the
+  // Pareto front. Defaults to off.
+  showParetoHoverEllipse?: boolean
   styles?: {
     pareto?: {
       legendBorderColor?: string
@@ -71,6 +71,7 @@ export const Result = ({
   title = 'Results',
   loading,
   loadingMode,
+  showParetoHoverEllipse,
   styles,
 }: ResultProps) => {
   const { classes } = useStyles()
@@ -93,9 +94,6 @@ export const Result = ({
   const selectedCoords = experiment.extras.selectedPoint as
     | SelectedPoint
     | undefined
-
-  const [paretoVizMode, setParetoVizMode] =
-    useState<ParetoVisualizationMode>('ellipses')
 
   const onSetSelectedParetoPoint = (index: number) => {
     const coords = pareto?.front_x_data[index]
@@ -216,6 +214,7 @@ export const Result = ({
                 )}
                 plot={pareto}
                 dataPoints={dataPoints}
+                showHoverEllipse={showParetoHoverEllipse}
                 renderControls={({ onToggleFitToFront, onResetToDefault }) => (
                   <>
                     <Button
@@ -236,24 +235,6 @@ export const Result = ({
                 )}
                 onResetToDefault={() =>
                   dispatch({ type: 'setSelectedParetoPoint', payload: null })
-                }
-                visualizationMode={paretoVizMode}
-                visualizationModeSelector={
-                  <Select
-                    size="small"
-                    value={paretoVizMode}
-                    onChange={e =>
-                      setParetoVizMode(
-                        e.target.value as ParetoVisualizationMode
-                      )
-                    }
-                  >
-                    {paretoVisualizationModes.map(m => (
-                      <MenuItem key={m.id} value={m.id}>
-                        {m.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
                 }
                 styles={styles?.pareto}
               />

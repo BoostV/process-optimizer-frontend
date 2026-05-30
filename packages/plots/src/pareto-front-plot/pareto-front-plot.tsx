@@ -21,16 +21,6 @@ import { ConfidenceEllipses } from './overlays/confidence-ellipses'
 import { QualityUncertaintyBand } from './overlays/uncertainty-band'
 import { HoverOverlay } from './hover-overlay'
 
-// Available uncertainty visualization modes for the Pareto plot.
-// Exported so parent components can drive a mode selector UI.
-export const paretoVisualizationModes = [
-  { id: 'ellipses', label: 'Confidence ellipses' },
-  { id: 'band', label: 'Uncertainty band' },
-] as const
-
-export type ParetoVisualizationMode =
-  (typeof paretoVisualizationModes)[number]['id']
-
 type Props = {
   indexOfSelected: number
   plot: ParetoPlot
@@ -44,8 +34,9 @@ type Props = {
     onToggleFitToFront: () => void
     onResetToDefault: () => void
   }) => ReactNode
-  visualizationMode?: ParetoVisualizationMode
-  visualizationModeSelector?: ReactNode
+  // Show a 95% confidence ellipse for the hovered front point. Defaults to
+  // false so consumers opt in explicitly.
+  showHoverEllipse?: boolean
   styles?: {
     legendBorderColor?: string
   }
@@ -58,8 +49,7 @@ export default function ParetoFrontPlot({
   onSelectIndex,
   onResetToDefault,
   renderControls,
-  visualizationMode = 'ellipses',
-  visualizationModeSelector,
+  showHoverEllipse = false,
   styles,
 }: Props) {
   const { classes } = useStyles()
@@ -131,30 +121,15 @@ export default function ParetoFrontPlot({
     y: yPair[1],
   }))
 
-  // Sample ~10 front points to draw 95% confidence ellipses at. Each ellipse's
-  // semi-axes are the per-objective 1.96-sigma errors at that point, so the
-  // shape communicates joint uncertainty along the front without the continuous
-  // band overpowering the rest of the chart.
-  const ELLIPSE_COUNT = 10
-  const frontLen = plot.front_y_data.length
-  const ellipseIndices =
-    frontLen <= ELLIPSE_COUNT
-      ? plot.front_y_data.map((_, i) => i)
-      : Array.from({ length: ELLIPSE_COUNT }, (_, k) =>
-          Math.round((k * (frontLen - 1)) / (ELLIPSE_COUNT - 1))
-        )
-
-  // Calculate domain from all data sources. The band-uncertainty bounds only
-  // render in 'band' mode, so they should only influence the axis domain in
-  // that mode — otherwise switching modes silently rescales the chart.
-  const bandX =
-    visualizationMode === 'band'
-      ? [...xLowerBoundData.map(d => d.x), ...xUpperBoundData.map(d => d.x)]
-      : []
-  const bandY =
-    visualizationMode === 'band'
-      ? [...xLowerBoundData.map(d => d.y), ...xUpperBoundData.map(d => d.y)]
-      : []
+  // Band overlays always render now, so their bounds always inform the domain.
+  const bandX = [
+    ...xLowerBoundData.map(d => d.x),
+    ...xUpperBoundData.map(d => d.x),
+  ]
+  const bandY = [
+    ...xLowerBoundData.map(d => d.y),
+    ...xUpperBoundData.map(d => d.y),
+  ]
   const allXValues = [
     ...bandX,
     ...chartData.map(d => d.x),
@@ -239,35 +214,32 @@ export default function ParetoFrontPlot({
             tickFormatter={formatTick}
             label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
           />
-          {/* Uncertainty visualization — switches with visualizationMode */}
-          {visualizationMode === 'band' && (
-            <>
-              <Customized
-                component={() => (
-                  <QualityUncertaintyBand
-                    xLowerBoundData={xLowerBoundData}
-                    xUpperBoundData={xUpperBoundData}
-                    xDomain={xDomainT}
-                    yDomain={yDomainT}
-                  />
-                )}
+          {/* Uncertainty band — always shown */}
+          <Customized
+            component={() => (
+              <QualityUncertaintyBand
+                xLowerBoundData={xLowerBoundData}
+                xUpperBoundData={xUpperBoundData}
+                xDomain={xDomainT}
+                yDomain={yDomainT}
               />
-              <Area
-                type="monotone"
-                dataKey="uncertaintyY"
-                fill="#f6c47e"
-                fillOpacity={0.3}
-                stroke="none"
-                name="UncertaintyY"
-                isAnimationActive={false}
-              />
-            </>
-          )}
-          {visualizationMode === 'ellipses' && (
+            )}
+          />
+          <Area
+            type="monotone"
+            dataKey="uncertaintyY"
+            fill="#f6c47e"
+            fillOpacity={0.3}
+            stroke="none"
+            name="UncertaintyY"
+            isAnimationActive={false}
+          />
+          {/* Single 95% confidence ellipse for the hovered front point */}
+          {showHoverEllipse && hoverIndex !== null && (
             <Customized
               component={() => (
                 <ConfidenceEllipses
-                  ellipseIndices={ellipseIndices}
+                  ellipseIndices={[hoverIndex]}
                   frontYData={plot.front_y_data}
                   obj1Error={plot.obj1_error}
                   obj2Error={plot.obj2_error}
@@ -421,7 +393,21 @@ export default function ParetoFrontPlot({
             />
             <span>Pareto front</span>
           </div>
-          {visualizationMode === 'ellipses' && (
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColor}
+              style={{ background: 'rgba(246, 196, 126, 0.6)' }}
+            />
+            <span>Uncertainty (cost)</span>
+          </div>
+          <div className={classes.legendItem}>
+            <div
+              className={classes.legendColor}
+              style={{ background: 'rgba(144, 194, 144, 0.6)' }}
+            />
+            <span>Uncertainty (quality)</span>
+          </div>
+          {showHoverEllipse && (
             <div className={classes.legendItem}>
               <div
                 className={classes.legendColorCircle}
@@ -431,32 +417,13 @@ export default function ParetoFrontPlot({
                   boxSizing: 'border-box',
                 }}
               />
-              <span>95% credible region</span>
+              <span>95% credible region (hover a point)</span>
             </div>
           )}
-          {visualizationMode === 'band' && (
-            <>
-              <div className={classes.legendItem}>
-                <div
-                  className={classes.legendColor}
-                  style={{ background: 'rgba(246, 196, 126, 0.6)' }}
-                />
-                <span>Uncertainty (cost)</span>
-              </div>
-              <div className={classes.legendItem}>
-                <div
-                  className={classes.legendColor}
-                  style={{ background: 'rgba(144, 194, 144, 0.6)' }}
-                />
-                <span>Uncertainty (quality)</span>
-              </div>
-            </>
-          )}
         </div>
-        {(renderControls || visualizationModeSelector) && (
+        {renderControls && (
           <div className={classes.buttonColumn}>
-            {visualizationModeSelector}
-            {renderControls?.({
+            {renderControls({
               onToggleFitToFront: () => setFitToFront(f => !f),
               onResetToDefault: () => onResetToDefault?.(),
             })}
