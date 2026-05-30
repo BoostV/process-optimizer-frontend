@@ -14,5 +14,8 @@ Notable consumer-facing changes:
 - **plots** no longer bundles its styling runtime: `@mui/material` and
   `tss-react` are now declared peer dependencies (the consumer provides
   them), matching the vite 8 / rolldown build.
+- The library builds now externalize `react/jsx-runtime` and
+  `react/jsx-dev-runtime`; without this the vite 8 / rolldown output emitted
+  a `require("react")` shim that crashed the ESM bundles in the browser.
 - Internal bumps include React 19.2, recharts 3.8, zod 4.4 (unions now
   emit `oneOf` in generated JSON Schema) and TypeScript 6.0.

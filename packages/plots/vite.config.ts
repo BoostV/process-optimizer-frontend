@@ -20,6 +20,8 @@ export default defineConfig({
     rollupOptions: {
       external: [
         'react',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
         '@bokeh/bokehjs',
         'jquery',
         'recharts',
