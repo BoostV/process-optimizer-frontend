@@ -186,6 +186,7 @@ export default function ParetoFrontPlot({
   return (
     <div
       className={classes.container}
+      data-testid="pareto-front-plot"
       style={{
         position: 'relative',
       }}
