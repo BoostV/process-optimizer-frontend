@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { JSONSchemaFaker } from 'json-schema-faker'
+import { generate } from 'json-schema-faker'
 import { migrate, _migrate, MIGRATIONS } from './migration'
 import version18 from './data-formats/18.json'
 import version17 from './data-formats/17.json'
@@ -39,9 +39,10 @@ describe('Migration of data format', () => {
     it.each(Object.keys(schemas))(
       `should migrate %i to ${latestVersion} from faker data`,
       async idx => {
-        // TODO investigate why JSONSchemaFaker generates datapoints[].meta = undefined. It treats the meta field as optional (schema 11)
-        JSONSchemaFaker.option({ alwaysFakeOptionals: true })
-        const sample = JSONSchemaFaker.generate(schemas[idx])
+        // TODO investigate why the faker generates datapoints[].meta = undefined. It treats the meta field as optional (schema 11)
+        const sample = await generate(schemas[idx], {
+          alwaysFakeOptionals: true,
+        })
         const migrated = _migrate(sample)
         expect(experimentSchema.parse(migrated))
       }

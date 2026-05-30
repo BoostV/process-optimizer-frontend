@@ -26,8 +26,10 @@
   "homepage": "https://github.com/BoostV/process-optimizer-frontend#readme",
   "license": "BSD-3-Clause",
   "peerDependencies": {
+    "@mui/material": "^6.4.3",
     "react": "19.2.6",
-    "react-dom": "19.2.6"
+    "react-dom": "19.2.6",
+    "tss-react": "^4.9.21"
   },
   "private": false,
   "publishConfig": {

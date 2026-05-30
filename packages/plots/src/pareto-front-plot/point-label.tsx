@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactElement } from 'react'
 
 type LabelColors = { fill: string; stroke: string; textFill: string }
 
@@ -8,7 +8,7 @@ export const makePointLabel =
   ({ fill, stroke, textFill }: LabelColors) =>
   // This is a Recharts `label.content` render callback, not a React component.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, react/display-name
-  (props: any): ReactNode => {
+  (props: any): ReactElement | null => {
     const { x, y, id } = props
     if (!id) {
       return null

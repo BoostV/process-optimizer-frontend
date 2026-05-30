@@ -29,11 +29,6 @@ const JsonEditor = () => {
   } = useExperiment()
   const global = useGlobal()
 
-  useEffect(() => {
-    const displayedExperiment = displayedExperimentFromExperiment(experiment)
-    setDisplayedExperiment(displayedExperiment)
-  }, [experiment])
-
   const displayedExperimentFromExperiment = (
     experiment: ExperimentType
   ): string => {
@@ -45,6 +40,11 @@ const JsonEditor = () => {
     }
     return JSON.stringify({ ...experiment, results }, null, 2)
   }
+
+  useEffect(() => {
+    const displayedExperiment = displayedExperimentFromExperiment(experiment)
+    setDisplayedExperiment(displayedExperiment)
+  }, [experiment])
 
   const experimentFromDisplayedExperiment = (displayedExperiment: string) => {
     const displayedExperimentObject = JSON.parse(displayedExperiment)

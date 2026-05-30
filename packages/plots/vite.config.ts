@@ -18,7 +18,17 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['react', '@bokeh/bokehjs', 'jquery', 'recharts'],
+      external: [
+        'react',
+        '@bokeh/bokehjs',
+        'jquery',
+        'recharts',
+        // Styling deps are provided by the consumer (e.g. the ui package),
+        // not bundled. tss-react/mui pulls in @mui/material/styles, which
+        // vite 8's rolldown bundler refuses to bundle as an optional peer.
+        /^tss-react/,
+        /^@mui\//,
+      ],
     },
     outDir: 'dist',
   },

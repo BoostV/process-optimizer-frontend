@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "@boostv/eslint-config": "2.1.0",
+    "@mui/material": "^6.4.3",
     "@typescript-eslint/eslint-plugin": "^8.60.0",
     "@typescript-eslint/parser": "^8.60.0",
     "ajv": "^8.20.0",
@@ -23,6 +24,9 @@
     "typescript": "^6.0.3"
   },
   "engineStrict": true,
+  "overrides": {
+    "@types/node": "25.9.1"
+  },
   "engines": {
     "npm": ">=8.15.0",
     "yarn": ">100.0.0"
