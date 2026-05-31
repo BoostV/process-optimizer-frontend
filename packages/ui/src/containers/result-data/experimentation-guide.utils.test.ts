@@ -4,6 +4,7 @@ import {
   flipQualityScores,
   groupSinglePlots,
   parsePlotJson,
+  qualityDisplayDomain,
   type PlotEntry,
   type ActiveVariable,
 } from './experimentation-guide.utils'
@@ -251,6 +252,42 @@ describe('flipQualityScores', () => {
       ],
     })
     expect(out.points.map(p => p.x)).toEqual([7, 5])
+  })
+})
+
+describe('qualityDisplayDomain', () => {
+  it('spans the largest band bound and histogram point, rounded up', () => {
+    const domain = qualityDisplayDomain([
+      { type: 'numeric', points: [{ x: 100, y: [2.76, 5.88] }] },
+      { type: 'numeric', points: [{ x: 90, y: [2.0, 5.99] }] },
+      {
+        type: 'score',
+        points: [
+          { x: 5.45, y: 0 },
+          { x: 5.07, y: 1 },
+        ],
+      },
+    ])
+    expect(domain).toEqual([0, 6])
+  })
+
+  it('keeps a 0-5 floor when all values are small', () => {
+    expect(
+      qualityDisplayDomain([{ type: 'numeric', points: [{ x: 1, y: [1, 2] }] }])
+    ).toEqual([0, 5])
+  })
+
+  it('ignores png strings and non-numeric points', () => {
+    expect(
+      qualityDisplayDomain([
+        'iVBORw0KGgoAAAANSUhEUg',
+        { type: 'options', points: [{ x: 'A', y: [3, 7] }] },
+      ])
+    ).toEqual([0, 7])
+  })
+
+  it('falls back to 0-5 for an empty group', () => {
+    expect(qualityDisplayDomain([])).toEqual([0, 5])
   })
 })
 

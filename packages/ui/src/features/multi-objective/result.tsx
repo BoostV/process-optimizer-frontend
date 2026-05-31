@@ -27,6 +27,7 @@ import {
   flipQualityScores,
   groupSinglePlots,
   parsePlotJson,
+  qualityDisplayDomain,
 } from '../../containers/result-data/experimentation-guide.utils'
 import { resolveSelectedIndex } from './result.utils'
 import { z } from 'zod'
@@ -172,22 +173,22 @@ export const Result = ({
                   if (isQuality) {
                     // Quality is minimized as -quality, so its json plots come
                     // back negated — flip them back to display units.
-                    return plot.map(p => {
+                    const flippedPlots = plot.map(p =>
+                      typeof p === 'string' ? p : flipQualityScores(p)
+                    )
+                    // Pin every quality plot to one shared scale so the
+                    // per-factor Y axes and the histogram X axis line up (as
+                    // the PNG does), instead of each axis auto-scaling on its
+                    // own — which left the factors at 0-8 and the histogram on
+                    // a narrow, hard-to-read range.
+                    const domain = qualityDisplayDomain(flippedPlots)
+                    return flippedPlots.map(p => {
                       if (typeof p === 'string') {
                         return p
                       }
-                      const flipped = flipQualityScores(p)
-                      if (flipped.type !== 'score') {
-                        return flipped
-                      }
-                      const xs = flipped.points
-                        .map(pt => (typeof pt.x === 'number' ? pt.x : NaN))
-                        .filter(n => !Number.isNaN(n))
-                      const maxX = xs.length ? Math.max(...xs) : 0
-                      return {
-                        ...flipped,
-                        xDomain: [0, Math.max(5, maxX)] as [number, number],
-                      }
+                      return p.type === 'score'
+                        ? { ...p, xDomain: domain }
+                        : { ...p, yDomain: domain }
                     })
                   }
                   if (isCost && cost) {

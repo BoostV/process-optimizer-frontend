@@ -21,6 +21,7 @@ export type OneDData = {
   type?: CombinedVariableInputType | 'score'
   referenceLineX?: number
   xDomain?: [number, number]
+  yDomain?: [number, number]
 }
 
 type OneDPlotProps = {
@@ -34,7 +35,7 @@ export const OneDPlot = ({
   width,
   maxWidth,
   height,
-  data: { points, type = 'numeric', referenceLineX, xDomain },
+  data: { points, type = 'numeric', referenceLineX, xDomain, yDomain },
 }: OneDPlotProps) => {
   const fillColor = type === 'score' ? '#76c7c0' : '#a3d764'
   const resolvedReferenceLineX =
@@ -92,6 +93,7 @@ export const OneDPlot = ({
               width={yAxisWidth}
               tick={{ fontSize: 10 }}
               tickFormatter={formatValue}
+              {...(yDomain ? { domain: yDomain, allowDataOverflow: true } : {})}
             />
             <Tooltip
               formatter={formatTooltip}
@@ -133,6 +135,7 @@ export const OneDPlot = ({
               tick={{ fontSize: 10 }}
               tickFormatter={formatValue}
               hide={type === 'score'}
+              {...(yDomain ? { domain: yDomain, allowDataOverflow: true } : {})}
             />
             {type !== 'score' && (
               <Tooltip
