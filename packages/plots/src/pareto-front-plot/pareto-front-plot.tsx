@@ -9,6 +9,7 @@ import {
   ComposedChart,
   Line,
   ReferenceLine,
+  ZIndexLayer,
 } from 'recharts'
 import {
   displayQuality,
@@ -17,7 +18,6 @@ import {
 } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './pareto-front-plot.style'
 import { makePointLabel } from './point-label'
-import { ConfidenceEllipses } from './overlays/confidence-ellipses'
 import { QualityUncertaintyBand } from './overlays/uncertainty-band'
 import { HoverOverlay } from './hover-overlay'
 
@@ -181,8 +181,6 @@ export default function ParetoFrontPlot({
   const xDomainT: [number, number] = [xDomain[0]!, xDomain[1]!]
   const yDomainT: [number, number] = [yDomain[0]!, yDomain[1]!]
 
-  const [hoverIndex, setHoverIndex] = useState<number | null>(null)
-
   return (
     <div
       className={classes.container}
@@ -235,21 +233,6 @@ export default function ParetoFrontPlot({
             name="UncertaintyY"
             isAnimationActive={false}
           />
-          {/* Single 95% confidence ellipse for the hovered front point */}
-          {showHoverEllipse && hoverIndex !== null && (
-            <Customized
-              component={() => (
-                <ConfidenceEllipses
-                  ellipseIndices={[hoverIndex]}
-                  frontYData={plot.front_y_data}
-                  obj1Error={plot.obj1_error}
-                  obj2Error={plot.obj2_error}
-                  xDomain={xDomainT}
-                  yDomain={yDomainT}
-                />
-              )}
-            />
-          )}
           <Scatter
             name="Dominated observations"
             dataKey={'y'}
@@ -318,20 +301,27 @@ export default function ParetoFrontPlot({
             fill="#077ace"
             isAnimationActive={false}
           />
-          <Customized
-            component={() => (
-              <HoverOverlay
-                hoverIndex={hoverIndex}
-                setHoverIndex={setHoverIndex}
-                onSelectIndex={onSelectIndex}
-                frontYData={plot.front_y_data}
-                frontXData={plot.front_x_data}
-                variableNames={variableNames}
-                xDomain={xDomainT}
-                yDomain={yDomainT}
-              />
-            )}
-          />
+          {/*
+            Render the hover overlay on a high zIndex layer so its transparent
+            interaction rect sits ON TOP of the data series. A plain <Customized>
+            renders at z≈0 — behind the uncertainty Area (z 100), Line (400) and
+            its dots/Scatter (600) — so those painted series swallowed pointer
+            events and hover only activated in the empty space above the front.
+            See Recharts DefaultZIndexes.
+          */}
+          <ZIndexLayer zIndex={1500}>
+            <HoverOverlay
+              onSelectIndex={onSelectIndex}
+              frontYData={plot.front_y_data}
+              frontXData={plot.front_x_data}
+              variableNames={variableNames}
+              xDomain={xDomainT}
+              yDomain={yDomainT}
+              showHoverEllipse={showHoverEllipse}
+              obj1Error={plot.obj1_error}
+              obj2Error={plot.obj2_error}
+            />
+          </ZIndexLayer>
         </ComposedChart>
       </ResponsiveContainer>
       <div className={classes.tooltipContainer}>
