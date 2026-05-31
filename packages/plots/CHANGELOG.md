@@ -1,5 +1,12 @@
 # @process-optimizer-frontend/plots
 
+## 1.1.1
+
+### Patch Changes
+
+- 1facfa0: Fix minor issues surfaced during integration
+- 1079505: Fix minor issues surfaced by integrating the library into products
+
 ## 1.1.0
 
 ### Minor Changes
