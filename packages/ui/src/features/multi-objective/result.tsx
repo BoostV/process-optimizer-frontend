@@ -23,7 +23,11 @@ import {
   type SelectedPoint,
 } from '@boostv/process-optimizer-frontend-core'
 import { Box, Button } from '@mui/material'
-import { groupSinglePlots } from '../../containers/result-data/experimentation-guide.utils'
+import {
+  flipQualityScores,
+  groupSinglePlots,
+  parsePlotJson,
+} from '../../containers/result-data/experimentation-guide.utils'
 import { resolveSelectedIndex } from './result.utils'
 import { z } from 'zod'
 import { isArray } from 'remeda'
@@ -135,9 +139,7 @@ export const Result = ({
   const paretoRaw = plots.find(
     plot => plot.id.includes('pareto') && typeof plot.plot === 'string'
   )
-  const pareto = parseParetoPlot(
-    paretoRaw?.plot ? JSON.parse(paretoRaw.plot) : null
-  )
+  const pareto = parseParetoPlot(parsePlotJson(paretoRaw?.plot))
 
   // A single-objective experiment has no pareto plot; it still renders the
   // "Predicted best solution" panel (with its PNG plots) below. Only the
@@ -168,16 +170,22 @@ export const Result = ({
                 const isCost = role === 'cost'
                 const plotData: (string | OneDData)[] = (() => {
                   if (isQuality) {
+                    // Quality is minimized as -quality, so its json plots come
+                    // back negated — flip them back to display units.
                     return plot.map(p => {
-                      if (typeof p === 'string' || p.type !== 'score') {
+                      if (typeof p === 'string') {
                         return p
                       }
-                      const xs = p.points
+                      const flipped = flipQualityScores(p)
+                      if (flipped.type !== 'score') {
+                        return flipped
+                      }
+                      const xs = flipped.points
                         .map(pt => (typeof pt.x === 'number' ? pt.x : NaN))
                         .filter(n => !Number.isNaN(n))
                       const maxX = xs.length ? Math.max(...xs) : 0
                       return {
-                        ...p,
+                        ...flipped,
                         xDomain: [0, Math.max(5, maxX)] as [number, number],
                       }
                     })

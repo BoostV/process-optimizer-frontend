@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import {
   convertJsonPlotToOneDData,
+  flipQualityScores,
   groupSinglePlots,
+  parsePlotJson,
   type PlotEntry,
   type ActiveVariable,
 } from './experimentation-guide.utils'
@@ -220,5 +222,47 @@ describe('groupSinglePlots', () => {
     if (plot !== undefined && typeof plot !== 'string') {
       expect(plot.type).toBe('options')
     }
+  })
+})
+
+describe('flipQualityScores', () => {
+  it('negates and reorders a per-factor quality band (numeric)', () => {
+    const out = flipQualityScores({
+      type: 'numeric',
+      points: [{ x: 100, y: [-5.86, -2.76] }],
+    })
+    expect(out.points[0]).toEqual({ x: 100, y: [2.76, 5.86] })
+  })
+
+  it('negates the per-factor band but keeps the option label (options)', () => {
+    const out = flipQualityScores({
+      type: 'options',
+      points: [{ x: 'A', y: [-4, -2] }],
+    })
+    expect(out.points[0]).toEqual({ x: 'A', y: [2, 4] })
+  })
+
+  it('negates the histogram quality x values (score)', () => {
+    const out = flipQualityScores({
+      type: 'score',
+      points: [
+        { x: -7, y: 0 },
+        { x: -5, y: 1 },
+      ],
+    })
+    expect(out.points.map(p => p.x)).toEqual([7, 5])
+  })
+})
+
+describe('parsePlotJson', () => {
+  it('parses a json plot payload', () => {
+    expect(parsePlotJson('{"a":1}')).toEqual({ a: 1 })
+  })
+  it('returns null for a base64 PNG plot (does not throw)', () => {
+    expect(parsePlotJson('iVBORw0KGgoAAAANSUhEUg')).toBeNull()
+  })
+  it('returns null for undefined or malformed input', () => {
+    expect(parsePlotJson(undefined)).toBeNull()
+    expect(parsePlotJson('{ not json')).toBeNull()
   })
 })
