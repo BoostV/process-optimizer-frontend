@@ -3,8 +3,6 @@ import { useDataToPixel } from '../use-data-to-pixel'
 type Props = {
   xLowerBoundData: { x: number; y: number }[]
   xUpperBoundData: { x: number; y: number }[]
-  xDomain: [number, number]
-  yDomain: [number, number]
 }
 
 // Smooth filled band for the quality-axis uncertainty. Drawn as a closed
@@ -13,10 +11,8 @@ type Props = {
 export const QualityUncertaintyBand = ({
   xLowerBoundData,
   xUpperBoundData,
-  xDomain,
-  yDomain,
 }: Props) => {
-  const proj = useDataToPixel(xDomain, yDomain)
+  const proj = useDataToPixel()
   if (!proj) {
     return null
   }

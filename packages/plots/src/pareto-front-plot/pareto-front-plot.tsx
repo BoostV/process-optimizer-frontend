@@ -176,11 +176,6 @@ export default function ParetoFrontPlot({
   // Format axis values to 2 decimal places
   const formatTick = (value: number) => value.toFixed(2)
 
-  // Narrow the computed domains to fixed-length tuples for the overlay props.
-  // Both are derived from data via Math.min/Math.max, so they are defined.
-  const xDomainT: [number, number] = [xDomain[0]!, xDomain[1]!]
-  const yDomainT: [number, number] = [yDomain[0]!, yDomain[1]!]
-
   return (
     <div
       className={classes.container}
@@ -219,8 +214,6 @@ export default function ParetoFrontPlot({
               <QualityUncertaintyBand
                 xLowerBoundData={xLowerBoundData}
                 xUpperBoundData={xUpperBoundData}
-                xDomain={xDomainT}
-                yDomain={yDomainT}
               />
             )}
           />
@@ -232,6 +225,10 @@ export default function ParetoFrontPlot({
             stroke="none"
             name="UncertaintyY"
             isAnimationActive={false}
+            // The custom HoverOverlay is the hover indicator; disable Recharts'
+            // own active dots (the range Area leaves an orange dot at each
+            // bound, which gets stranded on a fast pointer exit).
+            activeDot={false}
           />
           <Scatter
             name="Dominated observations"
@@ -280,6 +277,7 @@ export default function ParetoFrontPlot({
             dot={{ r: 2, stroke: 'none', fill: 'black' }}
             name="Pareto front"
             isAnimationActive={false}
+            activeDot={false}
           ></Line>
           {/* Reference lines from selected point to axes */}
           <ReferenceLine
@@ -321,8 +319,6 @@ export default function ParetoFrontPlot({
               frontYData={plot.front_y_data}
               frontXData={plot.front_x_data}
               variableNames={variableNames}
-              xDomain={xDomainT}
-              yDomain={yDomainT}
               showHoverEllipse={showHoverEllipse}
               obj1Error={plot.obj1_error}
               obj2Error={plot.obj2_error}

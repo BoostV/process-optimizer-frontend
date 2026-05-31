@@ -12,8 +12,6 @@ type Props = {
   frontYData: [number, number][]
   frontXData: (number | string)[][]
   variableNames: string[]
-  xDomain: [number, number]
-  yDomain: [number, number]
   // Show a 95% confidence ellipse for the hovered front point.
   showHoverEllipse?: boolean
   obj1Error: number[]
@@ -38,20 +36,19 @@ export const HoverOverlay = ({
   frontYData,
   frontXData,
   variableNames,
-  xDomain,
-  yDomain,
   showHoverEllipse = false,
   obj1Error,
   obj2Error,
 }: Props) => {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
-  const proj = useDataToPixel(xDomain, yDomain)
+  const proj = useDataToPixel()
   if (proj === null) {
     return null
   }
-  const { xToPx, yToPx, plotArea } = proj
+  const { xToPx, yToPx, pxToDataX, plotArea } = proj
 
-  // Map a mouse event to a data-space x using the SVG coordinate system.
+  // Map a mouse event to a data-space x using the SVG coordinate system and
+  // Recharts' own inverse scale (so picking matches where the front is drawn).
   const eventToDataX = (e: React.MouseEvent<SVGRectElement>): number | null => {
     const svg = e.currentTarget.ownerSVGElement
     const ctm = svg?.getScreenCTM()
@@ -62,11 +59,10 @@ export const HoverOverlay = ({
     pt.x = e.clientX
     pt.y = e.clientY
     const local = pt.matrixTransform(ctm.inverse())
-    const rel = (local.x - plotArea.x) / plotArea.width
-    if (rel < 0 || rel > 1) {
+    if (local.x < plotArea.x || local.x > plotArea.x + plotArea.width) {
       return null
     }
-    return xDomain[0] + rel * (xDomain[1] - xDomain[0])
+    return pxToDataX(local.x)
   }
 
   // xValue is in display units (positive quality); front_y_data[i][0] is in
@@ -142,8 +138,6 @@ export const HoverOverlay = ({
           frontYData={frontYData}
           obj1Error={obj1Error}
           obj2Error={obj2Error}
-          xDomain={xDomain}
-          yDomain={yDomain}
         />
       )}
       {point && (
