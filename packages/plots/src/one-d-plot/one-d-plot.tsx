@@ -6,12 +6,12 @@ import {
   Bar,
   BarChart,
   ReferenceLine,
-  ResponsiveContainer,
   Tooltip,
   TooltipValueType,
   XAxis,
   YAxis,
 } from 'recharts'
+import { useElementSize } from '../use-element-size'
 
 export type OneDData = {
   points: {
@@ -21,6 +21,7 @@ export type OneDData = {
   type?: CombinedVariableInputType | 'score'
   referenceLineX?: number
   xDomain?: [number, number]
+  yDomain?: [number, number]
 }
 
 type OneDPlotProps = {
@@ -34,7 +35,7 @@ export const OneDPlot = ({
   width,
   maxWidth,
   height,
-  data: { points, type = 'numeric', referenceLineX, xDomain },
+  data: { points, type = 'numeric', referenceLineX, xDomain, yDomain },
 }: OneDPlotProps) => {
   const fillColor = type === 'score' ? '#76c7c0' : '#a3d764'
   const resolvedReferenceLineX =
@@ -69,11 +70,16 @@ export const OneDPlot = ({
     return Math.max(30, formatted.length * 7 + 5)
   })()
 
+  const [chartAreaRef, size] = useElementSize<HTMLDivElement>()
+  const ready = size.width > 0 && size.height > 0
+
   return (
-    <div style={{ width, maxWidth, height }}>
-      <ResponsiveContainer width="100%" height="100%">
-        {type === 'options' ? (
+    <div ref={chartAreaRef} style={{ width, maxWidth, height }}>
+      {ready &&
+        (type === 'options' ? (
           <BarChart
+            width={size.width}
+            height={size.height}
             margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
             data={points}
           >
@@ -87,6 +93,7 @@ export const OneDPlot = ({
               width={yAxisWidth}
               tick={{ fontSize: 10 }}
               tickFormatter={formatValue}
+              {...(yDomain ? { domain: yDomain, allowDataOverflow: true } : {})}
             />
             <Tooltip
               formatter={formatTooltip}
@@ -105,6 +112,8 @@ export const OneDPlot = ({
           </BarChart>
         ) : (
           <AreaChart
+            width={size.width}
+            height={size.height}
             margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
             data={points}
           >
@@ -126,6 +135,7 @@ export const OneDPlot = ({
               tick={{ fontSize: 10 }}
               tickFormatter={formatValue}
               hide={type === 'score'}
+              {...(yDomain ? { domain: yDomain, allowDataOverflow: true } : {})}
             />
             {type !== 'score' && (
               <Tooltip
@@ -151,8 +161,7 @@ export const OneDPlot = ({
               />
             )}
           </AreaChart>
-        )}
-      </ResponsiveContainer>
+        ))}
     </div>
   )
 }

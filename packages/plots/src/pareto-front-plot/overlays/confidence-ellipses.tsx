@@ -6,8 +6,6 @@ type Props = {
   frontYData: [number, number][]
   obj1Error: number[]
   obj2Error: number[]
-  xDomain: [number, number]
-  yDomain: [number, number]
 }
 
 // Renders sampled 95% confidence ellipses along the front. Recharts
@@ -18,10 +16,8 @@ export const ConfidenceEllipses = ({
   frontYData,
   obj1Error,
   obj2Error,
-  xDomain,
-  yDomain,
 }: Props) => {
-  const proj = useDataToPixel(xDomain, yDomain)
+  const proj = useDataToPixel()
   if (!proj) {
     return null
   }

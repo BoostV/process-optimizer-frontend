@@ -1,43 +1,54 @@
+import { useState } from 'react'
 import { displayQuality } from '@boostv/process-optimizer-frontend-core'
 import { useDataToPixel } from './use-data-to-pixel'
+import { ConfidenceEllipses } from './overlays/confidence-ellipses'
 
 const LABEL_WIDTH = 140
 const LABEL_GAP = 6
 const LINE_HEIGHT = 16
 
 type Props = {
-  hoverIndex: number | null
-  setHoverIndex: (i: number | null) => void
   onSelectIndex?: (i: number) => void
   frontYData: [number, number][]
   frontXData: (number | string)[][]
   variableNames: string[]
-  xDomain: [number, number]
-  yDomain: [number, number]
+  // Show a 95% confidence ellipse for the hovered front point.
+  showHoverEllipse?: boolean
+  obj1Error: number[]
+  obj2Error: number[]
 }
 
 // A single <Customized> SVG overlay that both captures pointer interaction
 // (via a transparent rect over the plot area) and renders the hover marks
-// (vertical guide, snapped dot, label). All positioning goes through the
-// shared useDataToPixel hook (Recharts v3 usePlotArea) — no querySelector,
-// no Recharts-internal class lookups, no imperative DOM mutation.
+// (vertical guide, snapped dot, label, optional confidence ellipse). All
+// positioning goes through the shared useDataToPixel hook (Recharts v3
+// usePlotArea) — no querySelector, no Recharts-internal class lookups, no
+// imperative DOM mutation.
+//
+// The hovered index is owned here, not by the parent ParetoFrontPlot. That is
+// deliberate and load-bearing for performance: a mousemove updates only this
+// overlay's state, so React re-renders just this small <g> — the surrounding
+// 200-point chart (axes, line, area, bands, scatters) does not re-render on
+// every pointer move. Lifting this state to the parent re-rendered the whole
+// ComposedChart per move (~27ms each).
 export const HoverOverlay = ({
-  hoverIndex,
-  setHoverIndex,
   onSelectIndex,
   frontYData,
   frontXData,
   variableNames,
-  xDomain,
-  yDomain,
+  showHoverEllipse = false,
+  obj1Error,
+  obj2Error,
 }: Props) => {
-  const proj = useDataToPixel(xDomain, yDomain)
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null)
+  const proj = useDataToPixel()
   if (proj === null) {
     return null
   }
-  const { xToPx, yToPx, plotArea } = proj
+  const { xToPx, yToPx, pxToDataX, plotArea } = proj
 
-  // Map a mouse event to a data-space x using the SVG coordinate system.
+  // Map a mouse event to a data-space x using the SVG coordinate system and
+  // Recharts' own inverse scale (so picking matches where the front is drawn).
   const eventToDataX = (e: React.MouseEvent<SVGRectElement>): number | null => {
     const svg = e.currentTarget.ownerSVGElement
     const ctm = svg?.getScreenCTM()
@@ -48,11 +59,10 @@ export const HoverOverlay = ({
     pt.x = e.clientX
     pt.y = e.clientY
     const local = pt.matrixTransform(ctm.inverse())
-    const rel = (local.x - plotArea.x) / plotArea.width
-    if (rel < 0 || rel > 1) {
+    if (local.x < plotArea.x || local.x > plotArea.x + plotArea.width) {
       return null
     }
-    return xDomain[0] + rel * (xDomain[1] - xDomain[0])
+    return pxToDataX(local.x)
   }
 
   // xValue is in display units (positive quality); front_y_data[i][0] is in
@@ -122,6 +132,14 @@ export const HoverOverlay = ({
 
   return (
     <g>
+      {showHoverEllipse && hoverIndex !== null && (
+        <ConfidenceEllipses
+          ellipseIndices={[hoverIndex]}
+          frontYData={frontYData}
+          obj1Error={obj1Error}
+          obj2Error={obj2Error}
+        />
+      )}
       {point && (
         <g pointerEvents="none">
           <line

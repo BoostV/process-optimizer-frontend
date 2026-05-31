@@ -23,7 +23,12 @@ import {
   type SelectedPoint,
 } from '@boostv/process-optimizer-frontend-core'
 import { Box, Button } from '@mui/material'
-import { groupSinglePlots } from '../../containers/result-data/experimentation-guide.utils'
+import {
+  flipQualityScores,
+  groupSinglePlots,
+  parsePlotJson,
+  qualityDisplayDomain,
+} from '../../containers/result-data/experimentation-guide.utils'
 import { resolveSelectedIndex } from './result.utils'
 import { z } from 'zod'
 import { isArray } from 'remeda'
@@ -135,9 +140,7 @@ export const Result = ({
   const paretoRaw = plots.find(
     plot => plot.id.includes('pareto') && typeof plot.plot === 'string'
   )
-  const pareto = parseParetoPlot(
-    paretoRaw?.plot ? JSON.parse(paretoRaw.plot) : null
-  )
+  const pareto = parseParetoPlot(parsePlotJson(paretoRaw?.plot))
 
   // A single-objective experiment has no pareto plot; it still renders the
   // "Predicted best solution" panel (with its PNG plots) below. Only the
@@ -168,18 +171,24 @@ export const Result = ({
                 const isCost = role === 'cost'
                 const plotData: (string | OneDData)[] = (() => {
                   if (isQuality) {
-                    return plot.map(p => {
-                      if (typeof p === 'string' || p.type !== 'score') {
+                    // Quality is minimized as -quality, so its json plots come
+                    // back negated — flip them back to display units.
+                    const flippedPlots = plot.map(p =>
+                      typeof p === 'string' ? p : flipQualityScores(p)
+                    )
+                    // Pin every quality plot to one shared scale so the
+                    // per-factor Y axes and the histogram X axis line up (as
+                    // the PNG does), instead of each axis auto-scaling on its
+                    // own — which left the factors at 0-8 and the histogram on
+                    // a narrow, hard-to-read range.
+                    const domain = qualityDisplayDomain(flippedPlots)
+                    return flippedPlots.map(p => {
+                      if (typeof p === 'string') {
                         return p
                       }
-                      const xs = p.points
-                        .map(pt => (typeof pt.x === 'number' ? pt.x : NaN))
-                        .filter(n => !Number.isNaN(n))
-                      const maxX = xs.length ? Math.max(...xs) : 0
-                      return {
-                        ...p,
-                        xDomain: [0, Math.max(5, maxX)] as [number, number],
-                      }
+                      return p.type === 'score'
+                        ? { ...p, xDomain: domain }
+                        : { ...p, yDomain: domain }
                     })
                   }
                   if (isCost && cost) {

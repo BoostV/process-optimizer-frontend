@@ -5,10 +5,13 @@ export const useStyles = makeStyles()(theme => ({
     display: 'flex',
     height: '600px',
     width: '840px',
-    svg: {
-      '&:focus': {
-        outline: 'none',
-      },
+    // Recharts v3 makes the surface <svg> (tabIndex 0) and every zIndex-layer
+    // <g> (tabIndex -1) focusable. Clicking a point focuses one of them and the
+    // browser draws a focus ring around the whole graph. Suppress it for the
+    // chart internals only — the legend buttons (no "recharts" class) keep
+    // their focus ring for keyboard accessibility.
+    '& [class*="recharts"]:focus': {
+      outline: 'none',
     },
   },
   tooltipContainer: {
