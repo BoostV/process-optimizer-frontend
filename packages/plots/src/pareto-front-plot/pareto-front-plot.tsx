@@ -243,11 +243,14 @@ export default function ParetoFrontPlot({
             isAnimationActive={false}
             label={{
               position: 'top',
-              content: makePointLabel({
-                fill: 'white',
-                stroke: '#bbb',
-                textFill: '#888',
-              }),
+              content: makePointLabel(
+                {
+                  fill: 'white',
+                  stroke: '#bbb',
+                  textFill: '#888',
+                },
+                observedDominated
+              ),
             }}
           />
           <Scatter
@@ -259,11 +262,14 @@ export default function ParetoFrontPlot({
             isAnimationActive={false}
             label={{
               position: 'top',
-              content: makePointLabel({
-                fill: '#2b5879',
-                stroke: '#2b5879',
-                textFill: 'white',
-              }),
+              content: makePointLabel(
+                {
+                  fill: '#2b5879',
+                  stroke: '#2b5879',
+                  textFill: 'white',
+                },
+                observedParetoOptimal
+              ),
             }}
           />
           <Line
