@@ -6,12 +6,12 @@ import {
   Bar,
   BarChart,
   ReferenceLine,
-  ResponsiveContainer,
   Tooltip,
   TooltipValueType,
   XAxis,
   YAxis,
 } from 'recharts'
+import { useElementSize } from '../use-element-size'
 
 export type OneDData = {
   points: {
@@ -69,11 +69,16 @@ export const OneDPlot = ({
     return Math.max(30, formatted.length * 7 + 5)
   })()
 
+  const [chartAreaRef, size] = useElementSize<HTMLDivElement>()
+  const ready = size.width > 0 && size.height > 0
+
   return (
-    <div style={{ width, maxWidth, height }}>
-      <ResponsiveContainer width="100%" height="100%">
-        {type === 'options' ? (
+    <div ref={chartAreaRef} style={{ width, maxWidth, height }}>
+      {ready &&
+        (type === 'options' ? (
           <BarChart
+            width={size.width}
+            height={size.height}
             margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
             data={points}
           >
@@ -105,6 +110,8 @@ export const OneDPlot = ({
           </BarChart>
         ) : (
           <AreaChart
+            width={size.width}
+            height={size.height}
             margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
             data={points}
           >
@@ -151,8 +158,7 @@ export const OneDPlot = ({
               />
             )}
           </AreaChart>
-        )}
-      </ResponsiveContainer>
+        ))}
     </div>
   )
 }

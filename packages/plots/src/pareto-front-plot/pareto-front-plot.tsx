@@ -5,7 +5,6 @@ import {
   Scatter,
   XAxis,
   YAxis,
-  ResponsiveContainer,
   ComposedChart,
   Line,
   ReferenceLine,
@@ -20,6 +19,7 @@ import useStyles from './pareto-front-plot.style'
 import { makePointLabel } from './point-label'
 import { QualityUncertaintyBand } from './overlays/uncertainty-band'
 import { HoverOverlay } from './hover-overlay'
+import { useElementSize } from '../use-element-size'
 
 type Props = {
   indexOfSelected: number
@@ -54,6 +54,11 @@ export default function ParetoFrontPlot({
 }: Props) {
   const { classes } = useStyles()
   const [fitToFront, setFitToFront] = useState(false)
+
+  // Size the chart explicitly from the measured chart area instead of using
+  // Recharts' ResponsiveContainer (which logs "width(-1) and height(-1)" while
+  // the surrounding app's layout settles). See useElementSize.
+  const [chartAreaRef, chartSize] = useElementSize<HTMLDivElement>()
 
   // Transform DataEntry[] to {x, y, id}[] format
   const dataPointsMapped: { x: number; y: number; id: number }[] =
@@ -184,128 +189,132 @@ export default function ParetoFrontPlot({
         position: 'relative',
       }}
     >
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart
-          width={600}
-          height={400}
-          data={chartData}
-          margin={{ top: 32, right: 16, bottom: 10, left: 4 }}
-        >
-          <XAxis
-            type="number"
-            dataKey="x"
-            tick={{ fontSize: 12 }}
-            domain={xDomain}
-            allowDataOverflow={fitToFront}
-            tickFormatter={formatTick}
-            label={{ value: 'Quality', position: 'insideBottom', offset: -5 }}
-          />
-          <YAxis
-            type="number"
-            domain={yDomain}
-            allowDataOverflow={fitToFront}
-            tick={{ fontSize: 12 }}
-            tickFormatter={formatTick}
-            label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
-          />
-          {/* Uncertainty band — always shown */}
-          <Customized
-            component={() => (
-              <QualityUncertaintyBand
-                xLowerBoundData={xLowerBoundData}
-                xUpperBoundData={xUpperBoundData}
-              />
-            )}
-          />
-          <Area
-            type="monotone"
-            dataKey="uncertaintyY"
-            fill="#f6c47e"
-            fillOpacity={0.3}
-            stroke="none"
-            name="UncertaintyY"
-            isAnimationActive={false}
-            // The custom HoverOverlay is the hover indicator; disable Recharts'
-            // own active dots (the range Area leaves an orange dot at each
-            // bound, which gets stranded on a fast pointer exit).
-            activeDot={false}
-          />
-          <Scatter
-            name="Dominated observations"
-            dataKey={'y'}
-            data={observedDominated}
-            fill="white"
-            stroke="#999"
-            strokeWidth={1.5}
-            isAnimationActive={false}
-            label={{
-              position: 'top',
-              content: makePointLabel(
-                {
-                  fill: 'white',
-                  stroke: '#bbb',
-                  textFill: '#888',
-                },
-                observedDominated
-              ),
-            }}
-          />
-          <Scatter
-            name="Pareto-optimal observations"
-            dataKey={'y'}
-            data={observedParetoOptimal}
-            fill="#2b5879"
-            stroke="#2b5879"
-            isAnimationActive={false}
-            label={{
-              position: 'top',
-              content: makePointLabel(
-                {
-                  fill: '#2b5879',
-                  stroke: '#2b5879',
-                  textFill: 'white',
-                },
-                observedParetoOptimal
-              ),
-            }}
-          />
-          <Line
-            type="linear"
-            dataKey="y"
-            stroke="black"
-            strokeWidth={2}
-            dot={{ r: 2, stroke: 'none', fill: 'black' }}
-            name="Pareto front"
-            isAnimationActive={false}
-            activeDot={false}
-          ></Line>
-          {/* Reference lines from selected point to axes */}
-          <ReferenceLine
-            segment={[
-              { x: selected[0], y: selected[1] },
-              { x: selected[0], y: yDomain[0] },
-            ]}
-            stroke={'#077ace'}
-            strokeWidth={1}
-            strokeDasharray="3 3"
-          />
-          <ReferenceLine
-            segment={[
-              { x: selected[0], y: selected[1] },
-              { x: xDomain[0], y: selected[1] },
-            ]}
-            stroke="#077ace"
-            strokeWidth={1}
-            strokeDasharray="3 3"
-          />
-          <Scatter
-            name="Selected"
-            dataKey={'y'}
-            data={[{ x: selected[0], y: selected[1] }]}
-            fill="#077ace"
-            isAnimationActive={false}
-          />
-          {/*
+      <div
+        ref={chartAreaRef}
+        style={{ flexGrow: 1, flexBasis: 0, minWidth: 0, height: '100%' }}
+      >
+        {chartSize.width > 0 && chartSize.height > 0 && (
+          <ComposedChart
+            width={chartSize.width}
+            height={chartSize.height}
+            data={chartData}
+            margin={{ top: 32, right: 16, bottom: 10, left: 4 }}
+          >
+            <XAxis
+              type="number"
+              dataKey="x"
+              tick={{ fontSize: 12 }}
+              domain={xDomain}
+              allowDataOverflow={fitToFront}
+              tickFormatter={formatTick}
+              label={{ value: 'Quality', position: 'insideBottom', offset: -5 }}
+            />
+            <YAxis
+              type="number"
+              domain={yDomain}
+              allowDataOverflow={fitToFront}
+              tick={{ fontSize: 12 }}
+              tickFormatter={formatTick}
+              label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
+            />
+            {/* Uncertainty band — always shown */}
+            <Customized
+              component={() => (
+                <QualityUncertaintyBand
+                  xLowerBoundData={xLowerBoundData}
+                  xUpperBoundData={xUpperBoundData}
+                />
+              )}
+            />
+            <Area
+              type="monotone"
+              dataKey="uncertaintyY"
+              fill="#f6c47e"
+              fillOpacity={0.3}
+              stroke="none"
+              name="UncertaintyY"
+              isAnimationActive={false}
+              // The custom HoverOverlay is the hover indicator; disable Recharts'
+              // own active dots (the range Area leaves an orange dot at each
+              // bound, which gets stranded on a fast pointer exit).
+              activeDot={false}
+            />
+            <Scatter
+              name="Dominated observations"
+              dataKey={'y'}
+              data={observedDominated}
+              fill="white"
+              stroke="#999"
+              strokeWidth={1.5}
+              isAnimationActive={false}
+              label={{
+                position: 'top',
+                content: makePointLabel(
+                  {
+                    fill: 'white',
+                    stroke: '#bbb',
+                    textFill: '#888',
+                  },
+                  observedDominated
+                ),
+              }}
+            />
+            <Scatter
+              name="Pareto-optimal observations"
+              dataKey={'y'}
+              data={observedParetoOptimal}
+              fill="#2b5879"
+              stroke="#2b5879"
+              isAnimationActive={false}
+              label={{
+                position: 'top',
+                content: makePointLabel(
+                  {
+                    fill: '#2b5879',
+                    stroke: '#2b5879',
+                    textFill: 'white',
+                  },
+                  observedParetoOptimal
+                ),
+              }}
+            />
+            <Line
+              type="linear"
+              dataKey="y"
+              stroke="black"
+              strokeWidth={2}
+              dot={{ r: 2, stroke: 'none', fill: 'black' }}
+              name="Pareto front"
+              isAnimationActive={false}
+              activeDot={false}
+            ></Line>
+            {/* Reference lines from selected point to axes */}
+            <ReferenceLine
+              segment={[
+                { x: selected[0], y: selected[1] },
+                { x: selected[0], y: yDomain[0] },
+              ]}
+              stroke={'#077ace'}
+              strokeWidth={1}
+              strokeDasharray="3 3"
+            />
+            <ReferenceLine
+              segment={[
+                { x: selected[0], y: selected[1] },
+                { x: xDomain[0], y: selected[1] },
+              ]}
+              stroke="#077ace"
+              strokeWidth={1}
+              strokeDasharray="3 3"
+            />
+            <Scatter
+              name="Selected"
+              dataKey={'y'}
+              data={[{ x: selected[0], y: selected[1] }]}
+              fill="#077ace"
+              isAnimationActive={false}
+            />
+            {/*
             Render the hover overlay on a high zIndex layer so its transparent
             interaction rect sits ON TOP of the data series. A plain <Customized>
             renders at z≈0 — behind the uncertainty Area (z 100), Line (400) and
@@ -313,19 +322,20 @@ export default function ParetoFrontPlot({
             events and hover only activated in the empty space above the front.
             See Recharts DefaultZIndexes.
           */}
-          <ZIndexLayer zIndex={1500}>
-            <HoverOverlay
-              onSelectIndex={onSelectIndex}
-              frontYData={plot.front_y_data}
-              frontXData={plot.front_x_data}
-              variableNames={variableNames}
-              showHoverEllipse={showHoverEllipse}
-              obj1Error={plot.obj1_error}
-              obj2Error={plot.obj2_error}
-            />
-          </ZIndexLayer>
-        </ComposedChart>
-      </ResponsiveContainer>
+            <ZIndexLayer zIndex={1500}>
+              <HoverOverlay
+                onSelectIndex={onSelectIndex}
+                frontYData={plot.front_y_data}
+                frontXData={plot.front_x_data}
+                variableNames={variableNames}
+                showHoverEllipse={showHoverEllipse}
+                obj1Error={plot.obj1_error}
+                obj2Error={plot.obj2_error}
+              />
+            </ZIndexLayer>
+          </ComposedChart>
+        )}
+      </div>
       <div className={classes.tooltipContainer}>
         <div
           className={classes.tooltip}
