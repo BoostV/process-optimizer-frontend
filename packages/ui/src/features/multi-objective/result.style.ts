@@ -11,6 +11,15 @@ export const useStyles = makeStyles()(() => ({
   noResults: {
     padding: 16,
   },
+  selectionHeader: {
+    paddingBottom: 12,
+  },
+  selectionTitleRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
   paretoContainer: {
     overflowX: 'auto',
   },

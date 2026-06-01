@@ -109,7 +109,9 @@ export default function ParetoFrontPlot({
 
   const variablesAtSelected = plot.front_x_data[indexOfSelected]
   const isBest = indexOfSelected === plot.best_idx
-  const selectedLabel = isBest ? 'Selected point (default)' : 'Selected point'
+  const selectedLabel = isBest
+    ? 'Target — model’s optimal balance'
+    : 'Target — your selection'
 
   // Get variable names from dataPoints (excluding scores)
   const variableNames =
