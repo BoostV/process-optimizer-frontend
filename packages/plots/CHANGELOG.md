@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/plots
 
+## 1.1.2
+
+### Patch Changes
+
+- a14ee15: Tweak labels
+
 ## 1.1.1
 
 ### Patch Changes
