@@ -1,5 +1,13 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.13.2
+
+### Patch Changes
+
+- a14ee15: Tweak labels
+- Updated dependencies [a14ee15]
+  - @boostv/process-optimizer-frontend-plots@1.1.2
+
 ## 2.13.1
 
 ### Patch Changes
