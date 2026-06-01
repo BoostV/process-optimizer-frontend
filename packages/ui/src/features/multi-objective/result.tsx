@@ -18,11 +18,12 @@ import {
   experimentResultSchema,
   parseParetoPlot,
   costDomain,
+  displayQuality,
   displayQualityCI,
   selectActiveScoreVariableNames,
   type SelectedPoint,
 } from '@boostv/process-optimizer-frontend-core'
-import { Box, Button } from '@mui/material'
+import { Box, Button, Chip, Typography } from '@mui/material'
 import {
   flipQualityScores,
   groupSinglePlots,
@@ -33,6 +34,10 @@ import { resolveSelectedIndex } from './result.utils'
 import { z } from 'zod'
 import { isArray } from 'remeda'
 import useStyles from './result.style'
+
+// Same blue as the "Selected" marker on the Pareto front plot, so the header
+// chip visually ties the 1D plots to the highlighted point below.
+const SELECTED_ACCENT = '#077ace'
 
 type ResultProps = {
   title?: string
@@ -147,6 +152,18 @@ export const Result = ({
   // multi-objective ParetoFrontPlot rendering requires `pareto`.
   const cost = pareto ? costDomain(pareto) : undefined
 
+  // Which point on the Pareto front the 1D plots below describe: the user's
+  // selection, or the model's optimal point (best_idx) by default.
+  const selectedIndex = pareto
+    ? resolveSelectedIndex(pareto.front_x_data, selectedCoords, pareto.best_idx)
+    : -1
+  const isDefaultSelection = pareto ? selectedIndex === pareto.best_idx : true
+  const selectedScores = pareto?.front_y_data[selectedIndex]
+  const selectedQuality = selectedScores
+    ? displayQuality(selectedScores[0])
+    : undefined
+  const selectedCost = selectedScores ? selectedScores[1] : undefined
+
   return (
     <TitleCard
       id={id}
@@ -160,7 +177,65 @@ export const Result = ({
       )}
       {showSingleDataPoint && (
         <>
-          <Box className={classes.container}>
+          <Box
+            className={classes.container}
+            sx={
+              isMultiObjective && pareto && !isDefaultSelection
+                ? { borderLeft: `4px solid ${SELECTED_ACCENT}` }
+                : undefined
+            }
+          >
+            {isMultiObjective && pareto && (
+              <Box className={classes.selectionHeader}>
+                <Box className={classes.selectionTitleRow}>
+                  <Typography variant="subtitle2" fontWeight="bold">
+                    {isDefaultSelection
+                      ? 'Predicted best settings'
+                      : 'Predicted settings for your selected target'}
+                  </Typography>
+                  <Chip
+                    size="small"
+                    label={
+                      isDefaultSelection
+                        ? "Model's optimal point"
+                        : 'Your selection'
+                    }
+                    sx={{ bgcolor: SELECTED_ACCENT, color: 'common.white' }}
+                  />
+                </Box>
+                <Typography variant="caption" color="text.secondary">
+                  {isDefaultSelection ? (
+                    'For the model’s optimal quality–cost balance. Pick a point on the Pareto front below to target a different trade-off.'
+                  ) : (
+                    <>
+                      {`${scoreHeaders[0] ?? 'Quality'} ≈ ${
+                        selectedQuality?.toFixed(2) ?? '?'
+                      }, ${scoreHeaders[1] ?? 'Cost'} ≈ ${
+                        selectedCost?.toFixed(2) ?? '?'
+                      } · selected on the Pareto front. `}
+                      <Button
+                        size="small"
+                        variant="text"
+                        onClick={() =>
+                          dispatch({
+                            type: 'setSelectedParetoPoint',
+                            payload: null,
+                          })
+                        }
+                        sx={{
+                          p: 0,
+                          minWidth: 0,
+                          textTransform: 'none',
+                          verticalAlign: 'baseline',
+                        }}
+                      >
+                        Reset to the optimal balance
+                      </Button>
+                    </>
+                  )}
+                </Typography>
+              </Box>
+            )}
             <SingleDataPoint
               title={isMultiObjective ? undefined : 'Predicted best solution'}
               variableHeaders={variableHeaders}
@@ -214,6 +289,15 @@ export const Result = ({
 
           {isMultiObjective && pareto && (
             <Box p={2} className={classes.paretoContainer}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: 'block', mb: 1 }}
+              >
+                Each point is a possible quality–cost trade-off. Click one to
+                see the settings predicted to reach it — the graphs above update
+                to match.
+              </Typography>
               <ParetoFrontPlot
                 onSelectIndex={onSetSelectedParetoPoint}
                 indexOfSelected={resolveSelectedIndex(
@@ -238,7 +322,7 @@ export const Result = ({
                       size="small"
                       onClick={onResetToDefault}
                     >
-                      Reset to default
+                      Reset to optimal point
                     </Button>
                   </>
                 )}
