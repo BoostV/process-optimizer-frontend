@@ -196,16 +196,14 @@ export const Result = ({
                   <Chip
                     size="small"
                     label={
-                      isDefaultSelection
-                        ? "Model's optimal point"
-                        : 'Your selection'
+                      isDefaultSelection ? 'Default point' : 'Selected point'
                     }
                     sx={{ bgcolor: SELECTED_ACCENT, color: 'common.white' }}
                   />
                 </Box>
                 <Typography variant="caption" color="text.secondary">
                   {isDefaultSelection ? (
-                    'For the model’s optimal quality–cost balance. Pick a point on the Pareto front below to target a different trade-off.'
+                    'For the model’s default equal balance of quality and cost. Pick a point on the Pareto front below to target a different trade-off.'
                   ) : (
                     <>
                       {`${scoreHeaders[0] ?? 'Quality'} ≈ ${
@@ -229,7 +227,7 @@ export const Result = ({
                           verticalAlign: 'baseline',
                         }}
                       >
-                        Reset to the optimal balance
+                        Reset to the default balance
                       </Button>
                     </>
                   )}
@@ -322,7 +320,7 @@ export const Result = ({
                       size="small"
                       onClick={onResetToDefault}
                     >
-                      Reset to optimal point
+                      Reset to default point
                     </Button>
                   </>
                 )}
