@@ -12,6 +12,7 @@ import {
   YAxis,
 } from 'recharts'
 import { useElementSize } from '../use-element-size'
+import { usePlotColors } from '../colors'
 
 export type OneDData = {
   points: {
@@ -37,25 +38,29 @@ export const OneDPlot = ({
   height,
   data: { points, type = 'numeric', referenceLineX, xDomain, yDomain },
 }: OneDPlotProps) => {
-  const fillColor = type === 'score' ? '#76c7c0' : '#a3d764'
+  const plotColors = usePlotColors()
+  const fillColor = type === 'score' ? plotColors.score : plotColors.band
   const resolvedReferenceLineX =
     referenceLineX !== undefined ? points[referenceLineX]?.x : undefined
   const formatValue = (value: number | string) =>
     typeof value === 'number' ? value.toFixed(2) : value
   const formatTooltip = (value: TooltipValueType | undefined) => {
     if (Array.isArray(value)) {
-      return value.map(v => formatValue(v)).join(', ')
+      // Credible-interval band: show the low–high range explicitly.
+      return `[${formatValue(value[0] ?? 0)} to ${formatValue(value[1] ?? 0)}]`
     }
     return typeof value === 'number' || typeof value === 'string'
       ? formatValue(value)
       : ''
   }
-  const formatTooltipLabel = (label: ReactNode) =>
-    typeof label !== 'number' && typeof label !== 'string'
-      ? label
-      : resolvedReferenceLineX !== undefined && label === resolvedReferenceLineX
-        ? `${formatValue(label)} (best)`
-        : formatValue(label)
+  const formatTooltipLabel = (label: ReactNode) => {
+    if (typeof label !== 'number' && typeof label !== 'string') {
+      return label
+    }
+    const isBest =
+      resolvedReferenceLineX !== undefined && label === resolvedReferenceLineX
+    return `x: ${formatValue(label)}${isBest ? ' (best)' : ''}`
+  }
 
   // Calculate Y-axis width based on the maximum absolute Y value to ensure labels fit
   const yAxisWidth = (() => {
@@ -69,6 +74,20 @@ export const OneDPlot = ({
     const formatted = maxAbsVal.toFixed(2)
     return Math.max(30, formatted.length * 7 + 5)
   })()
+
+  // Score (histogram) x-axis: show a fixed set of evenly-spaced ticks spanning
+  // the domain (0..max) including both ends, instead of Recharts' default which
+  // left only 2-3 sparse ticks on the narrow score distribution.
+  const SCORE_TICK_COUNT = 6
+  const scoreXTicks =
+    type === 'score' && xDomain
+      ? Array.from(
+          { length: SCORE_TICK_COUNT },
+          (_, i) =>
+            xDomain[0] +
+            ((xDomain[1] - xDomain[0]) * i) / (SCORE_TICK_COUNT - 1)
+        )
+      : undefined
 
   const [chartAreaRef, size] = useElementSize<HTMLDivElement>()
   const ready = size.width > 0 && size.height > 0
@@ -126,6 +145,15 @@ export const OneDPlot = ({
                     type: 'number' as const,
                     domain: xDomain,
                     allowDataOverflow: true,
+                  }
+                : {})}
+              {...(scoreXTicks
+                ? {
+                    ticks: scoreXTicks,
+                    interval: 0 as const,
+                    // Inset the axis so the 0 and max labels (centered on the
+                    // edge ticks) aren't clipped by the chart bounds.
+                    padding: { left: 10, right: 14 },
                   }
                 : {})}
             />

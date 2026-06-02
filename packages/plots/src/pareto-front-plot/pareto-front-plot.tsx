@@ -20,6 +20,7 @@ import { makePointLabel } from './point-label'
 import { QualityUncertaintyBand } from './overlays/uncertainty-band'
 import { HoverOverlay } from './hover-overlay'
 import { useElementSize } from '../use-element-size'
+import { usePlotColors } from '../colors'
 
 type Props = {
   indexOfSelected: number
@@ -53,6 +54,7 @@ export default function ParetoFrontPlot({
   styles,
 }: Props) {
   const { classes } = useStyles()
+  const plotColors = usePlotColors()
   const [fitToFront, setFitToFront] = useState(false)
 
   // Size the chart explicitly from the measured chart area instead of using
@@ -110,8 +112,8 @@ export default function ParetoFrontPlot({
   const variablesAtSelected = plot.front_x_data[indexOfSelected]
   const isBest = indexOfSelected === plot.best_idx
   const selectedLabel = isBest
-    ? 'Target — model’s optimal balance'
-    : 'Target — your selection'
+    ? 'Target — default point'
+    : 'Target — selected point'
 
   // Get variable names from dataPoints (excluding scores)
   const variableNames =
@@ -231,8 +233,8 @@ export default function ParetoFrontPlot({
             <Area
               type="monotone"
               dataKey="uncertaintyY"
-              fill="#f6c47e"
-              fillOpacity={0.3}
+              fill={plotColors.cost}
+              fillOpacity={1}
               stroke="none"
               name="UncertaintyY"
               isAnimationActive={false}
@@ -246,7 +248,7 @@ export default function ParetoFrontPlot({
               dataKey={'y'}
               data={observedDominated}
               fill="white"
-              stroke="#999"
+              stroke={plotColors.dominated}
               strokeWidth={1.5}
               isAnimationActive={false}
               label={{
@@ -265,15 +267,15 @@ export default function ParetoFrontPlot({
               name="Pareto-optimal observations"
               dataKey={'y'}
               data={observedParetoOptimal}
-              fill="#2b5879"
-              stroke="#2b5879"
+              fill={plotColors.paretoOptimal}
+              stroke={plotColors.paretoOptimal}
               isAnimationActive={false}
               label={{
                 position: 'top',
                 content: makePointLabel(
                   {
-                    fill: '#2b5879',
-                    stroke: '#2b5879',
+                    fill: plotColors.paretoOptimal,
+                    stroke: plotColors.paretoOptimal,
                     textFill: 'white',
                   },
                   observedParetoOptimal
@@ -283,9 +285,9 @@ export default function ParetoFrontPlot({
             <Line
               type="linear"
               dataKey="y"
-              stroke="black"
+              stroke={plotColors.front}
               strokeWidth={2}
-              dot={{ r: 2, stroke: 'none', fill: 'black' }}
+              dot={{ r: 2, stroke: 'none', fill: plotColors.front }}
               name="Pareto front"
               isAnimationActive={false}
               activeDot={false}
@@ -296,7 +298,7 @@ export default function ParetoFrontPlot({
                 { x: selected[0], y: selected[1] },
                 { x: selected[0], y: yDomain[0] },
               ]}
-              stroke={'#077ace'}
+              stroke={plotColors.selectedPoint}
               strokeWidth={1}
               strokeDasharray="3 3"
             />
@@ -305,7 +307,7 @@ export default function ParetoFrontPlot({
                 { x: selected[0], y: selected[1] },
                 { x: xDomain[0], y: selected[1] },
               ]}
-              stroke="#077ace"
+              stroke={plotColors.selectedPoint}
               strokeWidth={1}
               strokeDasharray="3 3"
             />
@@ -313,7 +315,7 @@ export default function ParetoFrontPlot({
               name="Selected"
               dataKey={'y'}
               data={[{ x: selected[0], y: selected[1] }]}
-              fill="#077ace"
+              fill={plotColors.selectedPoint}
               isAnimationActive={false}
             />
             {/*
@@ -369,14 +371,14 @@ export default function ParetoFrontPlot({
           <div className={classes.legendItem}>
             <div
               className={classes.legendColorCircle}
-              style={{ background: '#077ace' }}
+              style={{ background: plotColors.selectedPoint }}
             />
             <span>Selected point</span>
           </div>
           <div className={classes.legendItem}>
             <div
               className={classes.legendColorCircle}
-              style={{ background: '#2b5879' }}
+              style={{ background: plotColors.paretoOptimal }}
             />
             <span>Pareto-optimal observation</span>
           </div>
@@ -385,7 +387,7 @@ export default function ParetoFrontPlot({
               className={classes.legendColorCircle}
               style={{
                 background: 'white',
-                border: '1.5px solid #999',
+                border: `1.5px solid ${plotColors.dominated}`,
                 boxSizing: 'border-box',
               }}
             />
@@ -394,21 +396,21 @@ export default function ParetoFrontPlot({
           <div className={classes.legendItem}>
             <div
               className={classes.legendColorLine}
-              style={{ background: 'black' }}
+              style={{ background: plotColors.front }}
             />
             <span>Pareto front</span>
           </div>
           <div className={classes.legendItem}>
             <div
               className={classes.legendColor}
-              style={{ background: 'rgba(246, 196, 126, 0.6)' }}
+              style={{ background: plotColors.cost }}
             />
             <span>Uncertainty (cost)</span>
           </div>
           <div className={classes.legendItem}>
             <div
               className={classes.legendColor}
-              style={{ background: 'rgba(144, 194, 144, 0.6)' }}
+              style={{ background: plotColors.quality }}
             />
             <span>Uncertainty (quality)</span>
           </div>

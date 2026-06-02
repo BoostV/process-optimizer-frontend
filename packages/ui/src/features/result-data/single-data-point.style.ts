@@ -18,6 +18,18 @@ export const useStyles = makeStyles()(() => ({
   title: {
     fontWeight: 'bold',
   },
+  // Group each objective's plots into a faintly tinted band with a heading, so
+  // the Quality row and the Cost row read as distinct blocks.
+  rowBand: {
+    padding: '4px 8px 8px',
+    borderRadius: 6,
+    marginBottom: 8,
+  },
+  rowLabel: {
+    display: 'block',
+    fontWeight: 'bold',
+    marginBottom: 2,
+  },
 }))
 
 export default useStyles

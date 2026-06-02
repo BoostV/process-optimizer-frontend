@@ -1,6 +1,7 @@
 import {
   ParetoFrontPlot,
   OneDData,
+  usePlotColors,
 } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '../core'
 import { SingleDataPoint } from '../result-data/single-data-point'
@@ -17,7 +18,6 @@ import {
   useSelector,
   experimentResultSchema,
   parseParetoPlot,
-  costDomain,
   displayQuality,
   displayQualityCI,
   selectActiveScoreVariableNames,
@@ -29,15 +29,12 @@ import {
   groupSinglePlots,
   parsePlotJson,
   qualityDisplayDomain,
+  costDisplayDomain,
 } from '../../containers/result-data/experimentation-guide.utils'
 import { resolveSelectedIndex } from './result.utils'
 import { z } from 'zod'
 import { isArray } from 'remeda'
 import useStyles from './result.style'
-
-// Same blue as the "Selected" marker on the Pareto front plot, so the header
-// chip visually ties the 1D plots to the highlighted point below.
-const SELECTED_ACCENT = '#077ace'
 
 type ResultProps = {
   title?: string
@@ -85,6 +82,9 @@ export const Result = ({
   styles,
 }: ResultProps) => {
   const { classes } = useStyles()
+  // Same accent as the "Selected" marker on the Pareto front, so the header chip
+  // ties the 1D plots to the highlighted point. Themeable via palette.plots.
+  const selectedAccent = usePlotColors().selectedPoint
 
   const {
     state: { experiment },
@@ -147,11 +147,6 @@ export const Result = ({
   )
   const pareto = parseParetoPlot(parsePlotJson(paretoRaw?.plot))
 
-  // A single-objective experiment has no pareto plot; it still renders the
-  // "Predicted best solution" panel (with its PNG plots) below. Only the
-  // multi-objective ParetoFrontPlot rendering requires `pareto`.
-  const cost = pareto ? costDomain(pareto) : undefined
-
   // Which point on the Pareto front the 1D plots below describe: the user's
   // selection, or the model's optimal point (best_idx) by default.
   const selectedIndex = pareto
@@ -181,7 +176,7 @@ export const Result = ({
             className={classes.container}
             sx={
               isMultiObjective && pareto && !isDefaultSelection
-                ? { borderLeft: `4px solid ${SELECTED_ACCENT}` }
+                ? { borderLeft: `4px solid ${selectedAccent}` }
                 : undefined
             }
           >
@@ -191,21 +186,19 @@ export const Result = ({
                   <Typography variant="subtitle2" fontWeight="bold">
                     {isDefaultSelection
                       ? 'Predicted best settings'
-                      : 'Predicted settings for your selected target'}
+                      : 'Predicted best settings'}
                   </Typography>
                   <Chip
                     size="small"
                     label={
-                      isDefaultSelection
-                        ? "Model's optimal point"
-                        : 'Your selection'
+                      isDefaultSelection ? 'Default point' : 'Selected point'
                     }
-                    sx={{ bgcolor: SELECTED_ACCENT, color: 'common.white' }}
+                    sx={{ bgcolor: selectedAccent, color: 'common.white' }}
                   />
                 </Box>
                 <Typography variant="caption" color="text.secondary">
                   {isDefaultSelection ? (
-                    'For the model’s optimal quality–cost balance. Pick a point on the Pareto front below to target a different trade-off.'
+                    'For the model’s default equal balance of quality and cost. Pick a point on the Pareto front below to target a different trade-off.'
                   ) : (
                     <>
                       {`${scoreHeaders[0] ?? 'Quality'} ≈ ${
@@ -229,7 +222,7 @@ export const Result = ({
                           verticalAlign: 'baseline',
                         }}
                       >
-                        Reset to the optimal balance
+                        Reset to the default balance
                       </Button>
                     </>
                   )}
@@ -266,18 +259,30 @@ export const Result = ({
                         : { ...p, yDomain: domain }
                     })
                   }
-                  if (isCost && cost) {
+                  if (isCost) {
+                    // Pin the cost factor Y axes and the histogram X axis to one
+                    // shared, data-derived scale (like quality) so the 1D graphs
+                    // and the histogram cover the same range — otherwise, away
+                    // from the default point, the histogram (pinned to the front
+                    // cost range) no longer matched the 1D graphs.
+                    const domain = costDisplayDomain(plot)
                     return plot.map(p => {
-                      if (typeof p === 'string' || p.type !== 'score') {
+                      if (typeof p === 'string') {
                         return p
                       }
-                      return { ...p, xDomain: cost }
+                      return p.type === 'score'
+                        ? { ...p, xDomain: domain }
+                        : { ...p, yDomain: domain }
                     })
                   }
                   return plot
                 })()
                 return {
                   scoreHeader: `${header} (95% credible interval)`,
+                  // Generic objective name (e.g. "Quality"/"Cost"), not the full label.
+                  rowLabel: role
+                    ? role.charAt(0).toUpperCase() + role.slice(1)
+                    : header,
                   dataPoint: hasExpectedMinimum
                     ? convertExpectedMinimumToDisplayValue(expectedMinimum!)
                     : [],
@@ -322,7 +327,7 @@ export const Result = ({
                       size="small"
                       onClick={onResetToDefault}
                     >
-                      Reset to optimal point
+                      Reset to default point
                     </Button>
                   </>
                 )}

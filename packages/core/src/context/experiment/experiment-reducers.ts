@@ -17,7 +17,9 @@ import { settings, versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
 import {
   selectActiveDataPoints,
+  selectActiveDataPointsFromExperiment,
   selectActiveVariablesFromExperiment,
+  selectInitialPointsFromExperiment,
   selectNextValues,
 } from './experiment-selectors'
 import { createFetchExperimentResultRequest } from '@core/context/experiment/api'
@@ -496,13 +498,29 @@ export const experimentReducer = (
     return experimentReducerInner(state, action)
   }
   const next = experimentReducerInner(state, action)
-  const changed = STRUCTURAL_KEYS.some(key => next[key] !== state[key])
-  if (changed && 'selectedPoint' in next.extras) {
-    return produce(next, draft => {
+  return produce(next, draft => {
+    const changed = STRUCTURAL_KEYS.some(key => next[key] !== state[key])
+    if (changed && 'selectedPoint' in draft.extras) {
+      // A stored pareto selection's coordinates go stale on any structural edit.
       delete draft.extras.selectedPoint
-    })
-  }
-  return next
+    }
+    // When the model is first fit (active data points reach initialPoints), reset
+    // the suggestion count to its default of 1. While initializing the count is
+    // forced to initialPoints; without this it would "stick" at that value once
+    // the model is built instead of dropping back to a single suggestion.
+    const initialPoints = selectInitialPointsFromExperiment(next)
+    const wasInitializing =
+      selectActiveDataPointsFromExperiment(state).length < initialPoints
+    const nowFitted =
+      selectActiveDataPointsFromExperiment(next).length >= initialPoints
+    if (
+      wasInitializing &&
+      nowFitted &&
+      'experimentSuggestionCount' in draft.extras
+    ) {
+      delete draft.extras.experimentSuggestionCount
+    }
+  })
 }
 
 const updateNamesInConstraints = (

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { displayQuality } from '@boostv/process-optimizer-frontend-core'
+import { usePlotColors } from '../colors'
 import { useDataToPixel } from './use-data-to-pixel'
 import { ConfidenceEllipses } from './overlays/confidence-ellipses'
 
@@ -42,6 +43,7 @@ export const HoverOverlay = ({
 }: Props) => {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
   const proj = useDataToPixel()
+  const { selectedPoint, paretoOptimal } = usePlotColors()
   if (proj === null) {
     return null
   }
@@ -154,7 +156,7 @@ export const HoverOverlay = ({
             cx={cx}
             cy={cy}
             r={5}
-            fill="#077ace"
+            fill={selectedPoint}
             stroke="white"
             strokeWidth={2}
           />
@@ -173,7 +175,7 @@ export const HoverOverlay = ({
                 x={6}
                 y={16 + i * LINE_HEIGHT}
                 fontSize={12}
-                fill="#2b5879"
+                fill={paretoOptimal}
               >
                 {t}
               </text>

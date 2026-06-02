@@ -1,5 +1,5 @@
 {
-  "id": "90ccff40-e4e4-44e2-8231-e7aaac69225c",
+  "id": "cfps multi objective",
   "lastEvaluationHash": "",
   "changedSinceLastEvaluation": true,
   "info": {
@@ -12,8 +12,8 @@
   },
   "extras": {
     "experimentSuggestionCount": 1,
-    "graphs": ["single"],
-    "includeModel": "false"
+    "graphs": ["pareto", "single"],
+    "graphFormat": "json"
   },
   "categoricalVariables": [],
   "valueVariables": [
