@@ -70,6 +70,20 @@ export const OneDPlot = ({
     return Math.max(30, formatted.length * 7 + 5)
   })()
 
+  // Score (histogram) x-axis: show a fixed set of evenly-spaced ticks spanning
+  // the domain (0..max) including both ends, instead of Recharts' default which
+  // left only 2-3 sparse ticks on the narrow score distribution.
+  const SCORE_TICK_COUNT = 6
+  const scoreXTicks =
+    type === 'score' && xDomain
+      ? Array.from(
+          { length: SCORE_TICK_COUNT },
+          (_, i) =>
+            xDomain[0] +
+            ((xDomain[1] - xDomain[0]) * i) / (SCORE_TICK_COUNT - 1)
+        )
+      : undefined
+
   const [chartAreaRef, size] = useElementSize<HTMLDivElement>()
   const ready = size.width > 0 && size.height > 0
 
@@ -126,6 +140,15 @@ export const OneDPlot = ({
                     type: 'number' as const,
                     domain: xDomain,
                     allowDataOverflow: true,
+                  }
+                : {})}
+              {...(scoreXTicks
+                ? {
+                    ticks: scoreXTicks,
+                    interval: 0 as const,
+                    // Inset the axis so the 0 and max labels (centered on the
+                    // edge ticks) aren't clipped by the chart bounds.
+                    padding: { left: 10, right: 14 },
                   }
                 : {})}
             />

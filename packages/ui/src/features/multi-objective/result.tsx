@@ -269,7 +269,9 @@ export const Result = ({
                       if (typeof p === 'string' || p.type !== 'score') {
                         return p
                       }
-                      return { ...p, xDomain: cost }
+                      // Anchor the cost histogram axis at 0 (like quality's 0-5)
+                      // so it always shows 0..max — see the score-axis ticks.
+                      return { ...p, xDomain: [0, cost[1]] }
                     })
                   }
                   return plot
