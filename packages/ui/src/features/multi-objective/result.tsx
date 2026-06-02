@@ -18,7 +18,6 @@ import {
   useSelector,
   experimentResultSchema,
   parseParetoPlot,
-  costDomain,
   displayQuality,
   displayQualityCI,
   selectActiveScoreVariableNames,
@@ -30,6 +29,7 @@ import {
   groupSinglePlots,
   parsePlotJson,
   qualityDisplayDomain,
+  costDisplayDomain,
 } from '../../containers/result-data/experimentation-guide.utils'
 import { resolveSelectedIndex } from './result.utils'
 import { z } from 'zod'
@@ -147,11 +147,6 @@ export const Result = ({
   )
   const pareto = parseParetoPlot(parsePlotJson(paretoRaw?.plot))
 
-  // A single-objective experiment has no pareto plot; it still renders the
-  // "Predicted best solution" panel (with its PNG plots) below. Only the
-  // multi-objective ParetoFrontPlot rendering requires `pareto`.
-  const cost = pareto ? costDomain(pareto) : undefined
-
   // Which point on the Pareto front the 1D plots below describe: the user's
   // selection, or the model's optimal point (best_idx) by default.
   const selectedIndex = pareto
@@ -264,14 +259,20 @@ export const Result = ({
                         : { ...p, yDomain: domain }
                     })
                   }
-                  if (isCost && cost) {
+                  if (isCost) {
+                    // Pin the cost factor Y axes and the histogram X axis to one
+                    // shared, data-derived scale (like quality) so the 1D graphs
+                    // and the histogram cover the same range — otherwise, away
+                    // from the default point, the histogram (pinned to the front
+                    // cost range) no longer matched the 1D graphs.
+                    const domain = costDisplayDomain(plot)
                     return plot.map(p => {
-                      if (typeof p === 'string' || p.type !== 'score') {
+                      if (typeof p === 'string') {
                         return p
                       }
-                      // Anchor the cost histogram axis at 0 (like quality's 0-5)
-                      // so it always shows 0..max — see the score-axis ticks.
-                      return { ...p, xDomain: [0, cost[1]] }
+                      return p.type === 'score'
+                        ? { ...p, xDomain: domain }
+                        : { ...p, yDomain: domain }
                     })
                   }
                   return plot

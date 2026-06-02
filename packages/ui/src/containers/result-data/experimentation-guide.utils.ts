@@ -50,14 +50,10 @@ export const flipQualityScores = (data: OneDData): OneDData => {
   }
 }
 
-// The quality plots in a single-objective group all measure the same quantity
-// (predicted quality), so the per-factor Y axes and the histogram X axis should
-// share one scale — the way the server-rendered PNG pins them all to e.g. 0-6.
-// Derive that scale from the (already flipped) plots: take the largest value
-// across every band bound and histogram point, round up, and keep a 0-5 floor.
-export const qualityDisplayDomain = (
-  plots: (string | OneDData)[]
-): [number, number] => {
+// Collect every comparable value across a group's plots: the histogram (score)
+// plot contributes its x points, the per-factor band plots contribute their y
+// bounds. Used to derive one shared axis scale for the group.
+const scoreGroupValues = (plots: (string | OneDData)[]): number[] => {
   const values = plots.flatMap(p => {
     if (typeof p === 'string') {
       return []
@@ -67,10 +63,31 @@ export const qualityDisplayDomain = (
     }
     return p.points.flatMap(pt => (Array.isArray(pt.y) ? pt.y : [pt.y]))
   })
-  const finite = values.filter(n => Number.isFinite(n))
-  const max = finite.length > 0 ? Math.max(...finite) : 5
-  return [0, Math.max(5, Math.ceil(max))]
+  return values.filter(n => Number.isFinite(n))
 }
+
+// The plots in an objective group all measure the same quantity (the predicted
+// score), so the per-factor Y axes and the histogram X axis should share one
+// scale — the way the server-rendered PNG pins them all to e.g. 0-6. Derive that
+// scale from the plot data: largest value across every band bound and histogram
+// point, rounded up, anchored at 0 (so the histogram and the 1D graphs cover the
+// same range). `minMax` keeps a floor (quality uses 5 for its fixed 0-5 scale).
+export const scoreDisplayDomain = (
+  plots: (string | OneDData)[],
+  minMax: number
+): [number, number] => {
+  const finite = scoreGroupValues(plots)
+  const max = finite.length > 0 ? Math.max(...finite) : minMax
+  return [0, Math.max(minMax, Math.ceil(max))]
+}
+
+export const qualityDisplayDomain = (
+  plots: (string | OneDData)[]
+): [number, number] => scoreDisplayDomain(plots, 5)
+
+export const costDisplayDomain = (
+  plots: (string | OneDData)[]
+): [number, number] => scoreDisplayDomain(plots, 1)
 
 export const convertJsonPlotToOneDData = (
   plotJson: string,
