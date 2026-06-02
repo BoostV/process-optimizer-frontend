@@ -1,5 +1,5 @@
 import { TextField, Tooltip } from '@mui/material'
-import { ChangeEvent, FC, useState } from 'react'
+import { ChangeEvent, FC, useEffect, useState } from 'react'
 import {
   selectIsSuggestionCountEditable,
   selectCalculatedSuggestionCount,
@@ -18,6 +18,12 @@ export const NextExperiments: FC<Props> = ({
   const isSuggestionCountEditable = useSelector(selectIsSuggestionCountEditable)
   const suggestionCount = useSelector(selectCalculatedSuggestionCount)
   const [suggestionCountUI, setSuggestionCountUI] = useState(suggestionCount)
+  // Keep the input in sync with the calculated count when it changes underneath
+  // us — e.g. once the model is first fit the count drops from initialPoints to
+  // 1, and the field must reflect that rather than keep showing the init value.
+  useEffect(() => {
+    setSuggestionCountUI(suggestionCount)
+  }, [suggestionCount])
 
   const handleSuggestionChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

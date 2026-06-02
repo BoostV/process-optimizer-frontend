@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ExperimentAction } from './experiment-reducers'
+import { ExperimentAction, experimentReducer } from './experiment-reducers'
 import { rootReducer } from './reducers'
 import {
   currentVersion,
@@ -1272,5 +1272,44 @@ describe('experiment reducer', () => {
             .version
         ).toEqual(dummyPayloads.updateExperiment.info.version)
       })
+  })
+})
+
+describe('resetting suggestion count when the model is first fit (#1)', () => {
+  const withPoints = (
+    activeCount: number,
+    extras: Record<string, unknown>
+  ): ExperimentType =>
+    produce(emptyExperiment, draft => {
+      draft.optimizerConfig.initialPoints = 3
+      draft.dataPoints = createDataPoints(activeCount)
+      draft.extras = { ...extras }
+    })
+
+  it('drops experimentSuggestionCount to its default when active points reach initialPoints', () => {
+    const before = withPoints(2, { experimentSuggestionCount: 5 })
+    const after = experimentReducer(before, {
+      type: 'updateDataPoints',
+      payload: createDataPoints(3),
+    })
+    expect('experimentSuggestionCount' in after.extras).toBe(false)
+  })
+
+  it('keeps the count while still initializing (below initialPoints)', () => {
+    const before = withPoints(1, { experimentSuggestionCount: 5 })
+    const after = experimentReducer(before, {
+      type: 'updateDataPoints',
+      payload: createDataPoints(2),
+    })
+    expect(after.extras.experimentSuggestionCount).toBe(5)
+  })
+
+  it('keeps the count once already fitted (does not reset on every added point)', () => {
+    const before = withPoints(3, { experimentSuggestionCount: 4 })
+    const after = experimentReducer(before, {
+      type: 'updateDataPoints',
+      payload: createDataPoints(4),
+    })
+    expect(after.extras.experimentSuggestionCount).toBe(4)
   })
 })
