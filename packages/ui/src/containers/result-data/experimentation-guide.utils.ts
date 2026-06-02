@@ -81,16 +81,22 @@ export const convertJsonPlotToOneDData = (
   if ('histogram' in parsed) {
     const histogram = parsed['histogram'] as { mean: number; std: number }
     const { mean, std } = histogram
-    return {
-      type: 'score',
-      points: [
-        { x: mean - 2 * std, y: 0 },
-        { x: mean - std, y: 0.5 },
-        { x: mean, y: 1 },
-        { x: mean + std, y: 0.5 },
-        { x: mean + 2 * std, y: 0 },
-      ],
+    // The backend only sends the predicted-score distribution as mean+std, so
+    // draw the normal curve ourselves. Sampling it at just a few points reads
+    // as a jagged spike; sample densely over ±3σ (~99.7% of the mass) for a
+    // smooth bell. Peak-normalized to 1 so the shape — not the absolute density
+    // — is what's shown, matching the per-factor bands' y-scale.
+    if (!(std > 0)) {
+      // Degenerate distribution (zero/invalid spread): a single point at mean.
+      return { type: 'score', points: [{ x: mean, y: 1 }] }
     }
+    const SAMPLES = 101
+    const SIGMA_SPAN = 3
+    const points = Array.from({ length: SAMPLES }, (_, i) => {
+      const z = -SIGMA_SPAN + (2 * SIGMA_SPAN * i) / (SAMPLES - 1)
+      return { x: mean + z * std, y: Math.exp(-0.5 * z * z) }
+    })
+    return { type: 'score', points }
   }
 
   if ('data' in parsed) {
