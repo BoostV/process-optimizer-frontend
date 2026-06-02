@@ -1,5 +1,15 @@
 # @process-optimizer-frontend/core
 
+## 2.13.1
+
+### Patch Changes
+
+- ec64129: Reset the suggestion count to its default when the model is first fit. While
+  initializing, the count is forced to `initialPoints`; once enough data points
+  are entered to fit the model it now drops back to 1 instead of "sticking" at the
+  initial value. The `Suggestions` input also follows the calculated count, so it
+  reflects the change rather than showing a stale value.
+
 ## 2.13.0
 
 ### Minor Changes

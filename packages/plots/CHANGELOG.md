@@ -1,5 +1,47 @@
 # @process-optimizer-frontend/plots
 
+## 1.1.3
+
+### Patch Changes
+
+- 4775b93: Multi-objective results: rename the default Pareto selection from "optimal" to
+  "default". We don't know how the user weights quality vs cost, and the default
+  only assumes an equal (1:1) balance — so "optimal" was misleading. The header
+  chip now reads "Default point" (and "Selected point" once the user picks a point
+  on the Pareto front), the caption explains it as the model's default equal
+  balance, the reset controls say "default", and the Pareto hover tooltip reads
+  "Target — default point". The mathematical term "Pareto-optimal observation" is
+  unchanged.
+- 022d061: Multi-objective results: give the quality/cost score histograms a consistent
+  x-axis. Recharts' default left only 2-3 sparse ticks (e.g. the quality
+  histogram showed just 2 and 5). Now draw a fixed set of 6 evenly-spaced ticks
+  spanning 0..max (both ends included), and anchor the cost histogram's domain at
+  0 (quality already started there) so both read 0 → max. A small axis inset keeps
+  the 0 and max labels from clipping at the chart edges.
+- e076b0a: Multi-objective results: make the per-objective rows easier to read and unify the
+  objective colors.
+  - Group each objective's plots into a faintly tinted band labelled "Quality" /
+    "Cost".
+  - Move the factor titles (Magnesium, Potassium, …) below their plots, where they
+    read as the plot's x-axis label.
+  - Introduce shared `qualityColor` (blue) and `costColor` (amber) plus a `withAlpha`
+    helper in the plots package, and use them for both the result-row tints and the
+    Pareto-front uncertainty bands (and legend), so each objective reads
+    consistently across the UI.
+
+- 698ba92: 1D band plots: make the hover tooltip clearer. The top line now prefixes the
+  x value with `x: `, and the value is shown as an explicit credible-interval
+  range `[low to high]` instead of a bare comma-separated pair. Histograms are
+  unaffected (they have no tooltip).
+- 4d803e9: Make all plot colors theme-overridable. The plots package now exposes a
+  `PlotColors` type and a `usePlotColors()` hook that resolves colors from the MUI
+  theme (`palette.plots`), falling back to sensible defaults. Every plot surface
+  reads from it — the multi-objective result-row tints, the Pareto uncertainty
+  bands, the selected/Pareto-optimal/dominated markers, the front line, the hover
+  indicator, the result-card selected accent, and the 1D band / score plot fills.
+  A consuming app can restyle the whole result view by setting `palette.plots`
+  (quality, cost, band, score, selectedPoint, paretoOptimal, dominated, front).
+
 ## 1.1.2
 
 ### Patch Changes

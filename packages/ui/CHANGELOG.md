@@ -1,5 +1,69 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.13.3
+
+### Patch Changes
+
+- ae7ba15: Multi-objective results: pin the cost row's 1D plots and histogram to one shared,
+  data-derived scale (as the quality row already does). The cost histogram's x-axis
+  was pinned to the Pareto front's cost range while the per-factor band plots
+  auto-scaled to the selected point, so away from the default point the histogram
+  no longer matched the 1D graphs (and the front range could clip the
+  distribution). Now both use `costDisplayDomain` — `[0, max]` over the cost band
+  bounds and histogram points — so they always cover the same range.
+- 4775b93: Multi-objective results: rename the default Pareto selection from "optimal" to
+  "default". We don't know how the user weights quality vs cost, and the default
+  only assumes an equal (1:1) balance — so "optimal" was misleading. The header
+  chip now reads "Default point" (and "Selected point" once the user picks a point
+  on the Pareto front), the caption explains it as the model's default equal
+  balance, the reset controls say "default", and the Pareto hover tooltip reads
+  "Target — default point". The mathematical term "Pareto-optimal observation" is
+  unchanged.
+- 022d061: Multi-objective results: give the quality/cost score histograms a consistent
+  x-axis. Recharts' default left only 2-3 sparse ticks (e.g. the quality
+  histogram showed just 2 and 5). Now draw a fixed set of 6 evenly-spaced ticks
+  spanning 0..max (both ends included), and anchor the cost histogram's domain at
+  0 (quality already started there) so both read 0 → max. A small axis inset keeps
+  the 0 and max labels from clipping at the chart edges.
+- e076b0a: Multi-objective results: make the per-objective rows easier to read and unify the
+  objective colors.
+  - Group each objective's plots into a faintly tinted band labelled "Quality" /
+    "Cost".
+  - Move the factor titles (Magnesium, Potassium, …) below their plots, where they
+    read as the plot's x-axis label.
+  - Introduce shared `qualityColor` (blue) and `costColor` (amber) plus a `withAlpha`
+    helper in the plots package, and use them for both the result-row tints and the
+    Pareto-front uncertainty bands (and legend), so each objective reads
+    consistently across the UI.
+
+- ec64129: Reset the suggestion count to its default when the model is first fit. While
+  initializing, the count is forced to `initialPoints`; once enough data points
+  are entered to fit the model it now drops back to 1 instead of "sticking" at the
+  initial value. The `Suggestions` input also follows the calculated count, so it
+  reflects the change rather than showing a stale value.
+- 1aca038: Multi-objective results: render the predicted-score (quality/cost) histograms as
+  a smooth curve. The backend sends only the distribution's mean and std, and we
+  were drawing it as 5 hardcoded points over ±2σ, which looked like a jagged
+  triangular spike. Now sample the normal curve densely (101 points over ±3σ,
+  peak-normalized to 1), giving the smooth bell the distribution actually
+  describes.
+- 4d803e9: Make all plot colors theme-overridable. The plots package now exposes a
+  `PlotColors` type and a `usePlotColors()` hook that resolves colors from the MUI
+  theme (`palette.plots`), falling back to sensible defaults. Every plot surface
+  reads from it — the multi-objective result-row tints, the Pareto uncertainty
+  bands, the selected/Pareto-optimal/dominated markers, the front line, the hover
+  indicator, the result-card selected accent, and the 1D band / score plot fills.
+  A consuming app can restyle the whole result view by setting `palette.plots`
+  (quality, cost, band, score, selectedPoint, paretoOptimal, dominated, front).
+- Updated dependencies [4775b93]
+- Updated dependencies [022d061]
+- Updated dependencies [e076b0a]
+- Updated dependencies [698ba92]
+- Updated dependencies [ec64129]
+- Updated dependencies [4d803e9]
+  - @boostv/process-optimizer-frontend-plots@1.1.3
+  - @boostv/process-optimizer-frontend-core@2.13.1
+
 ## 2.13.2
 
 ### Patch Changes
