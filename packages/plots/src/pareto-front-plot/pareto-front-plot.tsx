@@ -20,6 +20,7 @@ import { makePointLabel } from './point-label'
 import { QualityUncertaintyBand } from './overlays/uncertainty-band'
 import { HoverOverlay } from './hover-overlay'
 import { useElementSize } from '../use-element-size'
+import { costColor, qualityColor } from '../colors'
 
 type Props = {
   indexOfSelected: number
@@ -231,8 +232,8 @@ export default function ParetoFrontPlot({
             <Area
               type="monotone"
               dataKey="uncertaintyY"
-              fill="#f6c47e"
-              fillOpacity={0.3}
+              fill={costColor}
+              fillOpacity={1}
               stroke="none"
               name="UncertaintyY"
               isAnimationActive={false}
@@ -401,14 +402,14 @@ export default function ParetoFrontPlot({
           <div className={classes.legendItem}>
             <div
               className={classes.legendColor}
-              style={{ background: 'rgba(246, 196, 126, 0.6)' }}
+              style={{ background: costColor }}
             />
             <span>Uncertainty (cost)</span>
           </div>
           <div className={classes.legendItem}>
             <div
               className={classes.legendColor}
-              style={{ background: 'rgba(144, 194, 144, 0.6)' }}
+              style={{ background: qualityColor }}
             />
             <span>Uncertainty (quality)</span>
           </div>

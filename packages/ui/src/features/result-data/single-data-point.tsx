@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 import {
   Typography,
   Box,
@@ -12,13 +12,21 @@ import {
   OneDPlot,
   OneDData,
   PNGPlot,
+  qualityColor,
+  costColor,
 } from '@boostv/process-optimizer-frontend-plots'
 
 interface SingleDataPointRow {
   scoreHeader: string
+  // Generic objective name shown as the row's band heading (e.g. "Quality").
+  rowLabel?: string
   dataPoint: (number | (string | number)[])[]
   plotData: (string | OneDData)[]
 }
+
+// The shared objective colors (quality / cost) so the two objective rows read as
+// distinct blocks and match the Pareto uncertainty bands exactly.
+const ROW_TINTS = [qualityColor, costColor]
 
 interface SingleDataPointProps {
   title?: string
@@ -44,25 +52,22 @@ export const SingleDataPoint = ({
         </Typography>
       )}
       {rows.map((row, rowIndex) => (
-        <Fragment key={rowIndex}>
+        <Box
+          key={rowIndex}
+          className={classes.rowBand}
+          style={{ background: ROW_TINTS[rowIndex % ROW_TINTS.length] }}
+        >
+          {row.rowLabel && (
+            <Typography variant="subtitle2" className={classes.rowLabel}>
+              {row.rowLabel}
+            </Typography>
+          )}
           <Box
             className={classes.grid}
             style={{
               gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
             }}
           >
-            {variableHeaders.map((h, idx) => (
-              <Box className={classes.cell} key={idx}>
-                <Typography variant="body2" fontWeight="bold">
-                  {h}
-                </Typography>
-              </Box>
-            ))}
-            <Box className={classes.cell}>
-              <Typography variant="body2" fontWeight="bold">
-                {row.scoreHeader}
-              </Typography>
-            </Box>
             {row.dataPoint.flat().map((dp, idx) => (
               <Box className={classes.cell} key={'dp' + idx}>
                 <Typography variant="body2">{dp}</Typography>
@@ -93,8 +98,21 @@ export const SingleDataPoint = ({
                   </Box>
                 </Box>
               ))}
+            {/* Plot titles sit *under* the plots — they label each plot's x-axis. */}
+            {variableHeaders.map((h, idx) => (
+              <Box className={classes.cell} key={'h' + idx}>
+                <Typography variant="body2" fontWeight="bold">
+                  {h}
+                </Typography>
+              </Box>
+            ))}
+            <Box className={classes.cell}>
+              <Typography variant="body2" fontWeight="bold">
+                {row.scoreHeader}
+              </Typography>
+            </Box>
           </Box>
-        </Fragment>
+        </Box>
       ))}
       <Dialog
         open={isDialogOpen}

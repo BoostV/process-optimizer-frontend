@@ -4,6 +4,7 @@ import jQuery from 'jquery'
 //@ts-ignore
 window.$ = window.jQuery = jQuery
 
+export * from './colors'
 export * from './bokeh-plot'
 export * from './pareto-front-plot'
 export * from './png-plot'
