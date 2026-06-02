@@ -44,18 +44,21 @@ export const OneDPlot = ({
     typeof value === 'number' ? value.toFixed(2) : value
   const formatTooltip = (value: TooltipValueType | undefined) => {
     if (Array.isArray(value)) {
-      return value.map(v => formatValue(v)).join(', ')
+      // Credible-interval band: show the low–high range explicitly.
+      return `[${formatValue(value[0] ?? 0)} to ${formatValue(value[1] ?? 0)}]`
     }
     return typeof value === 'number' || typeof value === 'string'
       ? formatValue(value)
       : ''
   }
-  const formatTooltipLabel = (label: ReactNode) =>
-    typeof label !== 'number' && typeof label !== 'string'
-      ? label
-      : resolvedReferenceLineX !== undefined && label === resolvedReferenceLineX
-        ? `${formatValue(label)} (best)`
-        : formatValue(label)
+  const formatTooltipLabel = (label: ReactNode) => {
+    if (typeof label !== 'number' && typeof label !== 'string') {
+      return label
+    }
+    const isBest =
+      resolvedReferenceLineX !== undefined && label === resolvedReferenceLineX
+    return `x: ${formatValue(label)}${isBest ? ' (best)' : ''}`
+  }
 
   // Calculate Y-axis width based on the maximum absolute Y value to ensure labels fit
   const yAxisWidth = (() => {
