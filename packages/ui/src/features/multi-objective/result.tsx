@@ -191,7 +191,7 @@ export const Result = ({
                   <Typography variant="subtitle2" fontWeight="bold">
                     {isDefaultSelection
                       ? 'Predicted best settings'
-                      : 'Predicted settings for your selected target'}
+                      : 'Predicted best settings'}
                   </Typography>
                   <Chip
                     size="small"
