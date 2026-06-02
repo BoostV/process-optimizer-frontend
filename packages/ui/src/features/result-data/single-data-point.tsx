@@ -12,8 +12,7 @@ import {
   OneDPlot,
   OneDData,
   PNGPlot,
-  qualityColor,
-  costColor,
+  usePlotColors,
 } from '@boostv/process-optimizer-frontend-plots'
 
 interface SingleDataPointRow {
@@ -23,10 +22,6 @@ interface SingleDataPointRow {
   dataPoint: (number | (string | number)[])[]
   plotData: (string | OneDData)[]
 }
-
-// The shared objective colors (quality / cost) so the two objective rows read as
-// distinct blocks and match the Pareto uncertainty bands exactly.
-const ROW_TINTS = [qualityColor, costColor]
 
 interface SingleDataPointProps {
   title?: string
@@ -40,6 +35,10 @@ export const SingleDataPoint = ({
   rows,
 }: SingleDataPointProps) => {
   const { classes } = useStyles()
+  // Shared objective colors (quality / cost) so the two objective rows read as
+  // distinct blocks and match the Pareto uncertainty bands exactly.
+  const plotColors = usePlotColors()
+  const rowTints = [plotColors.quality, plotColors.cost]
   const columnCount = variableHeaders.length + 1
   const [isDialogOpen, setDialogOpen] = useState(false)
   const [bigPlot, setBigPlot] = useState<string | null>(null)
@@ -55,7 +54,7 @@ export const SingleDataPoint = ({
         <Box
           key={rowIndex}
           className={classes.rowBand}
-          style={{ background: ROW_TINTS[rowIndex % ROW_TINTS.length] }}
+          style={{ background: rowTints[rowIndex % rowTints.length] }}
         >
           {row.rowLabel && (
             <Typography variant="subtitle2" className={classes.rowLabel}>

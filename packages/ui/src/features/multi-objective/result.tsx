@@ -1,6 +1,7 @@
 import {
   ParetoFrontPlot,
   OneDData,
+  usePlotColors,
 } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '../core'
 import { SingleDataPoint } from '../result-data/single-data-point'
@@ -34,10 +35,6 @@ import { resolveSelectedIndex } from './result.utils'
 import { z } from 'zod'
 import { isArray } from 'remeda'
 import useStyles from './result.style'
-
-// Same blue as the "Selected" marker on the Pareto front plot, so the header
-// chip visually ties the 1D plots to the highlighted point below.
-const SELECTED_ACCENT = '#077ace'
 
 type ResultProps = {
   title?: string
@@ -85,6 +82,9 @@ export const Result = ({
   styles,
 }: ResultProps) => {
   const { classes } = useStyles()
+  // Same accent as the "Selected" marker on the Pareto front, so the header chip
+  // ties the 1D plots to the highlighted point. Themeable via palette.plots.
+  const selectedAccent = usePlotColors().selectedPoint
 
   const {
     state: { experiment },
@@ -181,7 +181,7 @@ export const Result = ({
             className={classes.container}
             sx={
               isMultiObjective && pareto && !isDefaultSelection
-                ? { borderLeft: `4px solid ${SELECTED_ACCENT}` }
+                ? { borderLeft: `4px solid ${selectedAccent}` }
                 : undefined
             }
           >
@@ -198,7 +198,7 @@ export const Result = ({
                     label={
                       isDefaultSelection ? 'Default point' : 'Selected point'
                     }
-                    sx={{ bgcolor: SELECTED_ACCENT, color: 'common.white' }}
+                    sx={{ bgcolor: selectedAccent, color: 'common.white' }}
                   />
                 </Box>
                 <Typography variant="caption" color="text.secondary">

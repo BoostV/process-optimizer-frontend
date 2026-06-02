@@ -1,4 +1,4 @@
-import { qualityColor } from '../../colors'
+import { usePlotColors } from '../../colors'
 import { useDataToPixel } from '../use-data-to-pixel'
 
 type Props = {
@@ -14,6 +14,7 @@ export const QualityUncertaintyBand = ({
   xUpperBoundData,
 }: Props) => {
   const proj = useDataToPixel()
+  const { quality } = usePlotColors()
   if (!proj) {
     return null
   }
@@ -59,7 +60,7 @@ export const QualityUncertaintyBand = ({
   return (
     <path
       d={segments.join(' ')}
-      fill={qualityColor}
+      fill={quality}
       stroke="none"
       pointerEvents="none"
     />

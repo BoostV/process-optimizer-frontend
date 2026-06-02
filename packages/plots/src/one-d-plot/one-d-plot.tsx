@@ -12,6 +12,7 @@ import {
   YAxis,
 } from 'recharts'
 import { useElementSize } from '../use-element-size'
+import { usePlotColors } from '../colors'
 
 export type OneDData = {
   points: {
@@ -37,7 +38,8 @@ export const OneDPlot = ({
   height,
   data: { points, type = 'numeric', referenceLineX, xDomain, yDomain },
 }: OneDPlotProps) => {
-  const fillColor = type === 'score' ? '#76c7c0' : '#a3d764'
+  const plotColors = usePlotColors()
+  const fillColor = type === 'score' ? plotColors.score : plotColors.band
   const resolvedReferenceLineX =
     referenceLineX !== undefined ? points[referenceLineX]?.x : undefined
   const formatValue = (value: number | string) =>
