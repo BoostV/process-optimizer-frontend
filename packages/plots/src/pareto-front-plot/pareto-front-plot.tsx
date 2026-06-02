@@ -10,6 +10,7 @@ import {
   ReferenceLine,
   ZIndexLayer,
 } from 'recharts'
+import { darken } from '@mui/material/styles'
 import {
   displayQuality,
   type DataEntry,
@@ -230,12 +231,18 @@ export default function ParetoFrontPlot({
                 />
               )}
             />
+            {/* Cost band is painted on top of the quality band, so it must be
+                translucent or it hides the quality band wherever cost is wider
+                (which swaps along the front — z-order alone can't fix it). A
+                deeper-sand stroke keeps the band's edge crisp despite the soft
+                fill. */}
             <Area
               type="monotone"
               dataKey="uncertaintyY"
               fill={plotColors.cost}
-              fillOpacity={1}
-              stroke="none"
+              fillOpacity={0.6}
+              stroke={darken(plotColors.cost, 0.25)}
+              strokeWidth={1}
               name="UncertaintyY"
               isAnimationActive={false}
               // The custom HoverOverlay is the hover indicator; disable Recharts'

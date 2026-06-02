@@ -1,3 +1,4 @@
+import { darken } from '@mui/material/styles'
 import { usePlotColors } from '../../colors'
 import { useDataToPixel } from '../use-data-to-pixel'
 
@@ -57,11 +58,16 @@ export const QualityUncertaintyBand = ({
   }
   segments.push('Z')
 
+  // Drawn underneath the (now translucent) cost band. Keep the fill nearly
+  // opaque so it reads on its own, and add a thin deeper-blue outline so its
+  // edge stays visible through the cost band where the quality band is nested.
   return (
     <path
       d={segments.join(' ')}
       fill={quality}
-      stroke="none"
+      fillOpacity={0.85}
+      stroke={darken(quality, 0.2)}
+      strokeWidth={1}
       pointerEvents="none"
     />
   )
