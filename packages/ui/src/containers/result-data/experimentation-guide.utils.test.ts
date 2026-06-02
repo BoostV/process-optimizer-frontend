@@ -36,18 +36,34 @@ describe('convertJsonPlotToOneDData', () => {
     expect(result.referenceLineX).toBe(2) // index of x=2
   })
 
-  it('should convert score histogram JSON to OneDData with bell curve points', () => {
+  it('should convert score histogram JSON to a dense smooth Gaussian bell', () => {
     const histogramPlotJson = JSON.stringify({
       histogram: { mean: 100, std: 10 },
     })
     const result = convertJsonPlotToOneDData(histogramPlotJson, false)
     expect(result.type).toBe('score')
-    expect(result.points).toHaveLength(5)
-    expect(result.points[0]).toEqual({ x: 80, y: 0 }) // mean - 2*std
-    expect(result.points[1]).toEqual({ x: 90, y: 0.5 }) // mean - std
-    expect(result.points[2]).toEqual({ x: 100, y: 1 }) // mean
-    expect(result.points[3]).toEqual({ x: 110, y: 0.5 }) // mean + std
-    expect(result.points[4]).toEqual({ x: 120, y: 0 }) // mean + 2*std
+    // Densely sampled over ±3σ for a smooth curve (not a 5-point spike).
+    expect(result.points).toHaveLength(101)
+    const xs = result.points.map(p => p.x as number)
+    const ys = result.points.map(p => p.y as number)
+    expect(xs[0]).toBeCloseTo(70) // mean - 3σ
+    expect(xs[xs.length - 1]).toBeCloseTo(130) // mean + 3σ
+    // Peak of 1 at the mean (centre sample), symmetric tails.
+    const mid = (result.points.length - 1) / 2
+    expect(result.points[mid]).toEqual({ x: 100, y: 1 })
+    expect(ys[0]).toBeCloseTo(Math.exp(-4.5)) // y at ±3σ
+    expect(ys[0]).toBeCloseTo(ys[ys.length - 1] as number)
+    expect(Math.max(...ys)).toBe(1)
+    expect(Math.min(...ys)).toBeGreaterThan(0)
+  })
+
+  it('returns a single point for a degenerate (zero-std) histogram', () => {
+    const result = convertJsonPlotToOneDData(
+      JSON.stringify({ histogram: { mean: 2, std: 0 } }),
+      false
+    )
+    expect(result.type).toBe('score')
+    expect(result.points).toEqual([{ x: 2, y: 1 }])
   })
 
   it('should return empty numeric plot when data is missing', () => {

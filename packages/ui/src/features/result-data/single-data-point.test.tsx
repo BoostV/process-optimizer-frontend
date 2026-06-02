@@ -36,6 +36,16 @@ vi.mock('@boostv/process-optimizer-frontend-plots', () => ({
       OneDPlot: {data.type || 'numeric'}
     </div>
   ),
+  usePlotColors: () => ({
+    quality: '#e2e8ec',
+    cost: '#ede8e2',
+    band: '#a3d764',
+    score: '#76c7c0',
+    selectedPoint: '#077ace',
+    paretoOptimal: '#2b5879',
+    dominated: '#999999',
+    front: '#000000',
+  }),
 }))
 
 describe('SingleDataPoint', () => {
