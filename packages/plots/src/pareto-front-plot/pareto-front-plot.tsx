@@ -26,8 +26,11 @@ import { usePlotColors } from '../colors'
 type Props = {
   indexOfSelected: number
   plot: ParetoPlot
+  // Override the default chart box (600x840). Useful for embedding the plot at
+  // a smaller size, e.g. in the help dialog.
   width?: number | string
   maxWidth?: number | string
+  height?: number | string
   altText?: string
   dataPoints: DataEntry[]
   onSelectIndex?: (index: number) => void
@@ -39,6 +42,9 @@ type Props = {
   // Show a 95% confidence ellipse for the hovered front point. Defaults to
   // false so consumers opt in explicitly.
   showHoverEllipse?: boolean
+  // Hide the side legend / selected-point panel (e.g. for compact thumbnails
+  // where the legend would be redundant). Defaults to false.
+  hideLegend?: boolean
   styles?: {
     legendBorderColor?: string
   }
@@ -47,11 +53,15 @@ type Props = {
 export default function ParetoFrontPlot({
   indexOfSelected,
   plot,
+  width,
+  maxWidth,
+  height,
   dataPoints,
   onSelectIndex,
   onResetToDefault,
   renderControls,
   showHoverEllipse = false,
+  hideLegend = false,
   styles,
 }: Props) {
   const { classes } = useStyles()
@@ -196,6 +206,9 @@ export default function ParetoFrontPlot({
       data-testid="pareto-front-plot"
       style={{
         position: 'relative',
+        ...(width !== undefined ? { width } : {}),
+        ...(maxWidth !== undefined ? { maxWidth } : {}),
+        ...(height !== undefined ? { height } : {}),
       }}
     >
       <div
@@ -377,103 +390,105 @@ export default function ParetoFrontPlot({
           </ComposedChart>
         )}
       </div>
-      <div className={classes.tooltipContainer}>
-        <div
-          className={classes.tooltip}
-          style={
-            styles?.legendBorderColor
-              ? { borderColor: styles.legendBorderColor }
-              : undefined
-          }
-        >
-          {selected[0] !== undefined && selected[1] !== undefined ? (
-            <>
-              <div>
-                <strong>{selectedLabel}</strong>
-              </div>
-              {variablesAtSelected?.map((v, i) => (
-                <div key={i} className={classes.selectedPointVariable}>
-                  {variableNames[i]
-                    ? `${variableNames[i]}: ${typeof v === 'number' ? v.toFixed(4) : v}`
-                    : `Variable ${i + 1}: ${typeof v === 'number' ? v.toFixed(4) : v}`}
+      {!hideLegend && (
+        <div className={classes.tooltipContainer}>
+          <div
+            className={classes.tooltip}
+            style={
+              styles?.legendBorderColor
+                ? { borderColor: styles.legendBorderColor }
+                : undefined
+            }
+          >
+            {selected[0] !== undefined && selected[1] !== undefined ? (
+              <>
+                <div>
+                  <strong>{selectedLabel}</strong>
                 </div>
-              ))}
-            </>
-          ) : (
-            <div>No selected point found</div>
-          )}
+                {variablesAtSelected?.map((v, i) => (
+                  <div key={i} className={classes.selectedPointVariable}>
+                    {variableNames[i]
+                      ? `${variableNames[i]}: ${typeof v === 'number' ? v.toFixed(4) : v}`
+                      : `Variable ${i + 1}: ${typeof v === 'number' ? v.toFixed(4) : v}`}
+                  </div>
+                ))}
+              </>
+            ) : (
+              <div>No selected point found</div>
+            )}
 
-          <div className={classes.divider} />
+            <div className={classes.divider} />
 
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColorCircle}
-              style={{ background: plotColors.selectedPoint }}
-            />
-            <span>Selected point</span>
-          </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColorCircle}
-              style={{ background: plotColors.pareto.optimal }}
-            />
-            <span>Pareto-optimal observation</span>
-          </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColorCircle}
-              style={{
-                background: 'white',
-                border: `1.5px solid ${plotColors.pareto.dominated}`,
-                boxSizing: 'border-box',
-              }}
-            />
-            <span>Dominated observation</span>
-          </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColorLine}
-              style={{ background: plotColors.pareto.front }}
-            />
-            <span>Pareto front</span>
-          </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColor}
-              style={{ background: plotColors.pareto.costBand }}
-            />
-            <span>Uncertainty (cost)</span>
-          </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColor}
-              style={{ background: plotColors.pareto.qualityBand }}
-            />
-            <span>Uncertainty (quality)</span>
-          </div>
-          {showHoverEllipse && (
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColorCircle}
+                style={{ background: plotColors.selectedPoint }}
+              />
+              <span>Selected point</span>
+            </div>
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColorCircle}
+                style={{ background: plotColors.pareto.optimal }}
+              />
+              <span>Pareto-optimal observation</span>
+            </div>
             <div className={classes.legendItem}>
               <div
                 className={classes.legendColorCircle}
                 style={{
-                  background: 'rgba(7, 122, 206, 0.08)',
-                  border: '1px solid rgba(7, 122, 206, 0.5)',
+                  background: 'white',
+                  border: `1.5px solid ${plotColors.pareto.dominated}`,
                   boxSizing: 'border-box',
                 }}
               />
-              <span>95% credible region (hover a point)</span>
+              <span>Dominated observation</span>
+            </div>
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColorLine}
+                style={{ background: plotColors.pareto.front }}
+              />
+              <span>Pareto front</span>
+            </div>
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColor}
+                style={{ background: plotColors.pareto.costBand }}
+              />
+              <span>Uncertainty (cost)</span>
+            </div>
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColor}
+                style={{ background: plotColors.pareto.qualityBand }}
+              />
+              <span>Uncertainty (quality)</span>
+            </div>
+            {showHoverEllipse && (
+              <div className={classes.legendItem}>
+                <div
+                  className={classes.legendColorCircle}
+                  style={{
+                    background: 'rgba(7, 122, 206, 0.08)',
+                    border: '1px solid rgba(7, 122, 206, 0.5)',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                <span>95% credible region (hover a point)</span>
+              </div>
+            )}
+          </div>
+          {renderControls && (
+            <div className={classes.buttonColumn}>
+              {renderControls({
+                onToggleFitToFront: () => setFitToFront(f => !f),
+                onResetToDefault: () => onResetToDefault?.(),
+              })}
             </div>
           )}
         </div>
-        {renderControls && (
-          <div className={classes.buttonColumn}>
-            {renderControls({
-              onToggleFitToFront: () => setFitToFront(f => !f),
-              onResetToDefault: () => onResetToDefault?.(),
-            })}
-          </div>
-        )}
-      </div>
+      )}
     </div>
   )
 }
