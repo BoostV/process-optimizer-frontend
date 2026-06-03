@@ -185,8 +185,8 @@ export const Result = ({
                 <Box className={classes.selectionTitleRow}>
                   <Typography variant="subtitle2" fontWeight="bold">
                     {isDefaultSelection
-                      ? 'Predicted best settings'
-                      : 'Predicted best settings'}
+                      ? 'Model predictions at'
+                      : 'Model predictions at'}
                   </Typography>
                   <Chip
                     size="small"
