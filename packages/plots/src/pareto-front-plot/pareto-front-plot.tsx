@@ -180,8 +180,12 @@ export default function ParetoFrontPlot({
   const yRange = yMax - yMin
   const yPadding = yRange * 0.02
 
-  const xDomain = [xMin - xPadding, xMax + xPadding]
-  const yDomain = [Math.max(0, yMin - yPadding), yMax + yPadding]
+  const xDomainMin = xMin - xPadding
+  const xDomainMax = xMax + xPadding
+  const yDomainMin = Math.max(0, yMin - yPadding)
+  const yDomainMax = yMax + yPadding
+  const xDomain = [xDomainMin, xDomainMax]
+  const yDomain = [yDomainMin, yDomainMax]
 
   // Format axis values to 2 decimal places
   const formatTick = (value: number) => value.toFixed(2)
@@ -299,24 +303,49 @@ export default function ParetoFrontPlot({
               isAnimationActive={false}
               activeDot={false}
             ></Line>
-            {/* Reference lines from selected point to axes */}
+            {/* Reference lines from the selected point to the axes. They must
+                sit ABOVE every data series (uncertainty Area z=100, front Line
+                z=400, observation/front dots z=600) — at the default
+                ReferenceLine z-index (400) the front's points and dots paint
+                over the lower part of the vertical guide, so it visually
+                "stops" at the front instead of reaching the axis. A high
+                zIndex keeps both guides on top and fully visible down to the
+                axes, while staying below axis labels (2000) and the hover
+                overlay (1500). */}
+            {/* Extend the far ends well past the domain and clip to the plot
+                area (ifOverflow="hidden"): the uncertainty bands are Areas with
+                allowDataOverflow=false, so Recharts expands the rendered axes
+                below/left of yDomain[0]/xDomain[0]. Ending the segment exactly
+                at those values left the vertical guide hanging at the bottom of
+                the front instead of reaching the axis. Clipping pins each guide
+                to the real axis regardless of how far the band expanded it. */}
             <ReferenceLine
               segment={[
                 { x: selected[0], y: selected[1] },
-                { x: selected[0], y: yDomain[0] },
+                {
+                  x: selected[0],
+                  y: yDomainMin - (yDomainMax - yDomainMin) * 10,
+                },
               ]}
+              ifOverflow="hidden"
               stroke={plotColors.selectedPoint}
               strokeWidth={1}
               strokeDasharray="3 3"
+              zIndex={1300}
             />
             <ReferenceLine
               segment={[
                 { x: selected[0], y: selected[1] },
-                { x: xDomain[0], y: selected[1] },
+                {
+                  x: xDomainMin - (xDomainMax - xDomainMin) * 10,
+                  y: selected[1],
+                },
               ]}
+              ifOverflow="hidden"
               stroke={plotColors.selectedPoint}
               strokeWidth={1}
               strokeDasharray="3 3"
+              zIndex={1300}
             />
             <Scatter
               name="Selected"

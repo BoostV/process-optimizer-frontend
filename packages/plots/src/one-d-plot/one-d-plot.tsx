@@ -121,11 +121,14 @@ export const OneDPlot = ({
             />
             <Bar dataKey="y" fill={fillColor} />
             {resolvedReferenceLineX !== undefined && (
+              // Keep the selected-point guide on top of the bars/dots — see the
+              // Pareto plot for the z-index rationale.
               <ReferenceLine
                 x={resolvedReferenceLineX}
                 stroke="black"
                 strokeWidth={2}
                 strokeDasharray="3 3"
+                zIndex={1300}
               />
             )}
           </BarChart>
@@ -181,11 +184,14 @@ export const OneDPlot = ({
               activeDot={type === 'score' ? false : undefined}
             />
             {resolvedReferenceLineX !== undefined && (
+              // Keep the selected-point guide on top of the area fill/dots —
+              // see the Pareto plot for the z-index rationale.
               <ReferenceLine
                 x={resolvedReferenceLineX}
                 stroke="black"
                 strokeWidth={2}
                 strokeDasharray="3 3"
+                zIndex={1300}
               />
             )}
           </AreaChart>
