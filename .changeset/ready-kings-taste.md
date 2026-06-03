@@ -30,6 +30,8 @@ section over the defaults, so a partial override (e.g. only
   (`pareto.guide` and `oneD.referenceLine`).
 - `ParetoFrontPlot` gains a `hideLegend` prop and honours `width` / `height` /
   `maxWidth` so it can be embedded at a custom size.
+- The Pareto legend now shows the selected point's quality/cost coordinate
+  (e.g. `Quality ≈ 1.51, Cost ≈ 0.67`) alongside its factor settings.
 - `OneDData` gains an optional `objective` field used to pick the per-objective
   fill.
 

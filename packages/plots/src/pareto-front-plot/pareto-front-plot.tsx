@@ -405,6 +405,11 @@ export default function ParetoFrontPlot({
                 <div>
                   <strong>{selectedLabel}</strong>
                 </div>
+                <div className={classes.selectedPointVariable}>
+                  {`Quality ≈ ${selected[0]?.toFixed(2) ?? '?'}, Cost ≈ ${
+                    selected[1]?.toFixed(2) ?? '?'
+                  }`}
+                </div>
                 {variablesAtSelected?.map((v, i) => (
                   <div key={i} className={classes.selectedPointVariable}>
                     {variableNames[i]
