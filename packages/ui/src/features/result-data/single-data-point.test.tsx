@@ -37,14 +37,25 @@ vi.mock('@boostv/process-optimizer-frontend-plots', () => ({
     </div>
   ),
   usePlotColors: () => ({
-    quality: '#e2e8ec',
-    cost: '#ede8e2',
-    band: '#a3d764',
-    score: '#76c7c0',
+    row: { quality: '#e2e8ec', cost: '#ede8e2' },
+    oneD: {
+      qualityBand: '#a3d764',
+      qualityScore: '#76c7c0',
+      costBand: '#e0a96d',
+      costScore: '#d98a5b',
+      band: '#a3d764',
+      score: '#76c7c0',
+      referenceLine: '#000000',
+    },
+    pareto: {
+      qualityBand: '#a3d764d9',
+      costBand: '#e0a96d99',
+      optimal: '#2b5879',
+      dominated: '#999999',
+      front: '#000000',
+      guide: '#077ace',
+    },
     selectedPoint: '#077ace',
-    paretoOptimal: '#2b5879',
-    dominated: '#999999',
-    front: '#000000',
   }),
 }))
 
