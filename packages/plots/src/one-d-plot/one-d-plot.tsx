@@ -148,7 +148,7 @@ export const OneDPlot = ({
               // Pareto plot for the z-index rationale.
               <ReferenceLine
                 x={resolvedReferenceLineX}
-                stroke="black"
+                stroke={plotColors.oneD.referenceLine}
                 strokeWidth={2}
                 strokeDasharray="3 3"
                 zIndex={1300}
@@ -211,7 +211,7 @@ export const OneDPlot = ({
               // see the Pareto plot for the z-index rationale.
               <ReferenceLine
                 x={resolvedReferenceLineX}
-                stroke="black"
+                stroke={plotColors.oneD.referenceLine}
                 strokeWidth={2}
                 strokeDasharray="3 3"
                 zIndex={1300}

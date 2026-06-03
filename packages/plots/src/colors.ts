@@ -24,6 +24,8 @@ export type PlotColors = {
     band: string
     /** Histogram fill when no objective is given (single-objective results). */
     score: string
+    /** The dashed reference line marking the selected point's value. */
+    referenceLine: string
   }
   /** The Pareto front plot. Bands are independent of the 1D plot colors. */
   pareto: {
@@ -39,9 +41,11 @@ export type PlotColors = {
     dominated: string
     /** The Pareto front line. */
     front: string
+    /** The dashed crosshair guides marking the selected point on the front. */
+    guide: string
   }
-  /** Cross-cutting accent: the selected Pareto point (marker + crosshair) and
-   *  the result card's header chip / selection border. */
+  /** Cross-cutting accent: the selected Pareto point marker and the result
+   *  card's header chip / selection border. */
   selectedPoint: string
 }
 
@@ -57,6 +61,7 @@ export const defaultPlotColors: PlotColors = {
     costScore: '#d98a5b',
     band: '#a3d764',
     score: '#76c7c0',
+    referenceLine: '#000000',
   },
   pareto: {
     // 8-digit hex: the band fill's opacity comes from the alpha channel.
@@ -65,11 +70,12 @@ export const defaultPlotColors: PlotColors = {
     optimal: '#2b5879',
     dominated: '#999999',
     front: '#000000',
+    guide: '#077ace',
   },
   selectedPoint: '#077ace',
 }
 
-/** Per-section partial: override any subset of any section, or the accent. */
+/** Per-section partial: override any subset of any section, or the accents. */
 export type PartialPlotColors = {
   row?: Partial<PlotColors['row']>
   oneD?: Partial<PlotColors['oneD']>

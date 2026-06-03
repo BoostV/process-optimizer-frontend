@@ -329,7 +329,7 @@ export default function ParetoFrontPlot({
                 },
               ]}
               ifOverflow="hidden"
-              stroke={plotColors.selectedPoint}
+              stroke={plotColors.pareto.guide}
               strokeWidth={1}
               strokeDasharray="3 3"
               zIndex={1300}
@@ -343,7 +343,7 @@ export default function ParetoFrontPlot({
                 },
               ]}
               ifOverflow="hidden"
-              stroke={plotColors.selectedPoint}
+              stroke={plotColors.pareto.guide}
               strokeWidth={1}
               strokeDasharray="3 3"
               zIndex={1300}
