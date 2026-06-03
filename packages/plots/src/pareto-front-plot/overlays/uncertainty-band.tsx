@@ -1,4 +1,4 @@
-import { darken } from '@mui/material/styles'
+import { alpha, darken } from '@mui/material/styles'
 import { usePlotColors } from '../../colors'
 import { useDataToPixel } from '../use-data-to-pixel'
 
@@ -15,7 +15,7 @@ export const QualityUncertaintyBand = ({
   xUpperBoundData,
 }: Props) => {
   const proj = useDataToPixel()
-  const { quality } = usePlotColors()
+  const { pareto } = usePlotColors()
   if (!proj) {
     return null
   }
@@ -58,15 +58,15 @@ export const QualityUncertaintyBand = ({
   }
   segments.push('Z')
 
-  // Drawn underneath the (now translucent) cost band. Keep the fill nearly
-  // opaque so it reads on its own, and add a thin deeper-blue outline so its
-  // edge stays visible through the cost band where the quality band is nested.
+  // Drawn underneath the cost band. The fill's translucency comes from the
+  // theme color's alpha channel (pareto.qualityBand); keep the fill mostly
+  // opaque so it reads on its own. The outline forces full alpha so the edge
+  // stays crisp through the cost band even when the fill is translucent.
   return (
     <path
       d={segments.join(' ')}
-      fill={quality}
-      fillOpacity={0.85}
-      stroke={darken(quality, 0.2)}
+      fill={pareto.qualityBand}
+      stroke={alpha(darken(pareto.qualityBand, 0.2), 1)}
       strokeWidth={1}
       pointerEvents="none"
     />

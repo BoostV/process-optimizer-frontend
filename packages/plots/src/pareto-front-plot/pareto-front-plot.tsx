@@ -10,7 +10,7 @@ import {
   ReferenceLine,
   ZIndexLayer,
 } from 'recharts'
-import { darken } from '@mui/material/styles'
+import { alpha, darken } from '@mui/material/styles'
 import {
   displayQuality,
   type DataEntry,
@@ -26,8 +26,11 @@ import { usePlotColors } from '../colors'
 type Props = {
   indexOfSelected: number
   plot: ParetoPlot
+  // Override the default chart box (600x840). Useful for embedding the plot at
+  // a smaller size, e.g. in the help dialog.
   width?: number | string
   maxWidth?: number | string
+  height?: number | string
   altText?: string
   dataPoints: DataEntry[]
   onSelectIndex?: (index: number) => void
@@ -39,6 +42,9 @@ type Props = {
   // Show a 95% confidence ellipse for the hovered front point. Defaults to
   // false so consumers opt in explicitly.
   showHoverEllipse?: boolean
+  // Hide the side legend / selected-point panel (e.g. for compact thumbnails
+  // where the legend would be redundant). Defaults to false.
+  hideLegend?: boolean
   styles?: {
     legendBorderColor?: string
   }
@@ -47,11 +53,15 @@ type Props = {
 export default function ParetoFrontPlot({
   indexOfSelected,
   plot,
+  width,
+  maxWidth,
+  height,
   dataPoints,
   onSelectIndex,
   onResetToDefault,
   renderControls,
   showHoverEllipse = false,
+  hideLegend = false,
   styles,
 }: Props) {
   const { classes } = useStyles()
@@ -180,8 +190,12 @@ export default function ParetoFrontPlot({
   const yRange = yMax - yMin
   const yPadding = yRange * 0.02
 
-  const xDomain = [xMin - xPadding, xMax + xPadding]
-  const yDomain = [Math.max(0, yMin - yPadding), yMax + yPadding]
+  const xDomainMin = xMin - xPadding
+  const xDomainMax = xMax + xPadding
+  const yDomainMin = Math.max(0, yMin - yPadding)
+  const yDomainMax = yMax + yPadding
+  const xDomain = [xDomainMin, xDomainMax]
+  const yDomain = [yDomainMin, yDomainMax]
 
   // Format axis values to 2 decimal places
   const formatTick = (value: number) => value.toFixed(2)
@@ -192,6 +206,9 @@ export default function ParetoFrontPlot({
       data-testid="pareto-front-plot"
       style={{
         position: 'relative',
+        ...(width !== undefined ? { width } : {}),
+        ...(maxWidth !== undefined ? { maxWidth } : {}),
+        ...(height !== undefined ? { height } : {}),
       }}
     >
       <div
@@ -233,15 +250,16 @@ export default function ParetoFrontPlot({
             />
             {/* Cost band is painted on top of the quality band, so it must be
                 translucent or it hides the quality band wherever cost is wider
-                (which swaps along the front — z-order alone can't fix it). A
-                deeper-sand stroke keeps the band's edge crisp despite the soft
-                fill. */}
+                (which swaps along the front — z-order alone can't fix it). Its
+                translucency now comes from the theme color's alpha channel
+                (pareto.costBand) — keep an alpha there. A deeper-sand stroke
+                forced to full alpha keeps the band's edge crisp despite the
+                soft fill. */}
             <Area
               type="monotone"
               dataKey="uncertaintyY"
-              fill={plotColors.cost}
-              fillOpacity={0.6}
-              stroke={darken(plotColors.cost, 0.25)}
+              fill={plotColors.pareto.costBand}
+              stroke={alpha(darken(plotColors.pareto.costBand, 0.25), 1)}
               strokeWidth={1}
               name="UncertaintyY"
               isAnimationActive={false}
@@ -255,7 +273,7 @@ export default function ParetoFrontPlot({
               dataKey={'y'}
               data={observedDominated}
               fill="white"
-              stroke={plotColors.dominated}
+              stroke={plotColors.pareto.dominated}
               strokeWidth={1.5}
               isAnimationActive={false}
               label={{
@@ -274,15 +292,15 @@ export default function ParetoFrontPlot({
               name="Pareto-optimal observations"
               dataKey={'y'}
               data={observedParetoOptimal}
-              fill={plotColors.paretoOptimal}
-              stroke={plotColors.paretoOptimal}
+              fill={plotColors.pareto.optimal}
+              stroke={plotColors.pareto.optimal}
               isAnimationActive={false}
               label={{
                 position: 'top',
                 content: makePointLabel(
                   {
-                    fill: plotColors.paretoOptimal,
-                    stroke: plotColors.paretoOptimal,
+                    fill: plotColors.pareto.optimal,
+                    stroke: plotColors.pareto.optimal,
                     textFill: 'white',
                   },
                   observedParetoOptimal
@@ -292,31 +310,56 @@ export default function ParetoFrontPlot({
             <Line
               type="linear"
               dataKey="y"
-              stroke={plotColors.front}
+              stroke={plotColors.pareto.front}
               strokeWidth={2}
-              dot={{ r: 2, stroke: 'none', fill: plotColors.front }}
+              dot={{ r: 2, stroke: 'none', fill: plotColors.pareto.front }}
               name="Pareto front"
               isAnimationActive={false}
               activeDot={false}
             ></Line>
-            {/* Reference lines from selected point to axes */}
+            {/* Reference lines from the selected point to the axes. They must
+                sit ABOVE every data series (uncertainty Area z=100, front Line
+                z=400, observation/front dots z=600) — at the default
+                ReferenceLine z-index (400) the front's points and dots paint
+                over the lower part of the vertical guide, so it visually
+                "stops" at the front instead of reaching the axis. A high
+                zIndex keeps both guides on top and fully visible down to the
+                axes, while staying below axis labels (2000) and the hover
+                overlay (1500). */}
+            {/* Extend the far ends well past the domain and clip to the plot
+                area (ifOverflow="hidden"): the uncertainty bands are Areas with
+                allowDataOverflow=false, so Recharts expands the rendered axes
+                below/left of yDomain[0]/xDomain[0]. Ending the segment exactly
+                at those values left the vertical guide hanging at the bottom of
+                the front instead of reaching the axis. Clipping pins each guide
+                to the real axis regardless of how far the band expanded it. */}
             <ReferenceLine
               segment={[
                 { x: selected[0], y: selected[1] },
-                { x: selected[0], y: yDomain[0] },
+                {
+                  x: selected[0],
+                  y: yDomainMin - (yDomainMax - yDomainMin) * 10,
+                },
               ]}
-              stroke={plotColors.selectedPoint}
+              ifOverflow="hidden"
+              stroke={plotColors.pareto.guide}
               strokeWidth={1}
               strokeDasharray="3 3"
+              zIndex={1300}
             />
             <ReferenceLine
               segment={[
                 { x: selected[0], y: selected[1] },
-                { x: xDomain[0], y: selected[1] },
+                {
+                  x: xDomainMin - (xDomainMax - xDomainMin) * 10,
+                  y: selected[1],
+                },
               ]}
-              stroke={plotColors.selectedPoint}
+              ifOverflow="hidden"
+              stroke={plotColors.pareto.guide}
               strokeWidth={1}
               strokeDasharray="3 3"
+              zIndex={1300}
             />
             <Scatter
               name="Selected"
@@ -347,103 +390,110 @@ export default function ParetoFrontPlot({
           </ComposedChart>
         )}
       </div>
-      <div className={classes.tooltipContainer}>
-        <div
-          className={classes.tooltip}
-          style={
-            styles?.legendBorderColor
-              ? { borderColor: styles.legendBorderColor }
-              : undefined
-          }
-        >
-          {selected[0] !== undefined && selected[1] !== undefined ? (
-            <>
-              <div>
-                <strong>{selectedLabel}</strong>
-              </div>
-              {variablesAtSelected?.map((v, i) => (
-                <div key={i} className={classes.selectedPointVariable}>
-                  {variableNames[i]
-                    ? `${variableNames[i]}: ${typeof v === 'number' ? v.toFixed(4) : v}`
-                    : `Variable ${i + 1}: ${typeof v === 'number' ? v.toFixed(4) : v}`}
+      {!hideLegend && (
+        <div className={classes.tooltipContainer}>
+          <div
+            className={classes.tooltip}
+            style={
+              styles?.legendBorderColor
+                ? { borderColor: styles.legendBorderColor }
+                : undefined
+            }
+          >
+            {selected[0] !== undefined && selected[1] !== undefined ? (
+              <>
+                <div>
+                  <strong>{selectedLabel}</strong>
                 </div>
-              ))}
-            </>
-          ) : (
-            <div>No selected point found</div>
-          )}
+                <div className={classes.selectedPointVariable}>
+                  {`Quality ≈ ${selected[0]?.toFixed(2) ?? '?'}, Cost ≈ ${
+                    selected[1]?.toFixed(2) ?? '?'
+                  }`}
+                </div>
+                {variablesAtSelected?.map((v, i) => (
+                  <div key={i} className={classes.selectedPointVariable}>
+                    {variableNames[i]
+                      ? `${variableNames[i]}: ${typeof v === 'number' ? v.toFixed(4) : v}`
+                      : `Variable ${i + 1}: ${typeof v === 'number' ? v.toFixed(4) : v}`}
+                  </div>
+                ))}
+              </>
+            ) : (
+              <div>No selected point found</div>
+            )}
 
-          <div className={classes.divider} />
+            <div className={classes.divider} />
 
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColorCircle}
-              style={{ background: plotColors.selectedPoint }}
-            />
-            <span>Selected point</span>
-          </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColorCircle}
-              style={{ background: plotColors.paretoOptimal }}
-            />
-            <span>Pareto-optimal observation</span>
-          </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColorCircle}
-              style={{
-                background: 'white',
-                border: `1.5px solid ${plotColors.dominated}`,
-                boxSizing: 'border-box',
-              }}
-            />
-            <span>Dominated observation</span>
-          </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColorLine}
-              style={{ background: plotColors.front }}
-            />
-            <span>Pareto front</span>
-          </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColor}
-              style={{ background: plotColors.cost }}
-            />
-            <span>Uncertainty (cost)</span>
-          </div>
-          <div className={classes.legendItem}>
-            <div
-              className={classes.legendColor}
-              style={{ background: plotColors.quality }}
-            />
-            <span>Uncertainty (quality)</span>
-          </div>
-          {showHoverEllipse && (
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColorCircle}
+                style={{ background: plotColors.selectedPoint }}
+              />
+              <span>Selected point</span>
+            </div>
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColorCircle}
+                style={{ background: plotColors.pareto.optimal }}
+              />
+              <span>Pareto-optimal observation</span>
+            </div>
             <div className={classes.legendItem}>
               <div
                 className={classes.legendColorCircle}
                 style={{
-                  background: 'rgba(7, 122, 206, 0.08)',
-                  border: '1px solid rgba(7, 122, 206, 0.5)',
+                  background: 'white',
+                  border: `1.5px solid ${plotColors.pareto.dominated}`,
                   boxSizing: 'border-box',
                 }}
               />
-              <span>95% credible region (hover a point)</span>
+              <span>Dominated observation</span>
+            </div>
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColorLine}
+                style={{ background: plotColors.pareto.front }}
+              />
+              <span>Pareto front</span>
+            </div>
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColor}
+                style={{ background: plotColors.pareto.costBand }}
+              />
+              <span>Uncertainty (cost)</span>
+            </div>
+            <div className={classes.legendItem}>
+              <div
+                className={classes.legendColor}
+                style={{ background: plotColors.pareto.qualityBand }}
+              />
+              <span>Uncertainty (quality)</span>
+            </div>
+            {showHoverEllipse && (
+              <div className={classes.legendItem}>
+                <div
+                  className={classes.legendColorCircle}
+                  style={{
+                    background: 'rgba(7, 122, 206, 0.08)',
+                    border: '1px solid rgba(7, 122, 206, 0.5)',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                <span>95% credible region (hover a point)</span>
+              </div>
+            )}
+          </div>
+          {renderControls && (
+            <div className={classes.buttonColumn}>
+              {renderControls({
+                onToggleFitToFront: () => setFitToFront(f => !f),
+                onResetToDefault: () => onResetToDefault?.(),
+              })}
             </div>
           )}
         </div>
-        {renderControls && (
-          <div className={classes.buttonColumn}>
-            {renderControls({
-              onToggleFitToFront: () => setFitToFront(f => !f),
-              onResetToDefault: () => onResetToDefault?.(),
-            })}
-          </div>
-        )}
-      </div>
+      )}
     </div>
   )
 }
