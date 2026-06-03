@@ -20,6 +20,7 @@ import {
   parseParetoPlot,
   displayQuality,
   displayQualityCI,
+  displayCostCI,
   selectActiveScoreVariableNames,
   type SelectedPoint,
 } from '@boostv/process-optimizer-frontend-core'
@@ -51,6 +52,11 @@ type ResultProps = {
   }
 }
 
+// Round a displayed setting to a readable precision (drops float noise like
+// 3.6312481268983503 → 3.6312) while leaving categorical labels untouched.
+const roundSetting = (v: number | string): number | string =>
+  typeof v === 'number' ? Number(v.toFixed(4)) : v
+
 // value - 1.96 * std <-> value + 1.96 * std
 const convertScoreToString = (data: number[]) =>
   displayQualityCI(data[0] ?? 0, data[1] ?? 0)
@@ -64,9 +70,9 @@ const convertExpectedMinimumToDisplayValue = (
     isArray(expectedMinimum[1])
   ) {
     return [
-      expectedMinimum[0].concat(
-        convertScoreToString(expectedMinimum[1] as number[])
-      ),
+      (expectedMinimum[0] as (number | string)[])
+        .map(roundSetting)
+        .concat(convertScoreToString(expectedMinimum[1] as number[])),
     ]
   }
   return expectedMinimum ?? []
@@ -285,15 +291,48 @@ export const Result = ({
                   }
                   return plot
                 })()
+                const dataPoint: (number | (string | number)[])[] = (() => {
+                  // Multi-objective has no single-objective `expectedMinimum`.
+                  // Mirror its display from the selected Pareto point: the
+                  // settings at the reference line plus this objective's 95% CI.
+                  if (isMultiObjective) {
+                    if (!pareto || selectedIndex < 0) {
+                      return []
+                    }
+                    const settings = (
+                      pareto.front_x_data[selectedIndex] ?? []
+                    ).map((v, i) => {
+                      const options = activeVariables[i]?.options
+                      const mapped =
+                        typeof v === 'number' && options ? (options[v] ?? v) : v
+                      return roundSetting(mapped)
+                    })
+                    const scores = pareto.front_y_data[selectedIndex]
+                    const ci = isQuality
+                      ? displayQualityCI(
+                          scores?.[0] ?? 0,
+                          pareto.obj1_error[selectedIndex] ?? 0
+                        )
+                      : isCost
+                        ? displayCostCI(
+                            scores?.[1] ?? 0,
+                            pareto.obj2_error[selectedIndex] ?? 0
+                          )
+                        : ''
+                    return [[...settings, ci]]
+                  }
+                  // Single-objective: the predicted best settings + its CI.
+                  return hasExpectedMinimum
+                    ? convertExpectedMinimumToDisplayValue(expectedMinimum!)
+                    : []
+                })()
                 return {
                   scoreHeader: `${header} (95% credible interval)`,
                   // Generic objective name (e.g. "Quality"/"Cost"), not the full label.
                   rowLabel: role
                     ? role.charAt(0).toUpperCase() + role.slice(1)
                     : header,
-                  dataPoint: hasExpectedMinimum
-                    ? convertExpectedMinimumToDisplayValue(expectedMinimum!)
-                    : [],
+                  dataPoint,
                   plotData,
                 }
               })}
