@@ -255,8 +255,16 @@ export const Result = ({
                         return p
                       }
                       return p.type === 'score'
-                        ? { ...p, xDomain: domain }
-                        : { ...p, yDomain: domain }
+                        ? {
+                            ...p,
+                            objective: 'quality' as const,
+                            xDomain: domain,
+                          }
+                        : {
+                            ...p,
+                            objective: 'quality' as const,
+                            yDomain: domain,
+                          }
                     })
                   }
                   if (isCost) {
@@ -271,8 +279,8 @@ export const Result = ({
                         return p
                       }
                       return p.type === 'score'
-                        ? { ...p, xDomain: domain }
-                        : { ...p, yDomain: domain }
+                        ? { ...p, objective: 'cost' as const, xDomain: domain }
+                        : { ...p, objective: 'cost' as const, yDomain: domain }
                     })
                   }
                   return plot

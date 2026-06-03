@@ -38,7 +38,7 @@ export const SingleDataPoint = ({
   // Shared objective colors (quality / cost) so the two objective rows read as
   // distinct blocks and match the Pareto uncertainty bands exactly.
   const plotColors = usePlotColors()
-  const rowTints = [plotColors.quality, plotColors.cost]
+  const rowTints = [plotColors.row.quality, plotColors.row.cost]
   const columnCount = variableHeaders.length + 1
   const [isDialogOpen, setDialogOpen] = useState(false)
   const [bigPlot, setBigPlot] = useState<string | null>(null)

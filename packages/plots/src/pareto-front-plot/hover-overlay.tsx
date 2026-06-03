@@ -43,7 +43,7 @@ export const HoverOverlay = ({
 }: Props) => {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
   const proj = useDataToPixel()
-  const { selectedPoint, paretoOptimal } = usePlotColors()
+  const { selectedPoint, pareto } = usePlotColors()
   if (proj === null) {
     return null
   }
@@ -175,7 +175,7 @@ export const HoverOverlay = ({
                 x={6}
                 y={16 + i * LINE_HEIGHT}
                 fontSize={12}
-                fill={paretoOptimal}
+                fill={pareto.optimal}
               >
                 {t}
               </text>

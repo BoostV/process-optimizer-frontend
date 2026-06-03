@@ -20,6 +20,10 @@ export type OneDData = {
     y: number | number[]
   }[]
   type?: CombinedVariableInputType | 'score'
+  // Which objective this plot belongs to. When set, the fill is themed
+  // per-objective (quality* / cost* plot colors); when omitted the plot falls
+  // back to the shared band/score colors (e.g. single-objective results).
+  objective?: 'quality' | 'cost'
   referenceLineX?: number
   xDomain?: [number, number]
   yDomain?: [number, number]
@@ -36,10 +40,29 @@ export const OneDPlot = ({
   width,
   maxWidth,
   height,
-  data: { points, type = 'numeric', referenceLineX, xDomain, yDomain },
+  data: {
+    points,
+    type = 'numeric',
+    objective,
+    referenceLineX,
+    xDomain,
+    yDomain,
+  },
 }: OneDPlotProps) => {
   const plotColors = usePlotColors()
-  const fillColor = type === 'score' ? plotColors.score : plotColors.band
+  const isScore = type === 'score'
+  // Per-objective fill when the objective is known (multi-objective results);
+  // otherwise fall back to the shared band/score colors.
+  const fillColor = (() => {
+    const oneD = plotColors.oneD
+    if (objective === 'quality') {
+      return isScore ? oneD.qualityScore : oneD.qualityBand
+    }
+    if (objective === 'cost') {
+      return isScore ? oneD.costScore : oneD.costBand
+    }
+    return isScore ? oneD.score : oneD.band
+  })()
   const resolvedReferenceLineX =
     referenceLineX !== undefined ? points[referenceLineX]?.x : undefined
   const formatValue = (value: number | string) =>

@@ -10,7 +10,7 @@ import {
   ReferenceLine,
   ZIndexLayer,
 } from 'recharts'
-import { darken } from '@mui/material/styles'
+import { alpha, darken } from '@mui/material/styles'
 import {
   displayQuality,
   type DataEntry,
@@ -237,15 +237,16 @@ export default function ParetoFrontPlot({
             />
             {/* Cost band is painted on top of the quality band, so it must be
                 translucent or it hides the quality band wherever cost is wider
-                (which swaps along the front — z-order alone can't fix it). A
-                deeper-sand stroke keeps the band's edge crisp despite the soft
-                fill. */}
+                (which swaps along the front — z-order alone can't fix it). Its
+                translucency now comes from the theme color's alpha channel
+                (pareto.costBand) — keep an alpha there. A deeper-sand stroke
+                forced to full alpha keeps the band's edge crisp despite the
+                soft fill. */}
             <Area
               type="monotone"
               dataKey="uncertaintyY"
-              fill={plotColors.cost}
-              fillOpacity={0.6}
-              stroke={darken(plotColors.cost, 0.25)}
+              fill={plotColors.pareto.costBand}
+              stroke={alpha(darken(plotColors.pareto.costBand, 0.25), 1)}
               strokeWidth={1}
               name="UncertaintyY"
               isAnimationActive={false}
@@ -259,7 +260,7 @@ export default function ParetoFrontPlot({
               dataKey={'y'}
               data={observedDominated}
               fill="white"
-              stroke={plotColors.dominated}
+              stroke={plotColors.pareto.dominated}
               strokeWidth={1.5}
               isAnimationActive={false}
               label={{
@@ -278,15 +279,15 @@ export default function ParetoFrontPlot({
               name="Pareto-optimal observations"
               dataKey={'y'}
               data={observedParetoOptimal}
-              fill={plotColors.paretoOptimal}
-              stroke={plotColors.paretoOptimal}
+              fill={plotColors.pareto.optimal}
+              stroke={plotColors.pareto.optimal}
               isAnimationActive={false}
               label={{
                 position: 'top',
                 content: makePointLabel(
                   {
-                    fill: plotColors.paretoOptimal,
-                    stroke: plotColors.paretoOptimal,
+                    fill: plotColors.pareto.optimal,
+                    stroke: plotColors.pareto.optimal,
                     textFill: 'white',
                   },
                   observedParetoOptimal
@@ -296,9 +297,9 @@ export default function ParetoFrontPlot({
             <Line
               type="linear"
               dataKey="y"
-              stroke={plotColors.front}
+              stroke={plotColors.pareto.front}
               strokeWidth={2}
-              dot={{ r: 2, stroke: 'none', fill: plotColors.front }}
+              dot={{ r: 2, stroke: 'none', fill: plotColors.pareto.front }}
               name="Pareto front"
               isAnimationActive={false}
               activeDot={false}
@@ -414,7 +415,7 @@ export default function ParetoFrontPlot({
           <div className={classes.legendItem}>
             <div
               className={classes.legendColorCircle}
-              style={{ background: plotColors.paretoOptimal }}
+              style={{ background: plotColors.pareto.optimal }}
             />
             <span>Pareto-optimal observation</span>
           </div>
@@ -423,7 +424,7 @@ export default function ParetoFrontPlot({
               className={classes.legendColorCircle}
               style={{
                 background: 'white',
-                border: `1.5px solid ${plotColors.dominated}`,
+                border: `1.5px solid ${plotColors.pareto.dominated}`,
                 boxSizing: 'border-box',
               }}
             />
@@ -432,21 +433,21 @@ export default function ParetoFrontPlot({
           <div className={classes.legendItem}>
             <div
               className={classes.legendColorLine}
-              style={{ background: plotColors.front }}
+              style={{ background: plotColors.pareto.front }}
             />
             <span>Pareto front</span>
           </div>
           <div className={classes.legendItem}>
             <div
               className={classes.legendColor}
-              style={{ background: plotColors.cost }}
+              style={{ background: plotColors.pareto.costBand }}
             />
             <span>Uncertainty (cost)</span>
           </div>
           <div className={classes.legendItem}>
             <div
               className={classes.legendColor}
-              style={{ background: plotColors.quality }}
+              style={{ background: plotColors.pareto.qualityBand }}
             />
             <span>Uncertainty (quality)</span>
           </div>
