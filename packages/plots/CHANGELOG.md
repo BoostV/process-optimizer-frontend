@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/plots
 
+## 2.0.1
+
+### Patch Changes
+
+- effe024: Tweak varius visual issues
+
 ## 2.0.0
 
 ### Major Changes
