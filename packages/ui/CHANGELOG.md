@@ -1,5 +1,13 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.14.1
+
+### Patch Changes
+
+- effe024: Tweak varius visual issues
+- Updated dependencies [effe024]
+  - @boostv/process-optimizer-frontend-plots@2.0.1
+
 ## 2.14.0
 
 ### Minor Changes
