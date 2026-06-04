@@ -13,6 +13,7 @@ export const emptyExperiment: ExperimentType = {
     dataFormatVersion: currentVersion,
     version: 0,
     lastModified: '',
+    createdAt: '',
     extras: {},
   },
   categoricalVariables: [],
