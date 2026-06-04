@@ -324,8 +324,8 @@ export default function ParetoFrontPlot({
                 over the lower part of the vertical guide, so it visually
                 "stops" at the front instead of reaching the axis. A high
                 zIndex keeps both guides on top and fully visible down to the
-                axes, while staying below axis labels (2000) and the hover
-                overlay (1500). */}
+                axes, while staying below the point labels (2000) and the hover
+                overlay (2100). */}
             {/* Extend the far ends well past the domain and clip to the plot
                 area (ifOverflow="hidden"): the uncertainty bands are Areas with
                 allowDataOverflow=false, so Recharts expands the rendered axes
@@ -374,9 +374,12 @@ export default function ParetoFrontPlot({
             renders at z≈0 — behind the uncertainty Area (z 100), Line (400) and
             its dots/Scatter (600) — so those painted series swallowed pointer
             events and hover only activated in the empty space above the front.
-            See Recharts DefaultZIndexes.
+            The layer is also ABOVE the point-indicator labels (Recharts label
+            layer, z 2000) so the hover tooltip box paints on top of the "#id"
+            indicators instead of being hidden behind them. See Recharts
+            DefaultZIndexes.
           */}
-            <ZIndexLayer zIndex={1500}>
+            <ZIndexLayer zIndex={2100}>
               <HoverOverlay
                 onSelectIndex={onSelectIndex}
                 frontYData={plot.front_y_data}
