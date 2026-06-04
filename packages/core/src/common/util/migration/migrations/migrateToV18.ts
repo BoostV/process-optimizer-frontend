@@ -83,8 +83,18 @@ export type ExperimentTypeV17 = {
   }[]
 }
 
+// migrateToV18 produces an intermediate (v18) experiment — later migrations add
+// newer fields (e.g. v19's info.lastModified) and bump dataFormatVersion. Typed
+// against the v18 shape rather than the current ExperimentType so it stays valid
+// across future version bumps.
+type ExperimentTypeV18 = Omit<ExperimentType, 'info'> & {
+  info: Omit<ExperimentType['info'], 'dataFormatVersion' | 'lastModified'> & {
+    dataFormatVersion: '18'
+  }
+}
+
 // rename scores, change description to empty string, add labels
-export const migrateToV18 = (json: ExperimentTypeV17): ExperimentType => {
+export const migrateToV18 = (json: ExperimentTypeV17): ExperimentTypeV18 => {
   return {
     ...json,
     info: {
