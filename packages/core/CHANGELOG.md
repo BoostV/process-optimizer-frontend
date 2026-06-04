@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/core
 
+## 2.14.1
+
+### Patch Changes
+
+- 5dd1bb0: Add createdAt
+
 ## 2.14.0
 
 ### Minor Changes
