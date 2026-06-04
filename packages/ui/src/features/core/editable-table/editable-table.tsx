@@ -156,13 +156,15 @@ export const EditableTable = ({
         <TableHead>
           <TableRow>
             <TableCell className={classes.emptyCell} />
-            <TableCell>#</TableCell>
+            <TableCell className={classes.indexHeaderCell}>#</TableCell>
             {rows
               .find(r => r.isNew)
               ?.dataPoints.map((item, index) => (
                 <TableCell key={index}>{item.label ?? item.name}</TableCell>
               ))}
-            <TableCell align="right">Edit</TableCell>
+            <TableCell align="right" className={classes.editHeaderCell}>
+              Edit
+            </TableCell>
             <TableCell className={classes.emptyCell} />
           </TableRow>
         </TableHead>

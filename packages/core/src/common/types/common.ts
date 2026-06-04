@@ -3,7 +3,7 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '18'
+export const currentVersion = '19'
 
 export const scoreNames = ['quality', 'cost'] as const
 // Label is shown in UI, name is used in data
@@ -25,6 +25,10 @@ const infoSchema = z.object({
   swVersion: z.string(),
   dataFormatVersion: z.literal(currentVersion),
   version: z.number(),
+  // ISO8601 timestamp of the last modification; '' for experiments migrated
+  // from before v19 (unknown), stamped on the next edit. Used to sort the
+  // project list newest-first.
+  lastModified: z.string(),
   extras: z.record(z.string(), z.unknown()),
 })
 

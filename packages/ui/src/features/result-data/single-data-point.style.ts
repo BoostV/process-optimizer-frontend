@@ -9,7 +9,10 @@ export const useStyles = makeStyles()(() => ({
   },
   cell: {
     minWidth: 48,
-    paddingRight: 16,
+    // Symmetric padding (was paddingRight only) so centered content reads as
+    // centered under each plot rather than offset to the left.
+    padding: '0 8px',
+    textAlign: 'center',
     position: 'relative',
     '&:hover': {
       zIndex: 10,

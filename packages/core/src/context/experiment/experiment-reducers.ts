@@ -472,6 +472,10 @@ const experimentReducerInner = produce(
         assertUnreachable(action)
     }
     state.info.version = state.info.version + 1
+    // Stamp the modification time. Reached only by genuine-edit actions; the
+    // load/replace action ('updateExperiment') returns earlier and so preserves
+    // the stored value.
+    state.info.lastModified = new Date().toISOString()
   }
 )
 

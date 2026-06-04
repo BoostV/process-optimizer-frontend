@@ -63,7 +63,10 @@ export const EditableTableExpandedRow = ({
 
   return (
     <TableRow className={classes.row}>
-      <TableCell colSpan={colSpan + 2} className={classes.spanCell}>
+      {/* colSpan already equals the table's full column count; adding more would
+          create phantom columns that disturb the fixed-layout column widths
+          (only while a row is expanded). */}
+      <TableCell colSpan={colSpan} className={classes.spanCell}>
         <Paper elevation={2} className={classes.paper}>
           <Box display="flex">
             <Box className={classes.rowId}>{rowId}</Box>

@@ -67,11 +67,6 @@ export const SingleDataPoint = ({
               gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
             }}
           >
-            {row.dataPoint.flat().map((dp, idx) => (
-              <Box className={classes.cell} key={'dp' + idx}>
-                <Typography variant="body2">{dp}</Typography>
-              </Box>
-            ))}
             {row.plotData.length > 0 &&
               row.plotData.map((pd, idx) => (
                 <Box className={classes.cell} key={'plotData' + idx}>
@@ -97,19 +92,28 @@ export const SingleDataPoint = ({
                   </Box>
                 </Box>
               ))}
-            {/* Plot titles sit *under* the plots — they label each plot's x-axis. */}
-            {variableHeaders.map((h, idx) => (
-              <Box className={classes.cell} key={'h' + idx}>
-                <Typography variant="body2" fontWeight="bold">
-                  {h}
-                </Typography>
-              </Box>
-            ))}
-            <Box className={classes.cell}>
-              <Typography variant="body2" fontWeight="bold">
-                {row.scoreHeader}
-              </Typography>
-            </Box>
+            {/* Under each plot, on one line: "factor = value" (bold title labels
+                the x-axis; value is the reference-line setting). Columns are the
+                variable factors followed by the score; a column may carry a title
+                without a value. */}
+            {[...variableHeaders, row.scoreHeader].map((header, idx) => {
+              const value = row.dataPoint.flat()[idx]
+              return (
+                <Box className={classes.cell} key={'hv' + idx}>
+                  <Typography variant="body2">
+                    <Box component="span" fontWeight="bold">
+                      {header}
+                    </Box>
+                    {value !== undefined && (
+                      <>
+                        {' = '}
+                        <Box component="span">{value}</Box>
+                      </>
+                    )}
+                  </Typography>
+                </Box>
+              )
+            })}
           </Box>
         </Box>
       ))}
