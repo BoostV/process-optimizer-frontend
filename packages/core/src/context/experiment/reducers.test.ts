@@ -39,6 +39,7 @@ describe('experiment reducer', () => {
         dataFormatVersion: currentVersion,
         version: 2,
         lastModified: '',
+        createdAt: '',
         extras: {},
       },
       categoricalVariables: [
@@ -130,6 +131,7 @@ describe('experiment reducer', () => {
           dataFormatVersion: currentVersion,
           version: 42,
           lastModified: '2026-01-01T00:00:00.000Z',
+          createdAt: '2026-01-01T00:00:00.000Z',
           extras: {},
         },
         categoricalVariables: [

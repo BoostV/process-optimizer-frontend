@@ -88,7 +88,11 @@ export type ExperimentTypeV17 = {
 // against the v18 shape rather than the current ExperimentType so it stays valid
 // across future version bumps.
 type ExperimentTypeV18 = Omit<ExperimentType, 'info'> & {
-  info: Omit<ExperimentType['info'], 'dataFormatVersion' | 'lastModified'> & {
+  info: Omit<
+    ExperimentType['info'],
+    // fields added after v18: lastModified (v19), createdAt (v20)
+    'dataFormatVersion' | 'lastModified' | 'createdAt'
+  > & {
     dataFormatVersion: '18'
   }
 }
