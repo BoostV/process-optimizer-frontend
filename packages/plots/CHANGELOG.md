@@ -1,5 +1,12 @@
 # @process-optimizer-frontend/plots
 
+## 2.0.2
+
+### Patch Changes
+
+- 190580b: Use shared y-axis for 1D plots when there are many plots
+- 469ef54: Click 1D plots to enlarge
+
 ## 2.0.1
 
 ### Patch Changes
