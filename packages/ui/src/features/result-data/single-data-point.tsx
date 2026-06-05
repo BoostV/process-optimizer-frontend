@@ -42,6 +42,18 @@ export const SingleDataPoint = ({
   const columnCount = variableHeaders.length + 1
   const [isDialogOpen, setDialogOpen] = useState(false)
   const [bigPlot, setBigPlot] = useState<string | null>(null)
+  // Enlarged JSON (OneDPlot) plot for detailed inspection: its data plus the
+  // "factor = value" heading. Shown large in the same dialog as the PNG plots.
+  const [bigOneD, setBigOneD] = useState<{
+    data: OneDData
+    title: string
+  } | null>(null)
+
+  const closeDialog = () => {
+    setDialogOpen(false)
+    setBigPlot(null)
+    setBigOneD(null)
+  }
 
   // With many factors each plot is narrow, so the per-plot y-axes eat most of
   // the width. Since every band plot in a row already shares one y-domain, draw
@@ -112,31 +124,52 @@ export const SingleDataPoint = ({
                 </Box>
               )}
               {row.plotData.length > 0 &&
-                row.plotData.map((pd, idx) => (
-                  <Box className={classes.cell} key={'plotData' + idx}>
-                    <Box mt={1}>
-                      {typeof pd === 'string' ? (
-                        <Box
-                          onClick={() => {
-                            setDialogOpen(true)
-                            setBigPlot(pd)
-                          }}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <PNGPlot plot={pd} width={'100%'} maxWidth={160} />
-                        </Box>
-                      ) : (
-                        <OneDPlot
-                          data={pd}
-                          width={'100%'}
-                          height={'140px'}
-                          maxWidth={160}
-                          hideYAxis={useSharedAxis}
-                        />
-                      )}
+                row.plotData.map((pd, idx) => {
+                  // Plots and labels share column order: factors then score.
+                  const header = [...variableHeaders, row.scoreHeader][idx]
+                  const value = row.dataPoint.flat()[idx]
+                  const plotTitle =
+                    header !== undefined
+                      ? `${header}${value !== undefined ? ` = ${value}` : ''}`
+                      : ''
+                  return (
+                    <Box className={classes.cell} key={'plotData' + idx}>
+                      <Box mt={1}>
+                        {typeof pd === 'string' ? (
+                          <Box
+                            onClick={() => {
+                              setBigOneD(null)
+                              setBigPlot(pd)
+                              setDialogOpen(true)
+                            }}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <PNGPlot plot={pd} width={'100%'} maxWidth={160} />
+                          </Box>
+                        ) : (
+                          // Click to enlarge for detailed inspection (with the
+                          // plot's own y-axis and tooltips) in the dialog below.
+                          <Box
+                            onClick={() => {
+                              setBigPlot(null)
+                              setBigOneD({ data: pd, title: plotTitle })
+                              setDialogOpen(true)
+                            }}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <OneDPlot
+                              data={pd}
+                              width={'100%'}
+                              height={'140px'}
+                              maxWidth={160}
+                              hideYAxis={useSharedAxis}
+                            />
+                          </Box>
+                        )}
+                      </Box>
                     </Box>
-                  </Box>
-                ))}
+                  )
+                })}
               {/* Keep the label row aligned with the plots under the shared axis. */}
               {useSharedAxis && (
                 <Box className={classes.cell} key="shared-y-axis-label" />
@@ -167,19 +200,27 @@ export const SingleDataPoint = ({
           </Box>
         )
       })}
-      <Dialog
-        open={isDialogOpen}
-        onClose={() => setDialogOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
+      <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="md" fullWidth>
         <DialogContent>
-          <Box display="flex" justifyContent="center">
-            {bigPlot && <PNGPlot plot={bigPlot} width={'100%'} />}
-          </Box>
+          {bigOneD ? (
+            <>
+              {bigOneD.title && (
+                <Typography variant="subtitle1" align="center" gutterBottom>
+                  {bigOneD.title}
+                </Typography>
+              )}
+              <Box display="flex" justifyContent="center">
+                <OneDPlot data={bigOneD.data} width={'100%'} height={'440px'} />
+              </Box>
+            </>
+          ) : (
+            <Box display="flex" justifyContent="center">
+              {bigPlot && <PNGPlot plot={bigPlot} width={'100%'} />}
+            </Box>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialogOpen(false)} color="primary">
+          <Button onClick={closeDialog} color="primary">
             Close
           </Button>
         </DialogActions>
