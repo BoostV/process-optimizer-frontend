@@ -34,12 +34,23 @@ type OneDPlotProps = {
   maxWidth?: number | string
   height?: number | string
   data: OneDData
+  // Hide this plot's own y-axis. Used when a single shared y-axis is drawn once
+  // for a whole row of plots (see axisOnly), so each data plot reclaims the
+  // width its axis would have taken.
+  hideYAxis?: boolean
+  // Render only the y-axis, no data area. Used to draw the shared axis once at
+  // the left of a row of plots. It keeps the same height and reserves the same
+  // bottom (x-axis) space as the data plots and is pinned to the same yDomain,
+  // so its ticks line up with the bands in the row.
+  axisOnly?: boolean
 }
 
 export const OneDPlot = ({
   width,
   maxWidth,
   height,
+  hideYAxis = false,
+  axisOnly = false,
   data: {
     points,
     type = 'numeric',
@@ -118,7 +129,30 @@ export const OneDPlot = ({
   return (
     <div ref={chartAreaRef} style={{ width, maxWidth, height }}>
       {ready &&
-        (type === 'options' ? (
+        (axisOnly ? (
+          // Shared y-axis: only the axis, no data area. The blank x-axis tick
+          // labels reserve the same bottom space as the data plots so the y
+          // ticks align with them; the domain pins it to the row's scale.
+          <AreaChart
+            width={size.width}
+            height={size.height}
+            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+            data={points}
+          >
+            <XAxis
+              dataKey="x"
+              tick={{ fontSize: 10 }}
+              tickFormatter={() => ''}
+            />
+            <YAxis
+              dataKey="y"
+              width={yAxisWidth}
+              tick={{ fontSize: 10 }}
+              tickFormatter={formatValue}
+              {...(yDomain ? { domain: yDomain, allowDataOverflow: true } : {})}
+            />
+          </AreaChart>
+        ) : type === 'options' ? (
           <BarChart
             width={size.width}
             height={size.height}
@@ -135,6 +169,7 @@ export const OneDPlot = ({
               width={yAxisWidth}
               tick={{ fontSize: 10 }}
               tickFormatter={formatValue}
+              hide={hideYAxis}
               {...(yDomain ? { domain: yDomain, allowDataOverflow: true } : {})}
             />
             <Tooltip
@@ -188,7 +223,7 @@ export const OneDPlot = ({
               width={yAxisWidth}
               tick={{ fontSize: 10 }}
               tickFormatter={formatValue}
-              hide={type === 'score'}
+              hide={type === 'score' || hideYAxis}
               {...(yDomain ? { domain: yDomain, allowDataOverflow: true } : {})}
             />
             {type !== 'score' && (

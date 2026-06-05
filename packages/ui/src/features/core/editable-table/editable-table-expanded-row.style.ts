@@ -28,6 +28,14 @@ export const useStyles = makeStyles()(() => ({
     alignItems: 'center',
     color: colors.silver,
   },
+  // The field table can be wider than the dialog when an experiment has many
+  // variables. Let it scroll horizontally instead of being clipped. min-width:0
+  // lets this flex child shrink below its content width so overflow-x engages;
+  // the row number and the Save/Cancel buttons stay put outside this box.
+  fields: {
+    minWidth: 0,
+    overflowX: 'auto',
+  },
   rowHeaderCell: {
     fontSize: 16,
     fontWeight: 600,

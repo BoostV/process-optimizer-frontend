@@ -70,7 +70,7 @@ export const EditableTableExpandedRow = ({
         <Paper elevation={2} className={classes.paper}>
           <Box display="flex">
             <Box className={classes.rowId}>{rowId}</Box>
-            <Box pt={1}>
+            <Box pt={1} className={classes.fields}>
               <Table size="small">
                 <TableHead>
                   <TableRow>

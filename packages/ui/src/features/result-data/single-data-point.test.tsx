@@ -200,16 +200,16 @@ describe('SingleDataPoint', () => {
       expect(plot?.textContent).toContain('score')
     })
 
-    it('does not open dialog when OneDPlot is clicked', () => {
+    it('opens an enlarged dialog when OneDPlot is clicked', () => {
       const oneDData: OneDData = {
         type: 'numeric',
         points: [{ x: 1, y: 2 }],
       }
       const props = {
-        variableHeaders: ['VarNoDialog'],
+        variableHeaders: ['VarDialogC'],
         rows: [
           {
-            scoreHeader: 'ScoreNoDialog',
+            scoreHeader: 'ScoreDialogC',
             dataPoint: [30],
             plotData: [oneDData],
           },
@@ -218,14 +218,19 @@ describe('SingleDataPoint', () => {
 
       const { container } = render(<SingleDataPoint {...props} />)
 
+      expect(
+        screen.queryByRole('button', { name: /close/i })
+      ).not.toBeInTheDocument()
+
       const oneDPlot = container.querySelector('[data-testid="one-d-plot"]')
       if (oneDPlot) {
         fireEvent.click(oneDPlot)
       }
 
-      expect(
-        screen.queryByRole('button', { name: /close/i })
-      ).not.toBeInTheDocument()
+      // Dialog opens for detailed inspection: a Close button appears and the
+      // enlarged plot renders alongside the thumbnail (two OneDPlot instances).
+      expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument()
+      expect(screen.getAllByTestId('one-d-plot').length).toBeGreaterThan(1)
     })
   })
 
