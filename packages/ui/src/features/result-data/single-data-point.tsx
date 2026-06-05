@@ -39,7 +39,6 @@ export const SingleDataPoint = ({
   // distinct blocks and match the Pareto uncertainty bands exactly.
   const plotColors = usePlotColors()
   const rowTints = [plotColors.row.quality, plotColors.row.cost]
-  const columnCount = variableHeaders.length + 1
   const [isDialogOpen, setDialogOpen] = useState(false)
   const [bigPlot, setBigPlot] = useState<string | null>(null)
   // Enlarged JSON (OneDPlot) plot for detailed inspection: its data plus the
@@ -84,6 +83,16 @@ export const SingleDataPoint = ({
       {rows.map((row, rowIndex) => {
         const sharedYDomain = rowSharedYDomain(row)
         const useSharedAxis = isCrowded && sharedYDomain !== undefined
+        // Size the grid to whichever sub-row needs the most columns. While
+        // evaluating after a factor is disabled, variableHeaders shrinks before
+        // the stale plots are replaced, so plotData can briefly hold more plots
+        // than variableHeaders + 1. Sizing to the max keeps every plot (incl.
+        // the histogram) on one row instead of overflowing into an implicit
+        // grid row; the surplus settles once the new results arrive.
+        const bodyColumns = Math.max(
+          row.plotData.length,
+          variableHeaders.length + 1
+        )
         return (
           <Box
             key={rowIndex}
@@ -99,8 +108,8 @@ export const SingleDataPoint = ({
               className={classes.grid}
               style={{
                 gridTemplateColumns: useSharedAxis
-                  ? `auto repeat(${columnCount}, 1fr)`
-                  : `repeat(${columnCount}, 1fr)`,
+                  ? `auto repeat(${bodyColumns}, 1fr)`
+                  : `repeat(${bodyColumns}, 1fr)`,
               }}
             >
               {/* Shared y-axis drawn once for the whole row (crowded rows only). */}
