@@ -1,5 +1,16 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.14.3
+
+### Patch Changes
+
+- 0c613b1: Make edit box usable for many parameters
+- 190580b: Use shared y-axis for 1D plots when there are many plots
+- 469ef54: Click 1D plots to enlarge
+- Updated dependencies [190580b]
+- Updated dependencies [469ef54]
+  - @boostv/process-optimizer-frontend-plots@2.0.2
+
 ## 2.14.2
 
 ### Patch Changes
