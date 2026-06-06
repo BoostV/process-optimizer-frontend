@@ -109,22 +109,33 @@ export const OneDPlot = ({
     return Math.max(30, formatted.length * 7 + 5)
   })()
 
-  // Score (histogram) x-axis: show a fixed set of evenly-spaced ticks spanning
-  // the domain (0..max) including both ends, instead of Recharts' default which
-  // left only 2-3 sparse ticks on the narrow score distribution.
-  const SCORE_TICK_COUNT = 6
-  const scoreXTicks =
-    type === 'score' && xDomain
-      ? Array.from(
-          { length: SCORE_TICK_COUNT },
-          (_, i) =>
-            xDomain[0] +
-            ((xDomain[1] - xDomain[0]) * i) / (SCORE_TICK_COUNT - 1)
-        )
-      : undefined
-
   const [chartAreaRef, size] = useElementSize<HTMLDivElement>()
   const ready = size.width > 0 && size.height > 0
+
+  // Score (histogram) x-axis: show evenly-spaced ticks spanning the domain
+  // (0..max) including both ends, instead of Recharts' default which left only
+  // 2-3 sparse ticks on the narrow score distribution. Cap at 6 ticks, but in
+  // crowded layouts (many factors → narrow plots, e.g. large experiments) drop
+  // the count so the 2-decimal labels don't collide into an illegible smear.
+  const SCORE_TICK_COUNT = 6
+  const scoreXTicks = (() => {
+    if (type !== 'score' || !xDomain) {
+      return undefined
+    }
+    // Estimate the widest tick label (the domain endpoints, formatted) and how
+    // many fit without overlapping across the axis (insets ~24px of padding).
+    const labelPx =
+      Math.max(formatValue(xDomain[0]).length, formatValue(xDomain[1]).length) *
+        6 +
+      6
+    const innerWidth = Math.max(0, size.width - 24)
+    const fit = Math.floor(innerWidth / labelPx) + 1
+    const count = Math.max(2, Math.min(SCORE_TICK_COUNT, fit))
+    return Array.from(
+      { length: count },
+      (_, i) => xDomain[0] + ((xDomain[1] - xDomain[0]) * i) / (count - 1)
+    )
+  })()
 
   return (
     <div ref={chartAreaRef} style={{ width, maxWidth, height }}>
