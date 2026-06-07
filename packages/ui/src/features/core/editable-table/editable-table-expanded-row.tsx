@@ -68,9 +68,18 @@ export const EditableTableExpandedRow = ({
           (only while a row is expanded). */}
       <TableCell colSpan={colSpan} className={classes.spanCell}>
         <Paper elevation={2} className={classes.paper}>
-          <Box display="flex">
+          <Box
+            sx={{
+              display: 'flex',
+            }}
+          >
             <Box className={classes.rowId}>{rowId}</Box>
-            <Box pt={1} className={classes.fields}>
+            <Box
+              className={classes.fields}
+              sx={{
+                pt: 1,
+              }}
+            >
               <Table size="small">
                 <TableHead>
                   <TableRow>
@@ -122,7 +131,13 @@ export const EditableTableExpandedRow = ({
               <InfoBox key={'warning' + i} text={v} type="warning" />
             ))}
 
-          <Box display="flex" justifyContent="end" mt={2}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'end',
+              mt: 2,
+            }}
+          >
             <Button
               variant="outlined"
               size="small"

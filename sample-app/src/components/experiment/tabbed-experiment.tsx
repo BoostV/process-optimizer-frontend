@@ -95,8 +95,13 @@ const TabbedExperiment = () => {
   return (
     <Layout>
       <TabContext value={focus}>
-        <Grid container justifyContent="space-around">
-          <Grid item xs>
+        <Grid
+          container
+          sx={{
+            justifyContent: 'space-around',
+          }}
+        >
+          <Grid size="grow">
             <Typography variant="h4" gutterBottom>
               {experiment.info.name}
             </Typography>
@@ -109,7 +114,7 @@ const TabbedExperiment = () => {
               <Typography variant="caption">{experiment.id}</Typography>
             </Tooltip>
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <TabList onChange={handleChange}>
               <Tab label="Configuration" value="configuration" />
               <Tab
@@ -130,7 +135,7 @@ const TabbedExperiment = () => {
               />
             </TabList>
           </Grid>
-          <Grid item xs="auto">
+          <Grid size="auto">
             {debug && (
               <Switch
                 checked={
@@ -183,7 +188,6 @@ const TabbedExperiment = () => {
           </TabPanel>
         </Box>
       </TabContext>
-
       <Snackbar
         open={isSnackbarOpen}
         autoHideDuration={3000}

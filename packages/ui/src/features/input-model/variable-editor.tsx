@@ -86,7 +86,13 @@ function VariableEditorInner(props: VariableEditorProps) {
           disabled={editingValueVariable !== undefined}
         />
       </Tabs>
-      <Box ml={2} mr={2} mt={2}>
+      <Box
+        sx={{
+          ml: 2,
+          mr: 2,
+          mt: 2,
+        }}
+      >
         {tabIndex === 0 && (
           <ValueVariable
             categoricalVariables={categoricalVariables}

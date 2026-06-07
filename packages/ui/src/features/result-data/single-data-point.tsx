@@ -74,7 +74,12 @@ export const SingleDataPoint = ({
   }
 
   return (
-    <Box className={classes.container} pb={2}>
+    <Box
+      className={classes.container}
+      sx={{
+        pb: 2,
+      }}
+    >
       {title && (
         <Typography variant="caption" className={classes.title}>
           {title}
@@ -115,7 +120,11 @@ export const SingleDataPoint = ({
               {/* Shared y-axis drawn once for the whole row (crowded rows only). */}
               {useSharedAxis && sharedYDomain && (
                 <Box className={classes.cell} key="shared-y-axis">
-                  <Box mt={1}>
+                  <Box
+                    sx={{
+                      mt: 1,
+                    }}
+                  >
                     <OneDPlot
                       data={{
                         points: [
@@ -143,7 +152,11 @@ export const SingleDataPoint = ({
                       : ''
                   return (
                     <Box className={classes.cell} key={'plotData' + idx}>
-                      <Box mt={1}>
+                      <Box
+                        sx={{
+                          mt: 1,
+                        }}
+                      >
                         {typeof pd === 'string' ? (
                           <Box
                             onClick={() => {
@@ -192,7 +205,12 @@ export const SingleDataPoint = ({
                 return (
                   <Box className={classes.cell} key={'hv' + idx}>
                     <Typography variant="body2">
-                      <Box component="span" fontWeight="bold">
+                      <Box
+                        component="span"
+                        sx={{
+                          fontWeight: 'bold',
+                        }}
+                      >
                         {header}
                       </Box>
                       {value !== undefined && (
@@ -218,12 +236,22 @@ export const SingleDataPoint = ({
                   {bigOneD.title}
                 </Typography>
               )}
-              <Box display="flex" justifyContent="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
                 <OneDPlot data={bigOneD.data} width={'100%'} height={'440px'} />
               </Box>
             </>
           ) : (
-            <Box display="flex" justifyContent="center">
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
               {bigPlot && <PNGPlot plot={bigPlot} width={'100%'} />}
             </Box>
           )}

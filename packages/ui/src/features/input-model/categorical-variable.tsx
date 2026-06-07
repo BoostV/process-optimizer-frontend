@@ -108,7 +108,11 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
           margin="dense"
           defaultValue=""
         />
-        <Box mt={2}>
+        <Box
+          sx={{
+            mt: 2,
+          }}
+        >
           <Typography>Options</Typography>
           {options.map((option, index) => (
             <div key={index}>
@@ -137,8 +141,17 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
               : ''
           }
         />
-        <Box mt={2}>
-          <Box mr={1} display="inline">
+        <Box
+          sx={{
+            mt: 2,
+          }}
+        >
+          <Box
+            sx={{
+              mr: 1,
+              display: 'inline',
+            }}
+          >
             <Button size="small" variant="outlined" type="submit">
               {editingVariable !== undefined ? 'Save' : 'Add'}
             </Button>

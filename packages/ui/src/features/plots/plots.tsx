@@ -1,5 +1,5 @@
 import useStyles from './plots.style'
-import { Tooltip, IconButton, Hidden, Stack, Skeleton } from '@mui/material'
+import { Tooltip, IconButton, Box, Stack, Skeleton } from '@mui/material'
 import { ZoomOutMap } from '@mui/icons-material'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
@@ -67,7 +67,10 @@ export const Plots: FC<Props> = ({
           <>
             Plots
             {onSizeToggle !== undefined && (
-              <Hidden xlDown>
+              <Box
+                component="span"
+                sx={{ display: { xs: 'none', xl: 'inline-flex' } }}
+              >
                 <Tooltip
                   disableInteractive
                   title={(isUIBig ? 'Collapse' : 'Expand') + " 'Plots'"}
@@ -83,7 +86,7 @@ export const Plots: FC<Props> = ({
                     />
                   </IconButton>
                 </Tooltip>
-              </Hidden>
+              </Box>
             )}
           </>
         }

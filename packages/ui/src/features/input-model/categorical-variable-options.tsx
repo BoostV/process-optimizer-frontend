@@ -24,7 +24,7 @@ export default function CategoricalVariableOptions({
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={8}>
+      <Grid size={8}>
         <TextField
           fullWidth
           name="option"
@@ -37,7 +37,13 @@ export default function CategoricalVariableOptions({
           helperText={error}
         />
       </Grid>
-      <Grid item xs={4} display="flex" alignItems="center">
+      <Grid
+        size={4}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         <IconButton size="small" onClick={() => optionAdded()}>
           <Add color="primary" />
         </IconButton>

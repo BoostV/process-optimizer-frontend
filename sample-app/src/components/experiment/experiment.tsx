@@ -166,9 +166,9 @@ const LegacyExperiment = () => {
       <Card className={classes.experimentContainer}>
         <CardContent>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Grid container>
-                <Grid item xs={7}>
+                <Grid size={7}>
                   <Tooltip
                     disableInteractive
                     placement="bottom-start"
@@ -184,7 +184,13 @@ const LegacyExperiment = () => {
                     {experiment.info.name}{' '}
                   </Typography>
                 </Grid>
-                <Grid item xs={5} container justifyContent="flex-end">
+                <Grid
+                  container
+                  size={5}
+                  sx={{
+                    justifyContent: 'flex-end',
+                  }}
+                >
                   {debug && (
                     <Switch
                       checked={
@@ -218,9 +224,9 @@ const LegacyExperiment = () => {
               </Grid>
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid size={3}>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Details
                     id="details"
                     info={experiment.info}
@@ -239,7 +245,7 @@ const LegacyExperiment = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <InputModel
                     id="input-model"
                     valueVariables={valueVariables}
@@ -322,7 +328,7 @@ const LegacyExperiment = () => {
                 </Grid>
 
                 {advancedConfiguration && (
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <OptimizerConfigurator
                       config={experiment.optimizerConfig}
                       debug={debug}
@@ -338,12 +344,13 @@ const LegacyExperiment = () => {
               </Grid>
             </Grid>
 
-            <Grid item xs={9}>
+            <Grid size={9}>
               <Grid container spacing={2}>
                 <Grid
-                  item
-                  xs={UISizeValue.Big}
-                  xl={getSize(uiSizes, 'result-data')}
+                  size={{
+                    xs: UISizeValue.Big,
+                    xl: getSize(uiSizes, 'result-data'),
+                  }}
                 >
                   <Grid
                     container
@@ -352,7 +359,7 @@ const LegacyExperiment = () => {
                       highlightNextExperiments ? classes.highlight : ''
                     }
                   >
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <ExperimentationGuide
                         loading={experiment.changedSinceLastEvaluation}
                         warning={
@@ -377,13 +384,13 @@ const LegacyExperiment = () => {
                         }
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <Result
                         id="result"
                         loading={experiment.changedSinceLastEvaluation}
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <DataPoints
                         id="data-points"
                         experimentId={experiment.id}
@@ -411,7 +418,12 @@ const LegacyExperiment = () => {
                   </Grid>
                 </Grid>
 
-                <Grid item xs={UISizeValue.Big} xl={getSize(uiSizes, 'plots')}>
+                <Grid
+                  size={{
+                    xs: UISizeValue.Big,
+                    xl: getSize(uiSizes, 'plots'),
+                  }}
+                >
                   <Plots
                     id="plots"
                     isUIBig={isUIBig(uiSizes, 'plots')}
@@ -435,7 +447,6 @@ const LegacyExperiment = () => {
           </Grid>
         </CardContent>
       </Card>
-
       <Snackbar
         open={isSnackbarOpen}
         autoHideDuration={3000}

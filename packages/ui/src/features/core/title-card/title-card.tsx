@@ -56,7 +56,12 @@ export const TitleCard = (props: TitleCardProps) => {
         <Box className={classes.titleContainer}>
           {warning && (
             <Tooltip title={warning}>
-              <Box mr={1} display="flex">
+              <Box
+                sx={{
+                  mr: 1,
+                  display: 'flex',
+                }}
+              >
                 <WarningAmberOutlined />
               </Box>
             </Tooltip>
@@ -74,7 +79,13 @@ export const TitleCard = (props: TitleCardProps) => {
               customBox={m?.customComponent}
             />
           ))}
-        <Box p={padding !== undefined ? padding : 2}>{cardView}</Box>
+        <Box
+          sx={{
+            p: padding !== undefined ? padding : 2,
+          }}
+        >
+          {cardView}
+        </Box>
       </CardContent>
     </Card>
   )

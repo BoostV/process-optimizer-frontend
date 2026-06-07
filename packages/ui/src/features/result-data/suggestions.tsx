@@ -29,7 +29,12 @@ export const Suggestions = ({
   return (
     <>
       {values[0] !== undefined && values[0].length > 0 && (
-        <Box mt={1} className={classes.tableContainer}>
+        <Box
+          className={classes.tableContainer}
+          sx={{
+            mt: 1,
+          }}
+        >
           <Table size="small">
             <TableHead>
               <TableRow>

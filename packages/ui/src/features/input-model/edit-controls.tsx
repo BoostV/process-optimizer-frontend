@@ -99,11 +99,13 @@ export const EditControls: FC<Props> = ({
             <Checkbox
               checked={enabled}
               onChange={(_, checked) => onEnabledToggled(checked)}
-              inputProps={{
-                'aria-label': 'Enable/disable',
-              }}
               size="small"
               color="primary"
+              slotProps={{
+                input: {
+                  'aria-label': 'Enable/disable',
+                },
+              }}
             />
           )}
         </span>
