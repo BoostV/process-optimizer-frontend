@@ -5,6 +5,7 @@ import {
   selectIsInitializing,
   selectActiveVariableNames,
   selectDataPoints,
+  selectInitializationDeficit,
 } from '@boostv/process-optimizer-frontend-core'
 import {
   Tooltip,
@@ -35,6 +36,9 @@ interface ResultDataProps {
   warning?: string
   padding?: number
   allowIndividualSuggestionCopy?: boolean
+  // When fitted, transferring a suggestion removes it from the list (draw-down).
+  // Defaults to on; set false to keep transferred suggestions visible.
+  drawDownSuggestionsWhenFitted?: boolean
   maxSuggestionCount?: number
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
@@ -51,6 +55,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     padding,
     loadingMode,
     allowIndividualSuggestionCopy = true,
+    drawDownSuggestionsWhenFitted = true,
     maxSuggestionCount,
     toggleUISize,
     onMouseEnterExpand,
@@ -66,6 +71,19 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   const variableHeaders = useSelector(selectActiveVariableNames)
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
+  const deficit = useSelector(selectInitializationDeficit)
+  // While initializing, once every initial slot is filled (deficit 0) no further
+  // suggestions are needed — ignore any stale/extra suggestions still in the list
+  // so the guide shows the "all added, go run them" guidance (where the
+  // suggestions would otherwise be) instead of inviting more transfers.
+  const allInitialPointsAdded = isInitializing && deficit === 0
+  const displayedSuggestions = allInitialPointsAdded ? [] : nextValues
+
+  const emptyListMessage = allInitialPointsAdded
+    ? 'All initial experiments have been added to the data points list. Run them and enter their results to finish initializing the model — or delete or disable a row to get a replacement suggestion.'
+    : isInitializing
+      ? 'Calculating initial suggestions…'
+      : 'Please run optimizer to calculate suggestions'
 
   const defaultLoadingView = (
     <Stack direction="column" spacing={2} m={2}>
@@ -144,18 +162,20 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       }
     >
       <Box p={2}>
-        {!nextValues ||
-          (nextValues.length === 0 && (
-            <Box p={2}>Please run optimizer to calculate suggestions</Box>
-          ))}
+        {displayedSuggestions.length === 0 && (
+          <Box p={2}>{emptyListMessage}</Box>
+        )}
         <Suggestions
-          values={nextValues}
+          values={displayedSuggestions}
           headers={variableHeaders}
           allowIndividualSuggestionCopy={allowIndividualSuggestionCopy}
           onCopyToDataPoints={index =>
             dispatchExperiment({
               type: 'copySuggestedToDataPoints',
-              payload: [index],
+              payload: {
+                indices: [index],
+                removeFromSuggestions: drawDownSuggestionsWhenFitted,
+              },
             })
           }
         />
@@ -177,16 +197,21 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
             />
           </Box>
         )}
-        {nextValues.length > 0 &&
-          nextValues[0] !== undefined &&
-          nextValues[0].length > 0 && (
+        {displayedSuggestions.length > 0 &&
+          displayedSuggestions[0] !== undefined &&
+          displayedSuggestions[0].length > 0 && (
             <Box>
               <CopySuggested
                 isInitialInteraction={dataPoints.length === 0}
                 onClick={() =>
                   dispatchExperiment({
                     type: 'copySuggestedToDataPoints',
-                    payload: [...Array(nextValues.length)].map((_, i) => i),
+                    payload: {
+                      indices: [...Array(displayedSuggestions.length)].map(
+                        (_, i) => i
+                      ),
+                      removeFromSuggestions: drawDownSuggestionsWhenFitted,
+                    },
                   })
                 }
               />

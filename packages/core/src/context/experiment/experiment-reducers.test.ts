@@ -67,7 +67,7 @@ describe('experimentReducer pareto selection invalidation', () => {
     })
     const next = experimentReducer(stateWithSuggestion, {
       type: 'copySuggestedToDataPoints',
-      payload: [0],
+      payload: { indices: [0], removeFromSuggestions: false },
     })
     expect('selectedPoint' in next.extras).toBe(false)
   })

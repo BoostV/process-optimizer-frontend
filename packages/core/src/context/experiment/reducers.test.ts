@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ExperimentAction, experimentReducer } from './experiment-reducers'
+import { ExperimentAction } from './experiment-reducers'
 import { rootReducer } from './reducers'
 import {
   currentVersion,
@@ -15,6 +15,7 @@ import {
   emptyExperiment,
   State,
 } from '@core/context/experiment'
+import { selectNextValues } from './experiment-selectors'
 import { versionInfo } from '@core/common'
 import _ from 'lodash'
 import { produce } from 'immer'
@@ -1001,7 +1002,7 @@ describe('experiment reducer', () => {
     it('should copy one row from suggested to data points', () => {
       const action: ExperimentAction = {
         type: 'copySuggestedToDataPoints',
-        payload: [0],
+        payload: { indices: [0], removeFromSuggestions: false },
       }
       const dp = rootReducer(initState, action).experiment.dataPoints
       expect(dp.length).toBe(2)
@@ -1025,7 +1026,7 @@ describe('experiment reducer', () => {
     it('should copy multiple rows from suggested to data points', () => {
       const action: ExperimentAction = {
         type: 'copySuggestedToDataPoints',
-        payload: [0, 1],
+        payload: { indices: [0, 1], removeFromSuggestions: false },
       }
       const dp = rootReducer(initState, action).experiment.dataPoints
       expect(dp.length).toBe(3)
@@ -1050,7 +1051,7 @@ describe('experiment reducer', () => {
     it('should only copy enabled variables to data points', () => {
       const action: ExperimentAction = {
         type: 'copySuggestedToDataPoints',
-        payload: [0],
+        payload: { indices: [0], removeFromSuggestions: false },
       }
       const state: State = {
         ...initState,
@@ -1091,6 +1092,106 @@ describe('experiment reducer', () => {
         },
       ])
     })
+
+    it('removes transferred suggestions from the list while initializing', () => {
+      const action: ExperimentAction = {
+        type: 'copySuggestedToDataPoints',
+        payload: { indices: [0], removeFromSuggestions: false },
+      }
+      const before = selectNextValues(initState.experiment).length
+      const next = rootReducer(initState, action).experiment.results.next
+      expect(next.length).toBe(before - 1)
+      expect(next[0]).toEqual([150, 'Chocolate'])
+    })
+
+    it('keeps suggestions when fitted and removeFromSuggestions is false', () => {
+      const fitted: State = {
+        ...initState,
+        experiment: {
+          ...initState.experiment,
+          optimizerConfig: {
+            ...initState.experiment.optimizerConfig,
+            initialPoints: 1,
+          },
+          dataPoints: [
+            {
+              meta: { id: 1, enabled: true, valid: true },
+              data: [
+                { type: 'numeric', name: 'Water', value: 100 },
+                { type: 'categorical', name: 'Icing', value: 'Vanilla' },
+                { type: 'score', name: scoreNames[0], value: 10 },
+              ],
+            },
+          ],
+          results: {
+            ...initState.experiment.results,
+            next: [
+              [100, 'Vanilla'],
+              [150, 'Chocolate'],
+            ],
+          },
+        },
+      }
+      const keep: ExperimentAction = {
+        type: 'copySuggestedToDataPoints',
+        payload: { indices: [0], removeFromSuggestions: false },
+      }
+      expect(rootReducer(fitted, keep).experiment.results.next.length).toBe(2)
+
+      const drop: ExperimentAction = {
+        type: 'copySuggestedToDataPoints',
+        payload: { indices: [0], removeFromSuggestions: true },
+      }
+      expect(rootReducer(fitted, drop).experiment.results.next.length).toBe(1)
+    })
+
+    it('stays "changed" after transferring then disabling an initial suggestion (round-trip)', () => {
+      // Build a base state with initialPoints 2 and xi pre-set to 0.1 (what
+      // calculateXi returns for the single scored point with score 10) so that
+      // updateDataPoints does not change xi and accidentally cause a hash mismatch
+      // unrelated to the bug under test.
+      const base: State = {
+        ...initState,
+        experiment: {
+          ...initState.experiment,
+          optimizerConfig: {
+            ...initState.experiment.optimizerConfig,
+            initialPoints: 2,
+            xi: 0.1,
+          },
+        },
+      }
+      // Sync lastEvaluationHash to the current request so changed is false
+      // (simulates the evaluation that produced the suggestions).
+      const synced = rootReducer(base, {
+        type: 'registerResult',
+        payload: {
+          experimentVersion: base.experiment.info.version,
+          result: base.experiment.results,
+        },
+      })
+      expect(synced.experiment.changedSinceLastEvaluation).toBe(false)
+
+      // Transfer the first suggestion (draw-down removes it from the list).
+      const transferred = rootReducer(synced, {
+        type: 'copySuggestedToDataPoints',
+        payload: { indices: [0], removeFromSuggestions: true },
+      })
+
+      // Disable the newly added, still-unscored row (valid === false).
+      const disabledDataPoints = transferred.experiment.dataPoints.map(d =>
+        d.meta.valid ? d : { ...d, meta: { ...d.meta, enabled: false } }
+      )
+      const afterDisable = rootReducer(transferred, {
+        type: 'updateDataPoints',
+        payload: disabledDataPoints,
+      })
+
+      // The request now round-trips to the pre-transfer state, but the list was
+      // consumed — the experiment must still be marked changed so the guide
+      // re-evaluates and regenerates the deficit.
+      expect(afterDisable.experiment.changedSinceLastEvaluation).toBe(true)
+    })
   })
 
   it('should add scores to new data point for multi-objective - two scores enabled', () => {
@@ -1116,7 +1217,7 @@ describe('experiment reducer', () => {
     }
     const action: ExperimentAction = {
       type: 'copySuggestedToDataPoints',
-      payload: [0],
+      payload: { indices: [0], removeFromSuggestions: false },
     }
     const dp = rootReducer(testState, action).experiment.dataPoints
     expect(dp[dp.length - 1]?.data).toEqual([
@@ -1155,7 +1256,7 @@ describe('experiment reducer', () => {
     }
     const action: ExperimentAction = {
       type: 'copySuggestedToDataPoints',
-      payload: [0],
+      payload: { indices: [0], removeFromSuggestions: false },
     }
     const dp = rootReducer(testState, action).experiment.dataPoints
     expect(dp[dp.length - 1]?.data).toEqual([
@@ -1292,28 +1393,45 @@ describe('resetting suggestion count when the model is first fit (#1)', () => {
 
   it('drops experimentSuggestionCount to its default when active points reach initialPoints', () => {
     const before = withPoints(2, { experimentSuggestionCount: 5 })
-    const after = experimentReducer(before, {
-      type: 'updateDataPoints',
-      payload: createDataPoints(3),
-    })
+    const after = rootReducer(
+      { experiment: before },
+      { type: 'updateDataPoints', payload: createDataPoints(3) }
+    ).experiment
     expect('experimentSuggestionCount' in after.extras).toBe(false)
   })
 
   it('keeps the count while still initializing (below initialPoints)', () => {
     const before = withPoints(1, { experimentSuggestionCount: 5 })
-    const after = experimentReducer(before, {
-      type: 'updateDataPoints',
-      payload: createDataPoints(2),
-    })
+    const after = rootReducer(
+      { experiment: before },
+      { type: 'updateDataPoints', payload: createDataPoints(2) }
+    ).experiment
     expect(after.extras.experimentSuggestionCount).toBe(5)
   })
 
   it('keeps the count once already fitted (does not reset on every added point)', () => {
     const before = withPoints(3, { experimentSuggestionCount: 4 })
-    const after = experimentReducer(before, {
-      type: 'updateDataPoints',
-      payload: createDataPoints(4),
-    })
+    const after = rootReducer(
+      { experiment: before },
+      { type: 'updateDataPoints', payload: createDataPoints(4) }
+    ).experiment
     expect(after.extras.experimentSuggestionCount).toBe(4)
+  })
+
+  it('resets once the last initial point becomes valid via the validation reducer (score entry)', () => {
+    const before = withPoints(2, { experimentSuggestionCount: 5 })
+    // The data-points UI dispatches the new/edited row before validity is
+    // recomputed, so the payload's last row is not yet marked valid.
+    const payload = produce(createDataPoints(3), draft => {
+      const last = draft[draft.length - 1]
+      if (last) last.meta.valid = false
+    })
+    const after = rootReducer(
+      { experiment: before },
+      { type: 'updateDataPoints', payload }
+    ).experiment
+    // validation flips it valid -> active reaches initialPoints -> reset fires
+    expect(after.dataPoints[after.dataPoints.length - 1]?.meta.valid).toBe(true)
+    expect('experimentSuggestionCount' in after.extras).toBe(false)
   })
 })

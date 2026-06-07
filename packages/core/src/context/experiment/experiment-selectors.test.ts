@@ -6,6 +6,8 @@ import {
   selectActiveVariablesFromExperiment,
   selectCalculatedSuggestionCount,
   selectId,
+  selectInitializationDeficit,
+  selectInitializationDeficitFromExperiment,
   selectIsConstraintActive,
   selectIsInitializing,
   selectIsMultiObjective,
@@ -122,10 +124,10 @@ describe('Experiment selectors', () => {
       },
     ]
     it.each([
-      //data points < initial points, constraint active -> initial points
-      [1, 2, constraints, 2],
-      //data points < initial points, constraint NOT active -> initial points
-      [1, 2, [], 2],
+      //data points < initial points -> deficit (initialPoints - dataPoints)
+      [1, 2, constraints, 1],
+      //data points < initial points, constraint NOT active -> deficit
+      [1, 2, [], 1],
       //data points = initial points, constraint active -> 1
       [1, 1, constraints, 1],
       //data points = initial points, constraint NOT active -> suggestionCount
@@ -134,6 +136,8 @@ describe('Experiment selectors', () => {
       [2, 1, constraints, 1],
       //data points > initial points, constraint NOT active -> suggestionCount
       [2, 1, [], suggestionCount],
+      //data points 0, initial points 3 -> deficit 3
+      [0, 3, [], 3],
     ])(
       'should return correct value',
       (dataPoints, initialPoints, constraints, result) => {
@@ -156,6 +160,72 @@ describe('Experiment selectors', () => {
         expect(editable).toBe(result)
       }
     )
+  })
+
+  describe('selectInitializationDeficitFromExperiment', () => {
+    const withConfigAndPoints = (
+      initialPoints: number,
+      points: { enabled: boolean; valid: boolean }[]
+    ): ExperimentType => ({
+      ...initialState.experiment,
+      optimizerConfig: {
+        ...initialState.experiment.optimizerConfig,
+        initialPoints,
+      },
+      dataPoints: points.map((p, i) => ({
+        meta: { id: i + 1, enabled: p.enabled, valid: p.valid },
+        data: [{ type: 'numeric', name: 'Water', value: 100 }],
+      })),
+    })
+
+    it('returns initialPoints when there are no rows', () => {
+      expect(
+        selectInitializationDeficitFromExperiment(withConfigAndPoints(3, []))
+      ).toBe(3)
+    })
+
+    it('counts an enabled but unscored (transferred) row as occupying a slot', () => {
+      const exp = withConfigAndPoints(3, [
+        { enabled: true, valid: false },
+        { enabled: true, valid: false },
+        { enabled: true, valid: false },
+      ])
+      expect(selectInitializationDeficitFromExperiment(exp)).toBe(0)
+    })
+
+    it('treats a disabled row as a missing slot', () => {
+      const exp = withConfigAndPoints(3, [
+        { enabled: true, valid: true },
+        { enabled: true, valid: true },
+        { enabled: false, valid: true },
+      ])
+      expect(selectInitializationDeficitFromExperiment(exp)).toBe(1)
+    })
+
+    it('never goes below zero', () => {
+      const exp = withConfigAndPoints(2, [
+        { enabled: true, valid: true },
+        { enabled: true, valid: true },
+        { enabled: true, valid: true },
+      ])
+      expect(selectInitializationDeficitFromExperiment(exp)).toBe(0)
+    })
+
+    it('selectInitializationDeficit reads from state', () => {
+      expect(
+        selectInitializationDeficit({
+          ...initialState,
+          experiment: {
+            ...initialState.experiment,
+            optimizerConfig: {
+              ...initialState.experiment.optimizerConfig,
+              initialPoints: 3,
+            },
+            dataPoints: [],
+          },
+        })
+      ).toBe(3)
+    })
   })
 
   describe('selectIsConstraintActive', () => {

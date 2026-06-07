@@ -1,6 +1,10 @@
 import { assertUnreachable } from '@core/common/util'
 import { State } from './store'
-import { ExperimentAction, experimentReducer } from './experiment-reducers'
+import {
+  ExperimentAction,
+  experimentReducer,
+  resetSuggestionCountOnModelFit,
+} from './experiment-reducers'
 import { validateExperiment, ValidationViolations } from './validation'
 import { validationReducer } from './validation-reducer'
 import { calculateChangeReducer } from './calculate-change-reducer'
@@ -36,10 +40,11 @@ export const rootReducer = (state: State, action: Action) => {
       const experiment = experimentReducer(state.experiment, action)
       const validationViolations: ValidationViolations =
         validateExperiment(experiment)
+      const validated = validationReducer(experiment, validationViolations)
       return {
         ...state,
         experiment: calculateChangeReducer(
-          validationReducer(experiment, validationViolations)
+          resetSuggestionCountOnModelFit(state.experiment, validated)
         ),
       }
     }

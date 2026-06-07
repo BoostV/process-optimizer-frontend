@@ -4,6 +4,10 @@ import { State } from './store'
 export const selectExperiment = (state: State) => state.experiment
 export const selectId = (state: State) => selectExperiment(state).id
 
+// Initializing = fewer SCORED (valid + enabled) points than initialPoints. Note
+// this counts valid+enabled rows, whereas selectInitializationDeficit* counts
+// merely enabled rows (an entered-but-unscored row still holds its slot) — the
+// two denominators differ on purpose.
 export const selectIsInitializing = (state: State) =>
   selectExperiment(state).optimizerConfig.initialPoints === 0 ||
   selectActiveDataPoints(state).length <
@@ -108,6 +112,22 @@ export const selectInitialPoints = (state: State) =>
 export const selectInitialPointsFromExperiment = (experiment: ExperimentType) =>
   experiment.optimizerConfig.initialPoints
 
+// During initialization, how many more experiments are needed to reach
+// initialPoints. A row "occupies a slot" if it is enabled (scored or not), so a
+// disabled row counts as missing — disabling re-opens a slot just like deleting.
+export const selectInitializationDeficitFromExperiment = (
+  experiment: ExperimentType
+) => {
+  const enabledRows = experiment.dataPoints.filter(d => d.meta.enabled).length
+  return Math.max(
+    0,
+    selectInitialPointsFromExperiment(experiment) - enabledRows
+  )
+}
+
+export const selectInitializationDeficit = (state: State) =>
+  selectInitializationDeficitFromExperiment(selectExperiment(state))
+
 export const selectIsSuggestionCountEditable = (state: State) => {
   const dataPoints = selectActiveDataPoints(state)
   const initialPoints = selectInitialPoints(state)
@@ -134,7 +154,7 @@ export const selectCalculatedSuggestionCountFromExperiment = (
   const initialPoints = selectInitialPointsFromExperiment(experiment)
 
   if (dataPoints < initialPoints) {
-    return initialPoints
+    return selectInitializationDeficitFromExperiment(experiment)
   } else if (selectIsConstraintActive(experiment)) {
     return 1
   }

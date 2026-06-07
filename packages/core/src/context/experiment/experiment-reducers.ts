@@ -158,7 +158,7 @@ export type ExperimentAction =
     }
   | {
       type: 'copySuggestedToDataPoints'
-      payload: number[]
+      payload: { indices: number[]; removeFromSuggestions: boolean }
     }
   | {
       type: 'experiment/toggleMultiObjective'
@@ -208,10 +208,11 @@ const experimentReducerInner = produce(
         break
       }
       case 'copySuggestedToDataPoints': {
+        const { indices, removeFromSuggestions } = action.payload
         const nextValues = selectNextValues(state)
         const variables = selectActiveVariablesFromExperiment(state)
         const newEntries: DataEntry[] = nextValues
-          .filter((_, i) => action.payload.includes(i))
+          .filter((_, i) => indices.includes(i))
           .map((n, k) => ({
             meta: {
               enabled: true,
@@ -252,6 +253,29 @@ const experimentReducerInner = produce(
             newEntries
           )
         )
+        // Draw-down: transferred suggestions leave the list. Always while
+        // initializing (the transferred rows now occupy those initial slots);
+        // when fitted it is governed by the dispatcher's flag. The pushed rows
+        // are unscored (valid: false) so this does not change `isInitializing`.
+        const isInitializing =
+          selectActiveDataPointsFromExperiment(state).length <
+          selectInitialPointsFromExperiment(state)
+        if (isInitializing || removeFromSuggestions) {
+          // Filter the normalized `nextValues` (same array the transferred rows
+          // were selected from) so the kept/removed indices always align,
+          // regardless of how `results.next` was shaped on the wire.
+          state.results.next = nextValues.filter((_, i) => !indices.includes(i))
+        }
+        if (isInitializing) {
+          // Consuming initial suggestions removes them from the list, so the last
+          // evaluation's plan is no longer fully present. Mark the experiment as
+          // needing re-evaluation (the standard "never-calculated" sentinel →
+          // changedSinceLastEvaluation becomes true) so the guide regenerates the
+          // deficit even when the optimizer request later round-trips to a
+          // previously-evaluated state — e.g. disabling a transferred, unscored
+          // point leaves the request identical to before the transfer.
+          state.lastEvaluationHash = 'never-calculated'
+        }
         break
       }
       case 'addValueVariable':
@@ -508,13 +532,22 @@ export const experimentReducer = (
       // A stored pareto selection's coordinates go stale on any structural edit.
       delete draft.extras.selectedPoint
     }
-    // When the model is first fit (active data points reach initialPoints), reset
-    // the suggestion count to its default of 1. While initializing the count is
-    // forced to initialPoints; without this it would "stick" at that value once
-    // the model is built instead of dropping back to a single suggestion.
+  })
+}
+
+// Reset the suggestion count to its default of 1 once the model is first fit
+// (active data points reach initialPoints). MUST run after the validation reducer
+// (see rootReducer): the init→fit transition is normally driven by a row becoming
+// valid when its score is entered, and meta.valid is only set by validation — so
+// checking before validation (e.g. inside experimentReducer) misses the transition.
+export const resetSuggestionCountOnModelFit = (
+  previous: ExperimentType,
+  next: ExperimentType
+): ExperimentType =>
+  produce(next, draft => {
     const initialPoints = selectInitialPointsFromExperiment(next)
     const wasInitializing =
-      selectActiveDataPointsFromExperiment(state).length < initialPoints
+      selectActiveDataPointsFromExperiment(previous).length < initialPoints
     const nowFitted =
       selectActiveDataPointsFromExperiment(next).length >= initialPoints
     if (
@@ -525,7 +558,6 @@ export const experimentReducer = (
       delete draft.extras.experimentSuggestionCount
     }
   })
-}
 
 const updateNamesInConstraints = (
   state: ExperimentType,

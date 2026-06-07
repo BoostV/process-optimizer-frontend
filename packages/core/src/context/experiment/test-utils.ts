@@ -135,7 +135,7 @@ export const dummyPayloads: Payloads = {
   updateSuggestionCount: {
     suggestionCount: '',
   },
-  copySuggestedToDataPoints: [],
+  copySuggestedToDataPoints: { indices: [], removeFromSuggestions: false },
   'experiment/toggleMultiObjective': undefined,
   'experiment/setConstraintSum': 0,
   'experiment/addVariableToConstraintSum': '',
