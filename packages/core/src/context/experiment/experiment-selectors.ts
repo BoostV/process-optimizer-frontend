@@ -1,4 +1,5 @@
 import { CombinedVariableType, ExperimentType } from 'common'
+import { calculateConstraints } from '@core/common'
 import { State } from './store'
 
 export const selectExperiment = (state: State) => state.experiment
@@ -103,8 +104,16 @@ export const selectSumConstraint = (state: State) =>
 export const selectSumConstraintFromExperiment = (experiment: ExperimentType) =>
   experiment.constraints.find(c => c.type === 'sum')
 
+// A sum constraint is "active" only if it survives into the optimizer request,
+// i.e. its dimensions resolve to more than one enabled, continuous variable.
+// We defer to calculateConstraints (the single source of truth for what is
+// sent) rather than counting the raw stored dimension names. Counting raw names
+// could desync the suggestion-count guard from the actual request — e.g. a
+// degenerate sum constraint with zero/one dimensions, or names that no longer
+// map to enabled continuous variables, would otherwise be treated as active
+// here while contributing nothing to the request.
 export const selectIsConstraintActive = (experiment: ExperimentType) =>
-  (selectSumConstraintFromExperiment(experiment)?.dimensions.length ?? 0) > 1
+  calculateConstraints(experiment).some(c => c.type === 'sum')
 
 export const selectInitialPoints = (state: State) =>
   selectInitialPointsFromExperiment(selectExperiment(state))
