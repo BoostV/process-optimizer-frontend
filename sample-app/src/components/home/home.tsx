@@ -179,18 +179,31 @@ export default function Home() {
     <Layout>
       <Card className={classes.mainContainer}>
         <CardContent className={classes.mainContent}>
-          <Box p={3}>
+          <Box
+            sx={{
+              p: 3,
+            }}
+          >
             <Typography variant="h4">Get started</Typography>
           </Box>
 
-          <Box p={0} pl={1} mb={1} className={classes.box}>
+          <Box
+            className={classes.box}
+            sx={{
+              p: 0,
+              pl: 1,
+              mb: 1,
+            }}
+          >
             <List component="nav">
               <ListItem component="div">
                 <ListItemButton onClick={() => createNewExperiment()}>
                   <ListItemText
-                    primaryTypographyProps={{ variant: 'h6' }}
                     primary="Create new experiment"
                     secondary="Single objective"
+                    slotProps={{
+                      primary: { variant: 'h6' },
+                    }}
                   />
                   <ChevronRight />
                 </ListItemButton>
@@ -200,9 +213,11 @@ export default function Home() {
                   onClick={() => createNewExperimentMultiobjective()}
                 >
                   <ListItemText
-                    primaryTypographyProps={{ variant: 'h6' }}
                     primary="Create new experiment"
                     secondary="Multi-objective"
+                    slotProps={{
+                      primary: { variant: 'h6' },
+                    }}
                   />
                   <ChevronRight />
                 </ListItemButton>
@@ -210,9 +225,22 @@ export default function Home() {
             </List>
           </Box>
 
-          <Box p={3} pb={1} mb={1} className={classes.box}>
+          <Box
+            className={classes.box}
+            sx={{
+              p: 3,
+              pb: 1,
+              mb: 1,
+            }}
+          >
             <Typography variant="h6">Upload experiment file</Typography>
-            <Box mb={5} className={classes.uploadBox} {...getRootProps()}>
+            <Box
+              className={classes.uploadBox}
+              {...getRootProps()}
+              sx={{
+                mb: 5,
+              }}
+            >
               <SystemUpdateAlt className={classes.uploadIcon} />
               <input {...getInputProps()} />
               <div className={classes.uploadBoxInner}>
@@ -226,9 +254,18 @@ export default function Home() {
             </Box>
           </Box>
 
-          <Box p={3} className={classes.box}>
+          <Box
+            className={classes.box}
+            sx={{
+              p: 3,
+            }}
+          >
             <Typography variant="h6">Saved experiments</Typography>
-            <Box mb={1}>
+            <Box
+              sx={{
+                mb: 1,
+              }}
+            >
               {state.experimentsInLocalStorage.length > 0 ? (
                 <List component="nav">
                   {state.experimentsInLocalStorage
@@ -252,7 +289,9 @@ export default function Home() {
                           <ListItemText
                             primary={getExperimentName(id)}
                             secondary={id}
-                            secondaryTypographyProps={{ color: 'inherit' }}
+                            slotProps={{
+                              secondary: { color: 'inherit' },
+                            }}
                           />
                           <ChevronRight />
                         </ListItemButton>

@@ -84,7 +84,12 @@ export function DataPoints(props: DataPointProps) {
       warning={warning}
       title={
         <>
-          <Box display="flex" justifyContent="space-between">
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             Data points
             <Box>
               <DownloadCSVButton

@@ -45,12 +45,14 @@ export const InitializationProgress: FC<Props> = ({
             name="initialPoints"
             value={initialPoints}
             label="N initial points"
-            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
             onChange={e =>
               e.target.value
                 ? setInitialPoints(parseInt(e.target.value))
                 : setInitialPoints(0)
             }
+            slotProps={{
+              htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' },
+            }}
           />
           <IconButton
             sx={{ marginTop: 1 }}

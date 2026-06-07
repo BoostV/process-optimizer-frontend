@@ -7,14 +7,7 @@ import {
   selectDataPoints,
   selectInitializationDeficit,
 } from '@boostv/process-optimizer-frontend-core'
-import {
-  Tooltip,
-  IconButton,
-  Hidden,
-  Box,
-  Stack,
-  Skeleton,
-} from '@mui/material'
+import { Tooltip, IconButton, Box, Stack, Skeleton } from '@mui/material'
 import { ZoomOutMap } from '@mui/icons-material'
 import useStyles from './experimentation-guide.style'
 import {
@@ -86,7 +79,13 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       : 'Please run optimizer to calculate suggestions'
 
   const defaultLoadingView = (
-    <Stack direction="column" spacing={2} m={2}>
+    <Stack
+      direction="column"
+      spacing={2}
+      sx={{
+        m: 2,
+      }}
+    >
       <Skeleton variant="rectangular" width="100%" height={200} />
       <Skeleton variant="rectangular" width="100%" height={100} />
     </Stack>
@@ -116,7 +115,13 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
       }
     />
   ) : hasResults || loading ? null : (
-    <Box p={2}>Please run optimizer</Box>
+    <Box
+      sx={{
+        p: 2,
+      }}
+    >
+      Please run optimizer
+    </Box>
   )
 
   const debouncedUpdate = _.debounce(suggestionCount => {
@@ -138,7 +143,10 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         <>
           Experimentation guide
           {toggleUISize !== undefined && (
-            <Hidden xlDown>
+            <Box
+              component="span"
+              sx={{ display: { xs: 'none', xl: 'inline-flex' } }}
+            >
               <Tooltip
                 disableInteractive
                 title={
@@ -156,14 +164,24 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
                   <ZoomOutMap fontSize="small" className={classes.titleIcon} />
                 </IconButton>
               </Tooltip>
-            </Hidden>
+            </Box>
           )}
         </>
       }
     >
-      <Box p={2}>
+      <Box
+        sx={{
+          p: 2,
+        }}
+      >
         {displayedSuggestions.length === 0 && (
-          <Box p={2}>{emptyListMessage}</Box>
+          <Box
+            sx={{
+              p: 2,
+            }}
+          >
+            {emptyListMessage}
+          </Box>
         )}
         <Suggestions
           values={displayedSuggestions}
@@ -180,15 +198,20 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
           }
         />
       </Box>
-
       <Box
-        p={2}
-        pt={1}
-        display="flex"
-        justifyContent={isInitializing ? 'right' : 'space-between'}
+        sx={{
+          p: 2,
+          pt: 1,
+          display: 'flex',
+          justifyContent: isInitializing ? 'right' : 'space-between',
+        }}
       >
         {!isInitializing && (
-          <Box width={160}>
+          <Box
+            sx={{
+              width: 160,
+            }}
+          >
             <NextExperiments
               maxSuggestionCount={maxSuggestionCount}
               onSuggestionChange={suggestionCount =>
@@ -218,7 +241,6 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
             </Box>
           )}
       </Box>
-
       {summary}
     </TitleCard>
   )

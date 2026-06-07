@@ -73,7 +73,11 @@ const JsonEditor = () => {
   return (
     <Card>
       <CardContent>
-        <Box mb={2}>
+        <Box
+          sx={{
+            mb: 2,
+          }}
+        >
           <IconButton
             size="small"
             onClick={() =>
@@ -108,7 +112,11 @@ const JsonEditor = () => {
                 Update experiment
               </Button>
             </Box>
-            <Box mt={1}>
+            <Box
+              sx={{
+                mt: 1,
+              }}
+            >
               <Typography variant="body2" color="error">
                 {errorMsg}
               </Typography>

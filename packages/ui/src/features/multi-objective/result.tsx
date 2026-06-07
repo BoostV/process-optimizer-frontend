@@ -189,7 +189,12 @@ export const Result = ({
             {isMultiObjective && pareto && (
               <Box className={classes.selectionHeader}>
                 <Box className={classes.selectionTitleRow}>
-                  <Typography variant="subtitle2" fontWeight="bold">
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 'bold',
+                    }}
+                  >
                     {isDefaultSelection
                       ? 'Model predictions at'
                       : 'Model predictions at'}
@@ -202,7 +207,12 @@ export const Result = ({
                     sx={{ bgcolor: selectedAccent, color: 'common.white' }}
                   />
                 </Box>
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                  }}
+                >
                   {isDefaultSelection ? (
                     'For the model’s default equal balance of quality and cost. Pick a point on the Pareto front below to target a different trade-off.'
                   ) : (
@@ -340,11 +350,19 @@ export const Result = ({
           </Box>
 
           {isMultiObjective && pareto && (
-            <Box p={2} className={classes.paretoContainer}>
+            <Box
+              className={classes.paretoContainer}
+              sx={{
+                p: 2,
+              }}
+            >
               <Typography
                 variant="caption"
-                color="text.secondary"
-                sx={{ display: 'block', mb: 1 }}
+                sx={{
+                  color: 'text.secondary',
+                  display: 'block',
+                  mb: 1,
+                }}
               >
                 Each point is a possible quality–cost trade-off. Click one to
                 see the settings predicted to reach it — the graphs above update
