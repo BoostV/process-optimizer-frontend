@@ -532,13 +532,22 @@ export const experimentReducer = (
       // A stored pareto selection's coordinates go stale on any structural edit.
       delete draft.extras.selectedPoint
     }
-    // When the model is first fit (active data points reach initialPoints), reset
-    // the suggestion count to its default of 1. While initializing the count is
-    // forced to initialPoints; without this it would "stick" at that value once
-    // the model is built instead of dropping back to a single suggestion.
+  })
+}
+
+// Reset the suggestion count to its default of 1 once the model is first fit
+// (active data points reach initialPoints). MUST run after the validation reducer
+// (see rootReducer): the init→fit transition is normally driven by a row becoming
+// valid when its score is entered, and meta.valid is only set by validation — so
+// checking before validation (e.g. inside experimentReducer) misses the transition.
+export const resetSuggestionCountOnModelFit = (
+  previous: ExperimentType,
+  next: ExperimentType
+): ExperimentType =>
+  produce(next, draft => {
     const initialPoints = selectInitialPointsFromExperiment(next)
     const wasInitializing =
-      selectActiveDataPointsFromExperiment(state).length < initialPoints
+      selectActiveDataPointsFromExperiment(previous).length < initialPoints
     const nowFitted =
       selectActiveDataPointsFromExperiment(next).length >= initialPoints
     if (
@@ -549,7 +558,6 @@ export const experimentReducer = (
       delete draft.extras.experimentSuggestionCount
     }
   })
-}
 
 const updateNamesInConstraints = (
   state: ExperimentType,

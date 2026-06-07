@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ExperimentAction, experimentReducer } from './experiment-reducers'
+import { ExperimentAction } from './experiment-reducers'
 import { rootReducer } from './reducers'
 import {
   currentVersion,
@@ -1393,28 +1393,45 @@ describe('resetting suggestion count when the model is first fit (#1)', () => {
 
   it('drops experimentSuggestionCount to its default when active points reach initialPoints', () => {
     const before = withPoints(2, { experimentSuggestionCount: 5 })
-    const after = experimentReducer(before, {
-      type: 'updateDataPoints',
-      payload: createDataPoints(3),
-    })
+    const after = rootReducer(
+      { experiment: before },
+      { type: 'updateDataPoints', payload: createDataPoints(3) }
+    ).experiment
     expect('experimentSuggestionCount' in after.extras).toBe(false)
   })
 
   it('keeps the count while still initializing (below initialPoints)', () => {
     const before = withPoints(1, { experimentSuggestionCount: 5 })
-    const after = experimentReducer(before, {
-      type: 'updateDataPoints',
-      payload: createDataPoints(2),
-    })
+    const after = rootReducer(
+      { experiment: before },
+      { type: 'updateDataPoints', payload: createDataPoints(2) }
+    ).experiment
     expect(after.extras.experimentSuggestionCount).toBe(5)
   })
 
   it('keeps the count once already fitted (does not reset on every added point)', () => {
     const before = withPoints(3, { experimentSuggestionCount: 4 })
-    const after = experimentReducer(before, {
-      type: 'updateDataPoints',
-      payload: createDataPoints(4),
-    })
+    const after = rootReducer(
+      { experiment: before },
+      { type: 'updateDataPoints', payload: createDataPoints(4) }
+    ).experiment
     expect(after.extras.experimentSuggestionCount).toBe(4)
+  })
+
+  it('resets once the last initial point becomes valid via the validation reducer (score entry)', () => {
+    const before = withPoints(2, { experimentSuggestionCount: 5 })
+    // The data-points UI dispatches the new/edited row before validity is
+    // recomputed, so the payload's last row is not yet marked valid.
+    const payload = produce(createDataPoints(3), draft => {
+      const last = draft[draft.length - 1]
+      if (last) last.meta.valid = false
+    })
+    const after = rootReducer(
+      { experiment: before },
+      { type: 'updateDataPoints', payload }
+    ).experiment
+    // validation flips it valid -> active reaches initialPoints -> reset fires
+    expect(after.dataPoints[after.dataPoints.length - 1]?.meta.valid).toBe(true)
+    expect('experimentSuggestionCount' in after.extras).toBe(false)
   })
 })
