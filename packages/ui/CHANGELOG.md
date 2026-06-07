@@ -1,5 +1,16 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 3.0.0
+
+### Major Changes
+
+- 73bcc3b: Update MUI from v6 -> v9
+
+### Patch Changes
+
+- Updated dependencies [73bcc3b]
+  - @boostv/process-optimizer-frontend-plots@3.0.0
+
 ## 2.15.0
 
 ### Minor Changes

@@ -1,12 +1,12 @@
 {
   "name": "@boostv/process-optimizer-frontend-ui",
   "description": "UI library for process optimizer frontend",
-  "version": "2.15.0",
+  "version": "3.0.0",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
   "dependencies": {
     "@boostv/process-optimizer-frontend-core": "2.15.0",
-    "@boostv/process-optimizer-frontend-plots": "2.0.3",
+    "@boostv/process-optimizer-frontend-plots": "3.0.0",
     "lodash.debounce": "^4.0.8",
     "react-hook-form": "^7.76.1",
     "remeda": "^2.37.0",
