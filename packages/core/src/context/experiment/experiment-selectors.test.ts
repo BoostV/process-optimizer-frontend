@@ -11,13 +11,26 @@ import {
   selectIsConstraintActive,
   selectIsInitializing,
   selectIsMultiObjective,
-  selectIsSuggestionCountEditable,
   selectPlots,
   selectPlotsFromExperiment,
 } from './experiment-selectors'
 import { rootReducer } from './reducers'
 import { createDataPoints } from './test-utils'
 import { ExperimentType } from '@core/common'
+
+// A sum constraint is only "active" if its dimensions resolve to enabled
+// continuous variables, so tests that exercise an active constraint must
+// declare the variables the constraint references.
+const continuousVar = (
+  name: string
+): ExperimentType['valueVariables'][number] => ({
+  type: 'continuous',
+  name,
+  description: '',
+  min: 0,
+  max: 100,
+  enabled: true,
+})
 
 describe('Experiment selectors', () => {
   let state: State
@@ -73,47 +86,6 @@ describe('Experiment selectors', () => {
     })
   })
 
-  describe('selectIsSuggestionCountEditable', () => {
-    const constraints: ExperimentType['constraints'] = [
-      {
-        type: 'sum',
-        dimensions: ['a', 'b'],
-        value: 100,
-      },
-    ]
-    it.each([
-      //data points < initial points, constraint active
-      [1, 2, constraints, true],
-      //data points < initial points, constraint NOT active
-      [1, 2, [], true],
-      //data points = initial points, constraint active
-      [1, 1, constraints, false],
-      //data points = initial points, constraint NOT active
-      [1, 1, [], true],
-      //data points > initial points, constraint active
-      [2, 1, constraints, false],
-      //data points > initial points, constraint NOT active
-      [2, 1, [], true],
-    ])(
-      'should be true when data points < intial points or constraints are active',
-      (dataPoints, initialPoints, constraints, result) => {
-        const editable = selectIsSuggestionCountEditable({
-          ...initialState,
-          experiment: {
-            ...initialState.experiment,
-            dataPoints: createDataPoints(dataPoints),
-            optimizerConfig: {
-              ...initialState.experiment.optimizerConfig,
-              initialPoints,
-            },
-            constraints,
-          },
-        })
-        expect(editable).toBe(result)
-      }
-    )
-  })
-
   describe('selectCalculatedSuggestionCount', () => {
     const suggestionCount = 5
     const constraints: ExperimentType['constraints'] = [
@@ -128,12 +100,13 @@ describe('Experiment selectors', () => {
       [1, 2, constraints, 1],
       //data points < initial points, constraint NOT active -> deficit
       [1, 2, [], 1],
-      //data points = initial points, constraint active -> 1
-      [1, 1, constraints, 1],
+      //data points = initial points, constraint active -> suggestionCount
+      //(a sum constraint no longer caps the count to 1)
+      [1, 1, constraints, suggestionCount],
       //data points = initial points, constraint NOT active -> suggestionCount
       [1, 1, [], suggestionCount],
-      //data points > initial points, constraint active -> 1
-      [2, 1, constraints, 1],
+      //data points > initial points, constraint active -> suggestionCount
+      [2, 1, constraints, suggestionCount],
       //data points > initial points, constraint NOT active -> suggestionCount
       [2, 1, [], suggestionCount],
       //data points 0, initial points 3 -> deficit 3
@@ -145,6 +118,7 @@ describe('Experiment selectors', () => {
           ...initialState,
           experiment: {
             ...initialState.experiment,
+            valueVariables: [continuousVar('a'), continuousVar('b')],
             dataPoints: createDataPoints(dataPoints),
             optimizerConfig: {
               ...initialState.experiment.optimizerConfig,
@@ -230,26 +204,47 @@ describe('Experiment selectors', () => {
 
   describe('selectIsConstraintActive', () => {
     it.each([
+      // > 1 dimensions resolving to enabled continuous variables -> active
       [['a', 'b', 'c'], true],
       [['a', 'b'], true],
+      // a single dimension is not a constraint the optimizer can act on
       [['a'], false],
+      // degenerate, zero-dimension sum constraint (the proj-with-error case)
       [[], false],
     ])(
-      'should return true when number of sum constraint variables > 1',
+      'is active only when > 1 dimensions resolve to real variables',
       (dimensions, result) => {
-        const editable = selectIsConstraintActive({
+        const active = selectIsConstraintActive({
           ...initialState.experiment,
-          constraints: [
-            {
-              type: 'sum',
-              value: 100,
-              dimensions,
-            },
+          valueVariables: [
+            continuousVar('a'),
+            continuousVar('b'),
+            continuousVar('c'),
           ],
+          constraints: [{ type: 'sum', value: 100, dimensions }],
         })
-        expect(editable).toBe(result)
+        expect(active).toBe(result)
       }
     )
+
+    it('is inactive when dimensions do not resolve to enabled continuous variables', () => {
+      // Two stored dimension names, but only one maps to an enabled continuous
+      // variable: 'b' is disabled and 'c' is categorical (not a value variable).
+      // The constraint contributes nothing to the request, so the
+      // suggestion-count guard must not treat it as active.
+      const active = selectIsConstraintActive({
+        ...initialState.experiment,
+        valueVariables: [
+          continuousVar('a'),
+          { ...continuousVar('b'), enabled: false },
+        ],
+        categoricalVariables: [
+          { name: 'c', description: '', enabled: true, options: ['x', 'y'] },
+        ],
+        constraints: [{ type: 'sum', value: 100, dimensions: ['a', 'b', 'c'] }],
+      })
+      expect(active).toBe(false)
+    })
   })
 
   describe('selectActiveScoreVariableLabels', () => {
