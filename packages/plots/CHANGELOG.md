@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/plots
 
+## 2.0.3
+
+### Patch Changes
+
+- c4d84e9: Fix x-axis label spacing
+
 ## 2.0.2
 
 ### Patch Changes

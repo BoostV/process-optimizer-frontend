@@ -1,5 +1,21 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 2.15.0
+
+### Minor Changes
+
+- f57a6e6: Introduce new deficit driven experimentation guide
+
+### Patch Changes
+
+- c4d84e9: Fix x-axis label spacing
+- 5835636: Reset suggestion count to 1 after the model is first fit
+- Updated dependencies [c4d84e9]
+- Updated dependencies [5835636]
+- Updated dependencies [f57a6e6]
+  - @boostv/process-optimizer-frontend-plots@2.0.3
+  - @boostv/process-optimizer-frontend-core@2.15.0
+
 ## 2.14.3
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @process-optimizer-frontend/core
 
+## 2.15.0
+
+### Minor Changes
+
+- f57a6e6: Introduce new deficit driven experimentation guide
+
+### Patch Changes
+
+- 5835636: Reset suggestion count to 1 after the model is first fit
+
 ## 2.14.1
 
 ### Patch Changes
