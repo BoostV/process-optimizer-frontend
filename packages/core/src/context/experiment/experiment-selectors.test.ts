@@ -11,7 +11,6 @@ import {
   selectIsConstraintActive,
   selectIsInitializing,
   selectIsMultiObjective,
-  selectIsSuggestionCountEditable,
   selectPlots,
   selectPlotsFromExperiment,
 } from './experiment-selectors'
@@ -87,48 +86,6 @@ describe('Experiment selectors', () => {
     })
   })
 
-  describe('selectIsSuggestionCountEditable', () => {
-    const constraints: ExperimentType['constraints'] = [
-      {
-        type: 'sum',
-        dimensions: ['a', 'b'],
-        value: 100,
-      },
-    ]
-    it.each([
-      //data points < initial points, constraint active
-      [1, 2, constraints, true],
-      //data points < initial points, constraint NOT active
-      [1, 2, [], true],
-      //data points = initial points, constraint active
-      [1, 1, constraints, false],
-      //data points = initial points, constraint NOT active
-      [1, 1, [], true],
-      //data points > initial points, constraint active
-      [2, 1, constraints, false],
-      //data points > initial points, constraint NOT active
-      [2, 1, [], true],
-    ])(
-      'should be true when data points < intial points or constraints are active',
-      (dataPoints, initialPoints, constraints, result) => {
-        const editable = selectIsSuggestionCountEditable({
-          ...initialState,
-          experiment: {
-            ...initialState.experiment,
-            valueVariables: [continuousVar('a'), continuousVar('b')],
-            dataPoints: createDataPoints(dataPoints),
-            optimizerConfig: {
-              ...initialState.experiment.optimizerConfig,
-              initialPoints,
-            },
-            constraints,
-          },
-        })
-        expect(editable).toBe(result)
-      }
-    )
-  })
-
   describe('selectCalculatedSuggestionCount', () => {
     const suggestionCount = 5
     const constraints: ExperimentType['constraints'] = [
@@ -143,12 +100,13 @@ describe('Experiment selectors', () => {
       [1, 2, constraints, 1],
       //data points < initial points, constraint NOT active -> deficit
       [1, 2, [], 1],
-      //data points = initial points, constraint active -> 1
-      [1, 1, constraints, 1],
+      //data points = initial points, constraint active -> suggestionCount
+      //(a sum constraint no longer caps the count to 1)
+      [1, 1, constraints, suggestionCount],
       //data points = initial points, constraint NOT active -> suggestionCount
       [1, 1, [], suggestionCount],
-      //data points > initial points, constraint active -> 1
-      [2, 1, constraints, 1],
+      //data points > initial points, constraint active -> suggestionCount
+      [2, 1, constraints, suggestionCount],
       //data points > initial points, constraint NOT active -> suggestionCount
       [2, 1, [], suggestionCount],
       //data points 0, initial points 3 -> deficit 3

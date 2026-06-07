@@ -137,15 +137,6 @@ export const selectInitializationDeficitFromExperiment = (
 export const selectInitializationDeficit = (state: State) =>
   selectInitializationDeficitFromExperiment(selectExperiment(state))
 
-export const selectIsSuggestionCountEditable = (state: State) => {
-  const dataPoints = selectActiveDataPoints(state)
-  const initialPoints = selectInitialPoints(state)
-  return (
-    dataPoints.length < initialPoints ||
-    !selectIsConstraintActive(selectExperiment(state))
-  )
-}
-
 export const selectSuggestionCountFromExperiment = (
   experiment: ExperimentType
 ) =>
@@ -162,10 +153,13 @@ export const selectCalculatedSuggestionCountFromExperiment = (
   const dataPoints = selectActiveDataPointsFromExperiment(experiment).length
   const initialPoints = selectInitialPointsFromExperiment(experiment)
 
+  // During initialization the count is forced to the number of points still
+  // needed; afterwards it is the user's chosen count. A sum constraint no
+  // longer caps it to 1 — the optimizer handles multi-point constrained asks
+  // (constant-liar / cl_min), so constrained experiments can request batches
+  // like any other.
   if (dataPoints < initialPoints) {
     return selectInitializationDeficitFromExperiment(experiment)
-  } else if (selectIsConstraintActive(experiment)) {
-    return 1
   }
   return selectSuggestionCountFromExperiment(experiment)
 }
