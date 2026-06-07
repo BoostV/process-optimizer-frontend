@@ -1,5 +1,29 @@
 # @process-optimizer-frontend/core
 
+## 2.16.0
+
+### Minor Changes
+
+- dd1b51a: Allow changing the suggested-experiment count for experiments with an active sum
+  constraint. The optimizer handles constrained multi-point asks (constant-liar /
+  `cl_min`) and the suggestions respect the constraint, so the previous cap to a
+  single suggestion is no longer needed.
+  - `selectCalculatedSuggestionCountFromExperiment` no longer forces the count to
+    1 when a constraint is active (initialization still returns the deficit).
+  - Removed `selectIsConstraintActive`'s only remaining consumers; the
+    `selectIsSuggestionCountEditable` selector (its sole purpose was the constraint
+    lock) is removed.
+  - `NextExperiments` no longer disables the count field or shows the
+    "cannot be edited while there is a sum constraint" tooltip.
+
+### Patch Changes
+
+- b459d2d: Make `selectIsConstraintActive` consistent with the constraint actually sent to
+  the optimizer. It now derives from `calculateConstraints` (resolved, enabled,
+  continuous dimensions) instead of counting the raw stored dimension names, so a
+  degenerate (zero-dimension) or unresolvable sum constraint is correctly treated
+  as inactive and can no longer desync the suggestion-count logic from the request.
+
 ## 2.15.0
 
 ### Minor Changes
