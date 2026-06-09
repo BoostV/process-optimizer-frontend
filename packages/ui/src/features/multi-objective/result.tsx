@@ -337,7 +337,7 @@ export const Result = ({
                     : []
                 })()
                 return {
-                  scoreHeader: `${header} (95% credible interval)`,
+                  scoreHeader: '95% credible interval',
                   // Generic objective name (e.g. "Quality"/"Cost"), not the full label.
                   rowLabel: role
                     ? role.charAt(0).toUpperCase() + role.slice(1)
