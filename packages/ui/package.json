@@ -1,7 +1,7 @@
 {
   "name": "@boostv/process-optimizer-frontend-ui",
   "description": "UI library for process optimizer frontend",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "author": "Jakob Langdal <jakob.langdal@alexandra.dk>",
   "bugs": "https://github.com/BoostV/process-optimizer-frontend/issues",
   "dependencies": {
