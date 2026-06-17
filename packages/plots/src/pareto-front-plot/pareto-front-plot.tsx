@@ -130,6 +130,19 @@ export default function ParetoFrontPlot({
   const variableNames =
     dataPoints[0]?.data.filter(d => d.type !== 'score').map(d => d.name) ?? []
 
+  // Observed points with their input settings (aligned to variableNames), for
+  // the hover pop-up shown when the pointer enters a numbered "#id" rectangle.
+  // x is observed quality in display units (already positive — unlike the
+  // model front, observed scores are stored as shown), y is observed cost.
+  const observedPoints = dataPointsMapped.map((p, i) => ({
+    id: p.id,
+    x: p.x,
+    y: p.y,
+    settings:
+      dataPoints[i]?.data.filter(d => d.type !== 'score').map(d => d.value) ??
+      [],
+  }))
+
   // Create separate datasets for X uncertainty bounds
   const xLowerBoundData = plot.front_y_data.map((yPair, i) => ({
     x: displayQuality(yPair[0]) - (plot.obj1_error[i] ?? 0),
@@ -398,6 +411,7 @@ export default function ParetoFrontPlot({
                 showHoverEllipse={showHoverEllipse}
                 obj1Error={plot.obj1_error}
                 obj2Error={plot.obj2_error}
+                observedPoints={observedPoints}
               />
             </ZIndexLayer>
           </ComposedChart>
