@@ -186,7 +186,13 @@ export const OneDPlot = ({
             <Tooltip
               formatter={formatTooltip}
               labelFormatter={formatTooltipLabel}
-              contentStyle={{ background: 'white' }}
+              // Translucent background (see plot theme) so the plot shows
+              // through, but keep the item/label text fully opaque — by default
+              // Recharts tints item text with the series color, which over a
+              // see-through box reads as faint.
+              contentStyle={{ background: plotColors.tooltip.background }}
+              itemStyle={{ color: plotColors.tooltip.text }}
+              labelStyle={{ color: plotColors.tooltip.text }}
             />
             <Bar dataKey="y" fill={fillColor} />
             {resolvedReferenceLineX !== undefined && (
@@ -241,7 +247,10 @@ export const OneDPlot = ({
               <Tooltip
                 formatter={formatTooltip}
                 labelFormatter={formatTooltipLabel}
-                contentStyle={{ background: 'white' }}
+                // See the bar-chart tooltip above: translucent box, opaque text.
+                contentStyle={{ background: plotColors.tooltip.background }}
+                itemStyle={{ color: plotColors.tooltip.text }}
+                labelStyle={{ color: plotColors.tooltip.text }}
               />
             )}
             <Area
