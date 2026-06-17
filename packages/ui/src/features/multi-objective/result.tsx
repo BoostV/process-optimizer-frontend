@@ -23,6 +23,7 @@ import {
   displayCostCI,
   selectActiveScoreVariableNames,
   type SelectedPoint,
+  type DataEntry,
 } from '@boostv/process-optimizer-frontend-core'
 import { Box, Button, Chip, Typography } from '@mui/material'
 import {
@@ -115,6 +116,51 @@ export const Result = ({
     const coords = pareto?.front_x_data[index]
     if (!coords) return
     dispatch({ type: 'setSelectedParetoPoint', payload: coords })
+  }
+
+  // Transfer the currently selected Pareto point's factor settings into a new,
+  // unscored data point row (scores left blank, valid: false until measured) —
+  // mirrors the reducer's `copySuggestedToDataPoints` row shape. Lets the user
+  // queue a promising trade-off as an experiment to run.
+  const onAddSelectedAsDataPoint = () => {
+    if (!pareto || selectedIndex < 0) return
+    const coords = pareto.front_x_data[selectedIndex]
+    if (!coords) return
+    const data = coords.flatMap((v, i): DataEntry['data'] => {
+      const variable = activeVariables[i]
+      if (variable === undefined) return []
+      switch (variable.type) {
+        case 'numeric':
+          // Round to 4 significant digits — the raw front coordinates carry
+          // full float precision, which is noise for a planned data point.
+          return [
+            {
+              name: variable.name,
+              value: Number(Number(v).toPrecision(4)),
+              type: 'numeric',
+            },
+          ]
+        case 'options': {
+          // front_x_data stores categorical values as an option index; store
+          // the resolved label, as the data table expects.
+          const label = typeof v === 'number' ? (variable.options?.[v] ?? v) : v
+          return [
+            { name: variable.name, value: String(label), type: 'categorical' },
+          ]
+        }
+        default:
+          return []
+      }
+    })
+    const nextId =
+      dataPoints.length === 0
+        ? 1
+        : Math.max(...dataPoints.map(d => d.meta.id)) + 1
+    const newRow: DataEntry = {
+      meta: { id: nextId, enabled: true, valid: false },
+      data,
+    }
+    dispatch({ type: 'updateDataPoints', payload: [...dataPoints, newRow] })
   }
 
   const mapOptionsLabels = (
@@ -222,6 +268,13 @@ export const Result = ({
                       onClick={onResetToDefault}
                     >
                       Reset to default point
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={onAddSelectedAsDataPoint}
+                    >
+                      Add as data point
                     </Button>
                   </>
                 )}
