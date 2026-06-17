@@ -1,10 +1,14 @@
 import { useState } from 'react'
-import { displayQuality } from '@boostv/process-optimizer-frontend-core'
+import {
+  displayQuality,
+  displayQualityCI,
+  displayCostCI,
+} from '@boostv/process-optimizer-frontend-core'
 import { usePlotColors } from '../colors'
 import { useDataToPixel } from './use-data-to-pixel'
 import { ConfidenceEllipses } from './overlays/confidence-ellipses'
 
-const LABEL_WIDTH = 140
+const LABEL_WIDTH = 170
 const LABEL_GAP = 6
 const LINE_HEIGHT = 16
 
@@ -104,10 +108,18 @@ export const HoverOverlay = ({
   const cx = point ? xToPx(displayQuality(point[0])) : 0
   const cy = point ? yToPx(point[1]) : 0
   const coords = hoverIndex !== null ? (frontXData[hoverIndex] ?? []) : []
+  // Show the predicted 95% range for quality and cost (rather than the central
+  // value), matching the 1D single-point display. displayQualityCI handles the
+  // quality sign flip internally. Fall back to the central value when no
+  // uncertainty is available for that objective (the helpers return '').
+  const qualityStd = hoverIndex !== null ? (obj1Error[hoverIndex] ?? 0) : 0
+  const costStd = hoverIndex !== null ? (obj2Error[hoverIndex] ?? 0) : 0
+  const qualityRange = point ? displayQualityCI(point[0], qualityStd) : ''
+  const costRange = point ? displayCostCI(point[1], costStd) : ''
   const labelLines = point
     ? [
-        `Quality: ${displayQuality(point[0]).toFixed(2)}`,
-        `Cost: ${point[1].toFixed(2)}`,
+        `Quality: ${qualityRange || displayQuality(point[0]).toFixed(2)}`,
+        `Cost: ${costRange || point[1].toFixed(2)}`,
         ...variableNames.map((name, i) => {
           const v = coords[i]
           return v === undefined
