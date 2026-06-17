@@ -178,6 +178,60 @@ export const Result = ({
       )}
       {showSingleDataPoint && (
         <>
+          {isMultiObjective && pareto && (
+            <Box
+              className={classes.paretoContainer}
+              sx={{
+                p: 2,
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  display: 'block',
+                  mb: 1,
+                }}
+              >
+                Each point is a possible quality–cost trade-off. Click one to
+                see the settings predicted to reach it — the graphs below update
+                to match.
+              </Typography>
+              <ParetoFrontPlot
+                onSelectIndex={onSetSelectedParetoPoint}
+                indexOfSelected={resolveSelectedIndex(
+                  pareto.front_x_data,
+                  selectedCoords,
+                  pareto.best_idx
+                )}
+                plot={pareto}
+                dataPoints={dataPoints}
+                showHoverEllipse={showParetoHoverEllipse}
+                renderControls={({ onToggleFitToFront, onResetToDefault }) => (
+                  <>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={onToggleFitToFront}
+                    >
+                      Toggle front fit
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={onResetToDefault}
+                    >
+                      Reset to default point
+                    </Button>
+                  </>
+                )}
+                onResetToDefault={() =>
+                  dispatch({ type: 'setSelectedParetoPoint', payload: null })
+                }
+                styles={styles?.pareto}
+              />
+            </Box>
+          )}
           <Box
             className={classes.container}
             sx={
@@ -214,7 +268,7 @@ export const Result = ({
                   }}
                 >
                   {isDefaultSelection ? (
-                    'For the model’s default equal balance of quality and cost. Pick a point on the Pareto front below to target a different trade-off.'
+                    'For the model’s default equal balance of quality and cost. Pick a point on the Pareto front above to target a different trade-off.'
                   ) : (
                     <>
                       {`${scoreHeaders[0] ?? 'Quality'} ≈ ${
@@ -348,61 +402,6 @@ export const Result = ({
               })}
             />
           </Box>
-
-          {isMultiObjective && pareto && (
-            <Box
-              className={classes.paretoContainer}
-              sx={{
-                p: 2,
-              }}
-            >
-              <Typography
-                variant="caption"
-                sx={{
-                  color: 'text.secondary',
-                  display: 'block',
-                  mb: 1,
-                }}
-              >
-                Each point is a possible quality–cost trade-off. Click one to
-                see the settings predicted to reach it — the graphs above update
-                to match.
-              </Typography>
-              <ParetoFrontPlot
-                onSelectIndex={onSetSelectedParetoPoint}
-                indexOfSelected={resolveSelectedIndex(
-                  pareto.front_x_data,
-                  selectedCoords,
-                  pareto.best_idx
-                )}
-                plot={pareto}
-                dataPoints={dataPoints}
-                showHoverEllipse={showParetoHoverEllipse}
-                renderControls={({ onToggleFitToFront, onResetToDefault }) => (
-                  <>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={onToggleFitToFront}
-                    >
-                      Toggle front fit
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={onResetToDefault}
-                    >
-                      Reset to default point
-                    </Button>
-                  </>
-                )}
-                onResetToDefault={() =>
-                  dispatch({ type: 'setSelectedParetoPoint', payload: null })
-                }
-                styles={styles?.pareto}
-              />
-            </Box>
-          )}
         </>
       )}
     </TitleCard>
