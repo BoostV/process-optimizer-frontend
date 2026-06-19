@@ -130,6 +130,19 @@ export default function ParetoFrontPlot({
   const variableNames =
     dataPoints[0]?.data.filter(d => d.type !== 'score').map(d => d.name) ?? []
 
+  // Observed points with their input settings (aligned to variableNames), for
+  // the hover pop-up shown when the pointer enters a numbered "#id" rectangle.
+  // x is observed quality in display units (already positive — unlike the
+  // model front, observed scores are stored as shown), y is observed cost.
+  const observedPoints = dataPointsMapped.map((p, i) => ({
+    id: p.id,
+    x: p.x,
+    y: p.y,
+    settings:
+      dataPoints[i]?.data.filter(d => d.type !== 'score').map(d => d.value) ??
+      [],
+  }))
+
   // Create separate datasets for X uncertainty bounds
   const xLowerBoundData = plot.front_y_data.map((yPair, i) => ({
     x: displayQuality(yPair[0]) - (plot.obj1_error[i] ?? 0),
@@ -173,11 +186,13 @@ export default function ParetoFrontPlot({
   const xValues = fitToFront ? frontXValues : allXValues
   const yValues = fitToFront ? frontYValues : allYValues
 
-  // X (quality) spans the actual data range with padding and is NOT floored at
-  // 0: quality can be stored negated for "maximize" objectives (e.g. the
-  // catapult "shoot far" sample). Flooring it produced a degenerate, inverted
-  // domain that detached the front from the observed points.
-  const xMin = Math.min(...xValues)
+  // X (quality) is floored at 0, mirroring the cost axis: the quality
+  // uncertainty band can dip below 0 as a model artifact and surface a
+  // meaningless negative quality on the axis. Product decision: clamp at 0 for
+  // all objectives. Trade-off — for "maximize" objectives whose displayed
+  // quality is genuinely negative (e.g. the catapult "shoot far" sample), the
+  // sub-zero region is clipped.
+  const xMin = Math.max(0, Math.min(...xValues))
   const xMax = Math.max(...xValues)
   const xRange = xMax - xMin
   const xPadding = xRange * 0.05
@@ -190,7 +205,7 @@ export default function ParetoFrontPlot({
   const yRange = yMax - yMin
   const yPadding = yRange * 0.02
 
-  const xDomainMin = xMin - xPadding
+  const xDomainMin = Math.max(0, xMin - xPadding)
   const xDomainMax = xMax + xPadding
   const yDomainMin = Math.max(0, yMin - yPadding)
   const yDomainMax = yMax + yPadding
@@ -227,14 +242,22 @@ export default function ParetoFrontPlot({
               dataKey="x"
               tick={{ fontSize: 12 }}
               domain={xDomain}
-              allowDataOverflow={fitToFront}
+              // Always clip to the domain so the 0 floor in `xDomain` holds —
+              // same reasoning as the cost axis below.
+              allowDataOverflow={true}
               tickFormatter={formatTick}
               label={{ value: 'Quality', position: 'insideBottom', offset: -5 }}
             />
             <YAxis
               type="number"
               domain={yDomain}
-              allowDataOverflow={fitToFront}
+              // Always clip to the domain so the 0 floor in `yDomain` holds.
+              // With allowDataOverflow=false, Recharts auto-expands the axis to
+              // fit the cost uncertainty band, whose lower bound
+              // (cost - obj2_error) can dip below 0 — surfacing a meaningless
+              // negative cost (e.g. -0.04 on the cfps sample). yDomainMax still
+              // includes the band's upper bound, so only the sub-zero tail is cut.
+              allowDataOverflow={true}
               tick={{ fontSize: 12 }}
               tickFormatter={formatTick}
               label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
@@ -388,6 +411,7 @@ export default function ParetoFrontPlot({
                 showHoverEllipse={showHoverEllipse}
                 obj1Error={plot.obj1_error}
                 obj2Error={plot.obj2_error}
+                observedPoints={observedPoints}
               />
             </ZIndexLayer>
           </ComposedChart>

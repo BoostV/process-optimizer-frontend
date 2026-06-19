@@ -18,6 +18,12 @@ export const useStyles = makeStyles()(() => ({
       zIndex: 10,
     },
   },
+  // The "factor = value" labels under each plot. Left-aligned (overriding the
+  // shared `cell` centering) so they sit under the plot's left edge and read as
+  // following the plots rather than floating centered above them.
+  labelCell: {
+    textAlign: 'left',
+  },
   title: {
     fontWeight: 'bold',
   },

@@ -34,7 +34,7 @@ export const SingleDataPoint = ({
   variableHeaders,
   rows,
 }: SingleDataPointProps) => {
-  const { classes } = useStyles()
+  const { classes, cx } = useStyles()
   // Shared objective colors (quality / cost) so the two objective rows read as
   // distinct blocks and match the Pareto uncertainty bands exactly.
   const plotColors = usePlotColors()
@@ -203,7 +203,10 @@ export const SingleDataPoint = ({
               {[...variableHeaders, row.scoreHeader].map((header, idx) => {
                 const value = row.dataPoint.flat()[idx]
                 return (
-                  <Box className={classes.cell} key={'hv' + idx}>
+                  <Box
+                    className={cx(classes.cell, classes.labelCell)}
+                    key={'hv' + idx}
+                  >
                     <Typography variant="body2">
                       <Box
                         component="span"

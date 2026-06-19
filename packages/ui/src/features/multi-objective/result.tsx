@@ -23,6 +23,7 @@ import {
   displayCostCI,
   selectActiveScoreVariableNames,
   type SelectedPoint,
+  type DataEntry,
 } from '@boostv/process-optimizer-frontend-core'
 import { Box, Button, Chip, Typography } from '@mui/material'
 import {
@@ -117,6 +118,51 @@ export const Result = ({
     dispatch({ type: 'setSelectedParetoPoint', payload: coords })
   }
 
+  // Transfer the currently selected Pareto point's factor settings into a new,
+  // unscored data point row (scores left blank, valid: false until measured) —
+  // mirrors the reducer's `copySuggestedToDataPoints` row shape. Lets the user
+  // queue a promising trade-off as an experiment to run.
+  const onAddSelectedAsDataPoint = () => {
+    if (!pareto || selectedIndex < 0) return
+    const coords = pareto.front_x_data[selectedIndex]
+    if (!coords) return
+    const data = coords.flatMap((v, i): DataEntry['data'] => {
+      const variable = activeVariables[i]
+      if (variable === undefined) return []
+      switch (variable.type) {
+        case 'numeric':
+          // Round to 4 significant digits — the raw front coordinates carry
+          // full float precision, which is noise for a planned data point.
+          return [
+            {
+              name: variable.name,
+              value: Number(Number(v).toPrecision(4)),
+              type: 'numeric',
+            },
+          ]
+        case 'options': {
+          // front_x_data stores categorical values as an option index; store
+          // the resolved label, as the data table expects.
+          const label = typeof v === 'number' ? (variable.options?.[v] ?? v) : v
+          return [
+            { name: variable.name, value: String(label), type: 'categorical' },
+          ]
+        }
+        default:
+          return []
+      }
+    })
+    const nextId =
+      dataPoints.length === 0
+        ? 1
+        : Math.max(...dataPoints.map(d => d.meta.id)) + 1
+    const newRow: DataEntry = {
+      meta: { id: nextId, enabled: true, valid: false },
+      data,
+    }
+    dispatch({ type: 'updateDataPoints', payload: [...dataPoints, newRow] })
+  }
+
   const mapOptionsLabels = (
     plots: (string | OneDData)[]
   ): (string | OneDData)[] =>
@@ -178,6 +224,67 @@ export const Result = ({
       )}
       {showSingleDataPoint && (
         <>
+          {isMultiObjective && pareto && (
+            <Box
+              className={classes.paretoContainer}
+              sx={{
+                p: 2,
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{
+                  color: 'text.secondary',
+                  display: 'block',
+                  mb: 1,
+                }}
+              >
+                Each point is a possible quality–cost trade-off. Click one to
+                see the settings predicted to reach it — the graphs below update
+                to match.
+              </Typography>
+              <ParetoFrontPlot
+                onSelectIndex={onSetSelectedParetoPoint}
+                indexOfSelected={resolveSelectedIndex(
+                  pareto.front_x_data,
+                  selectedCoords,
+                  pareto.best_idx
+                )}
+                plot={pareto}
+                dataPoints={dataPoints}
+                showHoverEllipse={showParetoHoverEllipse}
+                renderControls={({ onToggleFitToFront, onResetToDefault }) => (
+                  <>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={onToggleFitToFront}
+                    >
+                      Toggle front fit
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={onResetToDefault}
+                    >
+                      Reset to default point
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={onAddSelectedAsDataPoint}
+                    >
+                      Add as data point
+                    </Button>
+                  </>
+                )}
+                onResetToDefault={() =>
+                  dispatch({ type: 'setSelectedParetoPoint', payload: null })
+                }
+                styles={styles?.pareto}
+              />
+            </Box>
+          )}
           <Box
             className={classes.container}
             sx={
@@ -214,7 +321,7 @@ export const Result = ({
                   }}
                 >
                   {isDefaultSelection ? (
-                    'For the model’s default equal balance of quality and cost. Pick a point on the Pareto front below to target a different trade-off.'
+                    'For the model’s default equal balance of quality and cost. Pick a point on the Pareto front above to target a different trade-off.'
                   ) : (
                     <>
                       {`${scoreHeaders[0] ?? 'Quality'} ≈ ${
@@ -348,61 +455,6 @@ export const Result = ({
               })}
             />
           </Box>
-
-          {isMultiObjective && pareto && (
-            <Box
-              className={classes.paretoContainer}
-              sx={{
-                p: 2,
-              }}
-            >
-              <Typography
-                variant="caption"
-                sx={{
-                  color: 'text.secondary',
-                  display: 'block',
-                  mb: 1,
-                }}
-              >
-                Each point is a possible quality–cost trade-off. Click one to
-                see the settings predicted to reach it — the graphs above update
-                to match.
-              </Typography>
-              <ParetoFrontPlot
-                onSelectIndex={onSetSelectedParetoPoint}
-                indexOfSelected={resolveSelectedIndex(
-                  pareto.front_x_data,
-                  selectedCoords,
-                  pareto.best_idx
-                )}
-                plot={pareto}
-                dataPoints={dataPoints}
-                showHoverEllipse={showParetoHoverEllipse}
-                renderControls={({ onToggleFitToFront, onResetToDefault }) => (
-                  <>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={onToggleFitToFront}
-                    >
-                      Toggle front fit
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={onResetToDefault}
-                    >
-                      Reset to default point
-                    </Button>
-                  </>
-                )}
-                onResetToDefault={() =>
-                  dispatch({ type: 'setSelectedParetoPoint', payload: null })
-                }
-                styles={styles?.pareto}
-              />
-            </Box>
-          )}
         </>
       )}
     </TitleCard>

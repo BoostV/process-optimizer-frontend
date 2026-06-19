@@ -44,6 +44,14 @@ export type PlotColors = {
     /** The dashed crosshair guides marking the selected point on the front. */
     guide: string
   }
+  /** Hover tooltips / value pop-ups shared across the plots. */
+  tooltip: {
+    /** Pop-up background. Keep an alpha channel so the plot shows through —
+     *  the text color below stays opaque regardless, for legibility. */
+    background: string
+    /** Pop-up text. Fully opaque so it reads clearly over the plot behind it. */
+    text: string
+  }
   /** Cross-cutting accent: the selected Pareto point marker and the result
    *  card's header chip / selection border. */
   selectedPoint: string
@@ -72,6 +80,12 @@ export const defaultPlotColors: PlotColors = {
     front: '#000000',
     guide: '#077ace',
   },
+  tooltip: {
+    // Fairly transparent so the plot is visible through the pop-up...
+    background: 'rgba(255, 255, 255, 0.7)',
+    // ...while the text stays solid/opaque and legible.
+    text: '#1a1a1a',
+  },
   selectedPoint: '#077ace',
 }
 
@@ -80,6 +94,7 @@ export type PartialPlotColors = {
   row?: Partial<PlotColors['row']>
   oneD?: Partial<PlotColors['oneD']>
   pareto?: Partial<PlotColors['pareto']>
+  tooltip?: Partial<PlotColors['tooltip']>
   selectedPoint?: string
 }
 
@@ -104,6 +119,7 @@ export const usePlotColors = (): PlotColors => {
     row: { ...defaultPlotColors.row, ...(overrides.row ?? {}) },
     oneD: { ...defaultPlotColors.oneD, ...(overrides.oneD ?? {}) },
     pareto: { ...defaultPlotColors.pareto, ...(overrides.pareto ?? {}) },
+    tooltip: { ...defaultPlotColors.tooltip, ...(overrides.tooltip ?? {}) },
     selectedPoint: overrides.selectedPoint ?? defaultPlotColors.selectedPoint,
   }
 }
