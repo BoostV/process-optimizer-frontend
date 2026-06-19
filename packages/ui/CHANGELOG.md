@@ -1,5 +1,12 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 3.1.2
+
+### Patch Changes
+
+- Updated dependencies [cfd8235]
+  - @boostv/process-optimizer-frontend-plots@3.0.1
+
 ## 3.1.1
 
 ### Patch Changes
