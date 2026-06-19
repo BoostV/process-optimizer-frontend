@@ -1,5 +1,11 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 3.1.1
+
+### Patch Changes
+
+- b77e186: Shorten 1d plot score labels
+
 ## 3.1.0
 
 ### Minor Changes
