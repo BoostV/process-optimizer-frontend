@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/plots
 
+## 3.0.1
+
+### Patch Changes
+
+- cfd8235: Update plots
+
 ## 3.0.0
 
 ### Major Changes

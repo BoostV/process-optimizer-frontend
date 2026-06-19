@@ -1,5 +1,13 @@
 # @process-optimizer-frontend/sample-app
 
+## 3.0.3
+
+### Patch Changes
+
+- Updated dependencies [cfd8235]
+  - @boostv/process-optimizer-frontend-plots@3.0.1
+  - @boostv/process-optimizer-frontend-ui@3.1.2
+
 ## 3.0.2
 
 ### Patch Changes
