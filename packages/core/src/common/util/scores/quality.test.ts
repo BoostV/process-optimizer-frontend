@@ -10,7 +10,7 @@ describe('displayQuality', () => {
 
 describe('displayQualityCI', () => {
   it('returns a 95% CI string from a negated value and std dev', () => {
-    expect(displayQualityCI(-2, 0.5)).toBe('[1.02, 2.98]')
+    expect(displayQualityCI(-2, 0.5)).toBe('[1.02 to 2.98]')
   })
 
   it('returns an empty string when value or stdDev is missing/zero', () => {
