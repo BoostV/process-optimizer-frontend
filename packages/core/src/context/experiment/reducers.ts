@@ -3,6 +3,7 @@ import { State } from './store'
 import {
   ExperimentAction,
   experimentReducer,
+  invalidateStaleParetoSelection,
   resetSuggestionCountOnModelFit,
 } from './experiment-reducers'
 import { validateExperiment, ValidationViolations } from './validation'
@@ -41,10 +42,17 @@ export const rootReducer = (state: State, action: Action) => {
       const validationViolations: ValidationViolations =
         validateExperiment(experiment)
       const validated = validationReducer(experiment, validationViolations)
+      // Selection invalidation runs post-validation: meta.valid is only set by
+      // the validation reducer, and the active-data comparison depends on it.
+      const selectionChecked = invalidateStaleParetoSelection(
+        state.experiment,
+        validated,
+        action
+      )
       return {
         ...state,
         experiment: calculateChangeReducer(
-          resetSuggestionCountOnModelFit(state.experiment, validated)
+          resetSuggestionCountOnModelFit(state.experiment, selectionChecked)
         ),
       }
     }

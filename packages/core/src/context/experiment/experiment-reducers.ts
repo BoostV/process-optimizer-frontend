@@ -511,25 +511,47 @@ const STRUCTURAL_KEYS = [
   'optimizerConfig',
 ] as const
 
-// Single invalidation policy: ANY action that changes a structural field
-// (variables, score variables, data points, or optimizer config) invalidates a
-// stored pareto selection, whose coordinates would otherwise go stale. This
-// replaces the 11 per-case clearParetoSelection(state) calls and intentionally
-// also covers actions they missed (e.g. updateExperiment replacing the whole
-// experiment, or copySuggestedToDataPoints appending data points).
-// setSelectedParetoPoint is exempt so setting a selection isn't self-invalidated.
 export const experimentReducer = (
   state: ExperimentType,
   action: ExperimentAction
+): ExperimentType => experimentReducerInner(state, action)
+
+// Single invalidation policy: ANY action that changes a model-relevant
+// structural field (variables, score variables, active data points, or
+// optimizer config) invalidates a stored pareto selection, whose coordinates
+// would otherwise go stale. This replaces the 11 per-case
+// clearParetoSelection(state) calls and intentionally also covers actions they
+// missed (e.g. updateExperiment replacing the whole experiment).
+// setSelectedParetoPoint is exempt so setting a selection isn't self-invalidated.
+//
+// Data points are compared by their ACTIVE (valid + enabled) subset — the same
+// filter `calculateData` applies to the optimizer request. An unscored row
+// (meta.valid: false), e.g. a suggestion or pareto point transferred to the
+// data table, is excluded from the request and cannot move the front, so
+// appending one must not reset the selection (nor, since the selection is part
+// of the hashed request, trigger a re-evaluation). meta.valid is only assigned
+// by the validation reducer, so this must run AFTER validation (see
+// rootReducer) — comparing pre-validation states would miss a row becoming
+// valid when its score is entered.
+export const invalidateStaleParetoSelection = (
+  previous: ExperimentType,
+  next: ExperimentType,
+  action: ExperimentAction
 ): ExperimentType => {
   if (action.type === 'setSelectedParetoPoint') {
-    return experimentReducerInner(state, action)
+    return next
   }
-  const next = experimentReducerInner(state, action)
+  const changed = STRUCTURAL_KEYS.some(key =>
+    key === 'dataPoints'
+      ? JSON.stringify(selectActiveDataPointsFromExperiment(next)) !==
+        JSON.stringify(selectActiveDataPointsFromExperiment(previous))
+      : next[key] !== previous[key]
+  )
+  if (!changed) {
+    return next
+  }
   return produce(next, draft => {
-    const changed = STRUCTURAL_KEYS.some(key => next[key] !== state[key])
-    if (changed && 'selectedPoint' in draft.extras) {
-      // A stored pareto selection's coordinates go stale on any structural edit.
+    if ('selectedPoint' in draft.extras) {
       delete draft.extras.selectedPoint
     }
   })
