@@ -1,5 +1,11 @@
 # @process-optimizer-frontend/plots
 
+## 3.0.2
+
+### Patch Changes
+
+- f2b97e1: Format 95% credible intervals as [lower to upper] instead of [lower, upper], matching the 1D plots' hover format. Applies to the pareto front hover label and the credible-interval column under the plots (the plots package inlines these helpers and is republished to pick up the change).
+
 ## 3.0.1
 
 ### Patch Changes
