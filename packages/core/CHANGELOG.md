@@ -1,5 +1,12 @@
 # @process-optimizer-frontend/core
 
+## 2.16.1
+
+### Patch Changes
+
+- f2b97e1: Format 95% credible intervals as [lower to upper] instead of [lower, upper], matching the 1D plots' hover format. Applies to the pareto front hover label and the credible-interval column under the plots (the plots package inlines these helpers and is republished to pick up the change).
+- 363c0fc: Keep the pareto front selection when an unscored data point is added. Transferring a pareto point ("Add as data point") or a suggestion to the data table appends a valid:false row that is excluded from the optimizer request and cannot move the front — it no longer clears the selection or triggers a re-evaluation. Rows becoming active (score entered), removals, and variable/config changes still invalidate the selection.
+
 ## 2.16.0
 
 ### Minor Changes
