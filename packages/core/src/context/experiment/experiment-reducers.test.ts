@@ -1,83 +1,134 @@
 import { describe, expect, it } from 'vitest'
-import { experimentReducer } from './experiment-reducers'
-import { emptyExperiment, initialState } from './store'
 import { produce } from 'immer'
+import md5 from 'md5'
+import { rootReducer } from './reducers'
+import { emptyExperiment } from './store'
+import { State } from './store'
+import { createFetchExperimentResultRequest } from './api'
+import { settings } from '@core/common'
+import { DataEntry, scoreNames } from '@core/common/types'
 
-describe('experimentReducer pareto selection invalidation', () => {
-  const withSelection = produce(initialState.experiment, draft => {
-    draft.extras.selectedPoint = [1, 2, 'Red']
+// A row with a score entered — active (valid + enabled) once validated.
+const scoredRow = (id: number, x: number, score: number): DataEntry => ({
+  meta: { id, enabled: true, valid: true },
+  data: [
+    { type: 'numeric', name: 'x', value: x },
+    { type: 'score', name: scoreNames[0] ?? 'score', value: score },
+  ],
+})
+
+// An unscored row, as produced by transferring a suggestion or a pareto point
+// to the data table — validation keeps it invalid until a score is entered.
+const unscoredRow = (id: number, x: number): DataEntry => ({
+  meta: { id, enabled: true, valid: false },
+  data: [{ type: 'numeric', name: 'x', value: x }],
+})
+
+// A fitted (post-initialization) state with a stored pareto selection whose
+// last evaluation matches the current request hash — i.e. the idle state right
+// after an evaluation, before the user acts.
+const evaluatedState = (): State => {
+  const experiment = produce(emptyExperiment, draft => {
+    draft.id = 'exp'
+    draft.info.version = 2
+    draft.valueVariables = [
+      {
+        type: 'continuous',
+        name: 'x',
+        description: '',
+        min: 0,
+        max: 10,
+        enabled: true,
+      },
+    ]
+    draft.optimizerConfig.initialPoints = 1
+    // xi as the last updateDataPoints pass would have left it (best score 3)
+    draft.optimizerConfig.xi = Math.max(0.1, settings.maxRating - 3)
+    draft.dataPoints = [scoredRow(1, 5, 3)]
+    draft.results.next = [[6]] as unknown as typeof draft.results.next
+    draft.extras.selectedPoint = [1.5]
   })
+  const evaluated = produce(experiment, draft => {
+    draft.lastEvaluationHash = md5(
+      JSON.stringify(createFetchExperimentResultRequest(experiment))
+    )
+    draft.changedSinceLastEvaluation = false
+  })
+  return { experiment: evaluated }
+}
 
-  it('clears selectedPoint when a structural action changes a structural field', () => {
-    // updateDataPoints mutates state.dataPoints — a structural key
-    const next = experimentReducer(withSelection, {
+describe('pareto selection invalidation policy', () => {
+  it('keeps the selection and does not flag re-evaluation when an unscored row is appended (add-as-data-point)', () => {
+    // The row is excluded from the optimizer request (meta.valid: false), so it
+    // cannot move the front: transferring a pareto point to the data table must
+    // leave the selection and the evaluation state untouched.
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
       type: 'updateDataPoints',
-      payload: [],
+      payload: [...state.experiment.dataPoints, unscoredRow(2, 7)],
     })
-    expect('selectedPoint' in next.extras).toBe(false)
+    expect(actual.experiment.extras.selectedPoint).toEqual([1.5])
+    expect(actual.experiment.changedSinceLastEvaluation).toBe(false)
   })
 
-  it('keeps selectedPoint when setSelectedParetoPoint sets it', () => {
-    const next = experimentReducer(initialState.experiment, {
-      type: 'setSelectedParetoPoint',
-      payload: [1, 2, 'Red'],
-    })
-    expect(next.extras.selectedPoint).toEqual([1, 2, 'Red'])
-  })
-
-  it('keeps selectedPoint across a non-structural action', () => {
-    // updateExperimentName only mutates state.info.name — no structural field touched
-    const next = experimentReducer(withSelection, {
-      type: 'updateExperimentName',
-      payload: 'New Name',
-    })
-    expect(next.extras.selectedPoint).toEqual([1, 2, 'Red'])
-  })
-
-  it('updateExperiment clears selectedPoint (whole experiment replaced)', () => {
-    // updateExperiment replaces the entire experiment, which changes all
-    // structural fields — the policy must catch it even though it was not among
-    // the original 11 per-case clears.
-    const next = experimentReducer(withSelection, {
-      type: 'updateExperiment',
-      payload: emptyExperiment,
-    })
-    expect('selectedPoint' in next.extras).toBe(false)
-  })
-
-  it('copySuggestedToDataPoints clears selectedPoint (appends data points)', () => {
-    // Build a state with one enabled numeric variable and one suggested next
-    // point — the minimum precondition for copySuggestedToDataPoints to push a
-    // new DataEntry. This action was not among the original 11 per-case clears
-    // and previously left a stale selection; the uniform policy fixes that.
-    const stateWithSuggestion = produce(emptyExperiment, draft => {
-      draft.extras.selectedPoint = [1, 2, 'Red']
-      draft.valueVariables = [
-        {
-          type: 'continuous',
-          name: 'x',
-          description: '',
-          min: 0,
-          max: 10,
-          enabled: true,
-        },
-      ]
-      // results.next holds the suggested point values; index 0 selected via payload [0]
-      draft.results.next = [42] as unknown as typeof draft.results.next
-    })
-    const next = experimentReducer(stateWithSuggestion, {
+  it('keeps the selection when a suggestion is transferred via copySuggestedToDataPoints', () => {
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
       type: 'copySuggestedToDataPoints',
       payload: { indices: [0], removeFromSuggestions: false },
     })
-    expect('selectedPoint' in next.extras).toBe(false)
+    expect(actual.experiment.extras.selectedPoint).toEqual([1.5])
+    expect(actual.experiment.changedSinceLastEvaluation).toBe(false)
   })
 
-  it('setSelectedParetoPoint with null removes selectedPoint (deselect path)', () => {
-    // null payload exercises the delete branch and must not leave the key present
-    const next = experimentReducer(withSelection, {
-      type: 'setSelectedParetoPoint',
-      payload: null,
+  it('clears the selection when a row becomes active (score entered)', () => {
+    const state = evaluatedState()
+    const withUnscored = produce(state, draft => {
+      draft.experiment.dataPoints.push(unscoredRow(2, 7))
     })
-    expect('selectedPoint' in next.extras).toBe(false)
+    const actual = rootReducer(withUnscored, {
+      type: 'updateDataPoints',
+      payload: withUnscored.experiment.dataPoints.map(dp =>
+        dp.meta.id === 2 ? scoredRow(2, 7, 4) : dp
+      ),
+    })
+    expect('selectedPoint' in actual.experiment.extras).toBe(false)
+    expect(actual.experiment.changedSinceLastEvaluation).toBe(true)
+  })
+
+  it('clears the selection when active data points change (row removed)', () => {
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
+      type: 'updateDataPoints',
+      payload: [],
+    })
+    expect('selectedPoint' in actual.experiment.extras).toBe(false)
+  })
+
+  it('clears the selection when the experiment is replaced (updateExperiment)', () => {
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
+      type: 'updateExperiment',
+      payload: emptyExperiment,
+    })
+    expect('selectedPoint' in actual.experiment.extras).toBe(false)
+  })
+
+  it('does not self-invalidate on setSelectedParetoPoint', () => {
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
+      type: 'setSelectedParetoPoint',
+      payload: [2.5],
+    })
+    expect(actual.experiment.extras.selectedPoint).toEqual([2.5])
+  })
+
+  it('keeps the selection across a non-structural action', () => {
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
+      type: 'updateExperimentName',
+      payload: 'New name',
+    })
+    expect(actual.experiment.extras.selectedPoint).toEqual([1.5])
   })
 })
