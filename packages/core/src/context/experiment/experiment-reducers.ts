@@ -543,8 +543,14 @@ export const invalidateStaleParetoSelection = (
   }
   const changed = STRUCTURAL_KEYS.some(key =>
     key === 'dataPoints'
-      ? JSON.stringify(selectActiveDataPointsFromExperiment(next)) !==
-        JSON.stringify(selectActiveDataPointsFromExperiment(previous))
+      ? // Fast path: Immer preserves the array reference when dataPoints is
+        // untouched (e.g. updateExperimentName), and the active subset is a pure
+        // function of dataPoints — so equal references guarantee an identical
+        // subset. Only fall back to the O(n) deep compare when the reference
+        // actually changes, avoiding two JSON.stringify passes on every action.
+        next.dataPoints !== previous.dataPoints &&
+        JSON.stringify(selectActiveDataPointsFromExperiment(next)) !==
+          JSON.stringify(selectActiveDataPointsFromExperiment(previous))
       : next[key] !== previous[key]
   )
   if (!changed) {
