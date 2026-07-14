@@ -111,7 +111,14 @@ export default function Layout({ children }: Props) {
           </div>
         </Toolbar>
       </AppBar>
-      <Box ml={1} mr={1} mb={7} mt={7}>
+      <Box
+        sx={{
+          ml: 1,
+          mr: 1,
+          mb: 7,
+          mt: 7,
+        }}
+      >
         {state.debug && <pre>{JSON.stringify(state, null, 2)}</pre>}
         {children}
       </Box>

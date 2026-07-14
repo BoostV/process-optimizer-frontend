@@ -1,5 +1,185 @@
 # @process-optimizer-frontend/sample-app
 
+## 3.0.4
+
+### Patch Changes
+
+- Updated dependencies [f2b97e1]
+- Updated dependencies [363c0fc]
+  - @boostv/process-optimizer-frontend-core@2.16.1
+  - @boostv/process-optimizer-frontend-plots@3.0.2
+  - @boostv/process-optimizer-frontend-ui@3.1.3
+
+## 3.0.3
+
+### Patch Changes
+
+- Updated dependencies [cfd8235]
+  - @boostv/process-optimizer-frontend-plots@3.0.1
+  - @boostv/process-optimizer-frontend-ui@3.1.2
+
+## 3.0.2
+
+### Patch Changes
+
+- Updated dependencies [b77e186]
+  - @boostv/process-optimizer-frontend-ui@3.1.1
+
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [dd1b51a]
+- Updated dependencies [b459d2d]
+  - @boostv/process-optimizer-frontend-core@2.16.0
+  - @boostv/process-optimizer-frontend-ui@3.1.0
+
+## 3.0.0
+
+### Major Changes
+
+- 73bcc3b: Update MUI from v6 -> v9
+
+### Patch Changes
+
+- Updated dependencies [73bcc3b]
+  - @boostv/process-optimizer-frontend-plots@3.0.0
+  - @boostv/process-optimizer-frontend-ui@3.0.0
+
+## 2.3.9
+
+### Patch Changes
+
+- Updated dependencies [c4d84e9]
+- Updated dependencies [5835636]
+- Updated dependencies [f57a6e6]
+  - @boostv/process-optimizer-frontend-plots@2.0.3
+  - @boostv/process-optimizer-frontend-ui@2.15.0
+  - @boostv/process-optimizer-frontend-core@2.15.0
+
+## 2.3.8
+
+### Patch Changes
+
+- Updated dependencies [0c613b1]
+- Updated dependencies [190580b]
+- Updated dependencies [469ef54]
+  - @boostv/process-optimizer-frontend-ui@2.14.3
+  - @boostv/process-optimizer-frontend-plots@2.0.2
+
+## 2.3.7
+
+### Patch Changes
+
+- Updated dependencies [5dd1bb0]
+  - @boostv/process-optimizer-frontend-core@2.14.1
+  - @boostv/process-optimizer-frontend-ui@2.14.2
+
+## 2.3.6
+
+### Patch Changes
+
+- Updated dependencies [effe024]
+  - @boostv/process-optimizer-frontend-plots@2.0.1
+  - @boostv/process-optimizer-frontend-ui@2.14.1
+
+## 2.3.5
+
+### Patch Changes
+
+- Updated dependencies [fb5f32d]
+  - @boostv/process-optimizer-frontend-plots@2.0.0
+  - @boostv/process-optimizer-frontend-ui@2.14.0
+  - @boostv/process-optimizer-frontend-core@2.14.0
+
+## 2.3.4
+
+### Patch Changes
+
+- Updated dependencies [6781f58]
+  - @boostv/process-optimizer-frontend-plots@1.1.4
+  - @boostv/process-optimizer-frontend-ui@2.13.4
+
+## 2.3.3
+
+### Patch Changes
+
+- Updated dependencies [ae7ba15]
+- Updated dependencies [4775b93]
+- Updated dependencies [022d061]
+- Updated dependencies [e076b0a]
+- Updated dependencies [698ba92]
+- Updated dependencies [ec64129]
+- Updated dependencies [1aca038]
+- Updated dependencies [4d803e9]
+  - @boostv/process-optimizer-frontend-ui@2.13.3
+  - @boostv/process-optimizer-frontend-plots@1.1.3
+  - @boostv/process-optimizer-frontend-core@2.13.1
+
+## 2.3.2
+
+### Patch Changes
+
+- Updated dependencies [a14ee15]
+  - @boostv/process-optimizer-frontend-plots@1.1.2
+  - @boostv/process-optimizer-frontend-ui@2.13.2
+
+## 2.3.1
+
+### Patch Changes
+
+- Updated dependencies [1facfa0]
+- Updated dependencies [1079505]
+  - @boostv/process-optimizer-frontend-plots@1.1.1
+  - @boostv/process-optimizer-frontend-ui@2.13.1
+
+## 2.3.0
+
+### Minor Changes
+
+- 62b6153: Add multi-objective functionality
+
+### Patch Changes
+
+- Updated dependencies [75fa90f]
+- Updated dependencies [e1ed33e]
+- Updated dependencies [796a24e]
+- Updated dependencies [c46297d]
+- Updated dependencies [62b6153]
+  - @boostv/process-optimizer-frontend-core@2.13.0
+  - @boostv/process-optimizer-frontend-plots@1.1.0
+  - @boostv/process-optimizer-frontend-ui@2.13.0
+
+## 2.2.0
+
+### Minor Changes
+
+- f4fba35: Add multiobjective experiment type to UI
+
+### Patch Changes
+
+- Updated dependencies [f4fba35]
+- Updated dependencies [9df0c2b]
+- Updated dependencies [bb86856]
+  - @boostv/process-optimizer-frontend-core@2.12.0
+  - @boostv/process-optimizer-frontend-ui@2.12.0
+
+## 2.1.2
+
+### Patch Changes
+
+- Updated dependencies [272dc90]
+  - @boostv/process-optimizer-frontend-core@2.11.1
+  - @boostv/process-optimizer-frontend-ui@2.11.1
+
+## 2.1.1
+
+### Patch Changes
+
+- Updated dependencies [eaf7f39]
+- Updated dependencies [0a2142d]
+  - @boostv/process-optimizer-frontend-ui@2.11.0
+
 ## 2.1.0
 
 ### Minor Changes

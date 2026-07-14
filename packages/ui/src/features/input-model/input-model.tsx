@@ -83,7 +83,11 @@ export function InputModel(props: InputModelProps) {
   return (
     <TitleCard id={id} title="Factor settings" padding={0}>
       {(valueVariables.length > 0 || categoricalVariables.length > 0) && (
-        <Box p={2}>
+        <Box
+          sx={{
+            p: 2,
+          }}
+        >
           {valueVariables.length > 0 && (
             <Table size="small">
               <TableHead>
@@ -162,7 +166,12 @@ export function InputModel(props: InputModelProps) {
           )}
 
           {categoricalVariables.length > 0 && (
-            <Box mt={2} mb={2}>
+            <Box
+              sx={{
+                mt: 2,
+                mb: 2,
+              }}
+            >
               <Table size="small">
                 <TableHead>
                   <TableRow>
@@ -226,9 +235,13 @@ export function InputModel(props: InputModelProps) {
           )}
         </Box>
       )}
-
       {isEditorOpen && (
-        <Box pb={2} className={classes.editBox}>
+        <Box
+          className={classes.editBox}
+          sx={{
+            pb: 2,
+          }}
+        >
           <VariableEditor
             valueVariables={valueVariables}
             categoricalVariables={categoricalVariables}
@@ -259,9 +272,12 @@ export function InputModel(props: InputModelProps) {
           />
         </Box>
       )}
-
       {!isEditorOpen && (
-        <Box m={1}>
+        <Box
+          sx={{
+            m: 1,
+          }}
+        >
           <Button
             variant="outlined"
             color="primary"

@@ -107,8 +107,18 @@ export default function ValueVariable(props: ValueVariableProps) {
           margin="dense"
           label="Description"
         />
-        <Box mb={0} className={classes.narrowInputContainer}>
-          <Box className={classes.narrowInput} pr={1}>
+        <Box
+          className={classes.narrowInputContainer}
+          sx={{
+            mb: 0,
+          }}
+        >
+          <Box
+            className={classes.narrowInput}
+            sx={{
+              pr: 1,
+            }}
+          >
             <FormInputText
               name="min"
               control={control}
@@ -129,7 +139,12 @@ export default function ValueVariable(props: ValueVariableProps) {
             />
           </Box>
         </Box>
-        <Box mt={1} mb={1}>
+        <Box
+          sx={{
+            mt: 1,
+            mb: 1,
+          }}
+        >
           <FormRadioGroup
             name="type"
             control={control}
@@ -142,7 +157,12 @@ export default function ValueVariable(props: ValueVariableProps) {
             ariaLabel={'value-type'}
           />
         </Box>
-        <Box mr={1} display="inline">
+        <Box
+          sx={{
+            mr: 1,
+            display: 'inline',
+          }}
+        >
           <Button size="small" variant="outlined" type="submit">
             {editingVariable !== undefined ? 'Save' : 'Add'}
           </Button>

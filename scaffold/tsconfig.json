@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    // TS 6.0 deprecates `moduleResolution: "node"` (node10) and `baseUrl`,
+    // both still used across these packages. This silences the deprecation
+    // until they are migrated (e.g. to moduleResolution "bundler") before TS 7.0.
+    "ignoreDeprecations": "6.0",
     "composite": true,
     "declarationDir": "dist",
     "declarationMap": true,

@@ -1,5 +1,4 @@
 import { makeStyles } from 'tss-react/mui'
-import { colors } from '@mui/material'
 
 export const useStyles = makeStyles()(() => ({
   titleButton: {
@@ -7,9 +6,6 @@ export const useStyles = makeStyles()(() => ({
   },
   titleIcon: {
     color: 'white',
-  },
-  extrasContainer: {
-    background: colors.grey[200],
   },
 }))
 

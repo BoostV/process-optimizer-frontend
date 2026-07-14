@@ -29,7 +29,7 @@ export const ConfigurationTab = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs="auto">
+      <Grid size="auto">
         <Details
           info={experiment.info}
           updateName={(name: string) =>
@@ -46,8 +46,12 @@ export const ConfigurationTab = () => {
           }
         />
       </Grid>
-
-      <Grid item xs={10} sm={6}>
+      <Grid
+        size={{
+          xs: 10,
+          sm: 6,
+        }}
+      >
         <InputModel
           valueVariables={valueVariables}
           categoricalVariables={categoricalVariables}
@@ -101,7 +105,7 @@ export const ConfigurationTab = () => {
         />
       </Grid>
       {advancedConfiguration && (
-        <Grid item xs>
+        <Grid size="grow">
           <OptimizerConfigurator
             config={experiment.optimizerConfig}
             debug={debug}

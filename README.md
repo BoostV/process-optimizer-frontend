@@ -31,6 +31,8 @@ npm run dev:app
 
 3. Open [http://localhost:5173](http://localhost:5173) with your browser to see the result.
 
+Note: To build and watch a package, e.g. in /packages/ui, run `npm run build -- --watch` to make the ui package build automatically.
+
 ## Build and run production docker image
 
 ```bash

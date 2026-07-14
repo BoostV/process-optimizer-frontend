@@ -14,7 +14,11 @@ export function LoadingExperiment() {
     <Layout>
       <Card className={classes.loadingContainer}>
         <CardContent>
-          <Box mt={8}>
+          <Box
+            sx={{
+              mt: 8,
+            }}
+          >
             <CircularProgress disableShrink className={classes.progress} />
             <Typography variant="body2">Loading experiment...</Typography>
           </Box>

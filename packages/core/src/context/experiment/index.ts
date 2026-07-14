@@ -6,4 +6,7 @@ export * from './reducers'
 export * from './api-provider'
 export * from './validation'
 export * from './message-context'
-export { fetchExperimentResult } from './api'
+export {
+  createFetchExperimentResultRequest,
+  fetchExperimentResult,
+} from './api'

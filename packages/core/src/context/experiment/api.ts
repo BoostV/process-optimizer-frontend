@@ -1,9 +1,10 @@
 import {
   DefaultApi,
-  OptimizerapiOptimizerRunRequest,
+  RunOptimizerRequest,
 } from '@boostv/process-optimizer-frontend-api'
 import {
   ExperimentType,
+  SelectedPoint,
   calculateConstraints,
   calculateData,
   calculateSpace,
@@ -18,7 +19,12 @@ export const createFetchExperimentResultRequest = (
   const extras = experiment.extras || {}
   const space = calculateSpace(experiment)
 
-  const request: OptimizerapiOptimizerRunRequest = {
+  const selectedPoint = experiment.extras.selectedPoint as
+    | SelectedPoint
+    | undefined
+  const previousPickled = experiment.results.pickled || undefined
+
+  const request: RunOptimizerRequest = {
     experiment: {
       data: calculateData(
         experiment.categoricalVariables,
@@ -30,6 +36,8 @@ export const createFetchExperimentResultRequest = (
         ...extras,
         experimentSuggestionCount:
           selectCalculatedSuggestionCountFromExperiment(experiment),
+        ...(selectedPoint ? { selectedPoint } : {}),
+        ...(previousPickled ? { pickled: previousPickled } : {}),
       },
       optimizerConfig: {
         acqFunc: cfg.acqFunc,
@@ -50,7 +58,7 @@ export const fetchExperimentResult = async (
   api: DefaultApi
 ) => {
   const request = createFetchExperimentResultRequest(experiment)
-  const result = await api.optimizerapiOptimizerRun(request)
+  const result = await api.runOptimizer(request)
 
   return experimentResultSchema.parse({
     id: experiment.id,
@@ -59,6 +67,6 @@ export const fetchExperimentResult = async (
     next: result.result?.next ?? [],
     pickled: result.result?.pickled ?? '',
     expectedMinimum: result.result?.expectedMinimum ?? [],
-    extras: result.result?.extras ?? {},
+    extras: { ...(result.result?.extras ?? {}) },
   })
 }

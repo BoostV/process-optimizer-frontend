@@ -63,11 +63,23 @@ export const EditableTableExpandedRow = ({
 
   return (
     <TableRow className={classes.row}>
-      <TableCell colSpan={colSpan + 2} className={classes.spanCell}>
+      {/* colSpan already equals the table's full column count; adding more would
+          create phantom columns that disturb the fixed-layout column widths
+          (only while a row is expanded). */}
+      <TableCell colSpan={colSpan} className={classes.spanCell}>
         <Paper elevation={2} className={classes.paper}>
-          <Box display="flex">
+          <Box
+            sx={{
+              display: 'flex',
+            }}
+          >
             <Box className={classes.rowId}>{rowId}</Box>
-            <Box pt={1}>
+            <Box
+              className={classes.fields}
+              sx={{
+                pt: 1,
+              }}
+            >
               <Table size="small">
                 <TableHead>
                   <TableRow>
@@ -76,7 +88,7 @@ export const EditableTableExpandedRow = ({
                         key={'header' + i}
                         className={classes.rowHeaderCell}
                       >
-                        {d.name}
+                        {d.label ?? d.name}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -119,7 +131,13 @@ export const EditableTableExpandedRow = ({
               <InfoBox key={'warning' + i} text={v} type="warning" />
             ))}
 
-          <Box display="flex" justifyContent="end" mt={2}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'end',
+              mt: 2,
+            }}
+          >
             <Button
               variant="outlined"
               size="small"

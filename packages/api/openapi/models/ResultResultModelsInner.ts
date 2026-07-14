@@ -13,12 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime'
-import type { ExperimentDataInnerXiInner } from './ExperimentDataInnerXiInner'
+import type { ExperimentExtrasSelectedPointInner } from './ExperimentExtrasSelectedPointInner'
 import {
-  ExperimentDataInnerXiInnerFromJSON,
-  ExperimentDataInnerXiInnerFromJSONTyped,
-  ExperimentDataInnerXiInnerToJSON,
-} from './ExperimentDataInnerXiInner'
+  ExperimentExtrasSelectedPointInnerFromJSON,
+  ExperimentExtrasSelectedPointInnerFromJSONTyped,
+  ExperimentExtrasSelectedPointInnerToJSON,
+} from './ExperimentExtrasSelectedPointInner'
 
 /**
  *
@@ -28,10 +28,10 @@ import {
 export interface ResultResultModelsInner {
   /**
    *
-   * @type {Array<Array<ExperimentDataInnerXiInner>>}
+   * @type {Array<Array<ExperimentExtrasSelectedPointInner>>}
    * @memberof ResultResultModelsInner
    */
-  expectedMinimum?: Array<Array<ExperimentDataInnerXiInner>>
+  expectedMinimum?: Array<Array<ExperimentExtrasSelectedPointInner>>
   /**
    *
    * @type {object}

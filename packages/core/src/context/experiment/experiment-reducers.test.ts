@@ -1,0 +1,134 @@
+import { describe, expect, it } from 'vitest'
+import { produce } from 'immer'
+import md5 from 'md5'
+import { rootReducer } from './reducers'
+import { emptyExperiment } from './store'
+import { State } from './store'
+import { createFetchExperimentResultRequest } from './api'
+import { settings } from '@core/common'
+import { DataEntry, scoreNames } from '@core/common/types'
+
+// A row with a score entered — active (valid + enabled) once validated.
+const scoredRow = (id: number, x: number, score: number): DataEntry => ({
+  meta: { id, enabled: true, valid: true },
+  data: [
+    { type: 'numeric', name: 'x', value: x },
+    { type: 'score', name: scoreNames[0] ?? 'score', value: score },
+  ],
+})
+
+// An unscored row, as produced by transferring a suggestion or a pareto point
+// to the data table — validation keeps it invalid until a score is entered.
+const unscoredRow = (id: number, x: number): DataEntry => ({
+  meta: { id, enabled: true, valid: false },
+  data: [{ type: 'numeric', name: 'x', value: x }],
+})
+
+// A fitted (post-initialization) state with a stored pareto selection whose
+// last evaluation matches the current request hash — i.e. the idle state right
+// after an evaluation, before the user acts.
+const evaluatedState = (): State => {
+  const experiment = produce(emptyExperiment, draft => {
+    draft.id = 'exp'
+    draft.info.version = 2
+    draft.valueVariables = [
+      {
+        type: 'continuous',
+        name: 'x',
+        description: '',
+        min: 0,
+        max: 10,
+        enabled: true,
+      },
+    ]
+    draft.optimizerConfig.initialPoints = 1
+    // xi as the last updateDataPoints pass would have left it (best score 3)
+    draft.optimizerConfig.xi = Math.max(0.1, settings.maxRating - 3)
+    draft.dataPoints = [scoredRow(1, 5, 3)]
+    draft.results.next = [[6]] as unknown as typeof draft.results.next
+    draft.extras.selectedPoint = [1.5]
+  })
+  const evaluated = produce(experiment, draft => {
+    draft.lastEvaluationHash = md5(
+      JSON.stringify(createFetchExperimentResultRequest(experiment))
+    )
+    draft.changedSinceLastEvaluation = false
+  })
+  return { experiment: evaluated }
+}
+
+describe('pareto selection invalidation policy', () => {
+  it('keeps the selection and does not flag re-evaluation when an unscored row is appended (add-as-data-point)', () => {
+    // The row is excluded from the optimizer request (meta.valid: false), so it
+    // cannot move the front: transferring a pareto point to the data table must
+    // leave the selection and the evaluation state untouched.
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
+      type: 'updateDataPoints',
+      payload: [...state.experiment.dataPoints, unscoredRow(2, 7)],
+    })
+    expect(actual.experiment.extras.selectedPoint).toEqual([1.5])
+    expect(actual.experiment.changedSinceLastEvaluation).toBe(false)
+  })
+
+  it('keeps the selection when a suggestion is transferred via copySuggestedToDataPoints', () => {
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
+      type: 'copySuggestedToDataPoints',
+      payload: { indices: [0], removeFromSuggestions: false },
+    })
+    expect(actual.experiment.extras.selectedPoint).toEqual([1.5])
+    expect(actual.experiment.changedSinceLastEvaluation).toBe(false)
+  })
+
+  it('clears the selection when a row becomes active (score entered)', () => {
+    const state = evaluatedState()
+    const withUnscored = produce(state, draft => {
+      draft.experiment.dataPoints.push(unscoredRow(2, 7))
+    })
+    const actual = rootReducer(withUnscored, {
+      type: 'updateDataPoints',
+      payload: withUnscored.experiment.dataPoints.map(dp =>
+        dp.meta.id === 2 ? scoredRow(2, 7, 4) : dp
+      ),
+    })
+    expect('selectedPoint' in actual.experiment.extras).toBe(false)
+    expect(actual.experiment.changedSinceLastEvaluation).toBe(true)
+  })
+
+  it('clears the selection when active data points change (row removed)', () => {
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
+      type: 'updateDataPoints',
+      payload: [],
+    })
+    expect('selectedPoint' in actual.experiment.extras).toBe(false)
+  })
+
+  it('clears the selection when the experiment is replaced (updateExperiment)', () => {
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
+      type: 'updateExperiment',
+      payload: emptyExperiment,
+    })
+    expect('selectedPoint' in actual.experiment.extras).toBe(false)
+  })
+
+  it('does not self-invalidate on setSelectedParetoPoint', () => {
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
+      type: 'setSelectedParetoPoint',
+      payload: [2.5],
+    })
+    expect(actual.experiment.extras.selectedPoint).toEqual([2.5])
+  })
+
+  it('keeps the selection across a non-structural action', () => {
+    const state = evaluatedState()
+    const actual = rootReducer(state, {
+      type: 'updateExperimentName',
+      payload: 'New name',
+    })
+    expect(actual.experiment.extras.selectedPoint).toEqual([1.5])
+  })
+})

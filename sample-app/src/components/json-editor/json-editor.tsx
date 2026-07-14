@@ -29,11 +29,6 @@ const JsonEditor = () => {
   } = useExperiment()
   const global = useGlobal()
 
-  useEffect(() => {
-    const displayedExperiment = displayedExperimentFromExperiment(experiment)
-    setDisplayedExperiment(displayedExperiment)
-  }, [experiment])
-
   const displayedExperimentFromExperiment = (
     experiment: ExperimentType
   ): string => {
@@ -45,6 +40,11 @@ const JsonEditor = () => {
     }
     return JSON.stringify({ ...experiment, results }, null, 2)
   }
+
+  useEffect(() => {
+    const displayedExperiment = displayedExperimentFromExperiment(experiment)
+    setDisplayedExperiment(displayedExperiment)
+  }, [experiment])
 
   const experimentFromDisplayedExperiment = (displayedExperiment: string) => {
     const displayedExperimentObject = JSON.parse(displayedExperiment)
@@ -73,7 +73,11 @@ const JsonEditor = () => {
   return (
     <Card>
       <CardContent>
-        <Box mb={2}>
+        <Box
+          sx={{
+            mb: 2,
+          }}
+        >
           <IconButton
             size="small"
             onClick={() =>
@@ -108,7 +112,11 @@ const JsonEditor = () => {
                 Update experiment
               </Button>
             </Box>
-            <Box mt={1}>
+            <Box
+              sx={{
+                mt: 1,
+              }}
+            >
               <Typography variant="body2" color="error">
                 {errorMsg}
               </Typography>

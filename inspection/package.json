@@ -1,0 +1,9 @@
+{
+  "name": "@boostv/process-optimizer-frontend-inspection",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Playwright harness for agent inspection of the dev:ui demo",
+  "devDependencies": {
+    "@playwright/test": "1.60.0"
+  }
+}

@@ -13,12 +13,12 @@
  */
 
 import { exists, mapValues } from '../runtime'
-import type { ExperimentDataInnerXiInner } from './ExperimentDataInnerXiInner'
+import type { ExperimentExtrasSelectedPointInner } from './ExperimentExtrasSelectedPointInner'
 import {
-  ExperimentDataInnerXiInnerFromJSON,
-  ExperimentDataInnerXiInnerFromJSONTyped,
-  ExperimentDataInnerXiInnerToJSON,
-} from './ExperimentDataInnerXiInner'
+  ExperimentExtrasSelectedPointInnerFromJSON,
+  ExperimentExtrasSelectedPointInnerFromJSONTyped,
+  ExperimentExtrasSelectedPointInnerToJSON,
+} from './ExperimentExtrasSelectedPointInner'
 
 /**
  *
@@ -28,10 +28,10 @@ import {
 export interface ExperimentDataInner {
   /**
    *
-   * @type {Array<ExperimentDataInnerXiInner>}
+   * @type {Array<ExperimentExtrasSelectedPointInner>}
    * @memberof ExperimentDataInner
    */
-  xi?: Array<ExperimentDataInnerXiInner>
+  xi?: Array<ExperimentExtrasSelectedPointInner>
   /**
    *
    * @type {Array<number>}
@@ -63,7 +63,9 @@ export function ExperimentDataInnerFromJSONTyped(
   return {
     xi: !exists(json, 'xi')
       ? undefined
-      : (json['xi'] as Array<any>).map(ExperimentDataInnerXiInnerFromJSON),
+      : (json['xi'] as Array<any>).map(
+          ExperimentExtrasSelectedPointInnerFromJSON
+        ),
     yi: !exists(json, 'yi') ? undefined : json['yi'],
   }
 }
@@ -81,7 +83,9 @@ export function ExperimentDataInnerToJSON(
     xi:
       value.xi === undefined
         ? undefined
-        : (value.xi as Array<any>).map(ExperimentDataInnerXiInnerToJSON),
+        : (value.xi as Array<any>).map(
+            ExperimentExtrasSelectedPointInnerToJSON
+          ),
     yi: value.yi,
   }
 }

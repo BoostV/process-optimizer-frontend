@@ -1,10 +1,13 @@
 import useStyles from './plots.style'
-import { Tooltip, IconButton, Hidden, Stack, Skeleton } from '@mui/material'
+import { Tooltip, IconButton, Box, Stack, Skeleton } from '@mui/material'
 import { ZoomOutMap } from '@mui/icons-material'
 import { PlotList } from './plot-list'
 import { PlotItem } from './plot-item'
-import { isPNG } from '@boostv/process-optimizer-frontend-core'
-import { BokehPlot } from '@boostv/process-optimizer-frontend-plots'
+import { isJSON, isPNG } from '@boostv/process-optimizer-frontend-core'
+import {
+  BokehPlot,
+  ParetoFrontPlot,
+} from '@boostv/process-optimizer-frontend-plots'
 import { PNGPlot } from '@boostv/process-optimizer-frontend-plots'
 import { TitleCard } from '@ui/features/core/title-card/title-card'
 import { FC, ReactNode } from 'react'
@@ -64,7 +67,10 @@ export const Plots: FC<Props> = ({
           <>
             Plots
             {onSizeToggle !== undefined && (
-              <Hidden xlDown>
+              <Box
+                component="span"
+                sx={{ display: { xs: 'none', xl: 'inline-flex' } }}
+              >
                 <Tooltip
                   disableInteractive
                   title={(isUIBig ? 'Collapse' : 'Expand') + " 'Plots'"}
@@ -80,7 +86,7 @@ export const Plots: FC<Props> = ({
                     />
                   </IconButton>
                 </Tooltip>
-              </Hidden>
+              </Box>
             )}
           </>
         }
@@ -137,11 +143,18 @@ export const Plots: FC<Props> = ({
                 >
                   {isPNG(plot.plot) ? (
                     <PNGPlot plot={plot.plot} />
+                  ) : isJSON(plot.plot) ? (
+                    <ParetoFrontPlot
+                      indexOfSelected={0}
+                      plot={JSON.parse(plot.plot)}
+                      dataPoints={experiment.dataPoints}
+                    />
                   ) : (
                     <BokehPlot data={plot.plot} />
                   )}
                 </PlotItem>
               ))}
+
             {experiment.results.plots
               .filter(plot => plot.id.includes('pareto'))
               .map(plot => (
@@ -155,6 +168,12 @@ export const Plots: FC<Props> = ({
                 >
                   {isPNG(plot.plot) ? (
                     <PNGPlot plot={plot.plot} />
+                  ) : isJSON(plot.plot) ? (
+                    <ParetoFrontPlot
+                      indexOfSelected={0}
+                      plot={JSON.parse(plot.plot)}
+                      dataPoints={experiment.dataPoints}
+                    />
                   ) : (
                     <BokehPlot data={plot.plot} />
                   )}

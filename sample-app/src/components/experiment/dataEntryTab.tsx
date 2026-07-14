@@ -25,11 +25,10 @@ export const DataEntryTab = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <ExperimentationGuide />
       </Grid>
-
-      <Grid item xs={12}>
+      <Grid size={12}>
         <DataPoints
           experimentId={experiment.id}
           valueVariables={experiment.valueVariables}

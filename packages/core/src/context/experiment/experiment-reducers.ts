@@ -7,7 +7,9 @@ import {
   ScoreVariableType,
   ValueVariableType,
   experimentSchema,
-  scoreName,
+  isValidScoreName,
+  scoreLabels,
+  scoreNames as scoreNamesState,
 } from '@core/common/types'
 import { produce } from 'immer'
 import md5 from 'md5'
@@ -15,7 +17,9 @@ import { settings, versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
 import {
   selectActiveDataPoints,
+  selectActiveDataPointsFromExperiment,
   selectActiveVariablesFromExperiment,
+  selectInitialPointsFromExperiment,
   selectNextValues,
 } from './experiment-selectors'
 import { createFetchExperimentResultRequest } from '@core/context/experiment/api'
@@ -72,7 +76,14 @@ export type ExperimentAction =
     }
   | {
       type: 'registerResult'
-      payload: ExperimentResultType
+      payload: {
+        experimentVersion: number
+        result: ExperimentResultType
+      }
+    }
+  | {
+      type: 'setSelectedParetoPoint'
+      payload: Array<number | string> | null
     }
   | {
       type: 'addCategorialVariable'
@@ -147,7 +158,7 @@ export type ExperimentAction =
     }
   | {
       type: 'copySuggestedToDataPoints'
-      payload: number[]
+      payload: { indices: number[]; removeFromSuggestions: boolean }
     }
   | {
       type: 'experiment/toggleMultiObjective'
@@ -165,7 +176,7 @@ export type ExperimentAction =
       payload: string
     }
 
-export const experimentReducer = produce(
+const experimentReducerInner = produce(
   (state: ExperimentType, action: ExperimentAction): void | ExperimentType => {
     switch (action.type) {
       case 'setSwVersion':
@@ -197,10 +208,11 @@ export const experimentReducer = produce(
         break
       }
       case 'copySuggestedToDataPoints': {
+        const { indices, removeFromSuggestions } = action.payload
         const nextValues = selectNextValues(state)
         const variables = selectActiveVariablesFromExperiment(state)
         const newEntries: DataEntry[] = nextValues
-          .filter((_, i) => action.payload.includes(i))
+          .filter((_, i) => indices.includes(i))
           .map((n, k) => ({
             meta: {
               enabled: true,
@@ -241,6 +253,29 @@ export const experimentReducer = produce(
             newEntries
           )
         )
+        // Draw-down: transferred suggestions leave the list. Always while
+        // initializing (the transferred rows now occupy those initial slots);
+        // when fitted it is governed by the dispatcher's flag. The pushed rows
+        // are unscored (valid: false) so this does not change `isInitializing`.
+        const isInitializing =
+          selectActiveDataPointsFromExperiment(state).length <
+          selectInitialPointsFromExperiment(state)
+        if (isInitializing || removeFromSuggestions) {
+          // Filter the normalized `nextValues` (same array the transferred rows
+          // were selected from) so the kept/removed indices always align,
+          // regardless of how `results.next` was shaped on the wire.
+          state.results.next = nextValues.filter((_, i) => !indices.includes(i))
+        }
+        if (isInitializing) {
+          // Consuming initial suggestions removes them from the list, so the last
+          // evaluation's plan is no longer fully present. Mark the experiment as
+          // needing re-evaluation (the standard "never-calculated" sentinel →
+          // changedSinceLastEvaluation becomes true) so the guide regenerates the
+          // deficit even when the optimizer request later round-trips to a
+          // previously-evaluated state — e.g. disabling a transferred, unscored
+          // point leaves the request identical to before the transfer.
+          state.lastEvaluationHash = 'never-calculated'
+        }
         break
       }
       case 'addValueVariable':
@@ -368,10 +403,22 @@ export const experimentReducer = produce(
         )
         break
       case 'registerResult':
+        if (state.info.version !== action.payload.experimentVersion) {
+          return state
+        }
+        state.results = experimentSchema.shape.results.parse(
+          action.payload.result
+        )
         state.lastEvaluationHash = md5(
           JSON.stringify(createFetchExperimentResultRequest(state))
         )
-        state.results = experimentSchema.shape.results.parse(action.payload)
+        break
+      case 'setSelectedParetoPoint':
+        if (action.payload === null) {
+          delete state.extras.selectedPoint
+        } else {
+          state.extras.selectedPoint = action.payload
+        }
         break
       case 'updateDataPoints':
         experimentSchema.shape.dataPoints.parse(action.payload)
@@ -391,15 +438,16 @@ export const experimentReducer = produce(
 
         if (state.scoreVariables.length < 2) {
           state.scoreVariables.push({
-            name: scoreName + ' 2',
-            description: scoreName + ' 2',
+            name: scoreNamesState[1],
+            label: scoreLabels[1] ?? scoreNamesState[1],
+            description: '',
             enabled: true,
           })
           const scoreNames = state.scoreVariables.map(it => it.name)
           state.dataPoints.forEach(dataEntry => {
             const dp = dataEntry.data
             const containedScores = dp
-              .filter(it => scoreNames.includes(it.name))
+              .filter(it => it.type === 'score' && isValidScoreName(it.name))
               .map(it => it.name)
             scoreNames.forEach(scoreName => {
               if (!containedScores.includes(scoreName))
@@ -447,12 +495,98 @@ export const experimentReducer = produce(
       default:
         assertUnreachable(action)
     }
-    state.changedSinceLastEvaluation =
-      state.lastEvaluationHash !==
-      md5(JSON.stringify(createFetchExperimentResultRequest(state)))
     state.info.version = state.info.version + 1
+    // Stamp the modification time. Reached only by genuine-edit actions; the
+    // load/replace action ('updateExperiment') returns earlier and so preserves
+    // the stored value.
+    state.info.lastModified = new Date().toISOString()
   }
 )
+
+const STRUCTURAL_KEYS = [
+  'valueVariables',
+  'categoricalVariables',
+  'scoreVariables',
+  'dataPoints',
+  'optimizerConfig',
+] as const
+
+export const experimentReducer = (
+  state: ExperimentType,
+  action: ExperimentAction
+): ExperimentType => experimentReducerInner(state, action)
+
+// Single invalidation policy: ANY action that changes a model-relevant
+// structural field (variables, score variables, active data points, or
+// optimizer config) invalidates a stored pareto selection, whose coordinates
+// would otherwise go stale. This replaces the 11 per-case
+// clearParetoSelection(state) calls and intentionally also covers actions they
+// missed (e.g. updateExperiment replacing the whole experiment).
+// setSelectedParetoPoint is exempt so setting a selection isn't self-invalidated.
+//
+// Data points are compared by their ACTIVE (valid + enabled) subset — the same
+// filter `calculateData` applies to the optimizer request. An unscored row
+// (meta.valid: false), e.g. a suggestion or pareto point transferred to the
+// data table, is excluded from the request and cannot move the front, so
+// appending one must not reset the selection (nor, since the selection is part
+// of the hashed request, trigger a re-evaluation). meta.valid is only assigned
+// by the validation reducer, so this must run AFTER validation (see
+// rootReducer) — comparing pre-validation states would miss a row becoming
+// valid when its score is entered.
+export const invalidateStaleParetoSelection = (
+  previous: ExperimentType,
+  next: ExperimentType,
+  action: ExperimentAction
+): ExperimentType => {
+  if (action.type === 'setSelectedParetoPoint') {
+    return next
+  }
+  const changed = STRUCTURAL_KEYS.some(key =>
+    key === 'dataPoints'
+      ? // Fast path: Immer preserves the array reference when dataPoints is
+        // untouched (e.g. updateExperimentName), and the active subset is a pure
+        // function of dataPoints — so equal references guarantee an identical
+        // subset. Only fall back to the O(n) deep compare when the reference
+        // actually changes, avoiding two JSON.stringify passes on every action.
+        next.dataPoints !== previous.dataPoints &&
+        JSON.stringify(selectActiveDataPointsFromExperiment(next)) !==
+          JSON.stringify(selectActiveDataPointsFromExperiment(previous))
+      : next[key] !== previous[key]
+  )
+  if (!changed) {
+    return next
+  }
+  return produce(next, draft => {
+    if ('selectedPoint' in draft.extras) {
+      delete draft.extras.selectedPoint
+    }
+  })
+}
+
+// Reset the suggestion count to its default of 1 once the model is first fit
+// (active data points reach initialPoints). MUST run after the validation reducer
+// (see rootReducer): the init→fit transition is normally driven by a row becoming
+// valid when its score is entered, and meta.valid is only set by validation — so
+// checking before validation (e.g. inside experimentReducer) misses the transition.
+export const resetSuggestionCountOnModelFit = (
+  previous: ExperimentType,
+  next: ExperimentType
+): ExperimentType =>
+  produce(next, draft => {
+    const initialPoints = selectInitialPointsFromExperiment(next)
+    const wasInitializing =
+      selectActiveDataPointsFromExperiment(previous).length < initialPoints
+    const nowFitted =
+      selectActiveDataPointsFromExperiment(next).length >= initialPoints
+    if (
+      wasInitializing &&
+      nowFitted &&
+      'experimentSuggestionCount' in draft.extras
+    ) {
+      delete draft.extras.experimentSuggestionCount
+    }
+  })
+
 const updateNamesInConstraints = (
   state: ExperimentType,
   oldVariableName: string,

@@ -43,27 +43,30 @@ export const RatingInput = ({ value, onChange }: RatingInputProps) => {
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           onChange(e.target.value)
         }
-        inputProps={{
-          sx: {
-            minWidth: 24,
+        slotProps={{
+          input: {
+            sx: {
+              paddingRight: 0.5,
+              minWidth: 80,
+            },
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={(e: MouseEvent<HTMLElement>) =>
+                    setAnchorEl(e.currentTarget)
+                  }
+                >
+                  <Star sx={{ color: '#faaf00' }} />
+                </IconButton>
+              </InputAdornment>
+            ),
           },
-        }}
-        InputProps={{
-          sx: {
-            paddingRight: 0.5,
-            minWidth: 80,
+
+          htmlInput: {
+            sx: {
+              minWidth: 24,
+            },
           },
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={(e: MouseEvent<HTMLElement>) =>
-                  setAnchorEl(e.currentTarget)
-                }
-              >
-                <Star sx={{ color: '#faaf00' }} />
-              </IconButton>
-            </InputAdornment>
-          ),
         }}
       />
       <Popper open={Boolean(anchorEl)} anchorEl={anchorEl}>
@@ -75,18 +78,22 @@ export const RatingInput = ({ value, onChange }: RatingInputProps) => {
         >
           <Paper>
             <Stack
-              padding={1}
               spacing={1}
               divider={<Divider orientation="vertical" flexItem />}
               direction="row"
-              alignItems="center"
+              sx={{
+                padding: 1,
+                alignItems: 'center',
+              }}
             >
               <Typography
                 variant="body2"
-                width={24}
-                textAlign="center"
-                fontWeight={500}
-                color="#7a7a7a"
+                sx={{
+                  width: 24,
+                  textAlign: 'center',
+                  fontWeight: 500,
+                  color: '#7a7a7a',
+                }}
               >
                 {formatRating(tempRating, value)}
               </Typography>

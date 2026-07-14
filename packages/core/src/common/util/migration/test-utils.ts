@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import fs from 'fs'
 import { currentVersion, experimentSchema } from '@core/common/types'
 import z from 'zod'

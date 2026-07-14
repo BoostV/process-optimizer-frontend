@@ -23,7 +23,7 @@ import {
   ResultToJSON,
 } from '../models'
 
-export interface OptimizerapiOptimizerRunRequest {
+export interface RunOptimizerRequest {
   experiment: Experiment
 }
 
@@ -32,10 +32,42 @@ export interface OptimizerapiOptimizerRunRequest {
  */
 export class DefaultApi extends runtime.BaseAPI {
   /**
+   * Health check endpoint
+   */
+  async healthCheckRaw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction
+  ): Promise<runtime.ApiResponse<void>> {
+    const queryParameters: any = {}
+
+    const headerParameters: runtime.HTTPHeaders = {}
+
+    const response = await this.request(
+      {
+        path: `/health`,
+        method: 'GET',
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides
+    )
+
+    return new runtime.VoidApiResponse(response)
+  }
+
+  /**
+   * Health check endpoint
+   */
+  async healthCheck(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction
+  ): Promise<void> {
+    await this.healthCheckRaw(initOverrides)
+  }
+
+  /**
    * Run optimizer with the specified parameters
    */
-  async optimizerapiOptimizerRunRaw(
-    requestParameters: OptimizerapiOptimizerRunRequest,
+  async runOptimizerRaw(
+    requestParameters: RunOptimizerRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<runtime.ApiResponse<Result>> {
     if (
@@ -44,7 +76,7 @@ export class DefaultApi extends runtime.BaseAPI {
     ) {
       throw new runtime.RequiredError(
         'experiment',
-        'Required parameter requestParameters.experiment was null or undefined when calling optimizerapiOptimizerRun.'
+        'Required parameter requestParameters.experiment was null or undefined when calling runOptimizer.'
       )
     }
 
@@ -85,11 +117,11 @@ export class DefaultApi extends runtime.BaseAPI {
   /**
    * Run optimizer with the specified parameters
    */
-  async optimizerapiOptimizerRun(
-    requestParameters: OptimizerapiOptimizerRunRequest,
+  async runOptimizer(
+    requestParameters: RunOptimizerRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<Result> {
-    const response = await this.optimizerapiOptimizerRunRaw(
+    const response = await this.runOptimizerRaw(
       requestParameters,
       initOverrides
     )

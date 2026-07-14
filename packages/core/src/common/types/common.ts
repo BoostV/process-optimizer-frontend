@@ -3,9 +3,21 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '17'
+export const currentVersion = '20'
 
-export const scoreName = 'Quality (0-5)'
+export const scoreNames = ['quality', 'cost'] as const
+// Label is shown in UI, name is used in data
+export const scoreLabels = ['Quality (0-5)', 'Cost']
+
+export const isValidScoreName = (
+  name: string
+): name is (typeof scoreNames)[number] => {
+  return (scoreNames as readonly string[]).includes(name)
+}
+
+// A selected pareto point: one coordinate per optimizer-space dimension,
+// matching the backend's front_x_data row shape (mixed numeric/categorical).
+export type SelectedPoint = Array<number | string>
 
 const infoSchema = z.object({
   name: z.string(),
@@ -13,6 +25,13 @@ const infoSchema = z.object({
   swVersion: z.string(),
   dataFormatVersion: z.literal(currentVersion),
   version: z.number(),
+  // ISO8601 timestamp of the last modification; '' for experiments migrated
+  // from before v19 (unknown), stamped on the next edit. Used to sort the
+  // project list newest-first.
+  lastModified: z.string(),
+  // ISO8601 timestamp of when the experiment was first created; '' for
+  // experiments migrated from before v20 (unknown), set once at creation.
+  createdAt: z.string(),
   extras: z.record(z.string(), z.unknown()),
 })
 
@@ -42,7 +61,8 @@ const valueVariableSchema = z.object({
 })
 
 const scoreVariableSchema = z.object({
-  name: z.string(),
+  name: z.literal(scoreNames[0]).or(z.literal(scoreNames[1])),
+  label: z.string(),
   description: z.string(),
   enabled: z.boolean(),
 })

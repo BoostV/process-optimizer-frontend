@@ -57,12 +57,20 @@ export const InfoBox = ({
         customBox
       ) : (
         <Box
-          p={padding}
-          m={margin}
           className={[classes.infoBox, getStyling(type)].join(' ')}
+          sx={{
+            p: padding,
+            m: margin,
+          }}
         >
           {getIcon(type)}
-          <Box pl={1}>{text}</Box>
+          <Box
+            sx={{
+              pl: 1,
+            }}
+          >
+            {text}
+          </Box>
         </Box>
       )}
     </>

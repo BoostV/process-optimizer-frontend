@@ -2,6 +2,7 @@ export type TableDataPointType = 'numeric' | 'options' | 'string' | 'rating'
 
 export type TableDataPoint = {
   name: string
+  label?: string
   value?: string
   tooltip?: string
   options?: string[] | undefined

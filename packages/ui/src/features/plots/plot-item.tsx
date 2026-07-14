@@ -31,7 +31,12 @@ export const PlotItem = ({
       <Typography variant="subtitle1">
         <b>{title}</b>
       </Typography>
-      <Typography variant="body2" paragraph={true}>
+      <Typography
+        variant="body2"
+        sx={{
+          marginBottom: '16px',
+        }}
+      >
         {body.map((b, i) => (
           <Fragment key={i}>
             {b}

@@ -1,5 +1,146 @@
 # @process-optimizer-frontend/core
 
+## 2.16.1
+
+### Patch Changes
+
+- f2b97e1: Format 95% credible intervals as [lower to upper] instead of [lower, upper], matching the 1D plots' hover format. Applies to the pareto front hover label and the credible-interval column under the plots (the plots package inlines these helpers and is republished to pick up the change).
+- 363c0fc: Keep the pareto front selection when an unscored data point is added. Transferring a pareto point ("Add as data point") or a suggestion to the data table appends a valid:false row that is excluded from the optimizer request and cannot move the front — it no longer clears the selection or triggers a re-evaluation. Rows becoming active (score entered), removals, and variable/config changes still invalidate the selection.
+
+## 2.16.0
+
+### Minor Changes
+
+- dd1b51a: Allow changing the suggested-experiment count for experiments with an active sum
+  constraint. The optimizer handles constrained multi-point asks (constant-liar /
+  `cl_min`) and the suggestions respect the constraint, so the previous cap to a
+  single suggestion is no longer needed.
+  - `selectCalculatedSuggestionCountFromExperiment` no longer forces the count to
+    1 when a constraint is active (initialization still returns the deficit).
+  - Removed `selectIsConstraintActive`'s only remaining consumers; the
+    `selectIsSuggestionCountEditable` selector (its sole purpose was the constraint
+    lock) is removed.
+  - `NextExperiments` no longer disables the count field or shows the
+    "cannot be edited while there is a sum constraint" tooltip.
+
+### Patch Changes
+
+- b459d2d: Make `selectIsConstraintActive` consistent with the constraint actually sent to
+  the optimizer. It now derives from `calculateConstraints` (resolved, enabled,
+  continuous dimensions) instead of counting the raw stored dimension names, so a
+  degenerate (zero-dimension) or unresolvable sum constraint is correctly treated
+  as inactive and can no longer desync the suggestion-count logic from the request.
+
+## 2.15.0
+
+### Minor Changes
+
+- f57a6e6: Introduce new deficit driven experimentation guide
+
+### Patch Changes
+
+- 5835636: Reset suggestion count to 1 after the model is first fit
+
+## 2.14.1
+
+### Patch Changes
+
+- 5dd1bb0: Add createdAt
+
+## 2.14.0
+
+### Minor Changes
+
+- fb5f32d: Multi-objective plot theming and result improvements.
+
+  **Plots — `palette.plots` restructured into nested sections (breaking).**
+  Plot colors are now grouped by the surface they style: `row` (result-row
+  tints), `oneD` (per-objective 1D plot fills — `qualityBand`/`qualityScore`,
+  `costBand`/`costScore` — plus `band`/`score` as the single-objective
+  fallback), `pareto` (uncertainty bands, `optimal`/`dominated` markers, the
+  `front` line and the selected-point crosshair `guide`), plus a top-level
+  cross-cutting `selectedPoint` accent. `usePlotColors()` deep-merges each
+  section over the defaults, so a partial override (e.g. only
+  `pareto.costBand`) keeps the other defaults.
+
+  > **Breaking:** `palette.plots` overrides must migrate from the old flat keys
+  > (`quality`, `band`, `qualityBand`, `paretoOptimal`, …) to the nested shape.
+
+  **Plots — other changes:**
+  - Pareto uncertainty bands are themed independently from the 1D plot colors,
+    and their opacity now comes from the color's alpha channel (`#RRGGBBAA`)
+    rather than a fixed `fillOpacity`; band edges stay crisp.
+  - The selected-point guides on the Pareto and 1D plots now run all the way to
+    the axes and render on top of the data series, instead of stopping at the
+    front / sitting beneath it. The two surfaces' guide colors are separate
+    (`pareto.guide` and `oneD.referenceLine`).
+  - `ParetoFrontPlot` gains a `hideLegend` prop and honours `width` / `height` /
+    `maxWidth` so it can be embedded at a custom size.
+  - The Pareto legend now shows the selected point's quality/cost coordinate
+    (e.g. `Quality ≈ 1.51, Cost ≈ 0.67`) alongside its factor settings.
+  - `OneDData` gains an optional `objective` field used to pick the per-objective
+    fill.
+
+  **Core:** new `displayCostCI(value, stdDev)` helper — the cost objective's 95%
+  credible interval (`value ± 1.96·σ`, no negation; mirrors `displayQualityCI`).
+
+  **UI:** multi-objective results now show each objective's predicted settings and
+  95% credible-interval limits beneath each 1D plot (parity with the
+  single-objective view); displayed settings are rounded.
+
+## 2.13.1
+
+### Patch Changes
+
+- ec64129: Reset the suggestion count to its default when the model is first fit. While
+  initializing, the count is forced to `initialPoints`; once enough data points
+  are entered to fit the model it now drops back to 1 instead of "sticking" at the
+  initial value. The `Suggestions` input also follows the calculated count, so it
+  reflects the change rather than showing a stale value.
+
+## 2.13.0
+
+### Minor Changes
+
+- 62b6153: Add multi-objective functionality
+
+### Patch Changes
+
+- 75fa90f: Update all dependencies and restore compatibility across the toolchain.
+  Notable consumer-facing changes:
+  - **ui** now requires MUI v6: the `@mui/material` / `@mui/icons-material`
+    peer range is pinned to `^6.4.3` (MUI v9 removed system props, `Hidden`
+    and `inputProps`, which this codebase still relies on).
+  - **plots** no longer bundles its styling runtime: `@mui/material` and
+    `tss-react` are now declared peer dependencies (the consumer provides
+    them), matching the vite 8 / rolldown build.
+  - The library builds now externalize `react/jsx-runtime` and
+    `react/jsx-dev-runtime`; without this the vite 8 / rolldown output emitted
+    a `require("react")` shim that crashed the ESM bundles in the browser.
+  - Internal bumps include React 19.2, recharts 3.8, zod 4.4 (unions now
+    emit `oneOf` in generated JSON Schema) and TypeScript 6.0.
+
+- c46297d: Refactor the Pareto plot per code review: decompose `pareto-front-plot.tsx` into focused overlay/projector/hover/label modules, rewrite the hover system on Recharts `usePlotArea` (removing the brittle internal-class `querySelector`), and replace the `cloneElement` button injection with a `renderControls` render prop. Centralize quality negation (`displayQuality`/`displayQualityCI`) and the typed Pareto-plot parser (`parseParetoPlot`/`costDomain`) in core, drive multi-objective score display off canonical score names, and replace the 11 per-reducer `clearParetoSelection` calls with a single selection-invalidation policy. Drop the `as unknown as ExperimentExtrasSelectedPointInner[]` cast via a proper `SelectedPoint` type, and replace the fabricated demo data with a real backend-captured sample.
+- Updated dependencies [75fa90f]
+  - @boostv/process-optimizer-frontend-api@1.5.1
+
+## 2.12.0
+
+### Minor Changes
+
+- f4fba35: Add multiobjective experiment type to UI
+
+### Patch Changes
+
+- 9df0c2b: Export fetchExperimentResult
+- bb86856: Fix a 'race condition' in reducer where changes were not detected when a datapoint changes from invalid to valid
+
+## 2.11.1
+
+### Patch Changes
+
+- 272dc90: Only register results matching the version of the experiment that they are calculated on
+
 ## 2.11.0
 
 ### Minor Changes

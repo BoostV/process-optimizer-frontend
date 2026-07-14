@@ -156,11 +156,15 @@ export const EditableTable = ({
         <TableHead>
           <TableRow>
             <TableCell className={classes.emptyCell} />
-            <TableCell>#</TableCell>
-            {rows[0]?.dataPoints.map((item, index) => (
-              <TableCell key={index}>{item.name}</TableCell>
-            ))}
-            <TableCell align="right">Edit</TableCell>
+            <TableCell className={classes.indexHeaderCell}>#</TableCell>
+            {rows
+              .find(r => r.isNew)
+              ?.dataPoints.map((item, index) => (
+                <TableCell key={index}>{item.label ?? item.name}</TableCell>
+              ))}
+            <TableCell align="right" className={classes.editHeaderCell}>
+              Edit
+            </TableCell>
             <TableCell className={classes.emptyCell} />
           </TableRow>
         </TableHead>
@@ -204,14 +208,16 @@ export const EditableTable = ({
             <TableRow>
               <TableCell className={classes.emptyCell} />
               <TableCell className={classes.emptyFooterCell} />
-              {rows[0]?.dataPoints.map((item, index) => (
-                <TableCell
-                  key={'footercell' + index}
-                  className={classes.footerCell}
-                >
-                  {item.name}
-                </TableCell>
-              ))}
+              {rows
+                .find(r => r.isNew)
+                ?.dataPoints.map((item, index) => (
+                  <TableCell
+                    key={'footercell' + index}
+                    className={classes.footerCell}
+                  >
+                    {item.label ?? item.name}
+                  </TableCell>
+                ))}
               <TableCell align="right" className={classes.footerCell}>
                 Edit
               </TableCell>

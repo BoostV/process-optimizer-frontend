@@ -41,3 +41,6 @@ db
 .vscode
 tsconfig.tsbuildinfo
 dist
+
+# Inspection harness screenshot output
+inspection/output/

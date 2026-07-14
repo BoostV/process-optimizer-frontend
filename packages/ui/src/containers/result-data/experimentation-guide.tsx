@@ -1,34 +1,23 @@
 import {
   useSelector,
   useExperiment,
-  selectExpectedMinimum,
   selectNextExperimentValues,
   selectIsInitializing,
   selectActiveVariableNames,
   selectDataPoints,
+  selectInitializationDeficit,
 } from '@boostv/process-optimizer-frontend-core'
-import {
-  Tooltip,
-  IconButton,
-  Hidden,
-  Box,
-  Stack,
-  Skeleton,
-} from '@mui/material'
+import { Tooltip, IconButton, Box, Stack, Skeleton } from '@mui/material'
 import { ZoomOutMap } from '@mui/icons-material'
 import useStyles from './experimentation-guide.style'
 import {
   InitializationProgress,
   NextExperiments,
-  SingleDataPoint,
   Suggestions,
   TitleCard,
 } from '@ui/features'
 import { CopySuggested } from '@ui/features/result-data/copy-suggested'
 import { ReactNode } from 'react'
-import { experimentResultSchema } from '@boostv/process-optimizer-frontend-core'
-import { z } from 'zod'
-import { isArray } from 'remeda'
 import _ from 'lodash'
 
 interface ResultDataProps {
@@ -40,6 +29,9 @@ interface ResultDataProps {
   warning?: string
   padding?: number
   allowIndividualSuggestionCopy?: boolean
+  // When fitted, transferring a suggestion removes it from the list (draw-down).
+  // Defaults to on; set false to keep transferred suggestions visible.
+  drawDownSuggestionsWhenFitted?: boolean
   maxSuggestionCount?: number
   toggleUISize?: () => void
   onMouseEnterExpand?: () => void
@@ -56,6 +48,7 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
     padding,
     loadingMode,
     allowIndividualSuggestionCopy = true,
+    drawDownSuggestionsWhenFitted = true,
     maxSuggestionCount,
     toggleUISize,
     onMouseEnterExpand,
@@ -68,13 +61,31 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
   } = useExperiment()
 
   const nextValues = useSelector(selectNextExperimentValues)
-  const headers = useSelector(selectActiveVariableNames)
-  const expectedMinimum = useSelector(selectExpectedMinimum)
+  const variableHeaders = useSelector(selectActiveVariableNames)
   const isInitializing = useSelector(selectIsInitializing)
   const dataPoints = useSelector(selectDataPoints)
+  const deficit = useSelector(selectInitializationDeficit)
+  // While initializing, once every initial slot is filled (deficit 0) no further
+  // suggestions are needed — ignore any stale/extra suggestions still in the list
+  // so the guide shows the "all added, go run them" guidance (where the
+  // suggestions would otherwise be) instead of inviting more transfers.
+  const allInitialPointsAdded = isInitializing && deficit === 0
+  const displayedSuggestions = allInitialPointsAdded ? [] : nextValues
+
+  const emptyListMessage = allInitialPointsAdded
+    ? 'All initial experiments have been added to the data points list. Run them and enter their results to finish initializing the model — or delete or disable a row to get a replacement suggestion.'
+    : isInitializing
+      ? 'Calculating initial suggestions…'
+      : 'Please run optimizer to calculate suggestions'
 
   const defaultLoadingView = (
-    <Stack direction="column" spacing={2} m={2}>
+    <Stack
+      direction="column"
+      spacing={2}
+      sx={{
+        m: 2,
+      }}
+    >
       <Skeleton variant="rectangular" width="100%" height={200} />
       <Skeleton variant="rectangular" width="100%" height={100} />
     </Stack>
@@ -89,6 +100,10 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         ? loadingView
         : defaultLoadingView
 
+  const hasResults =
+    experiment.results.plots.length > 0 ||
+    (experiment.results.expectedMinimum?.length ?? 0) > 0
+
   const summary = isInitializing ? (
     <InitializationProgress
       experiment={experiment}
@@ -99,21 +114,14 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         })
       }
     />
-  ) : expectedMinimum && expectedMinimum.length > 0 ? (
-    <Box pt={2} pl={2} pr={2} className={classes.extrasContainer}>
-      <SingleDataPoint
-        title="Predicted best solution"
-        headers={headers}
-        dataPoint={convertExpectedMinimumToDisplayValue(expectedMinimum)}
-        plots={experiment.results.plots
-          .filter(p => p.id.includes('single'))
-          .map(p => p.plot)}
-      />
+  ) : hasResults || loading ? null : (
+    <Box
+      sx={{
+        p: 2,
+      }}
+    >
+      Please run optimizer
     </Box>
-  ) : loading ? (
-    <></>
-  ) : (
-    <Box p={2}>Please run optimizer</Box>
   )
 
   const debouncedUpdate = _.debounce(suggestionCount => {
@@ -135,7 +143,10 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
         <>
           Experimentation guide
           {toggleUISize !== undefined && (
-            <Hidden xlDown>
+            <Box
+              component="span"
+              sx={{ display: { xs: 'none', xl: 'inline-flex' } }}
+            >
               <Tooltip
                 disableInteractive
                 title={
@@ -153,37 +164,54 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
                   <ZoomOutMap fontSize="small" className={classes.titleIcon} />
                 </IconButton>
               </Tooltip>
-            </Hidden>
+            </Box>
           )}
         </>
       }
     >
-      <Box p={2}>
-        {!nextValues ||
-          (nextValues.length === 0 && (
-            <Box p={2}>Please run optimizer to calculate suggestions</Box>
-          ))}
+      <Box
+        sx={{
+          p: 2,
+        }}
+      >
+        {displayedSuggestions.length === 0 && (
+          <Box
+            sx={{
+              p: 2,
+            }}
+          >
+            {emptyListMessage}
+          </Box>
+        )}
         <Suggestions
-          values={nextValues}
-          headers={headers}
+          values={displayedSuggestions}
+          headers={variableHeaders}
           allowIndividualSuggestionCopy={allowIndividualSuggestionCopy}
           onCopyToDataPoints={index =>
             dispatchExperiment({
               type: 'copySuggestedToDataPoints',
-              payload: [index],
+              payload: {
+                indices: [index],
+                removeFromSuggestions: drawDownSuggestionsWhenFitted,
+              },
             })
           }
         />
       </Box>
-
       <Box
-        p={2}
-        pt={1}
-        display="flex"
-        justifyContent={isInitializing ? 'right' : 'space-between'}
+        sx={{
+          p: 2,
+          pt: 1,
+          display: 'flex',
+          justifyContent: isInitializing ? 'right' : 'space-between',
+        }}
       >
         {!isInitializing && (
-          <Box width={160}>
+          <Box
+            sx={{
+              width: 160,
+            }}
+          >
             <NextExperiments
               maxSuggestionCount={maxSuggestionCount}
               onSuggestionChange={suggestionCount =>
@@ -192,52 +220,28 @@ export const ExperimentationGuide = (props: ResultDataProps) => {
             />
           </Box>
         )}
-        {nextValues.length > 0 &&
-          nextValues[0] !== undefined &&
-          nextValues[0].length > 0 && (
+        {displayedSuggestions.length > 0 &&
+          displayedSuggestions[0] !== undefined &&
+          displayedSuggestions[0].length > 0 && (
             <Box>
               <CopySuggested
                 isInitialInteraction={dataPoints.length === 0}
                 onClick={() =>
                   dispatchExperiment({
                     type: 'copySuggestedToDataPoints',
-                    payload: [...Array(nextValues.length)].map((_, i) => i),
+                    payload: {
+                      indices: [...Array(displayedSuggestions.length)].map(
+                        (_, i) => i
+                      ),
+                      removeFromSuggestions: drawDownSuggestionsWhenFitted,
+                    },
                   })
                 }
               />
             </Box>
           )}
       </Box>
-
       {summary}
     </TitleCard>
   )
-}
-// value - 1.96 * std <-> value + 1.96 * std
-const convertScoreToString = (data: number[]) => {
-  const [value, stdDev] = data
-  if (value && stdDev) {
-    return `[${(-value - 1.96 * stdDev).toFixed(2)}, ${(
-      -value +
-      1.96 * stdDev
-    ).toFixed(2)}]`
-  }
-  return ''
-}
-
-const convertExpectedMinimumToDisplayValue = (
-  expectedMinimum: z.infer<typeof experimentResultSchema.shape.expectedMinimum>
-) => {
-  if (
-    expectedMinimum.length === 2 &&
-    isArray(expectedMinimum[0]) &&
-    isArray(expectedMinimum[1])
-  ) {
-    return [
-      expectedMinimum[0].concat(
-        convertScoreToString(expectedMinimum[1] as number[])
-      ),
-    ]
-  }
-  return expectedMinimum ?? []
 }

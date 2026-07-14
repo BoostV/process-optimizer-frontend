@@ -1,9 +1,14 @@
 import { CombinedVariableType, ExperimentType } from 'common'
+import { calculateConstraints } from '@core/common'
 import { State } from './store'
 
 export const selectExperiment = (state: State) => state.experiment
 export const selectId = (state: State) => selectExperiment(state).id
 
+// Initializing = fewer SCORED (valid + enabled) points than initialPoints. Note
+// this counts valid+enabled rows, whereas selectInitializationDeficit* counts
+// merely enabled rows (an entered-but-unscored row still holds its slot) — the
+// two denominators differ on purpose.
 export const selectIsInitializing = (state: State) =>
   selectExperiment(state).optimizerConfig.initialPoints === 0 ||
   selectActiveDataPoints(state).length <
@@ -46,6 +51,16 @@ export const selectVariableNames = (state: State): string[] => {
     .concat(experiment.categoricalVariables.map(c => c.name))
 }
 
+export const selectActiveScoreVariableLabels = (state: State): string[] => {
+  const experiment = selectExperiment(state)
+  return experiment.scoreVariables.filter(s => s.enabled).map(s => s.label)
+}
+
+export const selectActiveScoreVariableNames = (state: State): string[] => {
+  const experiment = selectExperiment(state)
+  return experiment.scoreVariables.filter(s => s.enabled).map(s => s.name)
+}
+
 export const selectActiveVariableNames = (state: State): string[] => {
   const experiment = selectExperiment(state)
   return experiment.valueVariables
@@ -77,14 +92,28 @@ export const selectActiveVariablesFromExperiment = (
   return valueVars.concat(catVars)
 }
 
+export const selectPlotsFromExperiment = (experiment: ExperimentType) =>
+  experiment.results.plots
+
+export const selectPlots = (state: State) =>
+  selectPlotsFromExperiment(selectExperiment(state))
+
 export const selectSumConstraint = (state: State) =>
   selectSumConstraintFromExperiment(selectExperiment(state))
 
 export const selectSumConstraintFromExperiment = (experiment: ExperimentType) =>
   experiment.constraints.find(c => c.type === 'sum')
 
+// A sum constraint is "active" only if it survives into the optimizer request,
+// i.e. its dimensions resolve to more than one enabled, continuous variable.
+// We defer to calculateConstraints (the single source of truth for what is
+// sent) rather than counting the raw stored dimension names. Counting raw names
+// could desync the suggestion-count guard from the actual request — e.g. a
+// degenerate sum constraint with zero/one dimensions, or names that no longer
+// map to enabled continuous variables, would otherwise be treated as active
+// here while contributing nothing to the request.
 export const selectIsConstraintActive = (experiment: ExperimentType) =>
-  (selectSumConstraintFromExperiment(experiment)?.dimensions.length ?? 0) > 1
+  calculateConstraints(experiment).some(c => c.type === 'sum')
 
 export const selectInitialPoints = (state: State) =>
   selectInitialPointsFromExperiment(selectExperiment(state))
@@ -92,14 +121,21 @@ export const selectInitialPoints = (state: State) =>
 export const selectInitialPointsFromExperiment = (experiment: ExperimentType) =>
   experiment.optimizerConfig.initialPoints
 
-export const selectIsSuggestionCountEditable = (state: State) => {
-  const dataPoints = selectActiveDataPoints(state)
-  const initialPoints = selectInitialPoints(state)
-  return (
-    dataPoints.length < initialPoints ||
-    !selectIsConstraintActive(selectExperiment(state))
+// During initialization, how many more experiments are needed to reach
+// initialPoints. A row "occupies a slot" if it is enabled (scored or not), so a
+// disabled row counts as missing — disabling re-opens a slot just like deleting.
+export const selectInitializationDeficitFromExperiment = (
+  experiment: ExperimentType
+) => {
+  const enabledRows = experiment.dataPoints.filter(d => d.meta.enabled).length
+  return Math.max(
+    0,
+    selectInitialPointsFromExperiment(experiment) - enabledRows
   )
 }
+
+export const selectInitializationDeficit = (state: State) =>
+  selectInitializationDeficitFromExperiment(selectExperiment(state))
 
 export const selectSuggestionCountFromExperiment = (
   experiment: ExperimentType
@@ -117,10 +153,13 @@ export const selectCalculatedSuggestionCountFromExperiment = (
   const dataPoints = selectActiveDataPointsFromExperiment(experiment).length
   const initialPoints = selectInitialPointsFromExperiment(experiment)
 
+  // During initialization the count is forced to the number of points still
+  // needed; afterwards it is the user's chosen count. A sum constraint no
+  // longer caps it to 1 — the optimizer handles multi-point constrained asks
+  // (constant-liar / cl_min), so constrained experiments can request batches
+  // like any other.
   if (dataPoints < initialPoints) {
-    return initialPoints
-  } else if (selectIsConstraintActive(experiment)) {
-    return 1
+    return selectInitializationDeficitFromExperiment(experiment)
   }
   return selectSuggestionCountFromExperiment(experiment)
 }

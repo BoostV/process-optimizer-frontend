@@ -1,0 +1,393 @@
+{
+  "id": "7284fa83-30ee-4bf4-857c-ce7f3e1567bb",
+  "lastEvaluationHash": "665f95876a80068d6115e6d27e5accea",
+  "changedSinceLastEvaluation": true,
+  "info": {
+    "name": "Sample multiobjective",
+    "description": "",
+    "swVersion": "@boostv/process-optimizer-frontend-core@2.12.0-43-g0dd68d9",
+    "dataFormatVersion": "18",
+    "version": 34,
+    "extras": {}
+  },
+  "extras": {
+    "experimentSuggestionCount": 5,
+    "graphs": ["pareto", "single"],
+    "graphFormat": "json"
+  },
+  "categoricalVariables": [
+    {
+      "name": "color",
+      "description": "",
+      "options": ["red", "green", "blue"],
+      "enabled": true
+    }
+  ],
+  "valueVariables": [
+    {
+      "type": "discrete",
+      "name": "water",
+      "description": "",
+      "min": 0,
+      "max": 100,
+      "enabled": true
+    },
+    {
+      "type": "discrete",
+      "name": "temperature",
+      "description": "",
+      "min": -50,
+      "max": 120,
+      "enabled": true
+    },
+    {
+      "type": "continuous",
+      "name": "angle",
+      "description": "",
+      "min": 0,
+      "max": 360,
+      "enabled": true
+    }
+  ],
+  "scoreVariables": [
+    {
+      "name": "quality",
+      "label": "Quality (0-5)",
+      "description": "",
+      "enabled": true
+    },
+    {
+      "name": "cost",
+      "label": "Cost",
+      "description": "",
+      "enabled": true
+    }
+  ],
+  "constraints": [
+    {
+      "type": "sum",
+      "value": 0,
+      "dimensions": []
+    }
+  ],
+  "optimizerConfig": {
+    "baseEstimator": "GP",
+    "acqFunc": "EI",
+    "initialPoints": 5,
+    "kappa": 1.96,
+    "xi": 1.2
+  },
+  "results": {
+    "id": "7284fa83-30ee-4bf4-857c-ce7f3e1567bb",
+    "plots": [],
+    "next": [
+      [10, 69, 36, "red"],
+      [70, 103, 324, "blue"],
+      [90, 1, 108, "green"],
+      [50, 35, 180, "red"],
+      [30, -33, 252, "blue"]
+    ],
+    "pickled": "Z0FBQUFBQnFDczlPWlphZld2TlhQZ01kR0FjX05vdXRGdExZNHVIc2R5VnVDZHZwcng4bWxzdXhH\naHdBbGV6Ym1wY0s0ckVaTW9hdFRTWTJMeG9ZSnhLbENINkctd3hSS2xZaFdRUnZxQUJUQmRqWDEt\nd0JzUVc2Wjc1LUtfUlNVQldKN2VhaDVWRGZISkNaelZucW9Zem9SYVc4bWRyOVRhRkpmWk04WWti\nNWV0V3ZoYVBhYngyNEFZU2ExNWZsX09NSGtUYmxXcmlQbS0yYVZHV3JXNTZNRTJVWWdKQi1ILTRM\nMFZQTFUxTnUxVGpMbWVJMnlnaV9nYnZxMXd3OEU1S1p3aUxpN1d1UUtJU1Q1UzBfSDlMaHZYQnRO\nRktHeENscUZvVk1PSGM5RGMtdjNnRUM3T21YbFd1VlVQU1drbl9MZUZKZ3dCZ3hZN1U4RXhBNFdj\nT0JKNUpFYy0xQ1ROWDMwQWJRUTBwZWpWX1JsV1NSQUVuODVBMkt6OEkxVG1naURWenZBVkh3ejZS\nV0pDM1VZU1E2d2FVallQQVVCTFhEMl9qU1lsc2dOSG9rNDhDVl9ZMW9JbWdHX0tfLUtYVFA1cm9B\nYUxKSTFlaUQwZ2NjZlBMV1FueHp2bzBIQzA3NU1sdTZXSkhsbktZd3d4anNzSkV1SzdYTy1GZGJV\nMzktY19KcXoxSE9FbnhQaWxXd2Y2M3hCeGZIVlhuYmRtZVNWdWlTMk85b1ZSZmdKRE1ETHdVdzg2\neDB6czlzTXRVb2FjeldNNklYN0d1MExlVWozaEpsTWpuLVB4MUFaTkhlTTBpMzBnTHRjdkRXN2x0\nTDNSbm5zN1Y0a0xVX3dwcGVtaWFQTERTeWRVZTR1anMtT1ozbGpwUk5zdzMzQmsyVUVQRkpRNWpG\nLW9PcUpZVElpRDYzY1pvRGh1WENJeW52YWoxTlFSXzJfME5QQS00NnM4dFVhc0QtcC1nNFhrWTZn\ndEd1RUtMMDNaQVZPQ0FENUtNNVJRSUFVWHRpMWYtUmNmQldjZXJuWWlFU0pXOGF0RXpJSkppZ0xY\nek4zNThfdUxEU1dhWnMzRTJkaTkwb2lEVExuTEZBNndVYVZfR0FBZDBCeW9GckhudDlzNkdrVE8y\nZlVJdm5GUXdiSE1ZZlh5cElXZmVMdVJTa3pDZ0YwOFJPMDF0VWRaZlhNSzUtY3k4dzNNWHpvUzF1\nNGF3RkpOa1RjZHVTZWF4TmFoS21QSE1BMGRVTEhuQjRlTmE1Y0NCMWE5T3BETHNCbHJhZVAycnl1\nUTlLNm5lb2Z3VUo3MHJhenNRazJfOC1SQ2l2WV8wX3NEZVpYQ2lCRUUxeml5aEpQNFBScUxzT2RS\nZ2pTaTMwMml2NEIwenJmYXpPOW1Md1R5UThadjNuLXBzbzVmaXVVTTBhNTQ3R29HcWVPX3J5S0VG\namkwdWk4X2R4UG1NM21Va2RJaVlCZW5QMXpBZnVHLWtoMUFqUEJsS2pIVF8yb2F3aUgtUDYwbmN0\nR25VWGpOSUdjaUgtX0ZMSGRuVTZ0RlAyU0cxd2dCRDhyTjg3SjR1OE5WcmhXSjJTWGg3UkRVWFlD\nUy10MTExSHllaS1JQUwtaE9Va01wemZXeXdDbmlzQ2o3c1h4OU1QelpOZnpJZ2wtSkhfSm45R1kt\nUk5FU2w5WkszYktjdXR6dFRqbDJGMVNmQkY1YloxYkhBbXZhMDctWUY1YWlMU0s3N2NsUnJlS2RK\nanZ6cU1Mdi1aZDEzWVZhSGZQREJhLVAzWEZod0F2X2xVbUhycEo5VFQxRngxajJOcVFzSDRxaC1s\nY0RHdzNLYzVUMjYyTUI4QU5vM1hZeWoxbnV6aUFtVzZjVHp4RlpLZWllMnRhSERPbXM3SFJvZFdZ\nX1pkbHRVRjh5TnlXWlVIXzZZSV85ZUVVYzFWTUVsTWMyeWp6MDBQdDQyNEJjVXhqR3M3SGQzNThp\nc2x1UnZCVU01Q3lSY2VqYzR2dTFUa1Y0bzZyS0lUdHdQNnJITkRXb2lzRDBHNWtES3I4YVhFYVJU\nSFJDUlRwblJPRlFZSlFzTnBSTjQxc1RmaXYtOGRoRk5PMTdxc0lnM3ZJU2dyRk5KcGJYZjQycC1Q\nMndLNTF3SzdHdGZCem5MQUlfQk1VMGRYZ3RaWGhYWkZ6blhjUFFqbmVCS2lWOVBNSGhOMzcyNWhJ\nOTFaRi0wbElhaDBEWUp6YTVYZThIZEp4TWRUQXE4SFJ1RUNGRGhFYVVpRE94dEc4Tkl0MXFDSzZa\nNFo4RDFRRkJIQktPSTFrdThXVWJoWENzM2NtLVhXRHl6N0RwQ2JfYl9CbHFMZWtDRERlWjR1aWlP\nSzFCR01qb3NQYTJ6SVFJZlBlY014U1dERUVxR2x5MFRBMUdJQW55eHNwM1FHbk01RjQwT3ZxNF9E\nZzVRYlhmeU5VYjRDLVltM2MwWjQzTjBqb1I5QWxHdXlCbWpta0RPc00tb041WElodUF5Q0Vvelpj\nVmtzUjFIWC1mNDhqMFg2QUdVLUtaMHVxVnNDWnRsUGdIOGVhdDk5eVV1dEtfeHVXaWFnWWlkUnVN\nTzRfZDYzT1BuNzBvTXZwamxhM0dNM3VNOHFFUTRzelBTbHhvbk85YndnRkFQdTVBSUI1M3VjV3VI\nVnF4MWVyRjRfN0hjMWt4aXAtODRCSUt3dkZyS2c2dDl6b3JVcU5QY1U5Q0RNRjhiUmRXZlFmOHF1\nVmhHNHU4MGRZdHBGd2prR2drYVRPQmVhblJNV3ZhRzZ6THN6ckNjYXVOTVJxVEVSY3Y1bEpycW45\nMDV5Q0hqQm1SUzlxVy1nMFRfSFpkZDRjYWd5N29fMDNBZGp1WlhwLVdEeDdtRks5UlpwdWtYWl9j\nTFdpSVNOdUVabVVJYVd3MmNqaXZEY2haTHVTM0tUMG1xQVRIOVN3LU5naDVsNEZlTG5uRGE5Tmg1\nMkFZQ3pNSEJyU3hNUTdwY1R4SHhlS3hZTEFpdEsxSE8zcEVwTmV1S0xfNVVkZVJ0QXIwc2J3T2dq\ncG5KWXBzU3BJdzdSMldCVWtIN0hhYVI1djA0bzFvTFJSM251Z2pCWHYwaTBqUUVLaXVKajl2N29m\nLXhzX0M5M1J0V25ZMXJ0WWRpMkh1Sk96Tnc3MEZYUGpGNFV5ZHJjeS1JMC1DSlR1QUhtOWYyUF94\ncUR2MkRndlQ4YTY3N1BTbUNBMVI4VTVBOHNEdUVQTll0T3NTUVZFZUVLbEZfcWt1bVVXWV9ObWlw\nRFQ2RVRRc2Y0TUNvZ2l1cGFVRkxxbXBtenE1aEdFQ1NDdUJSbEctaDRLOW9Wd2d4OUNJdG1PeFgw\nWHRaRTEySE9xUi1TRFhoTHZBTHZrQ20tR3dQV0J0NmdMOGl2TWRNVHA5N2ZsU19kTk81T2F3b3cx\nakF0NU5Bc0o2X2VJbnNkaVQyQThxTTducVEzOEN3MXF1alJPWjRxYmkxa2dlZ2ZnbnpMLTJKMC1B\nQmRHNVlTeVRWc2taOVMtOHAwbDdLTXhNVHZzTG9jR0hTSmUtNXBvOTJiTU5GNTNpZklONkdFYWQy\nQks2X0psTzhJcmdCRlVOVXZLR2hudDdRRExoRzVPV1VnakpFSDJYU3Jtc2tJLW1xb2JDVG5IdUxy\nVUFWQWFlbTZ2eGJna1RicF9TWU1zYXktQ1FXZEJ3SUd0M0hnTFY4blRDQms3eE1sTFAwcExsYnFK\nWHExSnNvc1RSTE1HYV9NR0tvVmd6Wng1SHFFdkNQdk9NbHJOQ3hiZVoxeDl4a1JLYzZxM1ZxUHJT\ncHFESzV3QlkyYVQ4OUZ2emRSbkJRdENzQUlRUG5ReWhVeklRZWpYQWRPNHRubUk1TnoxMFNHellV\nVlFBdWJmZllUbmpoMlFNWGt1TEY2V2pwVnhLRUlnWTlpT3lGekEzemVQbWN0SUIydGpWOHBoa3lJ\nY1FnNVJ4U3pwWms4aVdyQ2UtT3lCMm1tTk5LZjRZaWtoUzczU1YzeF9mQUsxd3I3bXBkWjltekZT\neFlWOElyNkJoNG1GM0otZHdBdHJ6MFFNTjlqcUdNUnNWMEp3dzkzbVJYV1p0TDNKZFQ1eGZYRlNB\nM1lyX3ByTk53WEVQNEJsUUl4STdTbHU3R3Atc2xyTUR3dzd2blRhU0NsZlMtYXluT2xQZzlfOTVi\nQ1ZuYi1aRU1qWVk1UEN5LV9UZ01sZGFMMGs0VW5Hd3hseVZZbHFvNkw2TWpiNHB6d0pRRzRvNEFY\nMnZWV1k1NXQwQVNQdm84X2ppZk80bjNxdGZRb3ZZQU1RWDgtOVh2aDVIdFdXQzQtc2YzNm9PUWNQ\nUDFkMXBhNDllY2oyWk9nMnRsYzFwUEJTQ0ZoaTZsLUwxU21leVAtMm9ubVU3Ty1GNXBpUnRheHlO\nR2pUak9WSWNNSUVaZmZfWjRxNjBnNFh4UmFIQ3lPWnVUMFlEOWNOcG5DOTBycGM5MmYyZHNNOGRy\nOUlIeURWUXdYQk9sUEpqV2RVT2lxY2ZQbmpRSGh3Zmp6UjVtNi1kRG40MFYyWVJmaW5UazF2ZG5h\nR3lvRXBSeVk2TmUwcThpa1pOSFBPY2VOSi1Makc3ay1sVE5fZkh5bndoMW5EdFU5RXhwZ0dMMG1x\nWlVQYWVlcTZjZWxUWFdjSWVsczZiS3N6eXhNY1hJMjNjeFJJNERvZ05mQk9EM2doUnp4eFZMVHFs\nOXdFcklOc3psOS0taXlGS19Nb29fWGpyZVlKZlQwUGVtWjBjQVAxeGdHbU1NZHRna3N0c1NaenNE\nMmdRdGNTYktTOGNiTzJZZ1BwdEM0bnROc1UwbEhkSFFWVDdOaVRodm94Wm81Q3dIZ0VvSTJWVHo1\nX2gzY0xvMmpURTlGN1Q2QlNFVzlEM0VCREY5Vm5tWm13LUtHZ2hfalFYTDJQODcxX21tWlY5ajI2\nelVtNXYwOUFrdkJjX3M4WFFPOW9UaW9vdWRzdE1hd1ZfVkRIckp6TWJYNjVjX2NKWG53ekhnM0lq\nNDM5clluTTQ4d292V3E1cGs4ckcydl9tdUxLb1QwX1Y0NDRiMmdDeF9tYTRTRW94Z3Y5OU84T3h2\nVTRwblBNeTVYaGhwdS1Db3pTVEpKSGdYcUpLaG1OM1VpaG8wUVgxM0lYaG1RNjNaWWlfME1vTHdR\nRjA2TzdOX2g2c3ZUcVlmUF9SNnZMeTNHY1FMWG5jSlZoN2pHa21qenI2OUR5bkxrRzd5Q1NDMHAt\nMlNGbFdxN2d5UW5yUmtaSFpHY1gwX2VKZnl6RXdXb2dEbHFGNHZFM0RQOEg5bW9mNlg0QlhWRzJE\nb01MdWQwLVk0RENyMUdhdkk3LXZQZm9ZWkpHMkYxSmNIdTlhN3lqOXpUZXlxRmVnd0xGZzFtZDQt\nWTZXMV85MHpVWkY0WnJNd25Yakw1dzVDX1FncnN5Wjk1WUtiMkxIZVk0eXhRemdkRUJTVEdXZFY1\nMEtLXzRRLUVWSHNFMVdJTEZ3RG5aYUxPZmlpVGp0QkdSN2ItaFpMYllKalZadno0SDVSQ1NvcUJh\nWXN5eFNSNWxlZXBidUhjZFo3SVNpY2RPRlVwbmtjR0NTdjc3ZDEwOEN6OG94enVXSk1nRE5hWUhB\nZUZIVlNyMWJseTdmcEsySlRvMFU1LVd5Q2dBZlViWkpFWGVRSE5LMjl6YlZySWVKRWNFSW5MeWNZ\nYl9IZ3JUREF5M0hDdDMyLVREa1BCTDBMbklDZGVUVHJEVUJfdVFuc1ZuZE9YdF85eENjRk1DcW9o\nV0FwM3hzQWtud2xLQ3lDNms1aXZiRm9lSGpSY1c1Q0kzaVFBVDNiY1NRZUdVOXhocVZpYUZlaWNN\nVTU4SGZyWWQ1U2UtcUZUa2dTbHppZC00bHgyZlAwTXpINXlhc1NKNVNhclZwNjhnTDRWamd3ektI\nalQwNXNKNjBLUFAyNG44dUNpVHpLcUw4dFVPX1YxQU51Mk13OHpCUHlwMnYtcmpxOE4zM2ZoY29V\naTlJVWNEc3QwM3ZVWl9ESXVadFJ4RmpKVTFGakd5MjlPUTlsV0dlejhoZWZEWG5DaEl2Q3NaX2Vs\neTVkT0VtYjVDd2tGSW9EQkFwSUxjQ0lXUnBiMjNvUjdyY2Q4RHQ5eGNhb2h2S1FxeC00OThSNGZ4\nTWVKMlItY3ZBWWxVY21HMWlJSWZqS25ocVhtZlNnVGM3ekdFNUhZRlMyaldrM05JSkFxTHRNeVZk\nd054aWxURERhbVJ0UW1qaWt0LTBIX1lDYUt5cHg5UmZHYTJCaWZyMXRYZlZpaHpDVEdMVk96SlZM\nNzJQR0steGlqMXhmZU5tY21zOFVGcDVKemdlRUViZzJRNlhnNF9sNEp2Q0RFRnUtc3dNV0Z0ak02\nX01jVlJ4RVBlZUptXzJTa2U5VU91Qng3elZ5Slc0QzBlTDlyN1FjVVZNRDZwbGxZWlYwaTRBZTI3\nQ3lBenB4ZUk5U28wZU9ZWXU5Zy16Y0Rqd2x2R3NZVkNfbklmVUtwZ2FnUkRGWkFuMnFUYUp3Z1pE\ndHRGTWZVa1FLRVJVZlZtNml5YnRZV25UZm9HMGdEb2FoTWtOblVqYXVWMFpCQTU0Vmh6RGZua3g0\nTC1EUkRYMHVJcGo3VjJJVG50T21KeXUyOGlNMnhoeTVWT2gtc29vS3Q0Q0lDTmdua3BCWjY2dzJ2\neVlOWnRBMWxuRnN5OTRBN0hvSXk1Q2duNk1McXZ2TGVXM0Q1MVhzbGl6dHhfMGlRanVRVWJrOGtB\nOTZTaXVyQi1HckZuU01iU29jdEtFel9sOUlIYTNvZTJiSjNLcGFaUkxUbEZZZTFnTmZPbzVxNkp6\nLVlUaXpNNTZORWJXb0VGbGp1cXF4WFdmQ1gwSXdjSnc3anE5RUd3X1NLN0t1S1VuZnhzNDhWRUFL\nTmxjNUd4Y1pBRGxjYndVV3JPVHNxeXlwTnBodXFfUFgtWWt4Zm1pNkNkQU5ma1Jqejd0WVlaQTVu\nRXpHZ2tzY0k2LUFaS0xEZ3pUQlVyeGVGTkw0VTdhWkNHYUhydlZ6WTRhaEwtSkNpTzNhZXNBQm5Q\nTUhmdjd1ajM3SXZ6emt5T3hYNU5WaEFyTk90cC1sc0RaZ2M0dVlXWExrZGUzbE9UTW9HYmZOdFBS\ndkpETkItZ0FrTUU3a1d3dlhPVkdCdGhlYWl6NlQxLTdwWDB0N0hyZEMtUWpWaUNvUnM0bEd1bGRS\nSDBCRmJkRk9nbGJLWXRsYTFCMEdQZVlaNmRnQ0tFVzJqWnk3eWFHYTRtRWktUk1zdWF3WVNPREN6\nSkVsdmI2Nzdlejc4S0ZCNC1oclpnNGtKMG5vdlp1amU5dzJYemFVTVg1MUlZaHMzQUhiUElfTG9n\nQjN3ZDdEZUdXejRiRVBMYktJWDM3aGJ3ejdKRmpzQXpnZ1VIYzQ3OWpHR0d2TE9hWG4zUmdHZG1j\nRVRUbFZ1OEpRSXVxMW9kY1BGWG1xOHpuT0hrQWVkYktibEs4QlBCMTl6MFdWWjIyNjV3RkgxU29V\neHQxM1dfSFBRRkpwQjJDMlktaVI3eWFHcWIzdTlwMFpVZFhNWnAtb09OMEx6MlVMQ0NWWUJkRjN5\ncThWbFU1dENnOXl3MnZDaTEySFBqVVppZmF5V243a09HdmFLX1RyeHNQTmU4ME13QXZ2aUtlWms3\nZUpSUGpDdTF6cnJNMmlLcVdLRFNFUlhOblVYNy13aHdPNFpFZXNLMG1XQ1lnVWFVSFZKcU9Xd25E\nNEdrZkNGWkFEY3c3M241TFl4dHlxcW1ud0FzX0VtNTRmUTR5UXdtdlNqZTBOaDNZTHlsbF82UzdZ\ncFd4eUEzVUxPUHNheXpYVWxJMmJycnozVW9XMG9XWlFabTFibG1lZXVJUWVhVjhNckJhQWt0dlJI\nRkR1dkRGbXpzYllkd2RjZHpxcEo4S0prM09nQ0JqYU05TVo4TlVLY3NmYXNKbGg3T3RydkZYNEFW\na01GWWhCWEZaaUFXYW84RVRHdFF6ZVVsdFF4UHVjM1VyZWhIa3FKaDBOY2lxRGU5VUZSNFNWZ3Jm\nNFFnTmlrSlZmZkV2ZGp3czZSQ29wU245QWV3NHdSV1kzaVJPaW9PdkhBVXNLRWpNWm0yV3liUXF0\nTmd3bUY4YXhwRy1QN29RdVAyZXVZamFXb0hsUVBXNVBEVm9GdlhDN2ZzOEVpdXFFT284REg1Ukgw\nNndFSzhHS1RDRk5EUE9QbmxiQWZtN3JGZTZ0andIcGVQYWhDUnhCemVzRkRjN3c2aTFlQmVtU2FB\neW5pWnVRd2l0VndzZFMwU1JWMDlJekgwSjZIdWxSRG1RMGNXdHllVGtQLUdIXzI5c0lUdVVKUmdJ\nVkRVcWpXSGdLYWZwdktBQUNWQmcwYVdkZDhSalV5UkMtRVBZc01rMHctWXpqOXFNQjV2YXNUb0Vm\nS1E1QXpzNWgxNFRCR0QtNlFyam1MdjRPd09TTzJCT1FkaFVDMGhxcnl0dmdoSlZHQ3gxdkRSY2Jh\nU2ZkTzhoNjR0d1hzY3NUTFR2MkhHQUlSeHlIN21UUDR1ajJRR1p0aEU5WmNfSHBoc2QwVFNVbnF3\ndUZ0enZHR0VucU9kcVpBUTFsZjRFQ3NOMXpoRjB6cG5EbzdRZlJEa25SU3RHWlYwRFp4UW1ROEFp\nWk5pWnh1LWx4LXQxVkJmaG11ajhWUjUwamgyUUFKUzFVZEdJLVEtTVVKV2NBQUZJcWczV0N2eFNL\nMk1zRkdLa2s4VDhYaUhoX3FVZ3doNWY5cUJ5SmdvT2swVWxXWE5RSUlkMFM4eTlReWtXN3ZRTXlf\nS1Y4Nk9weHdWMTY2bW5tMGdudUFRa3ExZEloRzQyUkt2VVh0MDRSUGhnTU1NRzdwYnBQa1NsbFds\nYlBHUFYwUXYtWFhVdmp6N1RMaXhWdkZyU0toeVlSU0lxbjBSalhPeVpjUGJkejhsdmN4S1h2YXVR\nOFhHYll3eEpJVXRQZzl6SDZ2MHprLTdDU0JDa1FDRm0tRWxUU3plZGtnek8yRkFOaDlaUndXMTZZ\nYUR5aGdsazJiN2FRQ2swQ3lkeVZEWjJCTTNIdHVXMWlvNjNRaWktQk4yZUIyMjhUVW5pSkZBNThY\nb2dPZ1JMR0JNQnUxVm1NSFlCaThDc015bUFqcVJrcnFkcmpwZDZoeFpTYlZ6ZkZwY0Zpclc5VzJB\nQXcwWUpheVNqS1Y3cTR1NnAxNHBDaV9tb184WktOV2RCVzdmclpLYnRuOUl4TGpPRGN3ZjZRNGlI\nZGNQQnhTYmlkS0ZucmZlb0lCVjByek5FRjBCcl83SmoyczROTkVySkJBUXhEQ3lSRjBFbVlocTZt\nZk9XQTRFbmhTajc4eXY0WjRmRlVUcmlfMmJDZ2R0Q3ptLXQ2ZFRWSF9fZnJnUDhyV0V4NmZieTFH\nRjIxTER1SHhDZlFLME1BaDJ6QTVkMEM0bmw2NEQ3ejlKXy1wT0x6eFNXaXZTOEw2eFl5aVRFekha\nWkpCZTJWa296NmpOVmw5S2dJQ3pDOUhqVmdWY01xbFdqcnVzbV9HNHlPdXdNU3BVczN4R2pod2ZI\nMWZoWjZjZkNSdzJiYnZKMHo1X0E9PQ==\n",
+    "expectedMinimum": [],
+    "extras": {
+      "apiVersion": "v1.4.0-188-ge1efcdc",
+      "libraries": [
+        "Flask-Cors==3.0.10",
+        "Flask==2.2.3",
+        "Jinja2==3.1.6",
+        "MarkupSafe==3.0.3",
+        "ProcessOptimizer==1.1.1",
+        "PyYAML==6.0.1",
+        "Werkzeug==2.2.3",
+        "async-timeout==5.0.1",
+        "attrs==25.4.0",
+        "bokeh==3.4.1",
+        "certifi==2026.2.25",
+        "cffi==2.0.0",
+        "charset-normalizer==3.4.5",
+        "click==8.1.8",
+        "clickclick==20.10.2",
+        "connexion==2.14.2",
+        "contourpy==1.3.0",
+        "cryptography==3.4.7",
+        "cycler==0.12.1",
+        "deap==1.4.1",
+        "deprecation==2.1.0",
+        "ecdsa==0.19.1",
+        "filelock==3.19.1",
+        "fonttools==4.60.2",
+        "fsspec==2025.10.0",
+        "idna==3.11",
+        "importlib_metadata==8.7.1",
+        "importlib_resources==6.5.2",
+        "inflection==0.5.1",
+        "itsdangerous==2.2.0",
+        "joblib==1.5.3",
+        "json-tricks==3.15.5",
+        "jsonschema==4.15.0",
+        "kiwisolver==1.4.7",
+        "matplotlib==3.8.4",
+        "mpmath==1.3.0",
+        "networkx==3.2.1",
+        "numpy==1.26.4",
+        "packaging==26.0",
+        "pandas==2.3.3",
+        "patsy==1.0.1",
+        "pillow==11.3.0",
+        "pip==21.2.4",
+        "process-optimizer-api==1.0.0",
+        "process-optimizer-api==1.0.0",
+        "pyasn1==0.6.2",
+        "pycparser==2.23",
+        "pyparsing==3.3.2",
+        "pyrsistent==0.20.0",
+        "python-dateutil==2.9.0.post0",
+        "python-jose==3.5.0",
+        "python-keycloak==2.13.2",
+        "pytz==2026.1.post1",
+        "redis==7.0.1",
+        "requests-toolbelt==0.10.1",
+        "requests==2.32.5",
+        "rq==2.0.0",
+        "rsa==4.9.1",
+        "scikit-learn==1.4.2",
+        "scipy==1.13.0",
+        "setuptools==58.0.4",
+        "six==1.16.0",
+        "swagger-ui-bundle==0.0.9",
+        "sympy==1.14.0",
+        "threadpoolctl==3.6.0",
+        "torch==2.8.0",
+        "tornado==6.5.5",
+        "typing_extensions==4.15.0",
+        "tzdata==2025.3",
+        "urllib3==1.26.20",
+        "waitress==2.1.2",
+        "xyzservices==2025.11.0",
+        "zipp==3.23.0"
+      ],
+      "parameters": {
+        "Xi": [],
+        "Yi": [],
+        "dimensions": ["water", "temperature", "angle", "color"],
+        "extras": {
+          "experimentSuggestionCount": 5
+        },
+        "hyperparams": {
+          "acq_func": "EI",
+          "acq_func_kwargs": {
+            "kappa": 1.96,
+            "xi": 0.01
+          },
+          "base_estimator": "GP",
+          "n_initial_points": 5
+        },
+        "space": [
+          [0, 100],
+          [-50, 120],
+          [0, 360],
+          ["red", "green", "blue"]
+        ]
+      },
+      "pythonVersion": "3.9.6",
+      "timeOfExecution": "2026-05-18 10:35:26"
+    }
+  },
+  "dataPoints": [
+    {
+      "meta": {
+        "enabled": true,
+        "valid": true,
+        "id": 1
+      },
+      "data": [
+        {
+          "name": "water",
+          "value": 10,
+          "type": "numeric"
+        },
+        {
+          "name": "temperature",
+          "value": 69,
+          "type": "numeric"
+        },
+        {
+          "name": "angle",
+          "value": 36,
+          "type": "numeric"
+        },
+        {
+          "name": "color",
+          "value": "red",
+          "type": "categorical"
+        },
+        {
+          "name": "quality",
+          "value": 2.5,
+          "type": "score"
+        },
+        {
+          "name": "cost",
+          "value": 12,
+          "type": "score"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "valid": true,
+        "id": 2
+      },
+      "data": [
+        {
+          "name": "water",
+          "value": 70,
+          "type": "numeric"
+        },
+        {
+          "name": "temperature",
+          "value": 103,
+          "type": "numeric"
+        },
+        {
+          "name": "angle",
+          "value": 324,
+          "type": "numeric"
+        },
+        {
+          "name": "color",
+          "value": "blue",
+          "type": "categorical"
+        },
+        {
+          "name": "quality",
+          "value": 1.6,
+          "type": "score"
+        },
+        {
+          "name": "cost",
+          "value": 50,
+          "type": "score"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "valid": true,
+        "id": 3
+      },
+      "data": [
+        {
+          "name": "water",
+          "value": 90,
+          "type": "numeric"
+        },
+        {
+          "name": "temperature",
+          "value": 1,
+          "type": "numeric"
+        },
+        {
+          "name": "angle",
+          "value": 108,
+          "type": "numeric"
+        },
+        {
+          "name": "color",
+          "value": "green",
+          "type": "categorical"
+        },
+        {
+          "name": "quality",
+          "value": 2.8,
+          "type": "score"
+        },
+        {
+          "name": "cost",
+          "value": 5,
+          "type": "score"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "valid": true,
+        "id": 4
+      },
+      "data": [
+        {
+          "name": "water",
+          "value": 50,
+          "type": "numeric"
+        },
+        {
+          "name": "temperature",
+          "value": 35,
+          "type": "numeric"
+        },
+        {
+          "name": "angle",
+          "value": 180,
+          "type": "numeric"
+        },
+        {
+          "name": "color",
+          "value": "red",
+          "type": "categorical"
+        },
+        {
+          "name": "quality",
+          "value": 3.8,
+          "type": "score"
+        },
+        {
+          "name": "cost",
+          "value": 10,
+          "type": "score"
+        }
+      ]
+    },
+    {
+      "meta": {
+        "enabled": true,
+        "valid": true,
+        "id": 5
+      },
+      "data": [
+        {
+          "name": "water",
+          "value": 30,
+          "type": "numeric"
+        },
+        {
+          "name": "temperature",
+          "value": -33,
+          "type": "numeric"
+        },
+        {
+          "name": "angle",
+          "value": 252,
+          "type": "numeric"
+        },
+        {
+          "name": "color",
+          "value": "blue",
+          "type": "categorical"
+        },
+        {
+          "name": "quality",
+          "value": 3.6,
+          "type": "score"
+        },
+        {
+          "name": "cost",
+          "value": 40,
+          "type": "score"
+        }
+      ]
+    }
+  ]
+}

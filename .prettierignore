@@ -8,3 +8,9 @@
 **/openapi
 CHANGELOG.md
 **/schemas/*.json
+
+# Vendored, untracked sibling projects for local e2e testing — not part of
+# this repo (see AGENTS.md). They carry their own prettier/changeset configs.
+brownie-bee
+brownie-bee-backend
+process-optimizer-api

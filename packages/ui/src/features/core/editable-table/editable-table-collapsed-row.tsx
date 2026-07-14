@@ -61,7 +61,11 @@ export const EditableTableCollapsedRow = ({
             colSpan={colSpan}
             className={classes.newRowCell}
           >
-            <Box m={1}>
+            <Box
+              sx={{
+                m: 1,
+              }}
+            >
               <Button
                 size="small"
                 onClick={() => setExpanded(true)}
@@ -123,11 +127,13 @@ export const EditableTableCollapsedRow = ({
                       onEnabledToggled(checked)
                     }}
                     onClick={e => e.stopPropagation()}
-                    inputProps={{
-                      'aria-label': 'Enable/disable',
-                    }}
                     size="small"
                     color="primary"
+                    slotProps={{
+                      input: {
+                        'aria-label': 'Enable/disable',
+                      },
+                    }}
                   />
                 </span>
               </Tooltip>

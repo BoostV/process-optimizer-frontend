@@ -1,11 +1,4 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  CircularProgress,
-  Skeleton,
-  Tooltip,
-} from '@mui/material'
+import { Box, Card, CardContent, Skeleton, Tooltip } from '@mui/material'
 import { ReactNode } from 'react'
 import useStyles from './title-card.style'
 import { useMessages } from '@boostv/process-optimizer-frontend-core'
@@ -43,11 +36,7 @@ export const TitleCard = (props: TitleCardProps) => {
   )
   const loadingOverlay = (
     <Box className={classes.loadingOverlayContainer}>
-      <Box className={classes.loadingOverlay}>
-        <Box>
-          <CircularProgress size={42} />
-        </Box>
-      </Box>
+      <Box className={classes.loadingOverlay} />
       {children}
     </Box>
   )
@@ -67,7 +56,12 @@ export const TitleCard = (props: TitleCardProps) => {
         <Box className={classes.titleContainer}>
           {warning && (
             <Tooltip title={warning}>
-              <Box mr={1} display="flex">
+              <Box
+                sx={{
+                  mr: 1,
+                  display: 'flex',
+                }}
+              >
                 <WarningAmberOutlined />
               </Box>
             </Tooltip>
@@ -85,7 +79,13 @@ export const TitleCard = (props: TitleCardProps) => {
               customBox={m?.customComponent}
             />
           ))}
-        <Box p={padding !== undefined ? padding : 2}>{cardView}</Box>
+        <Box
+          sx={{
+            p: padding !== undefined ? padding : 2,
+          }}
+        >
+          {cardView}
+        </Box>
       </CardContent>
     </Card>
   )
