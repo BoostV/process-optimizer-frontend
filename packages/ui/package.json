@@ -10,6 +10,7 @@
     "lodash.debounce": "^4.0.8",
     "mathjs": "^14.8.0",
     "react-hook-form": "^7.76.1",
+    "react-simple-code-editor": "^0.14.1",
     "remeda": "^2.37.0",
     "tss-react": "^4.9.21"
   },
