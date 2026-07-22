@@ -153,4 +153,13 @@ describe('validationReducer', () => {
     expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
     expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
   })
+
+  it('should invalidate data points with missing score function responses', () => {
+    const validatedExperiment = validationReducer(exp, {
+      ...emptyViolations,
+      dataPointsResponsesUndefined: [{ id: 1, scoreName: 'quality' }],
+    })
+    expect(validatedExperiment.dataPoints[0]?.meta.valid).toBeFalsy()
+    expect(validatedExperiment.dataPoints[1]?.meta.valid).toBeTruthy()
+  })
 })
