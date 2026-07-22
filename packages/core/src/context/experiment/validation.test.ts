@@ -8,10 +8,11 @@ import {
   validateDataPointsUndefined,
   validateDuplicateDataPointIds,
   validateDuplicateVariableNames,
+  validateExperiment,
   validateLowerBoundary,
   validateUpperBoundary,
 } from './validation'
-import { ExperimentType, scoreNames } from '@core/common'
+import { ExperimentType, ScoreFunctionType, scoreNames } from '@core/common'
 
 describe('validateUpperBoundary', () => {
   it('should return empty array if no violations exist', () => {
@@ -669,6 +670,7 @@ describe('findDataPointViolations', () => {
     upperBoundary: [1, 2, 5, 6],
     categoricalValues: [],
     dataPointsNumericType: [3],
+    dataPointsResponsesUndefined: [],
   }
   it('should return correct list of data point violations', () => {
     const dpViolations = findDataPointViolations(violations)
@@ -714,5 +716,64 @@ describe('findDataPointViolations', () => {
     expect(dpViolations.sort((a, b) => a.rowMetaId - b.rowMetaId)).toEqual(
       expected
     )
+  })
+})
+
+const buildExperimentWithQualityFunction = (
+  fn: ScoreFunctionType
+): ExperimentType => ({
+  ...emptyExperiment,
+  scoreVariables: emptyExperiment.scoreVariables.map(sv =>
+    sv.name === scoreNames[0] ? { ...sv, scoreFunction: fn } : sv
+  ),
+  dataPoints: [
+    {
+      meta: {
+        id: 1,
+        enabled: true,
+        valid: true,
+      },
+      data: [],
+      responses: [
+        {
+          scoreName: scoreNames[0],
+          useFunction: true,
+          values: [],
+        },
+      ],
+    },
+  ],
+})
+
+describe('response validation', () => {
+  const base = () =>
+    buildExperimentWithQualityFunction({
+      expression: 'weight * 2',
+      variables: [{ name: 'Weight', symbol: 'weight', source: 'response' }],
+    })
+
+  it('flags a row using the function with a missing response value', () => {
+    const exp = base() // dataPoint meta.id 1, responses useFunction:true but values:[]
+    const v = validateExperiment(exp)
+    expect(
+      v.dataPointsResponsesUndefined.some(
+        x => x.id === 1 && x.scoreName === 'quality'
+      )
+    ).toBe(true)
+    const messages =
+      findDataPointViolations(v).find(x => x.rowMetaId === 1)?.messages ?? []
+    expect(messages).toContain(
+      'All responses must be defined to use the quality function.'
+    )
+  })
+
+  it('does not flag a row in manual mode', () => {
+    const exp = base()
+    exp.dataPoints[0]!.responses = [
+      { scoreName: 'quality', useFunction: false, values: [] },
+    ]
+    expect(
+      validateExperiment(exp).dataPointsResponsesUndefined.some(x => x.id === 1)
+    ).toBe(false)
   })
 })

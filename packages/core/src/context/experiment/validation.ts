@@ -8,6 +8,7 @@ export type ValidationViolations = {
   duplicateDataPointIds: number[]
   categoricalValues: number[]
   dataPointsNumericType: number[]
+  dataPointsResponsesUndefined: { id: number; scoreName: string }[]
 }
 
 export const validateExperiment = (
@@ -21,6 +22,8 @@ export const validateExperiment = (
     duplicateDataPointIds: validateDuplicateDataPointIds(experiment),
     categoricalValues: validateCategoricalValues(experiment),
     dataPointsNumericType: validateDataPointsNumericType(experiment),
+    dataPointsResponsesUndefined:
+      validateDataPointsResponsesUndefined(experiment),
   }
 }
 
@@ -141,6 +144,35 @@ export const validateCategoricalValues = (experiment: ExperimentType) => {
   return violations
 }
 
+export const validateDataPointsResponsesUndefined = (
+  experiment: ExperimentType
+): { id: number; scoreName: string }[] => {
+  const violations: { id: number; scoreName: string }[] = []
+  const functionsByScore = new Map(
+    experiment.scoreVariables
+      .filter(sv => sv.scoreFunction !== undefined)
+      .map(sv => [sv.name, sv.scoreFunction!])
+  )
+  experiment.dataPoints.forEach(dp => {
+    dp.responses?.forEach(resp => {
+      const fn = functionsByScore.get(resp.scoreName)
+      if (fn === undefined || !resp.useFunction) return
+      const requiredSymbols = fn.variables
+        .filter(v => v.source === 'response')
+        .map(v => v.symbol)
+      const provided = new Map(resp.values.map(v => [v.symbol, v.value]))
+      const missing = requiredSymbols.some(sym => {
+        const val = provided.get(sym)
+        return val === undefined || !Number.isFinite(val)
+      })
+      if (missing) {
+        violations.push({ id: dp.meta.id, scoreName: resp.scoreName })
+      }
+    })
+  })
+  return violations
+}
+
 export const findUniqueEntries = (arr: number[]): number[] =>
   arr.filter((val, i, arr) => arr.indexOf(val) === i)
 
@@ -160,11 +192,13 @@ export const findDataPointViolations = (
   const upperBoundary = violations.upperBoundary
   const lowerBoundary = violations.lowerBoundary
   const numericType = violations.dataPointsNumericType
+  const responsesUndefined = violations.dataPointsResponsesUndefined
   findUniqueEntries(
     pointsUndefined
       .concat(upperBoundary)
       .concat(lowerBoundary)
       .concat(numericType)
+      .concat(responsesUndefined.map(r => r.id))
   ).forEach(e => {
     const messages: string[] = []
     if (pointsUndefined.includes(e)) {
@@ -185,6 +219,13 @@ export const findDataPointViolations = (
     if (numericType.includes(e)) {
       messages.push('Discrete values must be integers.')
     }
+    responsesUndefined
+      .filter(r => r.id === e)
+      .forEach(r => {
+        messages.push(
+          `All responses must be defined to use the ${r.scoreName} function.`
+        )
+      })
     allViolations.push({
       rowMetaId: e,
       messages,

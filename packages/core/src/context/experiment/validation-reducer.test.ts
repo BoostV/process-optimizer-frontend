@@ -46,6 +46,7 @@ const emptyViolations = {
   duplicateDataPointIds: [],
   categoricalValues: [],
   dataPointsNumericType: [],
+  dataPointsResponsesUndefined: [],
 } satisfies ValidationViolations
 
 describe('validationReducer', () => {
