@@ -4,6 +4,8 @@ import {
   ExperimentResultType,
   ExperimentType,
   OptimizerConfig,
+  ScoreFunctionType,
+  ScoreName,
   ScoreVariableType,
   ValueVariableType,
   experimentSchema,
@@ -15,6 +17,7 @@ import { produce } from 'immer'
 import md5 from 'md5'
 import { settings, versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
+import { computeScore } from '@core/common/util/score'
 import {
   selectActiveDataPoints,
   selectActiveDataPointsFromExperiment,
@@ -175,6 +178,45 @@ export type ExperimentAction =
       type: 'experiment/removeVariableFromConstraintSum'
       payload: string
     }
+  | {
+      type: 'updateScoreFunction'
+      payload: {
+        scoreName: ScoreName
+        scoreFunction: ScoreFunctionType | undefined
+      }
+    }
+  | {
+      type: 'updateDataPointResponses'
+      payload: {
+        metaId: number
+        scoreName: ScoreName
+        useFunction: boolean
+        values: { symbol: string; value: number }[]
+      }
+    }
+
+// Recompute and persist the {type:'score', name} value for one objective of one
+// data entry, when that objective is in function mode. Manual rows are untouched.
+const recomputeScore = (
+  dataEntry: DataEntry,
+  scoreName: ScoreName,
+  scoreFunction: ScoreFunctionType | undefined
+): void => {
+  const responses = dataEntry.responses?.find(r => r.scoreName === scoreName)
+  if (
+    scoreFunction === undefined ||
+    responses === undefined ||
+    !responses.useFunction
+  )
+    return
+  const value = computeScore(scoreFunction, responses.values, dataEntry.data)
+  const scoreEntry = dataEntry.data.find(
+    d => d.type === 'score' && d.name === scoreName
+  )
+  if (value !== undefined && scoreEntry !== undefined) {
+    scoreEntry.value = value
+  }
+}
 
 const experimentReducerInner = produce(
   (state: ExperimentType, action: ExperimentAction): void | ExperimentType => {
@@ -490,6 +532,49 @@ const experimentReducerInner = produce(
           )
         }
 
+        break
+      }
+      case 'updateScoreFunction': {
+        const sv = state.scoreVariables.find(
+          it => it.name === action.payload.scoreName
+        )
+        if (sv !== undefined) {
+          sv.scoreFunction = action.payload.scoreFunction
+          state.dataPoints.forEach(dp =>
+            recomputeScore(
+              dp,
+              action.payload.scoreName,
+              action.payload.scoreFunction
+            )
+          )
+        }
+        break
+      }
+      case 'updateDataPointResponses': {
+        const dp = state.dataPoints.find(
+          d => d.meta.id === action.payload.metaId
+        )
+        if (dp !== undefined) {
+          if (dp.responses === undefined) dp.responses = []
+          const existing = dp.responses.find(
+            r => r.scoreName === action.payload.scoreName
+          )
+          const next = {
+            scoreName: action.payload.scoreName,
+            useFunction: action.payload.useFunction,
+            values: action.payload.values,
+          }
+          if (existing !== undefined) {
+            existing.useFunction = next.useFunction
+            existing.values = next.values
+          } else {
+            dp.responses.push(next)
+          }
+          const sv = state.scoreVariables.find(
+            it => it.name === action.payload.scoreName
+          )
+          recomputeScore(dp, action.payload.scoreName, sv?.scoreFunction)
+        }
         break
       }
       default:

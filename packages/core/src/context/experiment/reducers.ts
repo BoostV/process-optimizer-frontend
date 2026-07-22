@@ -37,7 +37,9 @@ export const rootReducer = (state: State, action: Action) => {
     case 'experiment/toggleMultiObjective':
     case 'experiment/setConstraintSum':
     case 'experiment/addVariableToConstraintSum':
-    case 'experiment/removeVariableFromConstraintSum': {
+    case 'experiment/removeVariableFromConstraintSum':
+    case 'updateScoreFunction':
+    case 'updateDataPointResponses': {
       const experiment = experimentReducer(state.experiment, action)
       const validationViolations: ValidationViolations =
         validateExperiment(experiment)
