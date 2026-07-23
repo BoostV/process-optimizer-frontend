@@ -15,4 +15,11 @@ export type TableDataRow = {
   enabled?: boolean
   valid?: boolean
   metaId?: number
+  scoreFunctions?: {
+    scoreName: string
+    hasFunction: boolean
+    useFunction: boolean
+    responseVars: { symbol: string; name: string }[]
+    values: Record<string, string>
+  }[]
 }
