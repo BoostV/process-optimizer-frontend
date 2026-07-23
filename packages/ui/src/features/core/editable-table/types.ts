@@ -17,6 +17,7 @@ export type TableDataRow = {
   metaId?: number
   scoreFunctions?: {
     scoreName: string
+    label: string
     hasFunction: boolean
     useFunction: boolean
     responseVars: { symbol: string; name: string }[]

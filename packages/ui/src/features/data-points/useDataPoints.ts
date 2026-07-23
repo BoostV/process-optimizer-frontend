@@ -268,6 +268,7 @@ const buildScoreFunctions = (
           .map(v => ({ symbol: v.symbol, name: v.name })) ?? []
       return {
         scoreName: sv.name,
+        label: sv.label,
         hasFunction: sv.scoreFunction !== undefined,
         useFunction: resp?.useFunction ?? false,
         responseVars,

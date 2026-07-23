@@ -16,6 +16,7 @@ const row: TableDataRow = {
   scoreFunctions: [
     {
       scoreName: 'quality',
+      label: 'Quality (0-5)',
       hasFunction: true,
       useFunction: true,
       responseVars: [
@@ -44,6 +45,12 @@ describe('EditableTableExpandedRow RESPONSE section', () => {
       </table>
     )
     expect(screen.getByText('Response')).toBeInTheDocument()
+    // objective header uses the human-facing label, not the internal name
+    // ("quality"). It appears both as the score column header and the RESPONSE
+    // section label, hence getAllByText.
+    expect(screen.getAllByText('Quality (0-5)').length).toBeGreaterThanOrEqual(
+      2
+    )
     expect(screen.getByLabelText('Weight')).toHaveValue(150)
     expect(screen.getByLabelText('Viscosity')).toBeInTheDocument()
   })

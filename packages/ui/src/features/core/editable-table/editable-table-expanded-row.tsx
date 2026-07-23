@@ -186,9 +186,7 @@ export const EditableTableExpandedRow = ({
                       mb: 1,
                     }}
                   >
-                    <Box sx={{ width: 80, textTransform: 'capitalize' }}>
-                      {sf.scoreName}
-                    </Box>
+                    <Box sx={{ width: 80 }}>{sf.label}</Box>
                     {sf.responseVars.map(rv => (
                       <TextField
                         key={rv.symbol}
