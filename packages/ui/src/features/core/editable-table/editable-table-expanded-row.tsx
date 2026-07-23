@@ -171,11 +171,13 @@ export const EditableTableExpandedRow = ({
             </Box>
           </Box>
 
-          {editedRow.scoreFunctions?.some(sf => sf.hasFunction) && (
+          {editedRow.scoreFunctions?.some(
+            sf => sf.hasFunction && sf.responseVars.length > 0
+          ) && (
             <Box sx={{ mt: 2 }}>
               <Box sx={{ fontWeight: 'bold', mb: 1 }}>Response</Box>
               {editedRow.scoreFunctions
-                .filter(sf => sf.hasFunction)
+                .filter(sf => sf.hasFunction && sf.responseVars.length > 0)
                 .map(sf => (
                   <Box
                     key={sf.scoreName}

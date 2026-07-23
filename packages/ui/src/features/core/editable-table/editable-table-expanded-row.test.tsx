@@ -55,6 +55,42 @@ describe('EditableTableExpandedRow RESPONSE section', () => {
     expect(screen.getByLabelText('Viscosity')).toBeInTheDocument()
   })
 
+  it('omits an objective (and the whole section) when it has no response vars', () => {
+    const factorOnlyRow: TableDataRow = {
+      isNew: false,
+      metaId: 3,
+      enabled: true,
+      valid: true,
+      dataPoints: [{ name: 'cost', label: 'Cost', value: '3', type: 'rating' }],
+      scoreFunctions: [
+        {
+          scoreName: 'cost',
+          label: 'Cost',
+          hasFunction: true,
+          useFunction: true,
+          responseVars: [], // only factors -> no response inputs
+          values: {},
+        },
+      ],
+    }
+    render(
+      <table>
+        <tbody>
+          <EditableTableExpandedRow
+            colSpan={3}
+            rowId={3}
+            tableRow={factorOnlyRow}
+            setExpanded={() => {}}
+            onAdd={() => {}}
+            onSave={() => {}}
+          />
+        </tbody>
+      </table>
+    )
+    // no "Response" header and no "Cost" objective row in the response section
+    expect(screen.queryByText('Response')).toBeNull()
+  })
+
   it('lets a modified row be saved even when a violation is present (no deadlock)', () => {
     render(
       <table>
