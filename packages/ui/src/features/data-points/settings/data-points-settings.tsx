@@ -205,6 +205,12 @@ export function DataPointsSettings({
                   size="small"
                   variant="contained"
                   color="primary"
+                  // Insert-into-field buttons must not steal focus from the
+                  // expression textarea: a blur would fire the on-blur parse
+                  // error, whose InfoBox shifts these buttons down between
+                  // mousedown and mouseup and cancels the click (so the symbol
+                  // never gets inserted). preventDefault keeps focus + cursor.
+                  onMouseDown={e => e.preventDefault()}
                   onClick={() => onClickFactor(f.name)}
                 >
                   {f.name}
@@ -225,6 +231,9 @@ export function DataPointsSettings({
                   key={v.symbol}
                   size="small"
                   variant="outlined"
+                  // Keep field focus so the symbol inserts and no blur-error
+                  // layout shift cancels the click (see factor buttons above).
+                  onMouseDown={e => e.preventDefault()}
                   onClick={() => registerAndInsert(v)}
                 >
                   {v.name}
