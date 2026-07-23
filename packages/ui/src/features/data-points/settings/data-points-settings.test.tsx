@@ -47,13 +47,7 @@ afterEach(() => {
 
 describe('DataPointsSettings', () => {
   it('renders a tab per objective and a factor button', () => {
-    render(
-      <DataPointsSettings
-        tabs={['Quality (0-5)', 'Cost']}
-        onCancel={() => {}}
-        onSave={() => {}}
-      />
-    )
+    render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
     expect(screen.getByRole('tab', { name: /quality/i })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: /cost/i })).toBeInTheDocument()
     expect(
@@ -62,13 +56,7 @@ describe('DataPointsSettings', () => {
   })
 
   it('dispatches updateScoreFunction on save', () => {
-    render(
-      <DataPointsSettings
-        tabs={['Quality (0-5)', 'Cost']}
-        onCancel={() => {}}
-        onSave={() => {}}
-      />
-    )
+    render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
     fireEvent.change(screen.getByRole('textbox'), {
       target: { value: 'firingAngle/100' },
     })
@@ -76,5 +64,16 @@ describe('DataPointsSettings', () => {
     expect(dispatch).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'updateScoreFunction' })
     )
+  })
+
+  it('disables Save when the active expression fails to parse', () => {
+    render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: 'firingAngle/' },
+    })
+    const saveButton = screen.getByRole('button', { name: /^save$/i })
+    expect(saveButton).toBeDisabled()
+    fireEvent.click(saveButton)
+    expect(dispatch).not.toHaveBeenCalled()
   })
 })

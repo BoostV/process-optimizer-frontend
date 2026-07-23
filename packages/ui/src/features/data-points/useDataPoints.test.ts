@@ -102,5 +102,52 @@ describe('useDataPoints', () => {
       expect(sf?.useFunction).toBe(true)
       expect(sf?.values.weight).toBe('2')
     })
+
+    it('defaults useFunction to false for a row with no responses entry, even when a score function is defined', () => {
+      const { result } = renderHook(() =>
+        useDataPoints(
+          [
+            {
+              type: 'discrete',
+              name: 'F',
+              description: '',
+              min: 0,
+              max: 10,
+              enabled: true,
+            },
+          ],
+          [],
+          [
+            {
+              name: 'quality',
+              label: 'Quality (0-5)',
+              description: '',
+              enabled: true,
+              scoreFunction: {
+                expression: 'weight*2',
+                variables: [
+                  { name: 'Weight', symbol: 'weight', source: 'response' },
+                ],
+              },
+            },
+          ],
+          [
+            {
+              meta: { id: 1, enabled: true, valid: true },
+              data: [
+                { type: 'numeric', name: 'F', value: 3 },
+                { type: 'score', name: 'quality', value: 4 },
+              ],
+              // no `responses` entry for this row
+            },
+          ]
+        )
+      )
+      const sf = result.current.state.rows[0]?.scoreFunctions?.find(
+        s => s.scoreName === 'quality'
+      )
+      expect(sf?.hasFunction).toBe(true)
+      expect(sf?.useFunction).toBe(false)
+    })
   })
 })

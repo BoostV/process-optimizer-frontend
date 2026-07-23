@@ -18,7 +18,6 @@ import {
 import { ScoreFunctionPlayground } from './score-function-playground'
 
 type DataPointsSettingsProps = {
-  tabs: string[]
   onCancel: () => void
   onSave: () => void
 }
@@ -252,7 +251,12 @@ export function DataPointsSettings({
         </Box>
 
         <Box className={classes.settingsControls}>
-          <Button size="small" variant="outlined" onClick={onSaveClick}>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={onSaveClick}
+            disabled={!!expressionError}
+          >
             Save
           </Button>
           <Button size="small" variant="outlined" onClick={onCancel}>

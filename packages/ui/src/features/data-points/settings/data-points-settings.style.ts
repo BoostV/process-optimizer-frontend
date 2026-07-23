@@ -20,12 +20,8 @@ export const useStyles = makeStyles()(theme => ({
     gap: theme.spacing(1),
     flexDirection: 'row',
   },
-  functionContainer: {
-    background: 'coral',
-  },
-  playgroundContainer: {
-    background: 'yellowgreen',
-  },
+  functionContainer: {},
+  playgroundContainer: {},
   function: {
     display: 'flex',
     alignItems: 'center',

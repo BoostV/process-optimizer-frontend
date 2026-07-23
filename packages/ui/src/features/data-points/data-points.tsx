@@ -85,6 +85,7 @@ export function DataPoints(props: DataPointProps) {
           scoreName: sf.scoreName,
           useFunction: sf.useFunction,
           values: sf.responseVars
+            .filter(rv => (sf.values[rv.symbol] ?? '').trim() !== '')
             .map(rv => ({
               symbol: rv.symbol,
               value: Number(sf.values[rv.symbol]),
@@ -187,7 +188,6 @@ export function DataPoints(props: DataPointProps) {
           <>
             {isSettingsOpen && (
               <DataPointsSettings
-                tabs={['Quality (0-5)', 'Quality 2 (0-5)']}
                 onCancel={() => setSettingsOpen(false)}
                 onSave={() => {}}
               />
