@@ -161,6 +161,7 @@ export function DataPointsSettings({
       <Box className={classes.tabContainer}>
         <Box className={classes.tabContainers}>
           <Box className={classes.functionContainer}>
+            <Box>Score function</Box>
             {activeScore?.name === 'quality' && (
               <InfoBox
                 text="Your function should map to the scale 0 - 5."
