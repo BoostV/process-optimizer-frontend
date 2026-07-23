@@ -23,7 +23,6 @@ export const useStyles = makeStyles()(theme => ({
   functionContainer: {
     background: 'coral',
   },
-  functionVariablesContainer: {},
   playgroundContainer: {
     background: 'yellowgreen',
   },
