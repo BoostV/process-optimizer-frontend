@@ -1,5 +1,14 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react'
-import Editor from 'react-simple-code-editor'
+import EditorImport from 'react-simple-code-editor'
+
+// `react-simple-code-editor` is a CommonJS module (`exports.default = Editor`).
+// Some bundler interop paths (notably Vite's optimized deps) surface the default
+// import wrapped as `{ default: Component }` instead of the component itself,
+// which makes React throw "Element type is invalid". Unwrap defensively so it
+// works whether the interop hands back the component or the module object.
+const Editor =
+  (EditorImport as unknown as { default?: typeof EditorImport }).default ??
+  EditorImport
 
 export type ScoreFunctionFieldHandle = {
   insertAtCursor: (text: string) => void
