@@ -287,15 +287,7 @@ export function DataPointsSettings({
               Test your function
             </Button>
             {playgroundOpen && (
-              <>
-                <Box>Playground</Box>
-                <InfoBox
-                  text="Test your score function here"
-                  type="info"
-                  margin="8px 0 8px 0"
-                />
-                <ScoreFunctionPlayground scoreFunction={draft} />
-              </>
+              <ScoreFunctionPlayground scoreFunction={draft} />
             )}
           </Box>
         </Box>
