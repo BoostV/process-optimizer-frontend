@@ -1,4 +1,16 @@
-import { Box, Tab, Tabs, Button, Tooltip, IconButton } from '@mui/material'
+import {
+  Box,
+  Tab,
+  Tabs,
+  Button,
+  Tooltip,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+} from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
 import ScienceIcon from '@mui/icons-material/Science'
@@ -59,6 +71,7 @@ export function DataPointsSettings({
   // Playground is collapsed by default; it resets to closed whenever the
   // settings panel is closed because that unmounts this component.
   const [playgroundOpen, setPlaygroundOpen] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
 
   const numericFactors = experiment.valueVariables.filter(v => v.enabled)
   const responseVars =
@@ -150,6 +163,51 @@ export function DataPointsSettings({
         <SettingsIcon fontSize="small" />
         Settings
       </Box>
+      <Dialog
+        open={helpOpen}
+        onClose={() => setHelpOpen(false)}
+        aria-labelledby="score-function-help-title"
+        maxWidth="sm"
+      >
+        <DialogTitle id="score-function-help-title">
+          How score functions work
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ mb: 2 }}>
+            A score function computes an objective&apos;s score (e.g. quality or
+            cost) for each data point from a formula you define, instead of you
+            typing the score by hand.
+          </Typography>
+          <Typography sx={{ mb: 2 }}>
+            The formula is a math expression over two kinds of variables:
+          </Typography>
+          <Typography component="ul" sx={{ pl: 3, mb: 2 }}>
+            <li>
+              <strong>Factors</strong> — your experiment&apos;s input variables.
+              Click a factor button to insert it; its value is read from each
+              data point automatically.
+            </li>
+            <li>
+              <strong>Responses</strong> — extra measured values that
+              aren&apos;t inputs. Add them with &quot;+ Add response&quot;, then
+              enter their value per data point in the table.
+            </li>
+          </Typography>
+          <Typography sx={{ mb: 2 }}>
+            Build the expression by clicking the variable buttons (or typing),
+            using <code>+ - * /</code>, parentheses and common math functions.
+            The playground lets you try sample values before saving.
+          </Typography>
+          <Typography sx={{ mb: 2 }}>
+            Per data point you can toggle <strong>f(x)</strong> to use the
+            computed value, or switch it off to type a value manually. Quality
+            scores should map to the 0&nbsp;–&nbsp;5 scale.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setHelpOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
       <Tabs
         value={tabIndex}
         onChange={(_, v) => {
@@ -178,7 +236,11 @@ export function DataPointsSettings({
               sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
             >
               <Tooltip title="Help" disableInteractive>
-                <IconButton size="small" aria-label="score function help">
+                <IconButton
+                  size="small"
+                  aria-label="score function help"
+                  onClick={() => setHelpOpen(true)}
+                >
                   <HelpOutlineOutlinedIcon fontSize="small" />
                 </IconButton>
               </Tooltip>

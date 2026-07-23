@@ -95,6 +95,15 @@ describe('DataPointsSettings', () => {
     expect(screen.getByText(playgroundText)).toBeInTheDocument()
   })
 
+  it('opens the help dialog when the help icon is clicked', () => {
+    render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
+    expect(screen.queryByText('How score functions work')).toBeNull()
+    fireEvent.click(
+      screen.getByRole('button', { name: /score function help/i })
+    )
+    expect(screen.getByText('How score functions work')).toBeInTheDocument()
+  })
+
   it('disables Save when the active expression fails to parse', () => {
     render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
     fireEvent.change(screen.getByRole('textbox'), {
