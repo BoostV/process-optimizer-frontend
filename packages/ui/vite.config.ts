@@ -32,6 +32,13 @@ export default defineConfig({
         'react/jsx-dev-runtime',
         'react-dom',
         'react-hook-form',
+        // CJS-only dep: if bundled, rolldown rewrites its internal
+        // `require("react")` to a runtime `__require`, which throws in an ESM
+        // browser env ("Calling `require` ... doesn't expose the `require`
+        // function"). Externalise it like the other deps so the consumer
+        // resolves it (it's a declared dependency) and its bundler handles the
+        // CJS↔ESM interop.
+        'react-simple-code-editor',
         '@boostv/process-optimizer-frontend-api',
         '@boostv/process-optimizer-frontend-core',
         '@boostv/process-optimizer-frontend-plots',
