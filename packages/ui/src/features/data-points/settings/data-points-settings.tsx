@@ -57,16 +57,29 @@ export function DataPointsSettings({
   const responseVars =
     draft?.variables.filter(v => v.source === 'response') ?? []
 
-  const setDraft = (next: ScoreFunctionType) =>
-    activeScore && setDrafts(prev => ({ ...prev, [activeScore.name]: next }))
+  // Functional updater: composes on the latest draft. Using a plain replacement
+  // here would clobber, because registerAndInsert fires two updates in one
+  // handler (add the variable, then insert its symbol into the expression) and
+  // both would otherwise be built from the same stale `draft` closure — dropping
+  // the variable while keeping the symbol in the expression.
+  const setDraft = (update: (d: ScoreFunctionType) => ScoreFunctionType) =>
+    activeScore &&
+    setDrafts(prev => ({
+      ...prev,
+      [activeScore.name]: update(
+        prev[activeScore.name] ?? { expression: '', variables: [] }
+      ),
+    }))
 
   const symbols = draft?.variables.map(v => v.symbol) ?? []
 
   const registerAndInsert = (variable: ScoreFunctionVariableType) => {
     if (!draft) return
-    const exists = draft.variables.find(v => v.symbol === variable.symbol)
-    if (!exists)
-      setDraft({ ...draft, variables: [...draft.variables, variable] })
+    setDraft(d =>
+      d.variables.find(v => v.symbol === variable.symbol)
+        ? d
+        : { ...d, variables: [...d.variables, variable] }
+    )
     fieldRef.current?.insertAtCursor(variable.symbol)
   }
 
@@ -83,16 +96,18 @@ export function DataPointsSettings({
 
   const onAddResponse = () => {
     if (!draft || newResponseName.trim() === '') return
-    const symbol = deriveSymbol(
-      newResponseName,
-      draft.variables.map(v => v.symbol)
-    )
-    setDraft({
-      ...draft,
-      variables: [
-        ...draft.variables,
-        { name: newResponseName, symbol, source: 'response' },
-      ],
+    setDraft(d => {
+      const symbol = deriveSymbol(
+        newResponseName,
+        d.variables.map(v => v.symbol)
+      )
+      return {
+        ...d,
+        variables: [
+          ...d.variables,
+          { name: newResponseName, symbol, source: 'response' },
+        ],
+      }
     })
     setNewResponseName('')
     setAddingResponse(false)
@@ -161,9 +176,7 @@ export function DataPointsSettings({
                   ref={fieldRef}
                   value={draft?.expression ?? ''}
                   symbols={symbols}
-                  onChange={next =>
-                    draft && setDraft({ ...draft, expression: next })
-                  }
+                  onChange={next => setDraft(d => ({ ...d, expression: next }))}
                 />
               </Box>
             </Box>

@@ -66,6 +66,26 @@ describe('DataPointsSettings', () => {
     )
   })
 
+  it('keeps a clicked factor in scoreFunction.variables (not just the expression)', () => {
+    render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
+    fireEvent.click(screen.getByRole('button', { name: /firing angle/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^save$/i }))
+    const call = dispatch.mock.calls.find(
+      c =>
+        c[0].type === 'updateScoreFunction' &&
+        c[0].payload.scoreName === 'quality'
+    )
+    const sf = call?.[0].payload.scoreFunction
+    expect(sf.expression).toContain('firingAngle')
+    expect(sf.variables).toContainEqual(
+      expect.objectContaining({
+        symbol: 'firingAngle',
+        source: 'factor',
+        factorName: 'Firing angle',
+      })
+    )
+  })
+
   it('disables Save when the active expression fails to parse', () => {
     render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
     fireEvent.change(screen.getByRole('textbox'), {
