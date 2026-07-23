@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from 'vitest'
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import { EditableTableExpandedRow } from './editable-table-expanded-row'
 import type { TableDataRow } from './types'
 
@@ -46,6 +46,35 @@ describe('EditableTableExpandedRow RESPONSE section', () => {
     expect(screen.getByText('Response')).toBeInTheDocument()
     expect(screen.getByLabelText('Weight')).toHaveValue(150)
     expect(screen.getByLabelText('Viscosity')).toBeInTheDocument()
+  })
+
+  it('lets a modified row be saved even when a violation is present (no deadlock)', () => {
+    render(
+      <table>
+        <tbody>
+          <EditableTableExpandedRow
+            colSpan={3}
+            rowId={2}
+            tableRow={row}
+            setExpanded={() => {}}
+            onAdd={() => {}}
+            onSave={() => {}}
+            violations={[
+              'All responses must be defined to use the quality function.',
+            ]}
+          />
+        </tbody>
+      </table>
+    )
+    const save = screen.getByRole('button', { name: /save/i })
+    // untouched row: nothing to save yet
+    expect(save).toBeDisabled()
+    // editing a response (the very thing that would clear the violation) must
+    // re-enable Save despite the violation still being present
+    fireEvent.change(screen.getByLabelText('Weight'), {
+      target: { value: '3' },
+    })
+    expect(save).toBeEnabled()
   })
 
   it('shows the missing-response violation via InfoBox', () => {

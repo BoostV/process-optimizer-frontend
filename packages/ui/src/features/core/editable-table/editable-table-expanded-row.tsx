@@ -228,7 +228,7 @@ export const EditableTableExpandedRow = ({
               variant="outlined"
               size="small"
               style={{ float: 'right', marginLeft: 8 }}
-              disabled={!isModified || (violations?.length ?? 0) > 0}
+              disabled={!isModified}
               onClick={() => {
                 if (tableRow.isNew) {
                   onAdd(editedRow)

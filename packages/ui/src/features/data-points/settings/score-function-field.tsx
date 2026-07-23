@@ -18,6 +18,7 @@ type Props = {
   value: string
   symbols: string[]
   onChange: (next: string) => void
+  onBlur?: () => void
 }
 
 // Split an expression into variable/other tokens and wrap recognised symbols in
@@ -34,7 +35,7 @@ const highlight = (code: string, symbols: string[]): string => {
 }
 
 export const ScoreFunctionField = forwardRef<ScoreFunctionFieldHandle, Props>(
-  ({ value, symbols, onChange }, ref) => {
+  ({ value, symbols, onChange, onBlur }, ref) => {
     const lastSelection = useRef<number>(value.length)
 
     useImperativeHandle(ref, () => ({
@@ -58,6 +59,7 @@ export const ScoreFunctionField = forwardRef<ScoreFunctionFieldHandle, Props>(
           lastSelection.current =
             (e.target as HTMLTextAreaElement).selectionStart ?? value.length
         }}
+        onBlur={onBlur}
         textareaId="score-function-input"
         style={{
           fontFamily: 'monospace',

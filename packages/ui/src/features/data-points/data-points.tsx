@@ -189,7 +189,7 @@ export function DataPoints(props: DataPointProps) {
             {isSettingsOpen && (
               <DataPointsSettings
                 onCancel={() => setSettingsOpen(false)}
-                onSave={() => {}}
+                onSave={() => setSettingsOpen(false)}
               />
             )}
             <Box className={classes.tableContainer}>

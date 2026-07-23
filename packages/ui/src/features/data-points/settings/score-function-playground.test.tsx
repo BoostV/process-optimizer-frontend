@@ -12,6 +12,19 @@ describe('ScoreFunctionPlayground', () => {
     ).toBeInTheDocument()
   })
 
+  it('does not create inputs for expression symbols that are not declared variables', () => {
+    render(
+      <ScoreFunctionPlayground
+        scoreFunction={{ expression: 'a b c', variables: [] }}
+      />
+    )
+    expect(screen.queryByLabelText('a')).toBeNull()
+    expect(screen.queryByLabelText('b')).toBeNull()
+    expect(screen.queryByLabelText('c')).toBeNull()
+    // still renders the result area, just no phantom inputs
+    expect(screen.getByTestId('playground-result')).toBeInTheDocument()
+  })
+
   it('computes a live result from test inputs', () => {
     render(
       <ScoreFunctionPlayground

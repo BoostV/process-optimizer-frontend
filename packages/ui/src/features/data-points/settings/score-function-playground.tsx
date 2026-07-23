@@ -11,8 +11,17 @@ type Props = { scoreFunction: ScoreFunctionType | undefined }
 export const ScoreFunctionPlayground = ({ scoreFunction }: Props) => {
   const [inputs, setInputs] = useState<Record<string, string>>({})
 
+  // Only offer test inputs for symbols that are actually declared variables of
+  // the function (factors/responses added via the buttons). Bare identifiers a
+  // user happens to type into the expression ("a b c") are not variables and
+  // must not spawn phantom inputs.
   const symbols = useMemo(
-    () => (scoreFunction ? usedSymbols(scoreFunction.expression) : []),
+    () =>
+      scoreFunction
+        ? usedSymbols(scoreFunction.expression).filter(s =>
+            scoreFunction.variables.some(v => v.symbol === s)
+          )
+        : [],
     [scoreFunction]
   )
 

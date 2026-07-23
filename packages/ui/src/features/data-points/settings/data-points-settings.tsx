@@ -52,6 +52,9 @@ export function DataPointsSettings({
   const fieldRef = useRef<ScoreFunctionFieldHandle>(null)
   const [addingResponse, setAddingResponse] = useState(false)
   const [newResponseName, setNewResponseName] = useState('')
+  // Show the parse error only after the user leaves the field (on blur), not on
+  // every keystroke while they are mid-expression.
+  const [showExpressionError, setShowExpressionError] = useState(false)
 
   const numericFactors = experiment.valueVariables.filter(v => v.enabled)
   const responseVars =
@@ -145,7 +148,10 @@ export function DataPointsSettings({
       </Box>
       <Tabs
         value={tabIndex}
-        onChange={(_, v) => setTabIndex(v)}
+        onChange={(_, v) => {
+          setTabIndex(v)
+          setShowExpressionError(false)
+        }}
         aria-label="score functions"
       >
         {enabledScores.map(sv => (
@@ -176,11 +182,15 @@ export function DataPointsSettings({
                   ref={fieldRef}
                   value={draft?.expression ?? ''}
                   symbols={symbols}
-                  onChange={next => setDraft(d => ({ ...d, expression: next }))}
+                  onChange={next => {
+                    setShowExpressionError(false)
+                    setDraft(d => ({ ...d, expression: next }))
+                  }}
+                  onBlur={() => setShowExpressionError(true)}
                 />
               </Box>
             </Box>
-            {expressionError && (
+            {showExpressionError && expressionError && (
               <InfoBox
                 text={expressionError}
                 type="warning"
