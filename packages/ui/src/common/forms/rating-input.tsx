@@ -16,9 +16,14 @@ import { StarRating } from './star-rating'
 type RatingInputProps = {
   value: string | undefined
   onChange: (val: string) => void
+  readOnly?: boolean
 }
 
-export const RatingInput = ({ value, onChange }: RatingInputProps) => {
+export const RatingInput = ({
+  value,
+  onChange,
+  readOnly = false,
+}: RatingInputProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [tempRating, setTempRating] = useState<string | undefined>(undefined)
 
@@ -52,17 +57,19 @@ export const RatingInput = ({ value, onChange }: RatingInputProps) => {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
+                  disabled={readOnly}
                   onClick={(e: MouseEvent<HTMLElement>) =>
                     setAnchorEl(e.currentTarget)
                   }
                 >
-                  <Star sx={{ color: '#faaf00' }} />
+                  <Star sx={{ color: readOnly ? undefined : '#faaf00' }} />
                 </IconButton>
               </InputAdornment>
             ),
           },
 
           htmlInput: {
+            readOnly,
             sx: {
               minWidth: 24,
             },

@@ -17,6 +17,8 @@ import {
   ScoreVariableType,
   ValueVariableType,
   EditableTableViolation,
+  isValidScoreName,
+  useExperiment,
 } from '@boostv/process-optimizer-frontend-core'
 import { useDataPoints } from './useDataPoints'
 import { DataPointsSettings } from '@ui/features/data-points/settings/data-points-settings'
@@ -53,6 +55,7 @@ export function DataPoints(props: DataPointProps) {
     onUpdateDataPoints,
   } = props
   const { classes } = useStyles()
+  const { dispatch } = useExperiment()
   const [isSettingsOpen, setSettingsOpen] = useState(false)
 
   const enabledValueVariables = valueVariables.filter(v => v.enabled)
@@ -68,13 +71,40 @@ export function DataPoints(props: DataPointProps) {
 
   const isLoadingState = state.rows.length === 0
 
-  const rowAdded = (row: TableDataRow) =>
-    onUpdateDataPoints(
-      addRow({
-        ...row,
-        dataPoints: row.dataPoints.filter(dp => dp.value !== undefined),
+  // The metaId of a freshly added row is assigned inside `addRow` (max id + 1,
+  // pushed to the end of the returned entries), so read it back from there.
+  const dispatchResponses = (row: TableDataRow, metaId: number) =>
+    row.scoreFunctions?.forEach(sf => {
+      if (!sf.hasFunction || !isValidScoreName(sf.scoreName)) {
+        return
+      }
+      dispatch({
+        type: 'updateDataPointResponses',
+        payload: {
+          metaId,
+          scoreName: sf.scoreName,
+          useFunction: sf.useFunction,
+          values: sf.responseVars
+            .map(rv => ({
+              symbol: rv.symbol,
+              value: Number(sf.values[rv.symbol]),
+            }))
+            .filter(v => Number.isFinite(v.value)),
+        },
       })
-    )
+    })
+
+  const rowAdded = (row: TableDataRow) => {
+    const updated = addRow({
+      ...row,
+      dataPoints: row.dataPoints.filter(dp => dp.value !== undefined),
+    })
+    onUpdateDataPoints(updated)
+    const newId = updated[updated.length - 1]?.meta.id
+    if (newId !== undefined) {
+      dispatchResponses(row, newId)
+    }
+  }
 
   const rowsDeleted = (rowIndices: number[]) =>
     onUpdateDataPoints(deleteRows(rowIndices))
@@ -82,8 +112,12 @@ export function DataPoints(props: DataPointProps) {
   const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
     onUpdateDataPoints(setEnabledState(rowIndex, enabled))
 
-  const rowEdited = (rowIndex: number, row: TableDataRow) =>
+  const rowEdited = (rowIndex: number, row: TableDataRow) => {
     onUpdateDataPoints(editRow(rowIndex, row))
+    if (row.metaId !== undefined) {
+      dispatchResponses(row, row.metaId)
+    }
+  }
 
   return (
     <TitleCard

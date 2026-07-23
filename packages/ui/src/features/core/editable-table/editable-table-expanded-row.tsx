@@ -10,6 +10,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
 } from '@mui/material'
 
 import { TableDataRow } from './types'
@@ -61,6 +62,32 @@ export const EditableTableExpandedRow = ({
     })
   }
 
+  const handleResponseEdit = (
+    scoreName: string,
+    symbol: string,
+    value: string
+  ) => {
+    setEditedRow({
+      ...editedRow,
+      scoreFunctions: editedRow.scoreFunctions?.map(sf =>
+        sf.scoreName === scoreName
+          ? { ...sf, values: { ...sf.values, [symbol]: value } }
+          : sf
+      ),
+    })
+  }
+
+  const handleToggleUseFunction = (scoreName: string) => {
+    setEditedRow({
+      ...editedRow,
+      scoreFunctions: editedRow.scoreFunctions?.map(sf =>
+        sf.scoreName === scoreName
+          ? { ...sf, useFunction: !sf.useFunction }
+          : sf
+      ),
+    })
+  }
+
   return (
     <TableRow className={classes.row}>
       {/* colSpan already equals the table's full column count; adding more would
@@ -105,25 +132,84 @@ export const EditableTableExpandedRow = ({
                     ))}
                   </TableRow>
                   <TableRow>
-                    {editedRow.dataPoints.map((d, i) => (
-                      <EditableTableCell
-                        key={'expandedvalues' + i}
-                        value={d.value}
-                        type={d.type}
-                        isEditMode
-                        onChange={(value: string) => handleEdit(i, value)}
-                        options={d.options}
-                        style={{
-                          fontSize: 14,
-                          border: 'none',
-                        }}
-                      />
-                    ))}
+                    {editedRow.dataPoints.map((d, i) => {
+                      const scoreFunction = editedRow.scoreFunctions?.find(
+                        sf => sf.scoreName === d.name && sf.hasFunction
+                      )
+                      return (
+                        <EditableTableCell
+                          key={'expandedvalues' + i}
+                          value={d.value}
+                          type={d.type}
+                          isEditMode
+                          onChange={(value: string) => handleEdit(i, value)}
+                          options={d.options}
+                          scoreName={scoreFunction ? d.name : undefined}
+                          scoreFunction={
+                            scoreFunction
+                              ? {
+                                  hasFunction: scoreFunction.hasFunction,
+                                  useFunction: scoreFunction.useFunction,
+                                }
+                              : undefined
+                          }
+                          onToggleUseFunction={
+                            scoreFunction
+                              ? () => handleToggleUseFunction(d.name)
+                              : undefined
+                          }
+                          style={{
+                            fontSize: 14,
+                            border: 'none',
+                          }}
+                        />
+                      )
+                    })}
                   </TableRow>
                 </TableBody>
               </Table>
             </Box>
           </Box>
+
+          {editedRow.scoreFunctions?.some(sf => sf.hasFunction) && (
+            <Box sx={{ mt: 2 }}>
+              <Box sx={{ fontWeight: 'bold', mb: 1 }}>Response</Box>
+              {editedRow.scoreFunctions
+                .filter(sf => sf.hasFunction)
+                .map(sf => (
+                  <Box
+                    key={sf.scoreName}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                      mb: 1,
+                    }}
+                  >
+                    <Box sx={{ width: 80, textTransform: 'capitalize' }}>
+                      {sf.scoreName}
+                    </Box>
+                    {sf.responseVars.map(rv => (
+                      <TextField
+                        key={rv.symbol}
+                        size="small"
+                        type="number"
+                        label={rv.name}
+                        slotProps={{ htmlInput: { 'aria-label': rv.name } }}
+                        value={sf.values[rv.symbol] ?? ''}
+                        onChange={e =>
+                          handleResponseEdit(
+                            sf.scoreName,
+                            rv.symbol,
+                            e.target.value
+                          )
+                        }
+                      />
+                    ))}
+                  </Box>
+                ))}
+            </Box>
+          )}
 
           {violations !== undefined &&
             violations.length > 0 &&
@@ -142,7 +228,7 @@ export const EditableTableExpandedRow = ({
               variant="outlined"
               size="small"
               style={{ float: 'right', marginLeft: 8 }}
-              disabled={!isModified}
+              disabled={!isModified || (violations?.length ?? 0) > 0}
               onClick={() => {
                 if (tableRow.isNew) {
                   onAdd(editedRow)

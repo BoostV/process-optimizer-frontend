@@ -1,5 +1,7 @@
 import {
+  Box,
   FormControl,
+  IconButton,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -7,6 +9,7 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material'
+import PersonIcon from '@mui/icons-material/Person'
 import { ChangeEvent, CSSProperties } from 'react'
 import useStyles from './editable-table-cell.style'
 import { RatingInput } from '@ui/common'
@@ -20,6 +23,9 @@ type EditableTableCellProps = {
   onChange?: (value: string) => void
   tooltip?: string
   style?: CSSProperties
+  scoreName?: string
+  scoreFunction?: { hasFunction: boolean; useFunction: boolean }
+  onToggleUseFunction?: () => void
 }
 
 export function EditableTableCell({
@@ -30,12 +36,21 @@ export function EditableTableCell({
   onChange,
   tooltip,
   style,
+  scoreName,
+  scoreFunction,
+  onToggleUseFunction,
 }: EditableTableCellProps) {
   const { classes } = useStyles()
 
+  const readOnly = scoreFunction?.useFunction ?? false
+
   const textField =
     type === 'rating' ? (
-      <RatingInput value={value} onChange={val => onChange?.(val)} />
+      <RatingInput
+        value={value}
+        onChange={val => onChange?.(val)}
+        readOnly={readOnly}
+      />
     ) : (
       <TextField
         size="small"
@@ -43,8 +58,24 @@ export function EditableTableCell({
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           onChange?.('' + e.target.value)
         }
+        slotProps={{ htmlInput: { readOnly } }}
       />
     )
+
+  const fxToggle = scoreFunction?.hasFunction ? (
+    <Tooltip disableInteractive title={`Use ${scoreName} function`}>
+      <IconButton
+        size="small"
+        aria-label={`Use ${scoreName} function`}
+        color={scoreFunction.useFunction ? 'primary' : 'default'}
+        onClick={() => onToggleUseFunction?.()}
+      >
+        <Box component="span" sx={{ fontSize: 13, fontStyle: 'italic' }}>
+          f(x)
+        </Box>
+      </IconButton>
+    </Tooltip>
+  ) : null
 
   // Value is undefined when new categorical variable is added to existing dataPoints
   const categoricalValue = value === undefined ? '' : value
@@ -71,7 +102,7 @@ export function EditableTableCell({
               </Select>
             </FormControl>
           ) : (
-            <>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
               {tooltip !== undefined ? (
                 <Tooltip disableInteractive title={tooltip}>
                   {textField}
@@ -79,12 +110,20 @@ export function EditableTableCell({
               ) : (
                 <>{textField}</>
               )}
-            </>
+              {fxToggle}
+            </Box>
           )}
         </TableCell>
       ) : (
         <TableCell className={classes.cell} style={{ ...style }}>
-          {value}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            {value}
+            {scoreFunction?.hasFunction && !scoreFunction.useFunction && (
+              <Tooltip disableInteractive title="User defined value">
+                <PersonIcon fontSize="small" color="action" />
+              </Tooltip>
+            )}
+          </Box>
         </TableCell>
       )}
     </>
