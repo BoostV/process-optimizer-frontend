@@ -1,6 +1,7 @@
 import { Box, Tab, Tabs, Button, Tooltip, IconButton } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
+import ScienceIcon from '@mui/icons-material/Science'
 import { useMemo, useRef, useState } from 'react'
 import { InfoBox } from '@ui/features/core'
 import { parse } from 'mathjs'
@@ -55,6 +56,9 @@ export function DataPointsSettings({
   // Show the parse error only after the user leaves the field (on blur), not on
   // every keystroke while they are mid-expression.
   const [showExpressionError, setShowExpressionError] = useState(false)
+  // Playground is collapsed by default; it resets to closed whenever the
+  // settings panel is closed because that unmounts this component.
+  const [playgroundOpen, setPlaygroundOpen] = useState(false)
 
   const numericFactors = experiment.valueVariables.filter(v => v.enabled)
   const responseVars =
@@ -273,13 +277,26 @@ export function DataPointsSettings({
           </Box>
 
           <Box className={classes.playgroundContainer}>
-            <Box>Playground</Box>
-            <InfoBox
-              text="Test your score function here"
-              type="info"
-              margin="8px 0 8px 0"
-            />
-            <ScoreFunctionPlayground scoreFunction={draft} />
+            <Button
+              size="small"
+              variant="text"
+              startIcon={<ScienceIcon fontSize="small" />}
+              onClick={() => setPlaygroundOpen(open => !open)}
+              aria-expanded={playgroundOpen}
+            >
+              Test your function
+            </Button>
+            {playgroundOpen && (
+              <>
+                <Box>Playground</Box>
+                <InfoBox
+                  text="Test your score function here"
+                  type="info"
+                  margin="8px 0 8px 0"
+                />
+                <ScoreFunctionPlayground scoreFunction={draft} />
+              </>
+            )}
           </Box>
         </Box>
 

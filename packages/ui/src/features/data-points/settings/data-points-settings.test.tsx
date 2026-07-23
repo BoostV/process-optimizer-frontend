@@ -86,6 +86,14 @@ describe('DataPointsSettings', () => {
     )
   })
 
+  it('keeps the playground collapsed until "Test your function" is clicked', () => {
+    render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
+    // collapsed by default
+    expect(screen.queryByText('Playground')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: /test your function/i }))
+    expect(screen.getByText('Playground')).toBeInTheDocument()
+  })
+
   it('disables Save when the active expression fails to parse', () => {
     render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
     fireEvent.change(screen.getByRole('textbox'), {
