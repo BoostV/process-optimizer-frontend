@@ -86,10 +86,6 @@ export const ScoreFunctionPlayground = ({ scoreFunction }: Props) => {
           value={result ?? ''}
           sx={{ maxWidth: '10rem' }}
         />
-        {/* <Typography variant="caption">Result</Typography>
-        <Typography data-testid="playground-result">
-          {result === undefined ? '—' : result}
-        </Typography> */}
       </Box>
     </Box>
   )

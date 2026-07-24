@@ -20,6 +20,7 @@ import {
   useExperiment,
   deriveSymbol,
   usedSymbols,
+  scoreNames,
   type ScoreFunctionType,
   type ScoreFunctionVariableType,
 } from '@boostv/process-optimizer-frontend-core'
@@ -222,7 +223,7 @@ export function DataPointsSettings({
         <Box className={classes.tabContainers}>
           <Box className={classes.functionContainer}>
             <Box className={classes.title}>Score function</Box>
-            {activeScore?.name === 'quality' && (
+            {activeScore?.name === scoreNames[0] && (
               <InfoBox
                 text="Your function should map to the scale 0 - 5."
                 type="info"
