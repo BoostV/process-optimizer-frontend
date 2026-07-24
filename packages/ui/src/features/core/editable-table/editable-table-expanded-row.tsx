@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import * as R from 'remeda'
 import useStyles from './editable-table-expanded-row.style'
 import {
@@ -88,6 +88,16 @@ export const EditableTableExpandedRow = ({
     })
   }
 
+  // Objectives that show response inputs, and the widest response count, so the
+  // inputs can be laid out in a grid where column N of every objective aligns.
+  const responseObjectives = (editedRow.scoreFunctions ?? []).filter(
+    sf => sf.hasFunction && sf.responseVars.length > 0
+  )
+  const maxResponseVars = responseObjectives.reduce(
+    (max, sf) => Math.max(max, sf.responseVars.length),
+    0
+  )
+
   return (
     <TableRow className={classes.row}>
       {/* colSpan already equals the table's full column count; adding more would
@@ -171,31 +181,35 @@ export const EditableTableExpandedRow = ({
             </Box>
           </Box>
 
-          {editedRow.scoreFunctions?.some(
-            sf => sf.hasFunction && sf.responseVars.length > 0
-          ) && (
+          {responseObjectives.length > 0 && (
             <Box sx={{ mt: 2 }}>
               <Box sx={{ fontWeight: 'bold', mb: 1 }}>Response</Box>
-              {editedRow.scoreFunctions
-                .filter(sf => sf.hasFunction && sf.responseVars.length > 0)
-                .map(sf => (
-                  <Box
-                    key={sf.scoreName}
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 2,
-                      mb: 1,
-                    }}
-                  >
-                    <Box sx={{ width: 80 }}>{sf.label}</Box>
+              {/* Grid: label column + one column per response slot, so the Nth
+                  input of every objective lines up in the same column. */}
+              <Box
+                sx={{
+                  display: 'grid',
+                  // content-sized input columns (capped per-field via maxWidth)
+                  // instead of 1fr, so inputs stay compact rather than stretch.
+                  gridTemplateColumns: `auto repeat(${maxResponseVars}, auto)`,
+                  columnGap: 2,
+                  rowGap: 1,
+                  alignItems: 'center',
+                  justifyContent: 'start',
+                }}
+              >
+                {responseObjectives.map(sf => (
+                  <Fragment key={sf.scoreName}>
+                    <Box sx={{ whiteSpace: 'nowrap' }}>{sf.label}</Box>
                     {sf.responseVars.map(rv => (
                       <TextField
                         key={rv.symbol}
                         size="small"
-                        type="number"
                         label={rv.name}
-                        slotProps={{ htmlInput: { 'aria-label': rv.name } }}
+                        slotProps={{
+                          htmlInput: { 'aria-label': rv.name },
+                          inputLabel: { shrink: true },
+                        }}
                         value={sf.values[rv.symbol] ?? ''}
                         onChange={e =>
                           handleResponseEdit(
@@ -204,10 +218,18 @@ export const EditableTableExpandedRow = ({
                             e.target.value
                           )
                         }
+                        sx={{ maxWidth: '10rem' }}
                       />
                     ))}
-                  </Box>
+                    {/* pad short rows so later columns stay aligned */}
+                    {Array.from({
+                      length: maxResponseVars - sf.responseVars.length,
+                    }).map((_, i) => (
+                      <Box key={`pad-${sf.scoreName}-${i}`} />
+                    ))}
+                  </Fragment>
                 ))}
+              </Box>
             </Box>
           )}
 

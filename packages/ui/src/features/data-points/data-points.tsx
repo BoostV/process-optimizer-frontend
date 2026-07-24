@@ -88,7 +88,8 @@ export function DataPoints(props: DataPointProps) {
             .filter(rv => (sf.values[rv.symbol] ?? '').trim() !== '')
             .map(rv => ({
               symbol: rv.symbol,
-              value: Number(sf.values[rv.symbol]),
+              // match factor inputs: accept a comma decimal separator
+              value: Number((sf.values[rv.symbol] ?? '').replaceAll(',', '.')),
             }))
             .filter(v => Number.isFinite(v.value)),
         },

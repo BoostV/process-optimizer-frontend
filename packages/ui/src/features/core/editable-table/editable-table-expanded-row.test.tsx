@@ -51,7 +51,7 @@ describe('EditableTableExpandedRow RESPONSE section', () => {
     expect(screen.getAllByText('Quality (0-5)').length).toBeGreaterThanOrEqual(
       2
     )
-    expect(screen.getByLabelText('Weight')).toHaveValue(150)
+    expect(screen.getByLabelText('Weight')).toHaveValue('150')
     expect(screen.getByLabelText('Viscosity')).toBeInTheDocument()
   })
 
