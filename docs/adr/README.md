@@ -32,7 +32,8 @@ record no ADR — that's expected. One ADR per branch is a smell.
 
 ## Index
 
-| ADR                                              | Title                                                            | Status   |
-| ------------------------------------------------ | ---------------------------------------------------------------- | -------- |
-| [0001](0001-pareto-uncertainty-visualization.md) | Pareto front uncertainty: band view + opt-in hover ellipse       | accepted |
-| [0002](0002-adrs-and-ephemeral-agent-docs.md)    | Record decisions in ADRs; treat agent plans/specs as branch-only | accepted |
+| ADR                                                 | Title                                                                         | Status   |
+| --------------------------------------------------- | ----------------------------------------------------------------------------- | -------- |
+| [0001](0001-pareto-uncertainty-visualization.md)    | Pareto front uncertainty: band view + opt-in hover ellipse                    | accepted |
+| [0002](0002-adrs-and-ephemeral-agent-docs.md)       | Record decisions in ADRs; treat agent plans/specs as branch-only              | accepted |
+| [0003](0003-score-functions-additive-data-model.md) | Score functions: additive data model persisting into the existing score entry | accepted |
