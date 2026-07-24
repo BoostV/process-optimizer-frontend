@@ -13,9 +13,7 @@ describe('ScoreFunctionField', () => {
         onChange={() => {}}
       />
     )
-    // Scoped to the highlighted <pre>: react-simple-code-editor also mounts the
-    // raw value as the textarea's initial text node, so an unscoped
-    // screen.getByText(/weight/) matches both and throws "multiple elements".
+    // The coloured text lives in the highlighted <pre> overlay.
     expect(container.querySelector('pre')).toHaveTextContent('weight')
   })
 

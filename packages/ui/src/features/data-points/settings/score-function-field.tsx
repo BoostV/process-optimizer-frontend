@@ -1,18 +1,7 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react'
-import EditorImport from 'react-simple-code-editor'
+import { forwardRef } from 'react'
+import { HighlightField, type HighlightFieldHandle } from '@ui/common'
 
-// `react-simple-code-editor` is a CommonJS module (`exports.default = Editor`).
-// Some bundler interop paths (notably Vite's optimized deps) surface the default
-// import wrapped as `{ default: Component }` instead of the component itself,
-// which makes React throw "Element type is invalid". Unwrap defensively so it
-// works whether the interop hands back the component or the module object.
-const Editor =
-  (EditorImport as unknown as { default?: typeof EditorImport }).default ??
-  EditorImport
-
-export type ScoreFunctionFieldHandle = {
-  insertAtCursor: (text: string) => void
-}
+export type ScoreFunctionFieldHandle = HighlightFieldHandle
 
 type Props = {
   value: string
@@ -21,61 +10,33 @@ type Props = {
   onBlur?: () => void
 }
 
-// Split an expression into variable/other tokens and wrap recognised symbols in
-// a coloured span. Recognised = present in `symbols`. Everything else is plain.
-const highlight = (code: string, symbols: string[]): string => {
-  const escape = (s: string) =>
-    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  return code.replace(/[A-Za-z_][A-Za-z0-9_]*|[^A-Za-z_]+/g, token => {
-    if (symbols.includes(token)) {
-      return `<span style="color:#1565c0">${escape(token)}</span>`
-    }
-    return escape(token)
-  })
-}
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+// Wrap recognised symbols (present in `symbols`) in a coloured span; everything
+// else is escaped plain text.
+const highlightSymbols = (code: string, symbols: string[]): string =>
+  code.replace(/[A-Za-z_][A-Za-z0-9_]*|[^A-Za-z_]+/g, token =>
+    symbols.includes(token)
+      ? `<span style="color:#1565c0">${escapeHtml(token)}</span>`
+      : escapeHtml(token)
+  )
 
 export const ScoreFunctionField = forwardRef<ScoreFunctionFieldHandle, Props>(
-  ({ value, symbols, onChange, onBlur }, ref) => {
-    const lastSelection = useRef<number>(value.length)
-
-    useImperativeHandle(ref, () => ({
-      insertAtCursor: (text: string) => {
-        const pos = lastSelection.current ?? value.length
-        onChange(value.slice(0, pos) + text + value.slice(pos))
-      },
-    }))
-
-    return (
-      <Editor
-        value={value}
-        onValueChange={onChange}
-        highlight={code => highlight(code, symbols)}
-        padding={10}
-        onKeyUp={e => {
-          lastSelection.current =
-            (e.target as HTMLTextAreaElement).selectionStart ?? value.length
-        }}
-        onClick={e => {
-          lastSelection.current =
-            (e.target as HTMLTextAreaElement).selectionStart ?? value.length
-        }}
-        onBlur={onBlur}
-        placeholder="Enter function, e.g. a+b*c"
-        textareaId="score-function-input"
-        style={{
-          fontFamily: 'monospace',
-          fontSize: 16,
-          border: '1px solid rgba(0,0,0,0.23)',
-          borderRadius: 4,
-          minHeight: 48,
-          // Cap growth (~6 lines: 6×24px line + 2×10px padding) and scroll,
-          // so a long expression doesn't grow into the playground beside it.
-          maxHeight: 164,
-          overflowY: 'auto',
-          lineHeight: '24px',
-        }}
-      />
-    )
-  }
+  ({ value, symbols, onChange, onBlur }, ref) => (
+    <HighlightField
+      ref={ref}
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      highlight={code => highlightSymbols(code, symbols)}
+      placeholder="Enter function, e.g. a+b*c"
+      ariaLabel="score function"
+      textareaId="score-function-input"
+      minHeight={48}
+      // cap growth (~6 lines) and scroll rather than pushing the layout
+      maxHeight={164}
+    />
+  )
 )
 ScoreFunctionField.displayName = 'ScoreFunctionField'
