@@ -103,7 +103,7 @@ describe('useDataPoints', () => {
       expect(sf?.values.weight).toBe('2')
     })
 
-    it('defaults useFunction to false for a row with no responses entry, even when a score function is defined', () => {
+    it('keeps existing points manual but defaults new points to using the function', () => {
       const { result } = renderHook(() =>
         useDataPoints(
           [
@@ -143,11 +143,18 @@ describe('useDataPoints', () => {
           ]
         )
       )
-      const sf = result.current.state.rows[0]?.scoreFunctions?.find(
+      const rows = result.current.state.rows
+      // pre-existing point (no responses) stays manual until the user opts in
+      const existing = rows[0]?.scoreFunctions?.find(
         s => s.scoreName === 'quality'
       )
-      expect(sf?.hasFunction).toBe(true)
-      expect(sf?.useFunction).toBe(false)
+      expect(existing?.hasFunction).toBe(true)
+      expect(existing?.useFunction).toBe(false)
+      // the new-point template defaults to using the function
+      const newRow = rows
+        .find(r => r.isNew)
+        ?.scoreFunctions?.find(s => s.scoreName === 'quality')
+      expect(newRow?.useFunction).toBe(true)
     })
   })
 })

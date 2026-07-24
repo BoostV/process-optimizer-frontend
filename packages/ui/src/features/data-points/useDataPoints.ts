@@ -256,7 +256,12 @@ const mapDataPointToTableType = (
 
 const buildScoreFunctions = (
   scoreVariables: ScoreVariableType[],
-  entry: DataEntry
+  entry: DataEntry,
+  // Whether a row with no stored responses entry yet should default to using
+  // the function. True only for the "add new point" template, so NEW points
+  // use the function by default while pre-existing points stay manual (keeping
+  // their entered value) until the user explicitly switches them.
+  defaultUseFunction = false
 ) =>
   scoreVariables
     .filter(sv => sv.enabled)
@@ -270,7 +275,11 @@ const buildScoreFunctions = (
         scoreName: sv.name,
         label: sv.label,
         hasFunction: sv.scoreFunction !== undefined,
-        useFunction: resp?.useFunction ?? false,
+        // A stored per-row responses entry always wins; otherwise fall back to
+        // the caller's default (true only for new-point template).
+        useFunction:
+          resp?.useFunction ??
+          (defaultUseFunction && sv.scoreFunction !== undefined),
         responseVars,
         values: Object.fromEntries(
           (resp?.values ?? []).map(v => [v.symbol, String(v.value)])
@@ -304,10 +313,15 @@ const buildEmptyRow = (
         }))
       ),
     isNew: true,
-    scoreFunctions: buildScoreFunctions(scoreVariables, {
-      meta: { id: 0, enabled: true, valid: true },
-      data: [],
-    }),
+    scoreFunctions: buildScoreFunctions(
+      scoreVariables,
+      {
+        meta: { id: 0, enabled: true, valid: true },
+        data: [],
+      },
+      // new points default to using the function
+      true
+    ),
   } satisfies TableDataRow
 }
 
