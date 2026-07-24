@@ -1506,6 +1506,66 @@ describe('updateScoreFunction + updateDataPointResponses', () => {
     expect(state.dataPoints[0]?.responses?.[0]?.values[0]?.value).toBe(2)
   })
 
+  it('creates a score entry when the row has none yet (new function-mode point)', () => {
+    // a new point: factor data present, function mode, but no score entry
+    // (the blank score column is dropped when the row is converted)
+    let state: ExperimentType = produce(buildStateWithFunction(fn), draft => {
+      const dp = draft.dataPoints[0]
+      if (dp !== undefined) {
+        dp.data = [{ type: 'numeric', name: 'Weight', value: 3 }]
+      }
+    })
+    state = experimentReducer(state, {
+      type: 'updateDataPointResponses',
+      payload: {
+        metaId: 1,
+        scoreName: 'quality',
+        useFunction: true,
+        values: [{ symbol: 'weight', value: 3 }],
+      },
+    })
+    const score = state.dataPoints[0]?.data.find(
+      d => d.type === 'score' && d.name === 'quality'
+    )
+    expect(score?.value).toBe(6) // 3 * 2, entry created from scratch
+  })
+
+  it('inserts a created score entry in canonical order (before a later objective)', () => {
+    // multi-objective: quality + cost both exist as score variables; the point
+    // has a cost score but no quality score, with cost currently first
+    let state: ExperimentType = produce(buildStateWithFunction(fn), draft => {
+      if (!draft.scoreVariables.some(s => s.name === scoreNames[1])) {
+        draft.scoreVariables.push({
+          name: scoreNames[1],
+          label: 'Cost',
+          description: '',
+          enabled: true,
+        })
+      }
+      const dp = draft.dataPoints[0]
+      if (dp !== undefined) {
+        dp.data = [
+          { type: 'numeric', name: 'Weight', value: 3 },
+          { type: 'score', name: scoreNames[1], value: 2 },
+        ]
+      }
+    })
+    state = experimentReducer(state, {
+      type: 'updateDataPointResponses',
+      payload: {
+        metaId: 1,
+        scoreName: 'quality',
+        useFunction: true,
+        values: [{ symbol: 'weight', value: 3 }],
+      },
+    })
+    const scoreOrder = state.dataPoints[0]?.data
+      .filter(d => d.type === 'score')
+      .map(d => d.name)
+    // quality (scoreNames[0]) must precede cost (scoreNames[1]), not appended after
+    expect(scoreOrder).toEqual([scoreNames[0], scoreNames[1]])
+  })
+
   it('does not recompute a row in manual mode', () => {
     let state: ExperimentType = buildStateWithFunction(fn)
     // set manual value 9, useFunction false

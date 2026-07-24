@@ -197,10 +197,21 @@ export type ExperimentAction =
 
 // Recompute and persist the {type:'score', name} value for one objective of one
 // data entry, when that objective is in function mode. Manual rows are untouched.
+// Canonical order of a data point's `data` entries (values, then categoricals,
+// then scores) — the same order defaultSorted enforces. Score-entry order is
+// positionally significant downstream (multi-objective yi columns, calculateXi,
+// request hash), so a newly created score entry must be placed accordingly.
+const dataEntryOrder = (state: ExperimentType): string[] =>
+  state.valueVariables
+    .map(v => v.name)
+    .concat(state.categoricalVariables.map(v => v.name))
+    .concat(state.scoreVariables.map(v => v.name))
+
 const recomputeScore = (
   dataEntry: DataEntry,
   scoreName: ScoreName,
-  scoreFunction: ScoreFunctionType | undefined
+  scoreFunction: ScoreFunctionType | undefined,
+  orderedNames: string[]
 ): void => {
   const responses = dataEntry.responses?.find(r => r.scoreName === scoreName)
   if (
@@ -210,11 +221,24 @@ const recomputeScore = (
   )
     return
   const value = computeScore(scoreFunction, responses.values, dataEntry.data)
+  if (value === undefined) return
   const scoreEntry = dataEntry.data.find(
     d => d.type === 'score' && d.name === scoreName
   )
-  if (value !== undefined && scoreEntry !== undefined) {
+  if (scoreEntry !== undefined) {
     scoreEntry.value = value
+  } else {
+    // A new data point in function mode may have no score entry yet (the blank
+    // score column is dropped when converting the row). Create it so the
+    // computed value is persisted and the point validates.
+    dataEntry.data.push({ type: 'score', name: scoreName, value })
+    // Restore canonical ordering so a score entered out of order (e.g. cost
+    // before quality) doesn't misalign the optimizer's score columns.
+    dataEntry.data.sort(
+      (a, b) =>
+        orderedNames.findIndex(n => n === a.name) -
+        orderedNames.findIndex(n => n === b.name)
+    )
   }
 }
 
@@ -540,11 +564,13 @@ const experimentReducerInner = produce(
         )
         if (sv !== undefined) {
           sv.scoreFunction = action.payload.scoreFunction
+          const orderedNames = dataEntryOrder(state)
           state.dataPoints.forEach(dp =>
             recomputeScore(
               dp,
               action.payload.scoreName,
-              action.payload.scoreFunction
+              action.payload.scoreFunction,
+              orderedNames
             )
           )
         }
@@ -573,7 +599,12 @@ const experimentReducerInner = produce(
           const sv = state.scoreVariables.find(
             it => it.name === action.payload.scoreName
           )
-          recomputeScore(dp, action.payload.scoreName, sv?.scoreFunction)
+          recomputeScore(
+            dp,
+            action.payload.scoreName,
+            sv?.scoreFunction,
+            dataEntryOrder(state)
+          )
         }
         break
       }
