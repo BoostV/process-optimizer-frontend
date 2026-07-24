@@ -1567,8 +1567,14 @@ describe('updateScoreFunction + updateDataPointResponses', () => {
   })
 
   it('does not recompute a row in manual mode', () => {
-    let state: ExperimentType = buildStateWithFunction(fn)
-    // set manual value 9, useFunction false
+    // a manually-entered score of 9
+    let state: ExperimentType = produce(buildStateWithFunction(fn), draft => {
+      const score = draft.dataPoints[0]?.data.find(
+        d => d.type === 'score' && d.name === 'quality'
+      )
+      if (score !== undefined) score.value = 9
+    })
+    // put the row in manual mode (useFunction false)
     state = experimentReducer(state, {
       type: 'updateDataPointResponses',
       payload: {
@@ -1578,7 +1584,8 @@ describe('updateScoreFunction + updateDataPointResponses', () => {
         values: [{ symbol: 'weight', value: 2 }],
       },
     })
-    // changing the function should NOT overwrite the manual score
+    // changing the function must NOT overwrite the manual score. If manual mode
+    // were ignored, recompute would run weight*100 = 200; the value must stay 9.
     state = experimentReducer(state, {
       type: 'updateScoreFunction',
       payload: {
@@ -1589,6 +1596,6 @@ describe('updateScoreFunction + updateDataPointResponses', () => {
     const score = state.dataPoints[0]?.data.find(
       d => d.type === 'score' && d.name === 'quality'
     )
-    expect(score?.value).not.toBe(200)
+    expect(score?.value).toBe(9)
   })
 })
