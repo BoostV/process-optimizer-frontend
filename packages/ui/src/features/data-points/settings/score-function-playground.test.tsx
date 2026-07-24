@@ -21,8 +21,8 @@ describe('ScoreFunctionPlayground', () => {
     expect(screen.queryByLabelText('a')).toBeNull()
     expect(screen.queryByLabelText('b')).toBeNull()
     expect(screen.queryByLabelText('c')).toBeNull()
-    // still renders the result area, just no phantom inputs
-    expect(screen.getByTestId('playground-result')).toBeInTheDocument()
+    // still renders the Result field, just no phantom inputs
+    expect(screen.getByLabelText('Result')).toBeInTheDocument()
   })
 
   it('computes a live result from test inputs', () => {
@@ -37,14 +37,13 @@ describe('ScoreFunctionPlayground', () => {
         }}
       />
     )
-    fireEvent.change(screen.getByLabelText('weight'), {
+    fireEvent.change(screen.getByLabelText('Weight'), {
       target: { value: '7' },
     })
-    fireEvent.change(screen.getByLabelText('viscosity'), {
+    fireEvent.change(screen.getByLabelText('Viscosity'), {
       target: { value: '15' },
     })
-    expect(screen.getByTestId('playground-result').textContent).toContain(
-      '33.5'
-    )
+    // 7/2 + 15*2 = 33.5, shown in the read-only Result field
+    expect(screen.getByDisplayValue('33.5')).toBeInTheDocument()
   })
 })

@@ -17,15 +17,24 @@ export const useStyles = makeStyles()(theme => ({
   },
   tabContainers: {
     display: 'flex',
-    gap: theme.spacing(1),
     flexDirection: 'row',
+    marginBottom: theme.spacing(4),
   },
-  functionContainer: {},
-  playgroundContainer: {},
+  functionContainer: {
+    paddingRight: theme.spacing(2),
+    minWidth: '24rem',
+  },
+  playgroundContainer: {
+    borderLeft: `1px solid ${theme.palette.divider}`,
+    paddingLeft: theme.spacing(2),
+  },
+  title: {
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(1),
+  },
   function: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.spacing(1),
   },
   settingsControls: {
     display: 'flex',

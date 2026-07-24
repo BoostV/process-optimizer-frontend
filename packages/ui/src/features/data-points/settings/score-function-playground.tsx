@@ -44,26 +44,52 @@ export const ScoreFunctionPlayground = ({ scoreFunction }: Props) => {
   const values = symbols.map(s => ({ symbol: s, value: Number(inputs[s]) }))
   const result = computeScore(testFn, values, [])
 
+  // Label inputs with the variable's human name (e.g. "Pin elevation"), not the
+  // mathjs symbol ("pinElevation").
+  const nameOf = (s: string) =>
+    scoreFunction.variables.find(v => v.symbol === s)?.name ?? s
+
   return (
     <Box
-      sx={{ display: 'flex', gap: 2, alignItems: 'flex-end', flexWrap: 'wrap' }}
+      sx={{
+        display: 'flex',
+        gap: 2,
+        alignItems: 'flex-end',
+        flexWrap: 'wrap',
+        marginTop: '-4px',
+      }}
     >
       {symbols.map(s => (
         <TextField
           key={s}
           size="small"
           type="number"
-          label={s}
-          slotProps={{ htmlInput: { 'aria-label': s } }}
+          label={nameOf(s)}
+          slotProps={{
+            htmlInput: { 'aria-label': nameOf(s) },
+            inputLabel: { shrink: true },
+          }}
           value={inputs[s] ?? ''}
           onChange={e => setInputs(prev => ({ ...prev, [s]: e.target.value }))}
+          sx={{ maxWidth: '10rem' }}
         />
       ))}
       <Box>
-        <Typography variant="caption">Result</Typography>
+        <TextField
+          key="result"
+          size="small"
+          label="Result"
+          slotProps={{
+            htmlInput: { 'aria-label': 'Result', readOnly: true },
+            inputLabel: { shrink: true },
+          }}
+          value={result ?? ''}
+          sx={{ maxWidth: '10rem' }}
+        />
+        {/* <Typography variant="caption">Result</Typography>
         <Typography data-testid="playground-result">
           {result === undefined ? '—' : result}
-        </Typography>
+        </Typography> */}
       </Box>
     </Box>
   )

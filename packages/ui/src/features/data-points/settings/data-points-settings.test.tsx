@@ -86,15 +86,6 @@ describe('DataPointsSettings', () => {
     )
   })
 
-  it('keeps the playground collapsed until "Test your function" is clicked', () => {
-    render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
-    const playgroundText = 'No function added. Add a function to test it.'
-    // collapsed by default
-    expect(screen.queryByText(playgroundText)).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: /test your function/i }))
-    expect(screen.getByText(playgroundText)).toBeInTheDocument()
-  })
-
   it('opens the help dialog when the help icon is clicked', () => {
     render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
     expect(screen.queryByText('How score functions work')).toBeNull()

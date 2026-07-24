@@ -13,13 +13,13 @@ import {
 } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
-import ScienceIcon from '@mui/icons-material/Science'
 import { useMemo, useRef, useState } from 'react'
 import { InfoBox } from '@ui/features/core'
 import { parse } from 'mathjs'
 import {
   useExperiment,
   deriveSymbol,
+  usedSymbols,
   type ScoreFunctionType,
   type ScoreFunctionVariableType,
 } from '@boostv/process-optimizer-frontend-core'
@@ -68,9 +68,6 @@ export function DataPointsSettings({
   // Show the parse error only after the user leaves the field (on blur), not on
   // every keystroke while they are mid-expression.
   const [showExpressionError, setShowExpressionError] = useState(false)
-  // Playground is collapsed by default; it resets to closed whenever the
-  // settings panel is closed because that unmounts this component.
-  const [playgroundOpen, setPlaygroundOpen] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
 
   const numericFactors = experiment.valueVariables.filter(v => v.enabled)
@@ -201,7 +198,7 @@ export function DataPointsSettings({
           <Typography sx={{ mb: 2 }}>
             Per data point you can toggle <strong>f(x)</strong> to use the
             computed value, or switch it off to type a value manually. Quality
-            scores should map to the 0&nbsp;–&nbsp;5 scale.
+            scores should map to the given scale.
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -215,6 +212,7 @@ export function DataPointsSettings({
           setShowExpressionError(false)
         }}
         aria-label="score functions"
+        sx={{ borderBottom: 1, borderColor: 'divider' }}
       >
         {enabledScores.map(sv => (
           <Tab key={sv.name} label={sv.label} />
@@ -223,7 +221,7 @@ export function DataPointsSettings({
       <Box className={classes.tabContainer}>
         <Box className={classes.tabContainers}>
           <Box className={classes.functionContainer}>
-            <Box>Score function</Box>
+            <Box className={classes.title}>Score function</Box>
             {activeScore?.name === 'quality' && (
               <InfoBox
                 text="Your function should map to the scale 0 - 5."
@@ -231,10 +229,7 @@ export function DataPointsSettings({
                 margin="8px 0 8px 0"
               />
             )}
-            <Box
-              className={classes.function}
-              sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-            >
+            <Box className={classes.function}>
               <Tooltip title="Help" disableInteractive>
                 <IconButton
                   size="small"
@@ -244,14 +239,38 @@ export function DataPointsSettings({
                   <HelpOutlineOutlinedIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Box sx={{ flexGrow: 1 }}>
+              {/* minWidth:0 lets this flex item shrink below the expression's
+                  content width so a long expression wraps instead of
+                  overflowing the column into the playground beside it. */}
+              <Box sx={{ flexGrow: 1, minWidth: 0 }}>
                 <ScoreFunctionField
                   ref={fieldRef}
                   value={draft?.expression ?? ''}
                   symbols={symbols}
                   onChange={next => {
                     setShowExpressionError(false)
-                    setDraft(d => ({ ...d, expression: next }))
+                    setDraft(d => {
+                      // Auto-register a factor when the user types its name
+                      // (matching a known factor's symbol), so it highlights and
+                      // shows in the playground without needing the button.
+                      const known = new Set(d.variables.map(v => v.symbol))
+                      const used = usedSymbols(next)
+                      const autoFactors = numericFactors
+                        .map(f => ({
+                          name: f.name,
+                          symbol: deriveSymbol(f.name, []),
+                          source: 'factor' as const,
+                          factorName: f.name,
+                        }))
+                        .filter(
+                          v => used.includes(v.symbol) && !known.has(v.symbol)
+                        )
+                      return {
+                        ...d,
+                        expression: next,
+                        variables: [...d.variables, ...autoFactors],
+                      }
+                    })
                   }}
                   onBlur={() => setShowExpressionError(true)}
                 />
@@ -272,6 +291,7 @@ export function DataPointsSettings({
                   size="small"
                   variant="contained"
                   color="primary"
+                  sx={{ boxShadow: 'none', textTransform: 'none' }}
                   // Insert-into-field buttons must not steal focus from the
                   // expression textarea: a blur would fire the on-blur parse
                   // error, whose InfoBox shifts these buttons down between
@@ -298,6 +318,7 @@ export function DataPointsSettings({
                   key={v.symbol}
                   size="small"
                   variant="outlined"
+                  sx={{ backgroundColor: 'white', textTransform: 'none' }}
                   // Keep field focus so the symbol inserts and no blur-error
                   // layout shift cancels the click (see factor buttons above).
                   onMouseDown={e => e.preventDefault()}
@@ -339,18 +360,8 @@ export function DataPointsSettings({
           </Box>
 
           <Box className={classes.playgroundContainer}>
-            <Button
-              size="small"
-              variant="text"
-              startIcon={<ScienceIcon fontSize="small" />}
-              onClick={() => setPlaygroundOpen(open => !open)}
-              aria-expanded={playgroundOpen}
-            >
-              Test your function
-            </Button>
-            {playgroundOpen && (
-              <ScoreFunctionPlayground scoreFunction={draft} />
-            )}
+            <Box className={classes.title}>Test your function</Box>
+            <ScoreFunctionPlayground scoreFunction={draft} />
           </Box>
         </Box>
 

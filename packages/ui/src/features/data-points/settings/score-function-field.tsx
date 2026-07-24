@@ -60,6 +60,7 @@ export const ScoreFunctionField = forwardRef<ScoreFunctionFieldHandle, Props>(
             (e.target as HTMLTextAreaElement).selectionStart ?? value.length
         }}
         onBlur={onBlur}
+        placeholder="Enter function, e.g. a+b*c"
         textareaId="score-function-input"
         style={{
           fontFamily: 'monospace',
@@ -67,6 +68,11 @@ export const ScoreFunctionField = forwardRef<ScoreFunctionFieldHandle, Props>(
           border: '1px solid rgba(0,0,0,0.23)',
           borderRadius: 4,
           minHeight: 48,
+          // Cap growth (~6 lines: 6×24px line + 2×10px padding) and scroll,
+          // so a long expression doesn't grow into the playground beside it.
+          maxHeight: 164,
+          overflowY: 'auto',
+          lineHeight: '24px',
         }}
       />
     )
