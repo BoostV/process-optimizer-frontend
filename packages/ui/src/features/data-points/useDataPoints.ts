@@ -91,6 +91,12 @@ export const useDataPoints = (
     [dataPoints]
   )
 
+  const setNote = useCallback(
+    (rowIndex: number, note: string | undefined) =>
+      _setNote(dataPoints, rowIndex, note),
+    [dataPoints]
+  )
+
   return {
     state,
     addRow,
@@ -98,6 +104,7 @@ export const useDataPoints = (
     deleteRows,
     editRow,
     setEnabledState,
+    setNote,
   }
 }
 
@@ -216,6 +223,19 @@ const _setEnabledState = (
     const originalRow = result[rowIndex]
     if (originalRow !== undefined) {
       originalRow.meta.enabled = enabled
+    }
+  })
+
+const _setNote = (
+  original: DataEntry[],
+  rowIndex: number,
+  note: string | undefined
+) =>
+  produce(original, result => {
+    const originalRow = result[rowIndex]
+    if (originalRow !== undefined) {
+      // Empty/undefined note ⇒ drop the key so no note is persisted.
+      originalRow.meta.note = note === '' ? undefined : note
     }
   })
 

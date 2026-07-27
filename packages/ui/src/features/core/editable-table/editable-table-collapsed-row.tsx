@@ -7,12 +7,22 @@ import {
   Tooltip,
   Box,
   Checkbox,
+  Popover,
+  TextField,
 } from '@mui/material'
 import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
-import { Add, DescriptionOutlined, Edit } from '@mui/icons-material'
+import {
+  Add,
+  Cancel,
+  Check,
+  Delete,
+  DescriptionOutlined,
+  Edit,
+} from '@mui/icons-material'
+import { useState, type MouseEvent } from 'react'
 
-const NOTE_TOOLTIP_MAX = 60
+const NOTE_TOOLTIP_MAX = 100
 const truncateNote = (note: string) =>
   note.length > NOTE_TOOLTIP_MAX ? `${note.slice(0, NOTE_TOOLTIP_MAX)}…` : note
 
@@ -22,6 +32,7 @@ interface EditableTableCollapsedRowProps {
   tableRow: TableDataRow
   setExpanded: (expanded: boolean) => void
   onEnabledToggled: (enabled: boolean) => void
+  onNoteChanged: (note: string | undefined) => void
   onSelected: (isShiftKeyDown: boolean, isCtrlKeyDown: boolean) => void
   isEditingDisabled?: boolean
   isSelectionExists: boolean
@@ -34,6 +45,7 @@ export const EditableTableCollapsedRow = ({
   tableRow,
   setExpanded,
   onEnabledToggled,
+  onNoteChanged,
   onSelected,
   isEditingDisabled,
   isSelected,
@@ -41,6 +53,24 @@ export const EditableTableCollapsedRow = ({
 }: EditableTableCollapsedRowProps) => {
   const { classes } = useStyles()
   const rowEnabled = tableRow.enabled && tableRow.valid
+
+  const [noteAnchorEl, setNoteAnchorEl] = useState<HTMLElement | null>(null)
+  const [noteDraft, setNoteDraft] = useState('')
+
+  const openNotePopover = (e: MouseEvent<HTMLElement>) => {
+    e.stopPropagation()
+    setNoteDraft(tableRow.note ?? '')
+    setNoteAnchorEl(e.currentTarget)
+  }
+  const closeNotePopover = () => setNoteAnchorEl(null)
+  const saveNote = () => {
+    onNoteChanged(noteDraft.trim() === '' ? undefined : noteDraft)
+    closeNotePopover()
+  }
+  const deleteNote = () => {
+    onNoteChanged(undefined)
+    closeNotePopover()
+  }
 
   return (
     <TableRow
@@ -120,15 +150,81 @@ export const EditableTableCollapsedRow = ({
           <TableCell className={classes.editCell}>
             <div className={classes.buttonContainer}>
               {tableRow.note !== undefined && tableRow.note !== '' && (
-                <Tooltip disableInteractive title={truncateNote(tableRow.note)}>
-                  <span
-                    data-testid="note-indicator"
-                    aria-label={truncateNote(tableRow.note)}
-                    style={{ display: 'inline-flex', alignItems: 'center' }}
+                <>
+                  <Tooltip
+                    disableInteractive
+                    title={truncateNote(tableRow.note)}
                   >
-                    <DescriptionOutlined fontSize="small" color="primary" />
-                  </span>
-                </Tooltip>
+                    <span>
+                      <IconButton
+                        size="small"
+                        data-testid="note-indicator"
+                        aria-label={truncateNote(tableRow.note)}
+                        onClick={openNotePopover}
+                      >
+                        <DescriptionOutlined fontSize="small" color="primary" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                  <Popover
+                    open={Boolean(noteAnchorEl)}
+                    anchorEl={noteAnchorEl}
+                    onClose={closeNotePopover}
+                    onClick={e => e.stopPropagation()}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  >
+                    <Box sx={{ p: 1.5, width: '32rem', maxWidth: '90vw' }}>
+                      <TextField
+                        autoFocus
+                        fullWidth
+                        variant="standard"
+                        value={noteDraft}
+                        onChange={e => setNoteDraft(e.target.value)}
+                        slotProps={{ htmlInput: { 'aria-label': 'Edit note' } }}
+                      />
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          gap: 0.5,
+                          mt: 1,
+                        }}
+                      >
+                        <Tooltip disableInteractive title="Save">
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            aria-label="Save note"
+                            onClick={saveNote}
+                          >
+                            <Check fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip disableInteractive title="Cancel">
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            aria-label="Cancel note"
+                            onClick={closeNotePopover}
+                          >
+                            <Cancel fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip disableInteractive title="Delete">
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            aria-label="Delete note"
+                            onClick={deleteNote}
+                          >
+                            <Delete fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </Box>
+                  </Popover>
+                </>
               )}
               <Tooltip disableInteractive title="Edit">
                 <span>
