@@ -145,3 +145,51 @@ describe('EditableTableExpandedRow RESPONSE section', () => {
     ).toBeInTheDocument()
   })
 })
+
+describe('EditableTableExpandedRow NOTE section', () => {
+  it('renders the note input and prefills an existing note', () => {
+    render(
+      <table>
+        <tbody>
+          <EditableTableExpandedRow
+            colSpan={3}
+            rowId={2}
+            tableRow={{ ...row, note: 'existing note' }}
+            setExpanded={() => {}}
+            onAdd={() => {}}
+            onSave={() => {}}
+          />
+        </tbody>
+      </table>
+    )
+    expect(screen.getByText('Note')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Add note here')).toHaveValue(
+      'existing note'
+    )
+  })
+
+  it('saves an edited note through onSave', () => {
+    let saved: { note?: string } | undefined
+    render(
+      <table>
+        <tbody>
+          <EditableTableExpandedRow
+            colSpan={3}
+            rowId={2}
+            tableRow={row}
+            setExpanded={() => {}}
+            onAdd={() => {}}
+            onSave={r => {
+              saved = r
+            }}
+          />
+        </tbody>
+      </table>
+    )
+    fireEvent.change(screen.getByPlaceholderText('Add note here'), {
+      target: { value: 'forgot the red button' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /save/i }))
+    expect(saved?.note).toBe('forgot the red button')
+  })
+})
