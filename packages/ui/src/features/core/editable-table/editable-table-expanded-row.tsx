@@ -244,8 +244,6 @@ export const EditableTableExpandedRow = ({
             <Box sx={{ fontWeight: 'bold', mb: 1 }}>Note</Box>
             <TextField
               fullWidth
-              multiline
-              minRows={2}
               size="small"
               placeholder="Add note here"
               value={editedRow.note ?? ''}
