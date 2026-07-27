@@ -154,6 +154,7 @@ const convertToDataEntry = (
     enabled: row.enabled ?? true,
     id: row.metaId ?? 0,
     valid: row.valid ?? true,
+    ...(row.note !== undefined && row.note !== '' ? { note: row.note } : {}),
   } satisfies DataEntry['meta']
   if (
     data.length <
@@ -189,6 +190,7 @@ const _editRow = (original: DataEntry[], rowIndex: number, row: DataEntry) =>
     if (originalRow !== undefined) {
       originalRow.meta.enabled = row.meta.enabled ?? originalRow.meta.enabled
       originalRow.meta.id = row.meta.id ?? originalRow.meta.id
+      originalRow.meta.note = row.meta.note
       row.data.forEach(dp => {
         const originalDataPoint = originalRow.data.find(
           odp => odp.name === dp.name
@@ -396,6 +398,7 @@ const buildRows = (
         enabled: item.meta.enabled,
         valid: item.meta.valid,
         metaId: item.meta.id,
+        note: item.meta.note,
         scoreFunctions: buildScoreFunctions(scoreVariables, item),
         // Uncomment the following line to display a meta data property in the table
         // .concat([{ name: 'id', value: `${item.meta.id}` }]),

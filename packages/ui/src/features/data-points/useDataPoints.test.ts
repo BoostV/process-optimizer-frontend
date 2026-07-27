@@ -157,4 +157,58 @@ describe('useDataPoints', () => {
       expect(newRow?.useFunction).toBe(true)
     })
   })
+
+  describe('note', () => {
+    it('persists a row note into meta.note on edit', () => {
+      const original = [
+        { meta: { id: 1, enabled: true, valid: true }, data: [] },
+      ]
+      const { result } = renderHook(() => useDataPoints([], [], [], original))
+      const edited = result.current.editRow(0, {
+        isNew: false,
+        metaId: 1,
+        enabled: true,
+        valid: true,
+        note: 'measured twice',
+        dataPoints: [],
+      })
+      expect(edited[0]?.meta.note).toBe('measured twice')
+    })
+
+    it('clears meta.note when the row note is empty', () => {
+      const original = [
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'old' },
+          data: [],
+        },
+      ]
+      const { result } = renderHook(() => useDataPoints([], [], [], original))
+      const edited = result.current.editRow(0, {
+        isNew: false,
+        metaId: 1,
+        enabled: true,
+        valid: true,
+        note: '',
+        dataPoints: [],
+      })
+      expect(edited[0]?.meta.note).toBeUndefined()
+    })
+
+    it('exposes meta.note as row.note when building rows', () => {
+      const { result } = renderHook(() =>
+        useDataPoints(
+          [],
+          [],
+          [],
+          [
+            {
+              meta: { id: 1, enabled: true, valid: true, note: 'hello' },
+              data: [],
+            },
+          ]
+        )
+      )
+      expect(result.current.state.rows[0]?.note).toBe('hello')
+    })
+  })
 })
