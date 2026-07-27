@@ -872,4 +872,51 @@ describe('converters', () => {
       expect(actual[1]?.meta.description).toEqual('I am also a description')
     })
   })
+
+  describe('note round-trip', () => {
+    const valueVars = [
+      {
+        type: 'continuous' as const,
+        name: 'A',
+        description: '',
+        min: 0,
+        max: 10,
+        enabled: true,
+      },
+    ]
+
+    it('writes the note as a meta column in CSV', () => {
+      const csv = dataPointsToCSV([
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'seemed fine' },
+          data: [{ type: 'numeric', name: 'A', value: 1 }],
+        },
+      ])
+      expect(csv).toContain('note')
+      expect(csv).toContain('seemed fine')
+    })
+
+    it('parses the note back from CSV', () => {
+      const csv = 'id;A;enabled;valid;note\n1;1;true;true;seemed fine'
+      const actual = csvToDataPoints(csv, valueVars, [], [])
+      expect(actual[0]?.meta.note).toBe('seemed fine')
+    })
+
+    it('round-trips a note through export and import', () => {
+      const input = [
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'seemed fine' },
+          data: [{ type: 'numeric' as const, name: 'A', value: 1 }],
+        },
+      ]
+      const back = csvToDataPoints(dataPointsToCSV(input), valueVars, [], [])
+      expect(back[0]?.meta.note).toBe('seemed fine')
+    })
+
+    it('does not set a note when the CSV note column is empty', () => {
+      const csv = 'id;A;enabled;valid;note\n1;1;true;true;'
+      const actual = csvToDataPoints(csv, valueVars, [], [])
+      expect(actual[0]?.meta.note).toBeUndefined()
+    })
+  })
 })

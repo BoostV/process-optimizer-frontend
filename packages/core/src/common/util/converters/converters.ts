@@ -286,5 +286,8 @@ const convertToMetaData = (
         : true,
     id: 'id' in parsedMeta ? Number(parsedMeta['id'] ?? idx + 1) : idx + 1,
   }
+  if (result.note === '' || result.note === undefined) {
+    delete result.note
+  }
   return result
 }
