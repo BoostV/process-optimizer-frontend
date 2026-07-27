@@ -154,11 +154,17 @@ export const dataPointsToCSV = (
             })
             .map(
               line =>
+                // Emit meta values in the SAME order as the `meta` header
+                // union (looked up by key), not by each row's own key order.
+                // Rows may have different optional meta keys (e.g. `note` vs
+                // `description`); a positional dump would misalign columns and
+                // land one row's value under another column on re-import.
                 `${line.meta.id}${separator}${line.data
                   .concat(
-                    Object.entries(line.meta as object)
-                      .filter(e => e[0] !== 'id')
-                      .map(e => e[1])
+                    meta.map(key => {
+                      const value = (line.meta as Record<string, unknown>)[key]
+                      return value === undefined ? '' : String(value)
+                    })
                   )
                   .join(separator)}`
             )

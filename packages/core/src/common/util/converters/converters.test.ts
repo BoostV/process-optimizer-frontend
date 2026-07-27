@@ -918,5 +918,25 @@ describe('converters', () => {
       const actual = csvToDataPoints(csv, valueVars, [], [])
       expect(actual[0]?.meta.note).toBeUndefined()
     })
+
+    it('keeps the note aligned when rows have different optional meta keys', () => {
+      // Row 1 has a note but no description; row 2 has a description but no
+      // note. The CSV header is the union of meta keys, so meta values must be
+      // emitted by header order — otherwise row 2's description would land in
+      // the note column and be read back as a note.
+      const input = [
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'has note' },
+          data: [{ type: 'numeric' as const, name: 'A', value: 1 }],
+        },
+        {
+          meta: { id: 2, enabled: true, valid: true, description: 'has desc' },
+          data: [{ type: 'numeric' as const, name: 'A', value: 2 }],
+        },
+      ]
+      const back = csvToDataPoints(dataPointsToCSV(input), valueVars, [], [])
+      expect(back[0]?.meta.note).toBe('has note')
+      expect(back[1]?.meta.note).toBeUndefined()
+    })
   })
 })
