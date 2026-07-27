@@ -10,7 +10,11 @@ import {
 } from '@mui/material'
 import { TableDataRow } from './types'
 import { EditableTableCell } from './editable-table-cell'
-import { Add, Edit } from '@mui/icons-material'
+import { Add, DescriptionOutlined, Edit } from '@mui/icons-material'
+
+const NOTE_TOOLTIP_MAX = 60
+const truncateNote = (note: string) =>
+  note.length > NOTE_TOOLTIP_MAX ? `${note.slice(0, NOTE_TOOLTIP_MAX)}…` : note
 
 interface EditableTableCollapsedRowProps {
   colSpan: number
@@ -115,6 +119,17 @@ export const EditableTableCollapsedRow = ({
           })}
           <TableCell className={classes.editCell}>
             <div className={classes.buttonContainer}>
+              {tableRow.note !== undefined && tableRow.note !== '' && (
+                <Tooltip disableInteractive title={truncateNote(tableRow.note)}>
+                  <span
+                    data-testid="note-indicator"
+                    aria-label={truncateNote(tableRow.note)}
+                    style={{ display: 'inline-flex', alignItems: 'center' }}
+                  >
+                    <DescriptionOutlined fontSize="small" color="primary" />
+                  </span>
+                </Tooltip>
+              )}
               <Tooltip disableInteractive title="Edit">
                 <span>
                   <IconButton
