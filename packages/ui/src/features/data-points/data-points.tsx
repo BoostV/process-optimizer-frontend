@@ -2,8 +2,8 @@ import { CircularProgress, IconButton, Box, Tooltip } from '@mui/material'
 
 import { EditableTable } from '../core'
 import SwapVertIcon from '@mui/icons-material/SwapVert'
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
-import SettingsIcon from '@mui/icons-material/Settings'
+import StarIcon from '@mui/icons-material/Star'
+import StarBorderIcon from '@mui/icons-material/StarBorder'
 import { TitleCard } from '../core/title-card/title-card'
 import DownloadCSVButton from './download-csv-button'
 import useStyles from './data-points.style'
@@ -162,16 +162,16 @@ export function DataPoints(props: DataPointProps) {
                   <SwapVertIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
-              <Tooltip disableInteractive title="Settings">
+              <Tooltip disableInteractive title="Score functions">
                 <IconButton
                   size="small"
                   className={classes.iconLight}
                   onClick={() => setSettingsOpen(!isSettingsOpen)}
                 >
                   {isSettingsOpen ? (
-                    <SettingsOutlinedIcon fontSize="small" />
+                    <StarBorderIcon fontSize="small" />
                   ) : (
-                    <SettingsIcon fontSize="small" />
+                    <StarIcon fontSize="small" />
                   )}
                 </IconButton>
               </Tooltip>

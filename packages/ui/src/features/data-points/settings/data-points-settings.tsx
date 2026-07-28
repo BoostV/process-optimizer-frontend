@@ -11,7 +11,7 @@ import {
   DialogActions,
   Typography,
 } from '@mui/material'
-import SettingsIcon from '@mui/icons-material/Settings'
+import StarIcon from '@mui/icons-material/Star'
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
 import { useMemo, useRef, useState } from 'react'
 import { InfoBox } from '@ui/features/core'
@@ -158,8 +158,8 @@ export function DataPointsSettings({
   return (
     <Box className={classes.main}>
       <Box className={classes.header}>
-        <SettingsIcon fontSize="small" />
-        Settings
+        <StarIcon fontSize="small" />
+        Score functions
       </Box>
       <Dialog
         open={helpOpen}
@@ -222,7 +222,6 @@ export function DataPointsSettings({
       <Box className={classes.tabContainer}>
         <Box className={classes.tabContainers}>
           <Box className={classes.functionContainer}>
-            <Box className={classes.title}>Score function</Box>
             {activeScore?.name === scoreNames[0] && (
               <InfoBox
                 text="Your function should map to the scale 0 - 5."
