@@ -74,4 +74,51 @@ describe('computeScore', () => {
       )
     ).toBe(5)
   })
+
+  it('ignores declared variables the expression does not use', () => {
+    // expression uses only `water`; the extra factor vars have no data — must NOT bail
+    const fn = {
+      expression: 'water',
+      variables: [
+        {
+          name: 'Pin elevation',
+          symbol: 'pinElevation',
+          source: 'factor' as const,
+          factorName: 'Pin elevation',
+        },
+        {
+          name: 'Orangeknas',
+          symbol: 'orangeknas',
+          source: 'factor' as const,
+          factorName: 'Orangeknas',
+        },
+        { name: 'water', symbol: 'water', source: 'response' as const },
+      ],
+    }
+    const factorData = [
+      { type: 'numeric' as const, name: 'Pin elevation', value: 130 },
+    ]
+    expect(computeScore(fn, [{ symbol: 'water', value: 4 }], factorData)).toBe(
+      4
+    )
+  })
+
+  it('still returns undefined when a USED symbol cannot be resolved', () => {
+    const fn = {
+      expression: 'pinElevation + water',
+      variables: [
+        {
+          name: 'Pin elevation',
+          symbol: 'pinElevation',
+          source: 'factor' as const,
+          factorName: 'Pin elevation',
+        },
+        { name: 'water', symbol: 'water', source: 'response' as const },
+      ],
+    }
+    // Pin elevation used but absent from factorData -> undefined
+    expect(
+      computeScore(fn, [{ symbol: 'water', value: 4 }], [])
+    ).toBeUndefined()
+  })
 })

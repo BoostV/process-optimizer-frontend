@@ -46,8 +46,10 @@ export const computeScore = (
   responseValues: { symbol: string; value: number }[],
   factorData: DataPointType[]
 ): number | undefined => {
+  const used = new Set(usedSymbols(fn.expression))
   const scope: Record<string, number> = {}
   for (const variable of fn.variables) {
+    if (!used.has(variable.symbol)) continue
     if (variable.source === 'response') {
       const rv = responseValues.find(r => r.symbol === variable.symbol)
       if (rv === undefined || !Number.isFinite(rv.value)) return undefined
