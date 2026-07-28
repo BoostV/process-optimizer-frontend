@@ -37,6 +37,7 @@ type DataPointProps = {
   warning?: string
   onToggleNewestFirst: () => void
   onUpdateDataPoints: (dataPoints: DataEntry[]) => void
+  csvSeparator?: string
 }
 
 export function DataPoints(props: DataPointProps) {
@@ -53,6 +54,7 @@ export function DataPoints(props: DataPointProps) {
     warning,
     onToggleNewestFirst,
     onUpdateDataPoints,
+    csvSeparator = ';',
   } = props
   const { classes } = useStyles()
   const { dispatch } = useExperiment()
@@ -143,7 +145,7 @@ export function DataPoints(props: DataPointProps) {
                 light
                 onClick={() =>
                   saveCSVToLocalFile(
-                    dataPointsToCSV(dataPoints),
+                    dataPointsToCSV(dataPoints, csvSeparator),
                     experimentId + '.csv'
                   )
                 }
@@ -156,6 +158,7 @@ export function DataPoints(props: DataPointProps) {
                 categoricalVariables={enabledCategoricalVariables}
                 valueVariables={enabledValueVariables}
                 scoreVariables={scoreVariables}
+                separator={csvSeparator}
               />
               <Tooltip disableInteractive title="Reverse order">
                 <IconButton

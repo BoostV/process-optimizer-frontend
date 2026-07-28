@@ -966,4 +966,33 @@ describe('converters', () => {
       expect(back[0]?.meta.note).toBe(note)
     })
   })
+
+  describe.each([';', ',', '\t', '|'])('separator %j round-trip', sep => {
+    it('round-trips values and notes', () => {
+      const valueVars = [
+        {
+          type: 'continuous' as const,
+          name: 'A',
+          description: '',
+          min: 0,
+          max: 10,
+          enabled: true,
+        },
+      ]
+      const input = [
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'x;y,z\tw|q' },
+          data: [{ type: 'numeric' as const, name: 'A', value: 1 }],
+        },
+      ]
+      const back = csvToDataPoints(
+        dataPointsToCSV(input, sep),
+        valueVars,
+        [],
+        [],
+        sep
+      )
+      expect(back[0]?.meta.note).toBe('x;y,z\tw|q')
+    })
+  })
 })

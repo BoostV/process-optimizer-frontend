@@ -24,6 +24,7 @@ interface UploadCSVButtonProps {
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   scoreVariables: ScoreVariableType[]
+  separator?: string
 }
 
 const UploadCSVButton = ({
@@ -32,6 +33,7 @@ const UploadCSVButton = ({
   valueVariables,
   categoricalVariables,
   scoreVariables,
+  separator = ';',
 }: UploadCSVButtonProps) => {
   const handleFileUpload = (files: File[]) => {
     if (files && files.length > 0 && files[0] !== undefined) {
@@ -41,7 +43,8 @@ const UploadCSVButton = ({
             data,
             valueVariables,
             categoricalVariables,
-            scoreVariables
+            scoreVariables,
+            separator
           )
         )
       )
@@ -58,6 +61,7 @@ const UploadCSVButton = ({
           style={{ display: 'none' }}
           inputProps={{
             accept: '.csv',
+            'data-testid': 'upload-csv-input',
           }}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             handleFileUpload(Array.from(e.target.files || []))
