@@ -45,3 +45,22 @@ it('parses using the provided separator', async () => {
     value: 5,
   })
 })
+
+it('calls onError (not onUpload) when the CSV cannot be parsed', async () => {
+  const onUpload = vi.fn()
+  const onError = vi.fn()
+  render(
+    <UploadCSVButton
+      onUpload={onUpload}
+      onError={onError}
+      valueVariables={valueVars}
+      categoricalVariables={[]}
+      scoreVariables={[]}
+    />
+  )
+  // header doesn't contain the expected 'A' column (e.g. wrong delimiter) →
+  // csvToDataPoints throws → onError, never onUpload
+  uploadFile('nope;nada\n1;2')
+  await waitFor(() => expect(onError).toHaveBeenCalled())
+  expect(onUpload).not.toHaveBeenCalled()
+})

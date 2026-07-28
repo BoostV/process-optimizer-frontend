@@ -38,6 +38,7 @@ type DataPointProps = {
   onToggleNewestFirst: () => void
   onUpdateDataPoints: (dataPoints: DataEntry[]) => void
   csvSeparator?: string
+  onCsvImportError?: (error: unknown) => void
 }
 
 export function DataPoints(props: DataPointProps) {
@@ -55,6 +56,7 @@ export function DataPoints(props: DataPointProps) {
     onToggleNewestFirst,
     onUpdateDataPoints,
     csvSeparator = ';',
+    onCsvImportError,
   } = props
   const { classes } = useStyles()
   const { dispatch } = useExperiment()
@@ -159,6 +161,7 @@ export function DataPoints(props: DataPointProps) {
                 valueVariables={enabledValueVariables}
                 scoreVariables={scoreVariables}
                 separator={csvSeparator}
+                onError={onCsvImportError}
               />
               <Tooltip disableInteractive title="Reverse order">
                 <IconButton
