@@ -14,11 +14,12 @@ export const useStyles = makeStyles()(theme => ({
   },
   tabContainer: {
     padding: theme.spacing(1),
+    paddingTop: theme.spacing(2),
   },
   tabContainers: {
     display: 'flex',
     flexDirection: 'row',
-    marginBottom: theme.spacing(4),
+    marginBottom: theme.spacing(2),
   },
   functionContainer: {
     paddingRight: theme.spacing(2),
