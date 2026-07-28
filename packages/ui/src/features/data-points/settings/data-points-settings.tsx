@@ -10,6 +10,8 @@ import {
   DialogContent,
   DialogActions,
   Typography,
+  ToggleButtonGroup,
+  ToggleButton,
 } from '@mui/material'
 import StarIcon from '@mui/icons-material/Star'
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
@@ -21,6 +23,7 @@ import {
   deriveSymbol,
   usedSymbols,
   scoreNames,
+  countDataPointsMissingResponses,
   type ScoreFunctionType,
   type ScoreFunctionVariableType,
 } from '@boostv/process-optimizer-frontend-core'
@@ -52,6 +55,12 @@ export function DataPointsSettings({
     [experiment.scoreVariables]
   )
   const activeScore = enabledScores[tabIndex]
+
+  // Per-objective intent for what Save should do to existing data points.
+  type BulkIntent = 'unchanged' | 'enable' | 'disable'
+  const [bulkIntents, setBulkIntents] = useState<Record<string, BulkIntent>>({})
+  const activeIntent: BulkIntent =
+    (activeScore && bulkIntents[activeScore.name]) ?? 'unchanged'
 
   // Draft function per objective, seeded from the stored one.
   const [drafts, setDrafts] = useState<Record<string, ScoreFunctionType>>(() =>
@@ -141,6 +150,24 @@ export function DataPointsSettings({
     }
   })()
 
+  // Warning reflects the DRAFT function (what Save will persist + apply).
+  const missingCount = useMemo(
+    () =>
+      activeScore !== undefined
+        ? countDataPointsMissingResponses(
+            experiment.dataPoints,
+            activeScore.name,
+            drafts[activeScore.name]
+          )
+        : 0,
+    [experiment.dataPoints, activeScore, drafts]
+  )
+  // A usable function draft is required to enable/disable for existing data points.
+  const canBulkApply =
+    activeScore !== undefined &&
+    !expressionError &&
+    (drafts[activeScore.name]?.expression.trim() ?? '') !== ''
+
   const onSaveClick = () => {
     enabledScores.forEach(sv => {
       const d = drafts[sv.name]
@@ -151,6 +178,17 @@ export function DataPointsSettings({
           scoreFunction: d && d.expression.trim() !== '' ? d : undefined,
         },
       })
+    })
+    // Persisting the function first means setDataPointsUseFunction recomputes
+    // against the just-saved function.
+    enabledScores.forEach(sv => {
+      const intent = bulkIntents[sv.name]
+      if (intent === 'enable' || intent === 'disable') {
+        dispatch({
+          type: 'setDataPointsUseFunction',
+          payload: { scoreName: sv.name, useFunction: intent === 'enable' },
+        })
+      }
     })
     onSave()
   }
@@ -362,6 +400,39 @@ export function DataPointsSettings({
           <Box className={classes.playgroundContainer}>
             <Box className={classes.title}>Test your function</Box>
             <ScoreFunctionPlayground scoreFunction={draft} />
+          </Box>
+
+          <Box className={classes.playgroundContainer}>
+            <Box className={classes.title}>For existing data points</Box>
+            <ToggleButtonGroup
+              exclusive
+              size="small"
+              value={activeIntent}
+              onChange={(_e, value: BulkIntent | null) => {
+                if (value !== null && activeScore !== undefined) {
+                  setBulkIntents(prev => ({
+                    ...prev,
+                    [activeScore.name]: value,
+                  }))
+                }
+              }}
+              aria-label="apply score function to existing data points"
+            >
+              <ToggleButton value="unchanged">Leave unchanged</ToggleButton>
+              <ToggleButton value="enable" disabled={!canBulkApply}>
+                Use for all
+              </ToggleButton>
+              <ToggleButton value="disable" disabled={!canBulkApply}>
+                Turn off for all
+              </ToggleButton>
+            </ToggleButtonGroup>
+            {activeIntent === 'enable' && missingCount > 0 && (
+              <InfoBox
+                type="warning"
+                margin="8px 0 0 0"
+                text={`${missingCount} of ${experiment.dataPoints.length} points are missing responses and will be marked invalid. Adding responses after saving will make them valid again.`}
+              />
+            )}
           </Box>
         </Box>
 
