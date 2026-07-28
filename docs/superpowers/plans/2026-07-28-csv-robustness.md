@@ -541,22 +541,24 @@ git commit -m "feat(core): migrate (v23) trimming existing variable/data-point n
 
 ---
 
-### Task 5: User-selectable CSV separator (C)
+### Task 5: Package — `csvSeparator` prop on `DataPoints` (C, package side)
+
+The separator is chosen by a **global user setting owned by brownie-bee** (Tasks 6–7), not by the package. So the package's only job is to **accept** a separator and thread it into both CSV directions — no selector UI, no local state, in the package.
 
 **Files:**
 
-- Modify: `packages/ui/src/features/data-points/upload-csv-button.tsx` (thread a `separator` prop into its `csvToDataPoints` call)
-- Modify: `packages/ui/src/features/data-points/data-points.tsx` (separator state + selector + thread into download & upload)
+- Modify: `packages/ui/src/features/data-points/upload-csv-button.tsx` (add a `separator` prop → its `csvToDataPoints` call)
+- Modify: `packages/ui/src/features/data-points/data-points.tsx` (add a `csvSeparator` prop → download + upload)
 - Test: `packages/core/src/common/util/converters/converters.test.ts` (round-trip per separator) and `packages/ui/src/features/data-points/upload-csv-button.test.tsx` (new — separator is forwarded to parsing)
 
 **Interfaces:**
 
-- Consumes: quoting from Tasks 1–2 (makes comma safe). `dataPointsToCSV`/`csvToDataPoints` already accept `separator`.
-- Produces: `UploadCSVButton` gains a `separator?: string` prop (default `';'`); `DataPoints` renders a separator `Select` and threads the choice into both CSV directions.
+- Consumes: quoting from Tasks 1–2 (makes comma/pipe/tab safe). `dataPointsToCSV`/`csvToDataPoints` already accept `separator`.
+- Produces: `UploadCSVButton` gains `separator?: string` (default `';'`); `DataPoints` gains `csvSeparator?: string` (default `';'`), passed into the download `dataPointsToCSV(dataPoints, csvSeparator)` and into `UploadCSVButton separator={csvSeparator}`. This is the prop brownie-bee's `ExperimentView` will feed from `useUserSettings()`.
 
 - [ ] **Step 1: Write the failing tests**
 
-Core — add to `converters.test.ts` (inside `describe('converters', ...)`), confirming each offered separator round-trips (including a value that contains the _other_ separators, now safe via quoting):
+Core — add to `converters.test.ts` (inside `describe('converters', ...)`), confirming each offered separator round-trips a value containing the _other_ separators (now safe via quoting):
 
 ```typescript
 describe.each([';', ',', '\t', '|'])('separator %j round-trip', sep => {
@@ -589,7 +591,7 @@ describe.each([';', ',', '\t', '|'])('separator %j round-trip', sep => {
 })
 ```
 
-UI — create `packages/ui/src/features/data-points/upload-csv-button.test.tsx` asserting the `separator` prop reaches the parser (a tab-separated file parses only when `separator="\t"` is passed):
+UI — create `packages/ui/src/features/data-points/upload-csv-button.test.tsx` asserting the `separator` prop reaches the parser (a tab-separated file only parses when `separator="\t"` is passed):
 
 ```tsx
 import { describe, it, expect, afterEach, vi } from 'vitest'
@@ -641,59 +643,31 @@ it('parses using the provided separator', async () => {
 })
 ```
 
-> Implementer: check `upload-csv-button.tsx` for how the hidden `<input type="file">` is exposed. If it has no `data-testid`, add `data-testid="upload-csv-input"` to it as part of Step 3 (a test-only affordance, no behavior change). If reading a `File` in jsdom needs `file.text()` shimming, prefer `await file.text()` in the component; otherwise adjust the test to the component's existing FileReader flow.
+> Implementer: check `upload-csv-button.tsx` for how the hidden `<input type="file">` is exposed. If it has no `data-testid`, add `data-testid="upload-csv-input"` to it in Step 3 (test-only affordance, no behavior change). If reading a `File` in jsdom needs a shim, match the component's existing FileReader flow in the test.
 
 - [ ] **Step 2: Run to verify failure**
 
-Run: `cd packages/core && npx vitest run src/common/util/converters/converters.test.ts -t "separator"` (expect FAIL only if quoting from Tasks 1–2 is absent; with them present the core test should already pass — if so, note it and keep it as a guard). Then `cd ../ui && npx vitest run src/features/data-points/upload-csv-button.test.tsx` — expect FAIL: `UploadCSVButton` has no `separator` prop, so a tab file isn't parsed.
+Run: `cd packages/ui && npx vitest run src/features/core/../data-points/upload-csv-button.test.tsx` (exact path: `src/features/data-points/upload-csv-button.test.tsx`)
+Expected: FAIL — `UploadCSVButton` has no `separator` prop, so the tab file isn't parsed. (The core `describe.each` round-trip may already pass once Tasks 1–2 land; keep it as a guard and note it in the report.)
 
-- [ ] **Step 3: Thread the separator into `UploadCSVButton`**
+- [ ] **Step 3: Add `separator` to `UploadCSVButton`**
 
-In `upload-csv-button.tsx`, add `separator?: string` to the props (default `';'`) and pass it as the 5th argument of the existing `csvToDataPoints(data, valueVariables, categoricalVariables, scoreVariables, separator)` call. Ensure the file `<input>` carries `data-testid="upload-csv-input"`.
+In `upload-csv-button.tsx`: add `separator?: string` to its props (default `';'`) and pass it as the 5th argument of the existing `csvToDataPoints(data, valueVariables, categoricalVariables, scoreVariables, separator)` call. Ensure the file `<input>` carries `data-testid="upload-csv-input"`.
 
-- [ ] **Step 4: Add the selector and thread it in `data-points.tsx`**
+- [ ] **Step 4: Add `csvSeparator` prop to `DataPoints` and thread it**
 
-Add local state and a selector, and thread `separator` into both CSV directions:
+In `data-points.tsx`: add `csvSeparator?: string` to `DataPointProps`, destructure it with a default of `';'`, and use it in both CSV directions.
 
-```tsx
-// with the other useState hooks
-const CSV_SEPARATORS: { label: string; value: string }[] = [
-  { label: 'Semicolon ( ; )', value: ';' },
-  { label: 'Comma ( , )', value: ',' },
-  { label: 'Tab', value: '\t' },
-  { label: 'Pipe ( | )', value: '|' },
-]
-const [separator, setSeparator] = useState(';')
-```
-
-In the header button group, before/after the download/upload buttons, add (import `Select`, `MenuItem` from `@mui/material`):
-
-```tsx
-<Select
-  size="small"
-  value={separator}
-  onChange={e => setSeparator(e.target.value)}
-  aria-label="CSV separator"
-  sx={{ mr: 1 }}
->
-  {CSV_SEPARATORS.map(s => (
-    <MenuItem key={s.value} value={s.value}>
-      {s.label}
-    </MenuItem>
-  ))}
-</Select>
-```
-
-Thread it into the download call:
+Download call (currently `dataPointsToCSV(dataPoints)`):
 
 ```tsx
 saveCSVToLocalFile(
-  dataPointsToCSV(dataPoints, separator),
+  dataPointsToCSV(dataPoints, csvSeparator),
   experimentId + '.csv'
 )
 ```
 
-and into the upload button:
+Upload button — add the prop:
 
 ```tsx
 <UploadCSVButton
@@ -702,9 +676,17 @@ and into the upload button:
   categoricalVariables={enabledCategoricalVariables}
   valueVariables={enabledValueVariables}
   scoreVariables={scoreVariables}
-  separator={separator}
+  separator={csvSeparator}
 />
 ```
+
+Destructure/default (with the other props):
+
+```tsx
+const { /* …existing… */ csvSeparator = ';' } = props
+```
+
+No `Select`, no `useState` — the choice comes in as a prop.
 
 - [ ] **Step 5: Run the tests to verify they pass**
 
@@ -719,30 +701,156 @@ git add src/features/data-points/upload-csv-button.tsx \
   src/features/data-points/upload-csv-button.test.tsx \
   src/features/data-points/data-points.tsx
 git add ../core/src/common/util/converters/converters.test.ts
-git commit -m "feat(ui): user-selectable CSV separator (semicolon, comma, tab, pipe)"
+git commit -m "feat(ui): accept a csvSeparator prop on DataPoints and thread it through CSV"
 ```
 
 ---
 
-### Task 6: Full verification
+> **Cross-repo boundary.** Tasks 6–7 are in the **`/workspace/brownie-bee` repo** (a separate git repo/branch — never committed from `process-optimizer-frontend`). They consume the Task 5 prop, so they must run against the **locally-built package via `dev:local`** (brownie-bee otherwise uses the released `@boostv` package, whose types don't yet have `csvSeparator`). Sequence: finish Task 5 → `npm run build` the ui package → then Tasks 6–7. brownie-bee has its own branch-artifact cleanup + CI gate; handle its finish separately.
 
-- [ ] **Step 1: Build + test both packages**
+### Task 6: brownie-bee — global `csvSeparator` user setting + Settings control
+
+**Repo/dir:** `/workspace/brownie-bee` (create a branch, e.g. `csv-separator-setting`).
+
+**Files:**
+
+- Modify: `src/features/user-settings/types.ts` (schema field + default)
+- Modify: `src/routes/settings/sections/InterfaceSection.tsx` (a control, mirroring `projectSort`)
+- Modify: `src/locales/en/settings.json` (label + option strings)
+- Test: `src/features/user-settings/hooks.test.tsx` (extend — the setting round-trips)
+
+**Interfaces:**
+
+- Produces: `UserSettings.csvSeparator: ';' | ',' | '\t' | '|'` (default `';'`), editable on `/settings`.
+
+- [ ] **Step 1: Write the failing test**
+
+Extend `hooks.test.tsx` (mirror its existing `Probe` pattern) to assert `useUserSettings().csvSeparator` defaults to `';'` and that `useUpdateUserSettings().mutate({ csvSeparator: '\t' })` updates it. Follow the file's browser-mode conventions (`renderCustom`, `server.use(...cleanUserSettingsHandlers())`, `await render(...)`, `expect.element(...)`).
+
+- [ ] **Step 2: Run to verify failure**
+
+Run (browser-mode Vitest): `cd /workspace/brownie-bee && npm test -- --browser.headless --run src/features/user-settings/hooks.test.tsx`
+If the sandbox lacks browser system libs, run via the repo's Docker helper: `scripts/vitest-docker.sh` (the `verify-in-sandbox` skill). If neither is available in-sandbox, write the test, note it must be run on the host, and proceed — do not block.
+Expected: FAIL — `csvSeparator` is not a field yet (Zod would strip it / it's `undefined`).
+
+- [ ] **Step 3: Add the schema field + default**
+
+In `types.ts`, add to `userSettingsSchema` a field that is safe against a backend that doesn't yet echo it (`api.ts` runs `userSettingsSchema.parse()` on every GET/PATCH response, so it MUST have a `.default`):
+
+```typescript
+  csvSeparator: z.enum([';', ',', '\t', '|']).default(';'),
+```
+
+and add `csvSeparator: ';'` to `defaultUserSettings`. (The MSW mock seeds from `defaultUserSettings`, so no mock edit is needed.)
+
+- [ ] **Step 4: Add the Settings control**
+
+In `InterfaceSection.tsx`, add a row mirroring the `projectSort` `ToggleButtonGroup` (same `Stack` row + `Divider` structure). Read `csvSeparator` from the existing `useUserSettings()` destructure and write via `mutate({ csvSeparator: value })`:
+
+```tsx
+<ToggleButtonGroup
+  exclusive
+  size="small"
+  value={csvSeparator}
+  onChange={(_e, value: UserSettings['csvSeparator'] | null) => {
+    if (value) mutate({ csvSeparator: value })
+  }}
+  aria-label={t('interface-csv-separator-label')}
+>
+  <ToggleButton value=";">
+    {t('interface-csv-separator-semicolon')}
+  </ToggleButton>
+  <ToggleButton value=",">{t('interface-csv-separator-comma')}</ToggleButton>
+  <ToggleButton value={'\t'}>{t('interface-csv-separator-tab')}</ToggleButton>
+  <ToggleButton value="|">{t('interface-csv-separator-pipe')}</ToggleButton>
+</ToggleButtonGroup>
+```
+
+Add the label/description/option keys to `src/locales/en/settings.json` (mirror `interface-sort-*`): `interface-csv-separator-label`, `interface-csv-separator-description`, `interface-csv-separator-semicolon`, `interface-csv-separator-comma`, `interface-csv-separator-tab`, `interface-csv-separator-pipe`.
+
+- [ ] **Step 5: Run the tests to verify they pass**
+
+Run the same command as Step 2. Expected: PASS. (Note in the report if it could only be run via Docker or must run on host.)
+
+- [ ] **Step 6: Commit** (in the brownie-bee repo)
+
+```bash
+cd /workspace/brownie-bee
+git add src/features/user-settings/types.ts \
+  src/routes/settings/sections/InterfaceSection.tsx \
+  src/locales/en/settings.json \
+  src/features/user-settings/hooks.test.tsx
+git commit -m "feat(settings): global CSV separator user setting"
+```
+
+### Task 7: brownie-bee — feed the setting into `<DataPoints>`
+
+**Repo/dir:** `/workspace/brownie-bee` (same branch as Task 6). **Depends on Task 5** (the package prop) being built and consumed via `dev:local`.
+
+**Files:**
+
+- Modify: `src/components/experiment/ExperimentView.tsx` (read `csvSeparator`, pass the prop)
+
+**Interfaces:**
+
+- Consumes: `UserSettings.csvSeparator` (Task 6) and the `DataPoints` `csvSeparator` prop (Task 5).
+
+- [ ] **Step 1: Extend the existing `useUserSettings()` read**
+
+`ExperimentView.tsx` already does `const { showParetoHoverEllipse } = useUserSettings()` (~line 85). Add `csvSeparator`:
+
+```tsx
+const { showParetoHoverEllipse, csvSeparator } = useUserSettings()
+```
+
+- [ ] **Step 2: Pass the prop at the `<DataPoints>` render (~lines 346-359)**
+
+Add to the prop list:
+
+```tsx
+csvSeparator = { csvSeparator }
+```
+
+- [ ] **Step 3: Verify (build + browser, via `dev:local`)**
+
+Ensure the ui package is built with the Task 5 prop, then run brownie-bee against it: `POF_LOCAL=true` dev server. Confirm `npx tsc` has no error on the new prop (requires the locally-built package types). In the browser: change the separator on `/settings`, export data points, confirm the file uses that separator, re-import, confirm round-trip.
+
+- [ ] **Step 4: Commit** (brownie-bee repo)
+
+```bash
+cd /workspace/brownie-bee
+git add src/components/experiment/ExperimentView.tsx
+git commit -m "feat: use the global CSV separator setting for data-point export/import"
+```
+
+---
+
+### Task 8: Full verification (both repos)
+
+- [ ] **Step 1: Package (`process-optimizer-frontend`)**
 
 ```bash
 cd packages/core && npm test -- run && npm run build
 cd ../ui && npm test -- run && npm run build
 ```
 
-Expected: all green, both builds succeed.
+Expected: all green.
 
-- [ ] **Step 2: Manual/browser check (via `dev:local`)**
+- [ ] **Step 2: brownie-bee**
 
-Add a note containing `;` and `,`, export with each separator, re-import, confirm the note and all columns survive; create a factor name with a leading space and confirm it's stored trimmed and CSV round-trips.
+Typecheck/build (`cd /workspace/brownie-bee && npx tsc && npm run build`) against the locally-built package, and run the user-settings test (host or Docker). Expected: green.
+
+- [ ] **Step 3: End-to-end browser check (via `dev:local`)**
+
+With the full stack up: set each separator on `/settings`; export data points containing a note with `;` and `,`; re-import; confirm the note and all columns survive. Create a factor name with a leading space; confirm it's stored trimmed and its CSV round-trips.
 
 ---
 
 ## Notes for the implementer
 
-- Don't hand-format; the pre-commit hook runs prettier/eslint.
-- Task 4 is optional and independently droppable; Tasks 1–2 (quoting) and 3 (source trim) are the core of the feature. Task 5 (separator UI) depends on Tasks 1–2 for comma safety.
-- The UI is consumed by the `packages/ui/src/demo/experiment-view.tsx` harness; the separator is intentionally ephemeral component state (like `newestFirst`). Persisting it is out of scope.
+- Don't hand-format; pre-commit hooks (both repos) run prettier/eslint.
+- **Task 4 is SKIPPED** by decision (no v23 migration); the data format stays at v22.
+- **Cross-repo ordering:** Tasks 1–5 in `process-optimizer-frontend`; Tasks 6–7 in `/workspace/brownie-bee` (its own branch). Build the ui package after Task 5, then run brownie-bee via `dev:local` so it sees the `csvSeparator` prop.
+- The `csvSeparator` schema field MUST carry a `.default(';')` — `api.ts` strictly `userSettingsSchema.parse()`s every backend response, and the backend won't echo the field until it's stored, so a non-defaulted field would throw on the next GET.
+- Global setting applies to **both** export and import (no per-import auto-detect, by decision).
+- brownie-bee tests are browser-mode Vitest (Playwright); in this sandbox run them via `scripts/vitest-docker.sh` (`verify-in-sandbox` skill) or on the host — if unavailable, write the tests and flag that they need host/Docker execution rather than blocking.
