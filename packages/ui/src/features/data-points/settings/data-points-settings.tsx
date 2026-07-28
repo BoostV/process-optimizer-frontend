@@ -401,39 +401,40 @@ export function DataPointsSettings({
             <Box className={classes.title}>Test your function</Box>
             <ScoreFunctionPlayground scoreFunction={draft} />
           </Box>
+        </Box>
 
-          <Box className={classes.playgroundContainer}>
-            <Box className={classes.title}>For existing data points</Box>
-            <ToggleButtonGroup
-              exclusive
-              size="small"
-              value={activeIntent}
-              onChange={(_e, value: BulkIntent | null) => {
-                if (value !== null && activeScore !== undefined) {
-                  setBulkIntents(prev => ({
-                    ...prev,
-                    [activeScore.name]: value,
-                  }))
-                }
-              }}
-              aria-label="apply score function to existing data points"
-            >
-              <ToggleButton value="unchanged">Leave unchanged</ToggleButton>
-              <ToggleButton value="enable" disabled={!canBulkApply}>
-                Use for all
-              </ToggleButton>
-              <ToggleButton value="disable" disabled={!canBulkApply}>
-                Turn off for all
-              </ToggleButton>
-            </ToggleButtonGroup>
-            {activeIntent === 'enable' && missingCount > 0 && (
-              <InfoBox
-                type="warning"
-                margin="8px 0 0 0"
-                text={`${missingCount} of ${experiment.dataPoints.length} points are missing responses and will be marked invalid. Adding responses after saving will make them valid again.`}
-              />
-            )}
-          </Box>
+        <Box className={classes.bulkContainer}>
+          <Box className={classes.title}>For existing data points</Box>
+          <ToggleButtonGroup
+            exclusive
+            size="small"
+            className={classes.bulkToggle}
+            value={activeIntent}
+            onChange={(_e, value: BulkIntent | null) => {
+              if (value !== null && activeScore !== undefined) {
+                setBulkIntents(prev => ({
+                  ...prev,
+                  [activeScore.name]: value,
+                }))
+              }
+            }}
+            aria-label="apply score function to existing data points"
+          >
+            <ToggleButton value="unchanged">Leave unchanged</ToggleButton>
+            <ToggleButton value="enable" disabled={!canBulkApply}>
+              Use for all
+            </ToggleButton>
+            <ToggleButton value="disable" disabled={!canBulkApply}>
+              Turn off for all
+            </ToggleButton>
+          </ToggleButtonGroup>
+          {activeIntent === 'enable' && missingCount > 0 && (
+            <InfoBox
+              type="warning"
+              margin="8px 0 0 0"
+              text={`${missingCount} of ${experiment.dataPoints.length} points are missing responses and will be marked invalid. Adding responses after saving will make them valid again.`}
+            />
+          )}
         </Box>
 
         <Box className={classes.settingsControls}>

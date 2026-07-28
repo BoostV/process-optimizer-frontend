@@ -28,6 +28,26 @@ export const useStyles = makeStyles()(theme => ({
     borderLeft: `1px solid ${theme.palette.divider}`,
     paddingLeft: theme.spacing(2),
   },
+  // Full-width section below the two side-by-side columns.
+  bulkContainer: {
+    borderTop: `1px solid ${theme.palette.divider}`,
+    paddingTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  // Segmented control: the selected option is filled with the brand colour
+  // (matching the Brownie Bee /settings toggles).
+  bulkToggle: {
+    '& .MuiToggleButton-root': {
+      textTransform: 'none',
+    },
+    '& .MuiToggleButton-root.Mui-selected': {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText,
+      '&:hover': {
+        backgroundColor: theme.palette.primary.dark,
+      },
+    },
+  },
   title: {
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(1),
