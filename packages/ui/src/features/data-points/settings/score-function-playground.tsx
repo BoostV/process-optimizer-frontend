@@ -27,7 +27,9 @@ export const ScoreFunctionPlayground = ({ scoreFunction }: Props) => {
 
   if (!scoreFunction || scoreFunction.expression.trim() === '') {
     return (
-      <Typography>No function added. Add a function to test it.</Typography>
+      <Typography sx={{ fontSize: '0.875rem' }}>
+        No function added. Add a function to test it.
+      </Typography>
     )
   }
 
