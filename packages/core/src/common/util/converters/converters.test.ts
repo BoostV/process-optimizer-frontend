@@ -949,5 +949,21 @@ describe('converters', () => {
       expect(back[0]?.meta.note).toBe('has note')
       expect(back[1]?.meta.note).toBeUndefined()
     })
+
+    it('round-trips a note containing the separator and quotes', () => {
+      const note = 'I pressed; it broke "hard"'
+      const back = csvToDataPoints(
+        dataPointsToCSV([
+          {
+            meta: { id: 1, enabled: true, valid: true, note },
+            data: [{ type: 'numeric' as const, name: 'A', value: 1 }],
+          },
+        ]),
+        valueVars,
+        [],
+        []
+      )
+      expect(back[0]?.meta.note).toBe(note)
+    })
   })
 })

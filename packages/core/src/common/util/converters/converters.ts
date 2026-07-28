@@ -120,6 +120,37 @@ const escapeCsvField = (value: string, separator: string): string =>
     ? `"${value.replaceAll('"', '""')}"`
     : value
 
+// Split one CSV line into fields, honoring RFC-4180 quotes: a double-quoted
+// field may contain the separator, and "" is an escaped quote. (Embedded
+// newlines are out of scope — the app's inputs are single-line.)
+const parseCsvLine = (line: string, separator: string): string[] => {
+  const fields: string[] = []
+  let field = ''
+  let inQuotes = false
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i]
+    if (inQuotes) {
+      if (ch === '"' && line[i + 1] === '"') {
+        field += '"'
+        i++
+      } else if (ch === '"') {
+        inQuotes = false
+      } else {
+        field += ch
+      }
+    } else if (ch === '"') {
+      inQuotes = true
+    } else if (ch === separator) {
+      fields.push(field)
+      field = ''
+    } else {
+      field += ch
+    }
+  }
+  fields.push(field)
+  return fields
+}
+
 /**
  * Converts a list of DataEntry objects into a CSV string.
  * The output format:
@@ -241,16 +272,17 @@ export const csvToDataPoints = (
   const lines = csv.split(newlinePattern)
   if ('' === csv || lines.length < 2) return []
   else {
-    const header = lines[0]?.split(separator).map(h => h.trim()) ?? []
+    const header = parseCsvLine(lines[0] ?? '', separator).map(h => h.trim())
     if (
       header.length >= expectedHeader.length &&
       expectedHeader.every(value => header.includes(value))
     ) {
       const data = lines.slice(1)
       const dataAsKeyValue = data.map(line =>
-        line
-          .split(separator)
-          .map((value, idx) => ({ key: header[idx] ?? '', value }))
+        parseCsvLine(line, separator).map((value, idx) => ({
+          key: header[idx] ?? '',
+          value,
+        }))
       )
       const dataList = dataAsKeyValue.map((line, idx) => ({
         data: line
