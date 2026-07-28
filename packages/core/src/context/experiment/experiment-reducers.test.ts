@@ -221,3 +221,72 @@ describe('setDataPointsUseFunction', () => {
     })
   })
 })
+
+describe('score-function factor sync', () => {
+  const withFn = {
+    ...emptyExperiment,
+    valueVariables: [
+      {
+        type: 'discrete' as const,
+        name: 'Pin elevation',
+        description: '',
+        min: 0,
+        max: 200,
+        enabled: true,
+      },
+    ],
+    scoreVariables: [
+      {
+        name: 'quality' as const,
+        label: 'Quality (0-5)',
+        description: '',
+        enabled: true,
+        scoreFunction: {
+          expression: 'pinElevation',
+          variables: [
+            {
+              name: 'Pin elevation',
+              symbol: 'pinElevation',
+              source: 'factor' as const,
+              factorName: 'Pin elevation',
+            },
+          ],
+        },
+      },
+    ],
+    dataPoints: [],
+  }
+
+  it('propagates a factor rename into the score function (symbol kept)', () => {
+    const s = rootReducer({ experiment: withFn } as State, {
+      type: 'editValueVariable',
+      payload: {
+        index: 0,
+        newVariable: {
+          type: 'discrete',
+          name: 'Pin height',
+          description: '',
+          min: 0,
+          max: 200,
+          enabled: true,
+        },
+      },
+    })
+    const v = s.experiment.scoreVariables[0]?.scoreFunction?.variables[0]
+    expect(v).toMatchObject({
+      factorName: 'Pin height',
+      name: 'Pin height',
+      symbol: 'pinElevation',
+    })
+  })
+
+  it('prunes a deleted factor from the score function', () => {
+    const s = rootReducer({ experiment: withFn } as State, {
+      type: 'deleteValueVariable',
+      payload: 0,
+    })
+    expect(
+      s.experiment.scoreVariables[0]?.scoreFunction?.variables
+    ).toHaveLength(0)
+  })
+})

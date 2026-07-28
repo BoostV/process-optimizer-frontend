@@ -387,6 +387,14 @@ const experimentReducerInner = produce(
             oldVariable.name,
             action.payload.newVariable.name
           )
+          state.scoreVariables.forEach(sv =>
+            sv.scoreFunction?.variables.forEach(v => {
+              if (v.source === 'factor' && v.factorName === oldVariable.name) {
+                v.factorName = action.payload.newVariable.name
+                v.name = action.payload.newVariable.name
+              }
+            })
+          )
         }
         break
       }
@@ -407,6 +415,16 @@ const experimentReducerInner = produce(
             d => d !== oldValueVariables[action.payload]?.name
           ),
         }))
+        const deletedName = oldValueVariables[action.payload]?.name
+        if (deletedName !== undefined) {
+          state.scoreVariables.forEach(sv => {
+            if (sv.scoreFunction !== undefined) {
+              sv.scoreFunction.variables = sv.scoreFunction.variables.filter(
+                v => !(v.source === 'factor' && v.factorName === deletedName)
+              )
+            }
+          })
+        }
         break
       }
       case 'setValueVariableEnabled': {
