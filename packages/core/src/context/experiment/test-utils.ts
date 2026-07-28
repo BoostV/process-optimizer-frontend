@@ -147,4 +147,8 @@ export const dummyPayloads: Payloads = {
     useFunction: false,
     values: [],
   },
+  setDataPointsUseFunction: {
+    scoreName: scoreNames[0],
+    useFunction: false,
+  },
 }

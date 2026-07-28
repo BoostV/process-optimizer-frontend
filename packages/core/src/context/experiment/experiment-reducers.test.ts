@@ -132,3 +132,92 @@ describe('pareto selection invalidation policy', () => {
     expect(actual.experiment.extras.selectedPoint).toEqual([1.5])
   })
 })
+
+describe('setDataPointsUseFunction', () => {
+  const baseExperiment = {
+    ...emptyExperiment,
+    valueVariables: [
+      {
+        type: 'continuous' as const,
+        name: 'F',
+        description: '',
+        min: 0,
+        max: 10,
+        enabled: true,
+      },
+    ],
+    scoreVariables: [
+      {
+        name: 'quality' as const,
+        label: 'Quality (0-5)',
+        description: '',
+        enabled: true,
+        scoreFunction: {
+          expression: 'w * 2',
+          variables: [{ name: 'W', symbol: 'w', source: 'response' as const }],
+        },
+      },
+    ],
+    dataPoints: [
+      {
+        meta: { id: 1, enabled: true, valid: true },
+        data: [
+          { type: 'numeric' as const, name: 'F', value: 3 },
+          { type: 'score' as const, name: 'quality', value: 0 },
+        ],
+        responses: [
+          {
+            scoreName: 'quality' as const,
+            useFunction: false,
+            values: [{ symbol: 'w', value: 4 }],
+          },
+        ],
+      },
+      {
+        meta: { id: 2, enabled: true, valid: true },
+        data: [
+          { type: 'numeric' as const, name: 'F', value: 5 },
+          { type: 'score' as const, name: 'quality', value: 1.5 },
+        ],
+        // no responses entry -> missing the required 'w' response
+      },
+    ],
+  }
+
+  it('enables the function for all data points and recomputes where responses exist', () => {
+    const state = rootReducer({ experiment: baseExperiment } as State, {
+      type: 'setDataPointsUseFunction',
+      payload: { scoreName: 'quality', useFunction: true },
+    })
+    const dps = state.experiment.dataPoints
+    // row 1: complete responses -> useFunction on, score recomputed to w*2 = 8
+    expect(dps[0]?.responses?.[0]).toMatchObject({
+      scoreName: 'quality',
+      useFunction: true,
+    })
+    expect(
+      dps[0]?.data.find(d => d.type === 'score' && d.name === 'quality')?.value
+    ).toBe(8)
+    expect(dps[0]?.meta.valid).toBe(true)
+    // row 2: enabled but missing responses -> created entry, marked invalid
+    expect(
+      dps[1]?.responses?.find(r => r.scoreName === 'quality')?.useFunction
+    ).toBe(true)
+    expect(dps[1]?.meta.valid).toBe(false)
+  })
+
+  it('disables the function only on rows that already have a responses entry', () => {
+    const enabled = rootReducer({ experiment: baseExperiment } as State, {
+      type: 'setDataPointsUseFunction',
+      payload: { scoreName: 'quality', useFunction: true },
+    })
+    const disabled = rootReducer(enabled, {
+      type: 'setDataPointsUseFunction',
+      payload: { scoreName: 'quality', useFunction: false },
+    })
+    disabled.experiment.dataPoints.forEach(dp => {
+      const resp = dp.responses?.find(r => r.scoreName === 'quality')
+      if (resp) expect(resp.useFunction).toBe(false)
+    })
+  })
+})

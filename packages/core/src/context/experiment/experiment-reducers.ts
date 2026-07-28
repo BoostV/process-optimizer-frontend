@@ -194,6 +194,13 @@ export type ExperimentAction =
         values: { symbol: string; value: number }[]
       }
     }
+  | {
+      type: 'setDataPointsUseFunction'
+      payload: {
+        scoreName: ScoreName
+        useFunction: boolean
+      }
+    }
 
 // Recompute and persist the {type:'score', name} value for one objective of one
 // data entry, when that objective is in function mode. Manual rows are untouched.
@@ -605,6 +612,38 @@ const experimentReducerInner = produce(
             sv?.scoreFunction,
             dataEntryOrder(state)
           )
+        }
+        break
+      }
+      case 'setDataPointsUseFunction': {
+        const sv = state.scoreVariables.find(
+          it => it.name === action.payload.scoreName
+        )
+        if (sv?.scoreFunction !== undefined) {
+          const orderedNames = dataEntryOrder(state)
+          state.dataPoints.forEach(dp => {
+            const existing = dp.responses?.find(
+              r => r.scoreName === action.payload.scoreName
+            )
+            if (existing !== undefined) {
+              existing.useFunction = action.payload.useFunction
+            } else if (action.payload.useFunction) {
+              // Only create an entry when turning the function ON; a row with no
+              // responses entry is already manual, so disabling is a no-op for it.
+              if (dp.responses === undefined) dp.responses = []
+              dp.responses.push({
+                scoreName: action.payload.scoreName,
+                useFunction: true,
+                values: [],
+              })
+            }
+            recomputeScore(
+              dp,
+              action.payload.scoreName,
+              sv.scoreFunction,
+              orderedNames
+            )
+          })
         }
         break
       }
