@@ -372,7 +372,10 @@ const experimentReducerInner = produce(
         state.valueVariables.splice(
           state.valueVariables.length,
           0,
-          experimentSchema.shape.valueVariables.element.parse(action.payload)
+          experimentSchema.shape.valueVariables.element.parse({
+            ...action.payload,
+            name: action.payload.name.trim(),
+          })
         )
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
@@ -380,7 +383,10 @@ const experimentReducerInner = produce(
         break
       case 'editValueVariable': {
         const oldVariable = state.valueVariables[action.payload.index]
-        const newVariable = action.payload.newVariable
+        const newVariable = {
+          ...action.payload.newVariable,
+          name: action.payload.newVariable.name.trim(),
+        }
         state.valueVariables[action.payload.index] =
           experimentSchema.shape.valueVariables.element.parse({
             ...newVariable,
@@ -397,18 +403,18 @@ const experimentReducerInner = produce(
           state.dataPoints = updateDataPointNamesAndValues(
             state,
             oldVariable,
-            action.payload.newVariable
+            newVariable
           )
           state.constraints = updateNamesInConstraints(
             state,
             oldVariable.name,
-            action.payload.newVariable.name
+            newVariable.name
           )
           state.scoreVariables.forEach(sv =>
             sv.scoreFunction?.variables.forEach(v => {
               if (v.source === 'factor' && v.factorName === oldVariable.name) {
-                v.factorName = action.payload.newVariable.name
-                v.name = action.payload.newVariable.name
+                v.factorName = newVariable.name
+                v.name = newVariable.name
               }
             })
           )
@@ -458,9 +464,10 @@ const experimentReducerInner = produce(
         state.categoricalVariables.splice(
           state.categoricalVariables.length,
           0,
-          experimentSchema.shape.categoricalVariables.element.parse(
-            action.payload
-          )
+          experimentSchema.shape.categoricalVariables.element.parse({
+            ...action.payload,
+            name: action.payload.name.trim(),
+          })
         )
         state.optimizerConfig.initialPoints = calculateInitialPoints(state)
         state.extras.experimentSuggestionCount =
@@ -469,15 +476,17 @@ const experimentReducerInner = produce(
       case 'editCategoricalVariable': {
         const oldVariableName =
           state.categoricalVariables[action.payload.index]?.name
+        const newVariable = {
+          ...action.payload.newVariable,
+          name: action.payload.newVariable.name.trim(),
+        }
         state.categoricalVariables[action.payload.index] =
-          experimentSchema.shape.categoricalVariables.element.parse(
-            action.payload.newVariable
-          )
+          experimentSchema.shape.categoricalVariables.element.parse(newVariable)
         if (oldVariableName !== undefined) {
           state.dataPoints = updateDataPointNames(
             state,
             oldVariableName,
-            action.payload.newVariable.name
+            newVariable.name
           )
         }
         break
