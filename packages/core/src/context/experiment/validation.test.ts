@@ -13,6 +13,7 @@ import {
   validateUpperBoundary,
 } from './validation'
 import { ExperimentType, ScoreFunctionType, scoreNames } from '@core/common'
+import { countDataPointsMissingResponses } from './validation'
 
 describe('validateUpperBoundary', () => {
   it('should return empty array if no violations exist', () => {
@@ -775,5 +776,39 @@ describe('response validation', () => {
     expect(
       validateExperiment(exp).dataPointsResponsesUndefined.some(x => x.id === 1)
     ).toBe(false)
+  })
+})
+
+describe('countDataPointsMissingResponses', () => {
+  const fn = {
+    expression: 'w * 2',
+    variables: [{ name: 'W', symbol: 'w', source: 'response' as const }],
+  }
+  const complete = {
+    meta: { id: 1, enabled: true, valid: true },
+    data: [{ type: 'score' as const, name: 'quality', value: 0 }],
+    responses: [
+      {
+        scoreName: 'quality' as const,
+        useFunction: false,
+        values: [{ symbol: 'w', value: 2 }],
+      },
+    ],
+  }
+  const missing = {
+    meta: { id: 2, enabled: true, valid: true },
+    data: [{ type: 'score' as const, name: 'quality', value: 0 }],
+  }
+
+  it('counts data points lacking the function’s required responses (ignoring current useFunction)', () => {
+    expect(
+      countDataPointsMissingResponses([complete, missing], 'quality', fn)
+    ).toBe(1)
+  })
+
+  it('returns 0 when there is no score function', () => {
+    expect(
+      countDataPointsMissingResponses([missing], 'quality', undefined)
+    ).toBe(0)
   })
 })

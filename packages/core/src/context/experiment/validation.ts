@@ -1,4 +1,4 @@
-import { ExperimentType } from 'common'
+import { DataEntry, ExperimentType, ScoreFunctionType } from 'common'
 
 export type ValidationViolations = {
   upperBoundary: number[]
@@ -144,6 +144,35 @@ export const validateCategoricalValues = (experiment: ExperimentType) => {
   return violations
 }
 
+// Are all of the function's response-source symbols present & finite in `values`?
+const responsesComplete = (
+  scoreFunction: ScoreFunctionType,
+  values: { symbol: string; value: number }[]
+): boolean => {
+  const provided = new Map(values.map(v => [v.symbol, v.value]))
+  return scoreFunction.variables
+    .filter(v => v.source === 'response')
+    .every(v => {
+      const val = provided.get(v.symbol)
+      return val !== undefined && Number.isFinite(val)
+    })
+}
+
+// How many data points would be invalid if `scoreFunction` were used for
+// `scoreName` (i.e. are missing its required responses), regardless of current
+// useFunction. Pass the draft function so the warning reflects what Save applies.
+export const countDataPointsMissingResponses = (
+  dataPoints: DataEntry[],
+  scoreName: string,
+  scoreFunction: ScoreFunctionType | undefined
+): number => {
+  if (scoreFunction === undefined) return 0
+  return dataPoints.filter(dp => {
+    const resp = dp.responses?.find(r => r.scoreName === scoreName)
+    return !responsesComplete(scoreFunction, resp?.values ?? [])
+  }).length
+}
+
 export const validateDataPointsResponsesUndefined = (
   experiment: ExperimentType
 ): { id: number; scoreName: string }[] => {
@@ -157,15 +186,7 @@ export const validateDataPointsResponsesUndefined = (
     dp.responses?.forEach(resp => {
       const fn = functionsByScore.get(resp.scoreName)
       if (fn === undefined || !resp.useFunction) return
-      const requiredSymbols = fn.variables
-        .filter(v => v.source === 'response')
-        .map(v => v.symbol)
-      const provided = new Map(resp.values.map(v => [v.symbol, v.value]))
-      const missing = requiredSymbols.some(sym => {
-        const val = provided.get(sym)
-        return val === undefined || !Number.isFinite(val)
-      })
-      if (missing) {
+      if (!responsesComplete(fn, resp.values)) {
         violations.push({ id: dp.meta.id, scoreName: resp.scoreName })
       }
     })
