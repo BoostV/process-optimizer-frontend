@@ -380,6 +380,17 @@ describe('converters', () => {
       expect(actual).toEqual(expected)
     })
 
+    it('quotes meta values that contain the separator or a quote', () => {
+      const csv = dataPointsToCSV([
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'a;b "c"' },
+          data: [{ type: 'numeric', name: 'A', value: 1 }],
+        },
+      ])
+      // the note field is quoted, inner quotes doubled; other fields untouched
+      expect(csv).toBe('id;A;enabled;valid;note\n1;1;true;true;"a;b ""c"""')
+    })
+
     it('should convert known value', () => {
       const input: DataEntry[] = [
         {

@@ -109,6 +109,17 @@ export const calculateConstraints = (experiment: ExperimentType) =>
         .sort(),
     }))
     .filter(c => (c.type === 'sum' ? c.dimensions.length > 1 : true))
+// RFC-4180: a field containing the separator, a double-quote, or a newline is
+// wrapped in double-quotes with internal quotes doubled. Clean fields are left
+// untouched, so exports of ordinary data are byte-identical to before.
+const escapeCsvField = (value: string, separator: string): string =>
+  value.includes(separator) ||
+  value.includes('"') ||
+  value.includes('\n') ||
+  value.includes('\r')
+    ? `"${value.replaceAll('"', '""')}"`
+    : value
+
 /**
  * Converts a list of DataEntry objects into a CSV string.
  * The output format:
@@ -142,7 +153,11 @@ export const dataPointsToCSV = (
   ]
   return dataPoints.length === 0
     ? ''
-    : [['id'].concat(header, meta).join(separator)]
+    : [
+        ['id', ...header, ...meta]
+          .map(field => escapeCsvField(field, separator))
+          .join(separator),
+      ]
         // Generate data lines
         .concat(
           [...dataPoints]
@@ -152,21 +167,21 @@ export const dataPointsToCSV = (
               )
               return { ...line, data: header.map(h => values.get(h) ?? '') }
             })
-            .map(
-              line =>
-                // Emit meta values in the SAME order as the `meta` header
-                // union (looked up by key), not by each row's own key order.
-                // Rows may have different optional meta keys (e.g. `note` vs
-                // `description`); a positional dump would misalign columns and
-                // land one row's value under another column on re-import.
-                `${line.meta.id}${separator}${line.data
-                  .concat(
-                    meta.map(key => {
-                      const value = (line.meta as Record<string, unknown>)[key]
-                      return value === undefined ? '' : String(value)
-                    })
-                  )
-                  .join(separator)}`
+            .map(line =>
+              // Meta values are emitted in the `meta` header (union) order —
+              // looked up by key, not the row's own key order — so rows with
+              // different optional meta keys (e.g. note vs description) stay
+              // column-aligned on re-import.
+              [
+                String(line.meta.id),
+                ...line.data,
+                ...meta.map(key => {
+                  const value = (line.meta as Record<string, unknown>)[key]
+                  return value === undefined ? '' : String(value)
+                }),
+              ]
+                .map(field => escapeCsvField(field, separator))
+                .join(separator)
             )
         )
         .filter(s => '' !== s)
