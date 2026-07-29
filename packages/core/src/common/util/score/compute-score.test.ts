@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { computeScore, deriveSymbol, usedSymbols } from './compute-score'
+import {
+  computeScore,
+  deriveSymbol,
+  usedSymbols,
+  findUndefinedSymbols,
+} from './compute-score'
 import type { ScoreFunctionType, DataPointType } from '@core/common/types'
 
 describe('deriveSymbol', () => {
@@ -22,6 +27,26 @@ describe('usedSymbols', () => {
   })
   it('returns [] for an unparseable expression', () => {
     expect(usedSymbols('weight/')).toEqual([])
+  })
+})
+
+describe('findUndefinedSymbols', () => {
+  it('finds symbols used in the expression that are not declared (excluding math builtins)', () => {
+    const fn = {
+      expression: 'a + b * pi + water',
+      variables: [
+        { name: 'water', symbol: 'water', source: 'response' as const },
+      ],
+    }
+    expect(findUndefinedSymbols(fn).sort()).toEqual(['a', 'b'])
+  })
+
+  it('does not flag math builtins (constants or functions)', () => {
+    const fn = {
+      expression: 'pi + e + sin(0) + sqrt(4)',
+      variables: [],
+    }
+    expect(findUndefinedSymbols(fn)).toEqual([])
   })
 })
 

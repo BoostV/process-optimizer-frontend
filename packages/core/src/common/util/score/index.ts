@@ -1,1 +1,6 @@
-export { computeScore, deriveSymbol, usedSymbols } from './compute-score'
+export {
+  computeScore,
+  deriveSymbol,
+  usedSymbols,
+  findUndefinedSymbols,
+} from './compute-score'

@@ -172,6 +172,14 @@ describe('DataPointsSettings', () => {
     )
   })
 
+  it('shows an undefined-symbol warning when the expression references an undeclared symbol', () => {
+    render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
+    fireEvent.change(screen.getByRole('textbox', { name: /score function/i }), {
+      target: { value: 'a + resp1' },
+    })
+    expect(screen.getByText(/Unknown variables:.*\ba\b/)).toBeInTheDocument()
+  })
+
   it('disables "Use for all"/"Turn off for all" when the active draft has no usable expression', () => {
     render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
     // Switch to the "cost" tab, which has no saved/draft score function.

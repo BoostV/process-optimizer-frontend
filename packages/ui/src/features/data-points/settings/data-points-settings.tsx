@@ -22,6 +22,7 @@ import {
   useExperiment,
   deriveSymbol,
   usedSymbols,
+  findUndefinedSymbols,
   scoreNames,
   countDataPointsMissingResponses,
   type ScoreFunctionType,
@@ -139,6 +140,8 @@ export function DataPointsSettings({
     setNewResponseName('')
     setAddingResponse(false)
   }
+
+  const undefinedSymbols = draft ? findUndefinedSymbols(draft) : []
 
   const expressionError = (() => {
     if (!draft || draft.expression.trim() === '') return undefined
@@ -319,6 +322,13 @@ export function DataPointsSettings({
                 text={expressionError}
                 type="warning"
                 margin="8px 0 0 0"
+              />
+            )}
+            {!expressionError && undefinedSymbols.length > 0 && (
+              <InfoBox
+                type="warning"
+                margin="8px 0 0 0"
+                text={`Unknown variables: ${undefinedSymbols.join(', ')}. Add them as factors or responses.`}
               />
             )}
 

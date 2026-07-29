@@ -41,6 +41,24 @@ export const usedSymbols = (expression: string): string[] => {
   }
 }
 
+// Symbols the expression references that are neither declared variables nor
+// known to mathjs (so `pi`, `sin`, ... are not flagged).
+export const findUndefinedSymbols = (fn: ScoreFunctionType): string[] => {
+  const declared = new Set(fn.variables.map(v => v.symbol))
+  return usedSymbols(fn.expression).filter(s => {
+    if (declared.has(s)) return false
+    try {
+      const value = evaluate(s)
+      // Real math constants/functions (pi, e, sin, ...) are fine; a bare mathjs
+      // unit (m, s, g, b, ...) or other non-numeric value isn't meaningful in a
+      // score function, so treat it as an undefined symbol.
+      return typeof value !== 'number' && typeof value !== 'function'
+    } catch {
+      return true
+    }
+  })
+}
+
 export const computeScore = (
   fn: ScoreFunctionType,
   responseValues: { symbol: string; value: number }[],
