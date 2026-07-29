@@ -166,6 +166,11 @@ export function DataPoints(props: DataPointProps) {
                 <IconButton
                   size="small"
                   className={classes.iconLight}
+                  disabled={
+                    enabledValueVariables.length +
+                      enabledCategoricalVariables.length ===
+                      0 || isLoadingState
+                  }
                   onClick={() => setSettingsOpen(!isSettingsOpen)}
                 >
                   {isSettingsOpen ? (
