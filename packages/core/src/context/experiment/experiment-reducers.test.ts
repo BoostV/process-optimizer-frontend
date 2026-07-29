@@ -222,6 +222,60 @@ describe('setDataPointsUseFunction', () => {
   })
 })
 
+describe('copySuggestedToDataPoints defaults to the score function', () => {
+  const baseExperiment = {
+    ...emptyExperiment,
+    valueVariables: [
+      {
+        type: 'discrete' as const,
+        name: 'F',
+        description: '',
+        min: 0,
+        max: 10,
+        enabled: true,
+      },
+    ],
+    scoreVariables: [
+      {
+        name: 'quality' as const,
+        label: 'Quality (0-5)',
+        description: '',
+        enabled: true,
+        scoreFunction: {
+          expression: 'f * 2',
+          variables: [
+            {
+              name: 'F',
+              symbol: 'f',
+              source: 'factor' as const,
+              factorName: 'F',
+            },
+          ],
+        },
+      },
+    ],
+    dataPoints: [],
+    results: {
+      ...emptyExperiment.results,
+      next: [[3]],
+    },
+  }
+
+  it('gives a copied suggestion a responses entry and a computed score for a factor-only function', () => {
+    const state = rootReducer({ experiment: baseExperiment } as State, {
+      type: 'copySuggestedToDataPoints',
+      payload: { indices: [0], removeFromSuggestions: false },
+    })
+    const dp = state.experiment.dataPoints[0]
+    expect(dp?.responses).toEqual([
+      { scoreName: 'quality', useFunction: true, values: [] },
+    ])
+    expect(
+      dp?.data.find(d => d.type === 'score' && d.name === 'quality')?.value
+    ).toBe(6)
+  })
+})
+
 describe('score-function factor sync', () => {
   const withFn = {
     ...emptyExperiment,

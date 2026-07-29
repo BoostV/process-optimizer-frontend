@@ -318,6 +318,22 @@ const experimentReducerInner = produce(
               )
             }),
           }))
+        // Default each copied point to using the score function, same as a
+        // table-added row (mirrors setDataPointsUseFunction).
+        const orderedNames = dataEntryOrder(state)
+        newEntries.forEach(entry => {
+          state.scoreVariables.forEach(sv => {
+            if (sv.scoreFunction !== undefined) {
+              if (entry.responses === undefined) entry.responses = []
+              entry.responses.push({
+                scoreName: sv.name,
+                useFunction: true,
+                values: [],
+              })
+              recomputeScore(entry, sv.name, sv.scoreFunction, orderedNames)
+            }
+          })
+        })
         state.dataPoints.push(
           ...defaultSorted(
             state.valueVariables,
