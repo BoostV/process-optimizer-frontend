@@ -4,6 +4,7 @@ import {
   deriveSymbol,
   usedSymbols,
   findUndefinedSymbols,
+  findDisabledFactors,
 } from './compute-score'
 import type { ScoreFunctionType, DataPointType } from '@core/common/types'
 
@@ -145,5 +146,42 @@ describe('computeScore', () => {
     expect(
       computeScore(fn, [{ symbol: 'water', value: 4 }], [])
     ).toBeUndefined()
+  })
+})
+
+describe('findDisabledFactors', () => {
+  const fnUsing = (factorName: string, symbol: string): ScoreFunctionType => ({
+    expression: symbol,
+    variables: [{ name: factorName, symbol, source: 'factor', factorName }],
+  })
+
+  it('flags a used factor that is not an enabled value variable', () => {
+    expect(
+      findDisabledFactors(fnUsing('Pin elevation', 'pinElevation'), [])
+    ).toEqual(['Pin elevation'])
+  })
+
+  it('does not flag when the factor is enabled', () => {
+    expect(
+      findDisabledFactors(fnUsing('Pin elevation', 'pinElevation'), [
+        'Pin elevation',
+      ])
+    ).toEqual([])
+  })
+
+  it('ignores a disabled factor the expression does not use', () => {
+    const fn: ScoreFunctionType = {
+      expression: 'water',
+      variables: [
+        {
+          name: 'Orangeknas',
+          symbol: 'orangeknas',
+          source: 'factor',
+          factorName: 'Orangeknas',
+        },
+        { name: 'water', symbol: 'water', source: 'response' },
+      ],
+    }
+    expect(findDisabledFactors(fn, [])).toEqual([])
   })
 })

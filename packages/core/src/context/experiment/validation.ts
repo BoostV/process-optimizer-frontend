@@ -284,7 +284,7 @@ export const findDataPointViolations = (
       .filter(r => r.id === e)
       .forEach(r => {
         messages.push(
-          `The ${r.scoreName} function can't be computed for this point — a factor it uses is disabled, removed, or has no value.`
+          `The ${r.scoreName} function can't be computed for this point — check the factors it uses and its expression.`
         )
       })
     allViolations.push({

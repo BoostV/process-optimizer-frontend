@@ -21,6 +21,14 @@ vi.mock('@boostv/process-optimizer-frontend-core', async importOriginal => {
               max: 140,
               enabled: true,
             },
+            {
+              type: 'discrete',
+              name: 'Pin elevation',
+              description: '',
+              min: 0,
+              max: 200,
+              enabled: false, // disabled, but still used by the quality function
+            },
           ],
           categoricalVariables: [],
           scoreVariables: [
@@ -30,9 +38,15 @@ vi.mock('@boostv/process-optimizer-frontend-core', async importOriginal => {
               description: '',
               enabled: true,
               scoreFunction: {
-                expression: 'resp1/5',
+                expression: 'resp1/5 + pinElevation',
                 variables: [
                   { name: 'Resp1', symbol: 'resp1', source: 'response' },
+                  {
+                    name: 'Pin elevation',
+                    symbol: 'pinElevation',
+                    source: 'factor',
+                    factorName: 'Pin elevation',
+                  },
                 ],
               },
             },
@@ -170,6 +184,14 @@ describe('DataPointsSettings', () => {
     expect(dispatch).not.toHaveBeenCalledWith(
       expect.objectContaining({ type: 'setDataPointsUseFunction' })
     )
+  })
+
+  it('warns when the function uses a disabled or removed factor', () => {
+    render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
+    // quality tab's saved function uses "Pin elevation", which is disabled
+    expect(
+      screen.getByText(/disabled or removed factor:.*Pin elevation/)
+    ).toBeInTheDocument()
   })
 
   it('shows an undefined-symbol warning when the expression references an undeclared symbol', () => {

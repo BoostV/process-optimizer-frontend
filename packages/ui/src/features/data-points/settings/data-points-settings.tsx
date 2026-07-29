@@ -23,6 +23,7 @@ import {
   deriveSymbol,
   usedSymbols,
   findUndefinedSymbols,
+  findDisabledFactors,
   scoreNames,
   countDataPointsMissingResponses,
   type ScoreFunctionType,
@@ -142,6 +143,12 @@ export function DataPointsSettings({
   }
 
   const undefinedSymbols = draft ? findUndefinedSymbols(draft) : []
+  const disabledFactors = draft
+    ? findDisabledFactors(
+        draft,
+        numericFactors.map(f => f.name)
+      )
+    : []
 
   const expressionError = (() => {
     if (!draft || draft.expression.trim() === '') return undefined
@@ -329,6 +336,13 @@ export function DataPointsSettings({
                 type="warning"
                 margin="8px 0 0 0"
                 text={`Unknown variables: ${undefinedSymbols.join(', ')}. Add them as factors or responses.`}
+              />
+            )}
+            {disabledFactors.length > 0 && (
+              <InfoBox
+                type="warning"
+                margin="8px 0 0 0"
+                text={`This function uses a disabled or removed factor: ${disabledFactors.join(', ')}. Re-enable it or remove it from the function.`}
               />
             )}
 

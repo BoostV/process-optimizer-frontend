@@ -59,6 +59,30 @@ export const findUndefinedSymbols = (fn: ScoreFunctionType): string[] => {
   })
 }
 
+// Factor names the expression actually uses but that are not currently enabled
+// value variables (disabled or removed). Their values won't be available, so a
+// point using this function can't compute. Unused declared factors are ignored
+// (computeScore already ignores them), so this only flags factors that matter.
+export const findDisabledFactors = (
+  fn: ScoreFunctionType,
+  enabledFactorNames: string[]
+): string[] => {
+  const enabled = new Set(enabledFactorNames)
+  const used = new Set(usedSymbols(fn.expression))
+  return [
+    ...new Set(
+      fn.variables
+        .filter(
+          v =>
+            v.source === 'factor' &&
+            used.has(v.symbol) &&
+            !enabled.has(v.factorName ?? '')
+        )
+        .map(v => v.factorName ?? v.name)
+    ),
+  ]
+}
+
 export const computeScore = (
   fn: ScoreFunctionType,
   responseValues: { symbol: string; value: number }[],
