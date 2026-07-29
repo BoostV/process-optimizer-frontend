@@ -163,22 +163,24 @@ export function DataPoints(props: DataPointProps) {
                 </IconButton>
               </Tooltip>
               <Tooltip disableInteractive title="Score functions">
-                <IconButton
-                  size="small"
-                  className={classes.iconLight}
-                  disabled={
-                    enabledValueVariables.length +
-                      enabledCategoricalVariables.length ===
-                      0 || isLoadingState
-                  }
-                  onClick={() => setSettingsOpen(!isSettingsOpen)}
-                >
-                  {isSettingsOpen ? (
-                    <StarBorderIcon fontSize="small" />
-                  ) : (
-                    <StarIcon fontSize="small" />
-                  )}
-                </IconButton>
+                <span>
+                  <IconButton
+                    size="small"
+                    className={classes.iconLight}
+                    disabled={
+                      enabledValueVariables.length +
+                        enabledCategoricalVariables.length ===
+                        0 || isLoadingState
+                    }
+                    onClick={() => setSettingsOpen(!isSettingsOpen)}
+                  >
+                    {isSettingsOpen ? (
+                      <StarBorderIcon fontSize="small" />
+                    ) : (
+                      <StarIcon fontSize="small" />
+                    )}
+                  </IconButton>
+                </span>
               </Tooltip>
             </Box>
           </Box>
