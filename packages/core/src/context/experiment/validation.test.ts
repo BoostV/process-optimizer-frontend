@@ -14,6 +14,7 @@ import {
 } from './validation'
 import { ExperimentType, ScoreFunctionType, scoreNames } from '@core/common'
 import { countDataPointsMissingResponses } from './validation'
+import { validationReducer } from './validation-reducer'
 
 describe('validateUpperBoundary', () => {
   it('should return empty array if no violations exist', () => {
@@ -672,6 +673,7 @@ describe('findDataPointViolations', () => {
     categoricalValues: [],
     dataPointsNumericType: [3],
     dataPointsResponsesUndefined: [],
+    dataPointsScoreUncomputable: [],
   }
   it('should return correct list of data point violations', () => {
     const dpViolations = findDataPointViolations(violations)
@@ -811,4 +813,56 @@ describe('countDataPointsMissingResponses', () => {
       countDataPointsMissingResponses([missing], 'quality', undefined)
     ).toBe(0)
   })
+})
+
+it('flags a function-mode point as invalid when a used factor is unavailable', () => {
+  const experiment = {
+    ...emptyExperiment,
+    valueVariables: [
+      // "Pin elevation" is disabled -> not present in the data point's data
+      {
+        type: 'discrete' as const,
+        name: 'Pin elevation',
+        description: '',
+        min: 0,
+        max: 200,
+        enabled: false,
+      },
+    ],
+    scoreVariables: [
+      {
+        name: 'quality' as const,
+        label: 'Quality (0-5)',
+        description: '',
+        enabled: true,
+        scoreFunction: {
+          expression: 'pinElevation',
+          variables: [
+            {
+              name: 'Pin elevation',
+              symbol: 'pinElevation',
+              source: 'factor' as const,
+              factorName: 'Pin elevation',
+            },
+          ],
+        },
+      },
+    ],
+    dataPoints: [
+      {
+        meta: { id: 1, enabled: true, valid: true },
+        data: [{ type: 'score' as const, name: 'quality', value: 3 }], // no Pin elevation column
+        responses: [
+          { scoreName: 'quality' as const, useFunction: true, values: [] },
+        ],
+      },
+    ],
+  }
+  const violations = validateExperiment(experiment)
+  expect(violations.dataPointsScoreUncomputable).toContainEqual({
+    id: 1,
+    scoreName: 'quality',
+  })
+  const validated = validationReducer(experiment, violations)
+  expect(validated.dataPoints[0]?.meta.valid).toBe(false)
 })
