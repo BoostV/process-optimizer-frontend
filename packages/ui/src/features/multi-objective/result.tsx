@@ -162,7 +162,8 @@ export const Result = ({
     }
     dispatch({ type: 'updateDataPoints', payload: [...dataPoints, newRow] })
     experiment.scoreVariables.forEach(sv => {
-      if (sv.scoreFunction !== undefined) {
+      // Only enabled objectives, matching the table-add default path.
+      if (sv.enabled && sv.scoreFunction !== undefined) {
         dispatch({
           type: 'updateDataPointResponses',
           payload: {

@@ -323,7 +323,8 @@ const experimentReducerInner = produce(
         const orderedNames = dataEntryOrder(state)
         newEntries.forEach(entry => {
           state.scoreVariables.forEach(sv => {
-            if (sv.scoreFunction !== undefined) {
+            // Only enabled objectives, matching the table-add default path.
+            if (sv.enabled && sv.scoreFunction !== undefined) {
               if (entry.responses === undefined) entry.responses = []
               entry.responses.push({
                 scoreName: sv.name,
