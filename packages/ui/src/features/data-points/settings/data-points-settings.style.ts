@@ -5,6 +5,8 @@ export const useStyles = makeStyles()(theme => ({
   main: {
     backgroundColor: colors.grey[200],
     borderRadius: '4px',
+    // Breathing room between the panel and the data-points table below it.
+    marginBottom: theme.spacing(1),
   },
   header: {
     display: 'flex',
@@ -43,7 +45,9 @@ export const useStyles = makeStyles()(theme => ({
     },
     '& .MuiToggleButton-root.Mui-selected': {
       backgroundColor: theme.palette.primary.main,
-      color: theme.palette.primary.contrastText,
+      // Force white: the bee theme's amber primary is light enough that MUI's
+      // contrastText resolves to black, which reads poorly on the fill.
+      color: theme.palette.common.white,
       '&:hover': {
         backgroundColor: theme.palette.primary.dark,
       },
