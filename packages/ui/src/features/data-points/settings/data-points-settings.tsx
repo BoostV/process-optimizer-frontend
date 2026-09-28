@@ -429,7 +429,9 @@ export function DataPointsSettings({
 
         {experiment.dataPoints.length > 0 && (
           <Box className={classes.bulkContainer}>
-            <Box className={classes.title}>For existing data points</Box>
+            <Box className={classes.title}>
+              How to apply score function for all data points
+            </Box>
             <ToggleButtonGroup
               exclusive
               size="small"

@@ -215,6 +215,7 @@ export function DataPoints(props: DataPointProps) {
                 onRowEdited={(rowIndex: number, row: TableDataRow) =>
                   rowEdited(rowIndex, row)
                 }
+                onOpenScoreFunctions={() => setSettingsOpen(true)}
                 violations={violationsInTable}
                 order={newestFirst ? 'ascending' : 'descending'}
                 isEditingDisabled={isEditingDisabled}

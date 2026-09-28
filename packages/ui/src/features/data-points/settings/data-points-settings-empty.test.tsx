@@ -48,8 +48,10 @@ afterEach(() => {
 })
 
 describe('DataPointsSettings with no data points', () => {
-  it('hides the "For existing data points" section', () => {
+  it('hides the "How to apply score function for all data points" section', () => {
     render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
-    expect(screen.queryByText('For existing data points')).toBeNull()
+    expect(
+      screen.queryByText('How to apply score function for all data points')
+    ).toBeNull()
   })
 })

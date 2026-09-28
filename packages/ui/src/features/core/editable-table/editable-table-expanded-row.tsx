@@ -24,6 +24,7 @@ interface EditableTableExpandedRowProps {
   setExpanded: (expanded: boolean) => void
   onAdd: (row: TableDataRow) => void
   onSave: (row: TableDataRow) => void
+  onOpenScoreFunctions?: () => void
   violations?: string[]
 }
 
@@ -34,6 +35,7 @@ export const EditableTableExpandedRow = ({
   setExpanded,
   onAdd,
   onSave,
+  onOpenScoreFunctions,
   violations,
 }: EditableTableExpandedRowProps) => {
   const tableRow = {
@@ -143,8 +145,11 @@ export const EditableTableExpandedRow = ({
                   </TableRow>
                   <TableRow>
                     {editedRow.dataPoints.map((d, i) => {
+                      // Match by name only (not hasFunction) so the f(x) toggle
+                      // shows for every objective column, even when no score
+                      // function is defined yet.
                       const scoreFunction = editedRow.scoreFunctions?.find(
-                        sf => sf.scoreName === d.name && sf.hasFunction
+                        sf => sf.scoreName === d.name
                       )
                       return (
                         <EditableTableCell
@@ -168,6 +173,7 @@ export const EditableTableExpandedRow = ({
                               ? () => handleToggleUseFunction(d.name)
                               : undefined
                           }
+                          onOpenScoreFunctions={onOpenScoreFunctions}
                           style={{
                             fontSize: 14,
                             border: 'none',
