@@ -8,6 +8,7 @@
     "@boostv/process-optimizer-frontend-core": "2.16.1",
     "@boostv/process-optimizer-frontend-plots": "3.0.2",
     "lodash.debounce": "^4.0.8",
+    "mathjs": "^14.8.0",
     "react-hook-form": "^7.76.1",
     "remeda": "^2.37.0",
     "tss-react": "^4.9.21"

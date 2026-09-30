@@ -4,6 +4,8 @@ import {
   ExperimentResultType,
   ExperimentType,
   OptimizerConfig,
+  ScoreFunctionType,
+  ScoreName,
   ScoreVariableType,
   ValueVariableType,
   experimentSchema,
@@ -15,6 +17,7 @@ import { produce } from 'immer'
 import md5 from 'md5'
 import { settings, versionInfo } from '@core/common'
 import { assertUnreachable } from '@core/common/util'
+import { computeScore } from '@core/common/util/score'
 import {
   selectActiveDataPoints,
   selectActiveDataPointsFromExperiment,
@@ -175,6 +178,76 @@ export type ExperimentAction =
       type: 'experiment/removeVariableFromConstraintSum'
       payload: string
     }
+  | {
+      type: 'updateScoreFunction'
+      payload: {
+        scoreName: ScoreName
+        scoreFunction: ScoreFunctionType | undefined
+      }
+    }
+  | {
+      type: 'updateDataPointResponses'
+      payload: {
+        metaId: number
+        scoreName: ScoreName
+        useFunction: boolean
+        values: { symbol: string; value: number }[]
+      }
+    }
+  | {
+      type: 'setDataPointsUseFunction'
+      payload: {
+        scoreName: ScoreName
+        useFunction: boolean
+      }
+    }
+
+// Recompute and persist the {type:'score', name} value for one objective of one
+// data entry, when that objective is in function mode. Manual rows are untouched.
+// Canonical order of a data point's `data` entries (values, then categoricals,
+// then scores) — the same order defaultSorted enforces. Score-entry order is
+// positionally significant downstream (multi-objective yi columns, calculateXi,
+// request hash), so a newly created score entry must be placed accordingly.
+const dataEntryOrder = (state: ExperimentType): string[] =>
+  state.valueVariables
+    .map(v => v.name)
+    .concat(state.categoricalVariables.map(v => v.name))
+    .concat(state.scoreVariables.map(v => v.name))
+
+const recomputeScore = (
+  dataEntry: DataEntry,
+  scoreName: ScoreName,
+  scoreFunction: ScoreFunctionType | undefined,
+  orderedNames: string[]
+): void => {
+  const responses = dataEntry.responses?.find(r => r.scoreName === scoreName)
+  if (
+    scoreFunction === undefined ||
+    responses === undefined ||
+    !responses.useFunction
+  )
+    return
+  const value = computeScore(scoreFunction, responses.values, dataEntry.data)
+  if (value === undefined) return
+  const scoreEntry = dataEntry.data.find(
+    d => d.type === 'score' && d.name === scoreName
+  )
+  if (scoreEntry !== undefined) {
+    scoreEntry.value = value
+  } else {
+    // A new data point in function mode may have no score entry yet (the blank
+    // score column is dropped when converting the row). Create it so the
+    // computed value is persisted and the point validates.
+    dataEntry.data.push({ type: 'score', name: scoreName, value })
+    // Restore canonical ordering so a score entered out of order (e.g. cost
+    // before quality) doesn't misalign the optimizer's score columns.
+    dataEntry.data.sort(
+      (a, b) =>
+        orderedNames.findIndex(n => n === a.name) -
+        orderedNames.findIndex(n => n === b.name)
+    )
+  }
+}
 
 const experimentReducerInner = produce(
   (state: ExperimentType, action: ExperimentAction): void | ExperimentType => {
@@ -245,6 +318,23 @@ const experimentReducerInner = produce(
               )
             }),
           }))
+        // Default each copied point to using the score function, same as a
+        // table-added row (mirrors setDataPointsUseFunction).
+        const orderedNames = dataEntryOrder(state)
+        newEntries.forEach(entry => {
+          state.scoreVariables.forEach(sv => {
+            // Only enabled objectives, matching the table-add default path.
+            if (sv.enabled && sv.scoreFunction !== undefined) {
+              if (entry.responses === undefined) entry.responses = []
+              entry.responses.push({
+                scoreName: sv.name,
+                useFunction: true,
+                values: [],
+              })
+              recomputeScore(entry, sv.name, sv.scoreFunction, orderedNames)
+            }
+          })
+        })
         state.dataPoints.push(
           ...defaultSorted(
             state.valueVariables,
@@ -314,6 +404,14 @@ const experimentReducerInner = produce(
             oldVariable.name,
             action.payload.newVariable.name
           )
+          state.scoreVariables.forEach(sv =>
+            sv.scoreFunction?.variables.forEach(v => {
+              if (v.source === 'factor' && v.factorName === oldVariable.name) {
+                v.factorName = action.payload.newVariable.name
+                v.name = action.payload.newVariable.name
+              }
+            })
+          )
         }
         break
       }
@@ -334,6 +432,16 @@ const experimentReducerInner = produce(
             d => d !== oldValueVariables[action.payload]?.name
           ),
         }))
+        const deletedName = oldValueVariables[action.payload]?.name
+        if (deletedName !== undefined) {
+          state.scoreVariables.forEach(sv => {
+            if (sv.scoreFunction !== undefined) {
+              sv.scoreFunction.variables = sv.scoreFunction.variables.filter(
+                v => !(v.source === 'factor' && v.factorName === deletedName)
+              )
+            }
+          })
+        }
         break
       }
       case 'setValueVariableEnabled': {
@@ -490,6 +598,88 @@ const experimentReducerInner = produce(
           )
         }
 
+        break
+      }
+      case 'updateScoreFunction': {
+        const sv = state.scoreVariables.find(
+          it => it.name === action.payload.scoreName
+        )
+        if (sv !== undefined) {
+          sv.scoreFunction = action.payload.scoreFunction
+          const orderedNames = dataEntryOrder(state)
+          state.dataPoints.forEach(dp =>
+            recomputeScore(
+              dp,
+              action.payload.scoreName,
+              action.payload.scoreFunction,
+              orderedNames
+            )
+          )
+        }
+        break
+      }
+      case 'updateDataPointResponses': {
+        const dp = state.dataPoints.find(
+          d => d.meta.id === action.payload.metaId
+        )
+        if (dp !== undefined) {
+          if (dp.responses === undefined) dp.responses = []
+          const existing = dp.responses.find(
+            r => r.scoreName === action.payload.scoreName
+          )
+          const next = {
+            scoreName: action.payload.scoreName,
+            useFunction: action.payload.useFunction,
+            values: action.payload.values,
+          }
+          if (existing !== undefined) {
+            existing.useFunction = next.useFunction
+            existing.values = next.values
+          } else {
+            dp.responses.push(next)
+          }
+          const sv = state.scoreVariables.find(
+            it => it.name === action.payload.scoreName
+          )
+          recomputeScore(
+            dp,
+            action.payload.scoreName,
+            sv?.scoreFunction,
+            dataEntryOrder(state)
+          )
+        }
+        break
+      }
+      case 'setDataPointsUseFunction': {
+        const sv = state.scoreVariables.find(
+          it => it.name === action.payload.scoreName
+        )
+        if (sv?.scoreFunction !== undefined) {
+          const orderedNames = dataEntryOrder(state)
+          state.dataPoints.forEach(dp => {
+            const existing = dp.responses?.find(
+              r => r.scoreName === action.payload.scoreName
+            )
+            if (existing !== undefined) {
+              existing.useFunction = action.payload.useFunction
+            } else if (action.payload.useFunction) {
+              // Only create an entry when turning the function ON; a row with no
+              // responses entry is already manual, so disabling is a no-op for it.
+              if (dp.responses === undefined) dp.responses = []
+              dp.responses.push({
+                scoreName: action.payload.scoreName,
+                useFunction: true,
+                values: [],
+              })
+            }
+            recomputeScore(
+              dp,
+              action.payload.scoreName,
+              sv.scoreFunction,
+              orderedNames
+            )
+          })
+        }
         break
       }
       default:

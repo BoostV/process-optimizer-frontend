@@ -14,7 +14,11 @@ export const validationReducer = produce(
           !violations.duplicateDataPointIds.includes(dp.meta.id) &&
           !violations.categoricalValues.includes(dp.meta.id) &&
           violations.duplicateVariableNames.length === 0 &&
-          !violations.dataPointsNumericType.includes(dp.meta.id)
+          !violations.dataPointsNumericType.includes(dp.meta.id) &&
+          !violations.dataPointsResponsesUndefined.some(
+            v => v.id === dp.meta.id
+          ) &&
+          !violations.dataPointsScoreUncomputable.some(v => v.id === dp.meta.id)
         return {
           ...dp,
           meta: {

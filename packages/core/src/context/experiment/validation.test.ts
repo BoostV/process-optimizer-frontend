@@ -8,10 +8,13 @@ import {
   validateDataPointsUndefined,
   validateDuplicateDataPointIds,
   validateDuplicateVariableNames,
+  validateExperiment,
   validateLowerBoundary,
   validateUpperBoundary,
 } from './validation'
-import { ExperimentType, scoreNames } from '@core/common'
+import { ExperimentType, ScoreFunctionType, scoreNames } from '@core/common'
+import { countDataPointsMissingResponses } from './validation'
+import { validationReducer } from './validation-reducer'
 
 describe('validateUpperBoundary', () => {
   it('should return empty array if no violations exist', () => {
@@ -669,6 +672,8 @@ describe('findDataPointViolations', () => {
     upperBoundary: [1, 2, 5, 6],
     categoricalValues: [],
     dataPointsNumericType: [3],
+    dataPointsResponsesUndefined: [],
+    dataPointsScoreUncomputable: [],
   }
   it('should return correct list of data point violations', () => {
     const dpViolations = findDataPointViolations(violations)
@@ -715,4 +720,149 @@ describe('findDataPointViolations', () => {
       expected
     )
   })
+})
+
+const buildExperimentWithQualityFunction = (
+  fn: ScoreFunctionType
+): ExperimentType => ({
+  ...emptyExperiment,
+  scoreVariables: emptyExperiment.scoreVariables.map(sv =>
+    sv.name === scoreNames[0] ? { ...sv, scoreFunction: fn } : sv
+  ),
+  dataPoints: [
+    {
+      meta: {
+        id: 1,
+        enabled: true,
+        valid: true,
+      },
+      data: [],
+      responses: [
+        {
+          scoreName: scoreNames[0],
+          useFunction: true,
+          values: [],
+        },
+      ],
+    },
+  ],
+})
+
+describe('response validation', () => {
+  const base = () =>
+    buildExperimentWithQualityFunction({
+      expression: 'weight * 2',
+      variables: [{ name: 'Weight', symbol: 'weight', source: 'response' }],
+    })
+
+  it('flags a row using the function with a missing response value', () => {
+    const exp = base() // dataPoint meta.id 1, responses useFunction:true but values:[]
+    const v = validateExperiment(exp)
+    expect(
+      v.dataPointsResponsesUndefined.some(
+        x => x.id === 1 && x.scoreName === 'quality'
+      )
+    ).toBe(true)
+    const messages =
+      findDataPointViolations(v).find(x => x.rowMetaId === 1)?.messages ?? []
+    expect(messages).toContain(
+      'All responses must be defined to use the quality function.'
+    )
+  })
+
+  it('does not flag a row in manual mode', () => {
+    const exp = base()
+    exp.dataPoints[0]!.responses = [
+      { scoreName: 'quality', useFunction: false, values: [] },
+    ]
+    expect(
+      validateExperiment(exp).dataPointsResponsesUndefined.some(x => x.id === 1)
+    ).toBe(false)
+  })
+})
+
+describe('countDataPointsMissingResponses', () => {
+  const fn = {
+    expression: 'w * 2',
+    variables: [{ name: 'W', symbol: 'w', source: 'response' as const }],
+  }
+  const complete = {
+    meta: { id: 1, enabled: true, valid: true },
+    data: [{ type: 'score' as const, name: 'quality', value: 0 }],
+    responses: [
+      {
+        scoreName: 'quality' as const,
+        useFunction: false,
+        values: [{ symbol: 'w', value: 2 }],
+      },
+    ],
+  }
+  const missing = {
+    meta: { id: 2, enabled: true, valid: true },
+    data: [{ type: 'score' as const, name: 'quality', value: 0 }],
+  }
+
+  it('counts data points lacking the function’s required responses (ignoring current useFunction)', () => {
+    expect(
+      countDataPointsMissingResponses([complete, missing], 'quality', fn)
+    ).toBe(1)
+  })
+
+  it('returns 0 when there is no score function', () => {
+    expect(
+      countDataPointsMissingResponses([missing], 'quality', undefined)
+    ).toBe(0)
+  })
+})
+
+it('flags a function-mode point as invalid when a used factor is unavailable', () => {
+  const experiment = {
+    ...emptyExperiment,
+    valueVariables: [
+      // "Pin elevation" is disabled -> not present in the data point's data
+      {
+        type: 'discrete' as const,
+        name: 'Pin elevation',
+        description: '',
+        min: 0,
+        max: 200,
+        enabled: false,
+      },
+    ],
+    scoreVariables: [
+      {
+        name: 'quality' as const,
+        label: 'Quality (0-5)',
+        description: '',
+        enabled: true,
+        scoreFunction: {
+          expression: 'pinElevation',
+          variables: [
+            {
+              name: 'Pin elevation',
+              symbol: 'pinElevation',
+              source: 'factor' as const,
+              factorName: 'Pin elevation',
+            },
+          ],
+        },
+      },
+    ],
+    dataPoints: [
+      {
+        meta: { id: 1, enabled: true, valid: true },
+        data: [{ type: 'score' as const, name: 'quality', value: 3 }], // no Pin elevation column
+        responses: [
+          { scoreName: 'quality' as const, useFunction: true, values: [] },
+        ],
+      },
+    ],
+  }
+  const violations = validateExperiment(experiment)
+  expect(violations.dataPointsScoreUncomputable).toContainEqual({
+    id: 1,
+    scoreName: 'quality',
+  })
+  const validated = validationReducer(experiment, violations)
+  expect(validated.dataPoints[0]?.meta.valid).toBe(false)
 })

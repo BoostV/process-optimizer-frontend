@@ -1,4 +1,5 @@
-import { ExperimentType } from 'common'
+import { DataEntry, ExperimentType, ScoreFunctionType } from 'common'
+import { computeScore } from '@core/common/util/score'
 
 export type ValidationViolations = {
   upperBoundary: number[]
@@ -8,6 +9,8 @@ export type ValidationViolations = {
   duplicateDataPointIds: number[]
   categoricalValues: number[]
   dataPointsNumericType: number[]
+  dataPointsResponsesUndefined: { id: number; scoreName: string }[]
+  dataPointsScoreUncomputable: { id: number; scoreName: string }[]
 }
 
 export const validateExperiment = (
@@ -21,6 +24,10 @@ export const validateExperiment = (
     duplicateDataPointIds: validateDuplicateDataPointIds(experiment),
     categoricalValues: validateCategoricalValues(experiment),
     dataPointsNumericType: validateDataPointsNumericType(experiment),
+    dataPointsResponsesUndefined:
+      validateDataPointsResponsesUndefined(experiment),
+    dataPointsScoreUncomputable:
+      validateDataPointsScoreUncomputable(experiment),
   }
 }
 
@@ -141,6 +148,83 @@ export const validateCategoricalValues = (experiment: ExperimentType) => {
   return violations
 }
 
+// Are all of the function's response-source symbols present & finite in `values`?
+const responsesComplete = (
+  scoreFunction: ScoreFunctionType,
+  values: { symbol: string; value: number }[]
+): boolean => {
+  const provided = new Map(values.map(v => [v.symbol, v.value]))
+  return scoreFunction.variables
+    .filter(v => v.source === 'response')
+    .every(v => {
+      const val = provided.get(v.symbol)
+      return val !== undefined && Number.isFinite(val)
+    })
+}
+
+// How many data points would be invalid if `scoreFunction` were used for
+// `scoreName` (i.e. are missing its required responses), regardless of current
+// useFunction. Pass the draft function so the warning reflects what Save applies.
+export const countDataPointsMissingResponses = (
+  dataPoints: DataEntry[],
+  scoreName: string,
+  scoreFunction: ScoreFunctionType | undefined
+): number => {
+  if (scoreFunction === undefined) return 0
+  return dataPoints.filter(dp => {
+    const resp = dp.responses?.find(r => r.scoreName === scoreName)
+    return !responsesComplete(scoreFunction, resp?.values ?? [])
+  }).length
+}
+
+export const validateDataPointsResponsesUndefined = (
+  experiment: ExperimentType
+): { id: number; scoreName: string }[] => {
+  const violations: { id: number; scoreName: string }[] = []
+  const functionsByScore = new Map(
+    experiment.scoreVariables
+      .filter(sv => sv.scoreFunction !== undefined)
+      .map(sv => [sv.name, sv.scoreFunction!])
+  )
+  experiment.dataPoints.forEach(dp => {
+    dp.responses?.forEach(resp => {
+      const fn = functionsByScore.get(resp.scoreName)
+      if (fn === undefined || !resp.useFunction) return
+      if (!responsesComplete(fn, resp.values)) {
+        violations.push({ id: dp.meta.id, scoreName: resp.scoreName })
+      }
+    })
+  })
+  return violations
+}
+
+// Function-mode points whose responses are complete but whose score still can't
+// be computed — e.g. a factor the function uses is disabled/removed, or the
+// expression is invalid. (Responses-missing is reported separately.)
+export const validateDataPointsScoreUncomputable = (
+  experiment: ExperimentType
+): { id: number; scoreName: string }[] => {
+  const violations: { id: number; scoreName: string }[] = []
+  const functionsByScore = new Map(
+    experiment.scoreVariables
+      .filter(sv => sv.scoreFunction !== undefined)
+      .map(sv => [sv.name, sv.scoreFunction!])
+  )
+  experiment.dataPoints.forEach(dp => {
+    dp.responses?.forEach(resp => {
+      const fn = functionsByScore.get(resp.scoreName)
+      if (fn === undefined || !resp.useFunction) return
+      if (
+        responsesComplete(fn, resp.values) &&
+        computeScore(fn, resp.values, dp.data) === undefined
+      ) {
+        violations.push({ id: dp.meta.id, scoreName: resp.scoreName })
+      }
+    })
+  })
+  return violations
+}
+
 export const findUniqueEntries = (arr: number[]): number[] =>
   arr.filter((val, i, arr) => arr.indexOf(val) === i)
 
@@ -160,11 +244,15 @@ export const findDataPointViolations = (
   const upperBoundary = violations.upperBoundary
   const lowerBoundary = violations.lowerBoundary
   const numericType = violations.dataPointsNumericType
+  const responsesUndefined = violations.dataPointsResponsesUndefined
+  const scoreUncomputable = violations.dataPointsScoreUncomputable
   findUniqueEntries(
     pointsUndefined
       .concat(upperBoundary)
       .concat(lowerBoundary)
       .concat(numericType)
+      .concat(responsesUndefined.map(r => r.id))
+      .concat(scoreUncomputable.map(r => r.id))
   ).forEach(e => {
     const messages: string[] = []
     if (pointsUndefined.includes(e)) {
@@ -185,6 +273,20 @@ export const findDataPointViolations = (
     if (numericType.includes(e)) {
       messages.push('Discrete values must be integers.')
     }
+    responsesUndefined
+      .filter(r => r.id === e)
+      .forEach(r => {
+        messages.push(
+          `All responses must be defined to use the ${r.scoreName} function.`
+        )
+      })
+    scoreUncomputable
+      .filter(r => r.id === e)
+      .forEach(r => {
+        messages.push(
+          `The ${r.scoreName} function can't be computed for this point — check the factors it uses and its expression.`
+        )
+      })
     allViolations.push({
       rowMetaId: e,
       messages,

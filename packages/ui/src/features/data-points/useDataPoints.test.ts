@@ -48,4 +48,113 @@ describe('useDataPoints', () => {
       expect(deleteResult).toEqual(expected)
     })
   })
+
+  describe('score function state', () => {
+    it('exposes per-objective score function state on rows', () => {
+      const { result } = renderHook(() =>
+        useDataPoints(
+          [
+            {
+              type: 'discrete',
+              name: 'F',
+              description: '',
+              min: 0,
+              max: 10,
+              enabled: true,
+            },
+          ],
+          [],
+          [
+            {
+              name: 'quality',
+              label: 'Quality (0-5)',
+              description: '',
+              enabled: true,
+              scoreFunction: {
+                expression: 'weight*2',
+                variables: [
+                  { name: 'Weight', symbol: 'weight', source: 'response' },
+                ],
+              },
+            },
+          ],
+          [
+            {
+              meta: { id: 1, enabled: true, valid: true },
+              data: [
+                { type: 'numeric', name: 'F', value: 3 },
+                { type: 'score', name: 'quality', value: 4 },
+              ],
+              responses: [
+                {
+                  scoreName: 'quality',
+                  useFunction: true,
+                  values: [{ symbol: 'weight', value: 2 }],
+                },
+              ],
+            },
+          ]
+        )
+      )
+      const sf = result.current.state.rows[0]?.scoreFunctions?.find(
+        s => s.scoreName === 'quality'
+      )
+      expect(sf?.useFunction).toBe(true)
+      expect(sf?.values.weight).toBe('2')
+    })
+
+    it('keeps existing points manual but defaults new points to using the function', () => {
+      const { result } = renderHook(() =>
+        useDataPoints(
+          [
+            {
+              type: 'discrete',
+              name: 'F',
+              description: '',
+              min: 0,
+              max: 10,
+              enabled: true,
+            },
+          ],
+          [],
+          [
+            {
+              name: 'quality',
+              label: 'Quality (0-5)',
+              description: '',
+              enabled: true,
+              scoreFunction: {
+                expression: 'weight*2',
+                variables: [
+                  { name: 'Weight', symbol: 'weight', source: 'response' },
+                ],
+              },
+            },
+          ],
+          [
+            {
+              meta: { id: 1, enabled: true, valid: true },
+              data: [
+                { type: 'numeric', name: 'F', value: 3 },
+                { type: 'score', name: 'quality', value: 4 },
+              ],
+              // no `responses` entry for this row
+            },
+          ]
+        )
+      )
+      const rows = result.current.state.rows
+      // pre-existing point (no responses) stays manual until the user opts in
+      const existing = rows[0]?.scoreFunctions?.find(
+        s => s.scoreName === 'quality'
+      )
+      expect(existing?.hasFunction).toBe(true)
+      expect(existing?.useFunction).toBe(false)
+      // the new-point template defaults to using the function
+      const newRow = rows
+        .find(r => r.isNew)
+        ?.scoreFunctions?.find(s => s.scoreName === 'quality')
+      expect(newRow?.useFunction).toBe(true)
+    })
+  })
 })

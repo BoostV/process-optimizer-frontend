@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ExperimentAction } from './experiment-reducers'
+import { ExperimentAction, experimentReducer } from './experiment-reducers'
 import { rootReducer } from './reducers'
 import {
   currentVersion,
@@ -7,6 +7,7 @@ import {
   ExperimentResultType,
   ExperimentType,
   OptimizerConfig,
+  ScoreFunctionType,
   scoreNames,
   ValueVariableType,
 } from '@core/common/types'
@@ -1433,5 +1434,168 @@ describe('resetting suggestion count when the model is first fit (#1)', () => {
     // validation flips it valid -> active reaches initialPoints -> reset fires
     expect(after.dataPoints[after.dataPoints.length - 1]?.meta.valid).toBe(true)
     expect('experimentSuggestionCount' in after.extras).toBe(false)
+  })
+})
+
+describe('updateScoreFunction + updateDataPointResponses', () => {
+  const fn: ScoreFunctionType = {
+    expression: 'weight * 2',
+    variables: [{ name: 'Weight', symbol: 'weight', source: 'response' }],
+  }
+
+  // v21 experiment: one valueVariable, scoreVariables: [{name:'quality', ...}]
+  // (from emptyExperiment), one dataPoint with a quality score of 0 whose
+  // responses entry drives the function.
+  const buildState = (): ExperimentType =>
+    produce(emptyExperiment, draft => {
+      draft.valueVariables = [createValueVariable({ name: 'Weight' })]
+      draft.dataPoints = [
+        {
+          meta: { enabled: true, valid: true, id: 1 },
+          data: [
+            { type: 'numeric', name: 'Weight', value: 1.5 },
+            { type: 'score', name: scoreNames[0], value: 0 },
+          ],
+          responses: [
+            {
+              scoreName: scoreNames[0],
+              useFunction: true,
+              values: [{ symbol: 'weight', value: 1.5 }],
+            },
+          ],
+        },
+      ]
+    })
+
+  const buildStateWithFunction = (
+    scoreFunction: ScoreFunctionType
+  ): ExperimentType =>
+    produce(buildState(), draft => {
+      const sv = draft.scoreVariables.find(s => s.name === scoreNames[0])
+      if (sv !== undefined) sv.scoreFunction = scoreFunction
+    })
+
+  it('setting a function recomputes rows that use it', () => {
+    let state = buildState()
+    state = experimentReducer(state, {
+      type: 'updateScoreFunction',
+      payload: { scoreName: 'quality', scoreFunction: fn },
+    })
+    const score = state.dataPoints[0]?.data.find(
+      d => d.type === 'score' && d.name === 'quality'
+    )
+    expect(score?.value).toBe(3) // 1.5 * 2
+    expect(state.scoreVariables[0]?.scoreFunction).toEqual(fn)
+  })
+
+  it('updating responses recomputes that row when useFunction is true', () => {
+    let state: ExperimentType = buildStateWithFunction(fn)
+    state = experimentReducer(state, {
+      type: 'updateDataPointResponses',
+      payload: {
+        metaId: 1,
+        scoreName: 'quality',
+        useFunction: true,
+        values: [{ symbol: 'weight', value: 2 }],
+      },
+    })
+    const score = state.dataPoints[0]?.data.find(
+      d => d.type === 'score' && d.name === 'quality'
+    )
+    expect(score?.value).toBe(4)
+    expect(state.dataPoints[0]?.responses?.[0]?.values[0]?.value).toBe(2)
+  })
+
+  it('creates a score entry when the row has none yet (new function-mode point)', () => {
+    // a new point: factor data present, function mode, but no score entry
+    // (the blank score column is dropped when the row is converted)
+    let state: ExperimentType = produce(buildStateWithFunction(fn), draft => {
+      const dp = draft.dataPoints[0]
+      if (dp !== undefined) {
+        dp.data = [{ type: 'numeric', name: 'Weight', value: 3 }]
+      }
+    })
+    state = experimentReducer(state, {
+      type: 'updateDataPointResponses',
+      payload: {
+        metaId: 1,
+        scoreName: 'quality',
+        useFunction: true,
+        values: [{ symbol: 'weight', value: 3 }],
+      },
+    })
+    const score = state.dataPoints[0]?.data.find(
+      d => d.type === 'score' && d.name === 'quality'
+    )
+    expect(score?.value).toBe(6) // 3 * 2, entry created from scratch
+  })
+
+  it('inserts a created score entry in canonical order (before a later objective)', () => {
+    // multi-objective: quality + cost both exist as score variables; the point
+    // has a cost score but no quality score, with cost currently first
+    let state: ExperimentType = produce(buildStateWithFunction(fn), draft => {
+      if (!draft.scoreVariables.some(s => s.name === scoreNames[1])) {
+        draft.scoreVariables.push({
+          name: scoreNames[1],
+          label: 'Cost',
+          description: '',
+          enabled: true,
+        })
+      }
+      const dp = draft.dataPoints[0]
+      if (dp !== undefined) {
+        dp.data = [
+          { type: 'numeric', name: 'Weight', value: 3 },
+          { type: 'score', name: scoreNames[1], value: 2 },
+        ]
+      }
+    })
+    state = experimentReducer(state, {
+      type: 'updateDataPointResponses',
+      payload: {
+        metaId: 1,
+        scoreName: 'quality',
+        useFunction: true,
+        values: [{ symbol: 'weight', value: 3 }],
+      },
+    })
+    const scoreOrder = state.dataPoints[0]?.data
+      .filter(d => d.type === 'score')
+      .map(d => d.name)
+    // quality (scoreNames[0]) must precede cost (scoreNames[1]), not appended after
+    expect(scoreOrder).toEqual([scoreNames[0], scoreNames[1]])
+  })
+
+  it('does not recompute a row in manual mode', () => {
+    // a manually-entered score of 9
+    let state: ExperimentType = produce(buildStateWithFunction(fn), draft => {
+      const score = draft.dataPoints[0]?.data.find(
+        d => d.type === 'score' && d.name === 'quality'
+      )
+      if (score !== undefined) score.value = 9
+    })
+    // put the row in manual mode (useFunction false)
+    state = experimentReducer(state, {
+      type: 'updateDataPointResponses',
+      payload: {
+        metaId: 1,
+        scoreName: 'quality',
+        useFunction: false,
+        values: [{ symbol: 'weight', value: 2 }],
+      },
+    })
+    // changing the function must NOT overwrite the manual score. If manual mode
+    // were ignored, recompute would run weight*100 = 200; the value must stay 9.
+    state = experimentReducer(state, {
+      type: 'updateScoreFunction',
+      payload: {
+        scoreName: 'quality',
+        scoreFunction: { ...fn, expression: 'weight * 100' },
+      },
+    })
+    const score = state.dataPoints[0]?.data.find(
+      d => d.type === 'score' && d.name === 'quality'
+    )
+    expect(score?.value).toBe(9)
   })
 })

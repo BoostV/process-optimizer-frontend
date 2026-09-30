@@ -12,6 +12,7 @@ interface EditableTableRowProps {
   onAdd: (row: TableDataRow) => void
   onEnabledToggled: (enabled: boolean) => void
   onSelected: (isShiftKeyDown: boolean, isCtrlKeyDown: boolean) => void
+  onOpenScoreFunctions?: () => void
   violations?: string[]
   order: TableOrder
   isEditingDisabled?: boolean
@@ -27,6 +28,7 @@ export const EditableTableRow = ({
   onAdd,
   onEnabledToggled,
   onSelected,
+  onOpenScoreFunctions,
   violations,
   order,
   isEditingDisabled,
@@ -51,6 +53,7 @@ export const EditableTableRow = ({
           onAdd={row => onAdd(row)}
           onSave={row => onSave(row)}
           setExpanded={expanded => setExpanded(expanded)}
+          onOpenScoreFunctions={onOpenScoreFunctions}
           violations={violations}
         />
       ) : (
