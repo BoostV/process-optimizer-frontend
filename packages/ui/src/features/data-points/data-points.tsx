@@ -37,6 +37,8 @@ type DataPointProps = {
   warning?: string
   onToggleNewestFirst: () => void
   onUpdateDataPoints: (dataPoints: DataEntry[]) => void
+  csvSeparator?: string
+  onCsvImportError?: (error: unknown) => void
 }
 
 export function DataPoints(props: DataPointProps) {
@@ -53,6 +55,8 @@ export function DataPoints(props: DataPointProps) {
     warning,
     onToggleNewestFirst,
     onUpdateDataPoints,
+    csvSeparator = ';',
+    onCsvImportError,
   } = props
   const { classes } = useStyles()
   const { dispatch } = useExperiment()
@@ -62,12 +66,13 @@ export function DataPoints(props: DataPointProps) {
   const enabledCategoricalVariables = categoricalVariables.filter(
     v => v.enabled
   )
-  const { state, addRow, deleteRows, editRow, setEnabledState } = useDataPoints(
-    enabledValueVariables,
-    enabledCategoricalVariables,
-    scoreVariables,
-    dataPoints
-  )
+  const { state, addRow, deleteRows, editRow, setEnabledState, setNote } =
+    useDataPoints(
+      enabledValueVariables,
+      enabledCategoricalVariables,
+      scoreVariables,
+      dataPoints
+    )
 
   const isLoadingState = state.rows.length === 0
 
@@ -114,6 +119,9 @@ export function DataPoints(props: DataPointProps) {
   const rowEnabledToggled = (rowIndex: number, enabled: boolean) =>
     onUpdateDataPoints(setEnabledState(rowIndex, enabled))
 
+  const rowNoteChanged = (rowIndex: number, note: string | undefined) =>
+    onUpdateDataPoints(setNote(rowIndex, note))
+
   const rowEdited = (rowIndex: number, row: TableDataRow) => {
     onUpdateDataPoints(editRow(rowIndex, row))
     if (row.metaId !== undefined) {
@@ -140,7 +148,7 @@ export function DataPoints(props: DataPointProps) {
                 light
                 onClick={() =>
                   saveCSVToLocalFile(
-                    dataPointsToCSV(dataPoints),
+                    dataPointsToCSV(dataPoints, csvSeparator),
                     experimentId + '.csv'
                   )
                 }
@@ -153,6 +161,8 @@ export function DataPoints(props: DataPointProps) {
                 categoricalVariables={enabledCategoricalVariables}
                 valueVariables={enabledValueVariables}
                 scoreVariables={scoreVariables}
+                separator={csvSeparator}
+                onError={onCsvImportError}
               />
               <Tooltip disableInteractive title="Reverse order">
                 <IconButton
@@ -227,6 +237,7 @@ export function DataPoints(props: DataPointProps) {
                 onRowEnabledToggled={(index, enabled) =>
                   rowEnabledToggled(index, enabled)
                 }
+                onRowNoteChanged={(index, note) => rowNoteChanged(index, note)}
               />
             </Box>
           </>

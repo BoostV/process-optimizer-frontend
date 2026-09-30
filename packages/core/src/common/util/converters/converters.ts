@@ -109,6 +109,48 @@ export const calculateConstraints = (experiment: ExperimentType) =>
         .sort(),
     }))
     .filter(c => (c.type === 'sum' ? c.dimensions.length > 1 : true))
+// RFC-4180: a field containing the separator, a double-quote, or a newline is
+// wrapped in double-quotes with internal quotes doubled. Clean fields are left
+// untouched, so exports of ordinary data are byte-identical to before.
+const escapeCsvField = (value: string, separator: string): string =>
+  value.includes(separator) ||
+  value.includes('"') ||
+  value.includes('\n') ||
+  value.includes('\r')
+    ? `"${value.replaceAll('"', '""')}"`
+    : value
+
+// Split one CSV line into fields, honoring RFC-4180 quotes: a double-quoted
+// field may contain the separator, and "" is an escaped quote. (Embedded
+// newlines are out of scope — the app's inputs are single-line.)
+const parseCsvLine = (line: string, separator: string): string[] => {
+  const fields: string[] = []
+  let field = ''
+  let inQuotes = false
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i]
+    if (inQuotes) {
+      if (ch === '"' && line[i + 1] === '"') {
+        field += '"'
+        i++
+      } else if (ch === '"') {
+        inQuotes = false
+      } else {
+        field += ch
+      }
+    } else if (ch === '"') {
+      inQuotes = true
+    } else if (ch === separator) {
+      fields.push(field)
+      field = ''
+    } else {
+      field += ch
+    }
+  }
+  fields.push(field)
+  return fields
+}
+
 /**
  * Converts a list of DataEntry objects into a CSV string.
  * The output format:
@@ -142,7 +184,11 @@ export const dataPointsToCSV = (
   ]
   return dataPoints.length === 0
     ? ''
-    : [['id'].concat(header, meta).join(separator)]
+    : [
+        ['id', ...header, ...meta]
+          .map(field => escapeCsvField(field, separator))
+          .join(separator),
+      ]
         // Generate data lines
         .concat(
           [...dataPoints]
@@ -152,15 +198,21 @@ export const dataPointsToCSV = (
               )
               return { ...line, data: header.map(h => values.get(h) ?? '') }
             })
-            .map(
-              line =>
-                `${line.meta.id}${separator}${line.data
-                  .concat(
-                    Object.entries(line.meta as object)
-                      .filter(e => e[0] !== 'id')
-                      .map(e => e[1])
-                  )
-                  .join(separator)}`
+            .map(line =>
+              // Meta values are emitted in the `meta` header (union) order —
+              // looked up by key, not the row's own key order — so rows with
+              // different optional meta keys (e.g. note vs description) stay
+              // column-aligned on re-import.
+              [
+                String(line.meta.id),
+                ...line.data,
+                ...meta.map(key => {
+                  const value = (line.meta as Record<string, unknown>)[key]
+                  return value === undefined ? '' : String(value)
+                }),
+              ]
+                .map(field => escapeCsvField(field, separator))
+                .join(separator)
             )
         )
         .filter(s => '' !== s)
@@ -220,16 +272,17 @@ export const csvToDataPoints = (
   const lines = csv.split(newlinePattern)
   if ('' === csv || lines.length < 2) return []
   else {
-    const header = lines[0]?.split(separator).map(h => h.trim()) ?? []
+    const header = parseCsvLine(lines[0] ?? '', separator).map(h => h.trim())
     if (
       header.length >= expectedHeader.length &&
       expectedHeader.every(value => header.includes(value))
     ) {
       const data = lines.slice(1)
       const dataAsKeyValue = data.map(line =>
-        line
-          .split(separator)
-          .map((value, idx) => ({ key: header[idx] ?? '', value }))
+        parseCsvLine(line, separator).map((value, idx) => ({
+          key: header[idx] ?? '',
+          value,
+        }))
       )
       const dataList = dataAsKeyValue.map((line, idx) => ({
         data: line
@@ -285,6 +338,9 @@ const convertToMetaData = (
         ? parsedMeta['valid']?.toLowerCase() === 'true'
         : true,
     id: 'id' in parsedMeta ? Number(parsedMeta['id'] ?? idx + 1) : idx + 1,
+  }
+  if (result.note === '' || result.note === undefined) {
+    delete result.note
   }
   return result
 }
