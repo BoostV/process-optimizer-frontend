@@ -8,6 +8,7 @@ type Props = {
   symbols: string[]
   onChange: (next: string) => void
   onBlur?: () => void
+  paddingRight?: number
 }
 
 const escapeHtml = (s: string) =>
@@ -23,7 +24,7 @@ const highlightSymbols = (code: string, symbols: string[]): string =>
   )
 
 export const ScoreFunctionField = forwardRef<ScoreFunctionFieldHandle, Props>(
-  ({ value, symbols, onChange, onBlur }, ref) => (
+  ({ value, symbols, onChange, onBlur, paddingRight }, ref) => (
     <HighlightField
       ref={ref}
       value={value}
@@ -36,6 +37,7 @@ export const ScoreFunctionField = forwardRef<ScoreFunctionFieldHandle, Props>(
       minHeight={48}
       // cap growth (~6 lines) and scroll rather than pushing the layout
       maxHeight={164}
+      paddingRight={paddingRight}
     />
   )
 )

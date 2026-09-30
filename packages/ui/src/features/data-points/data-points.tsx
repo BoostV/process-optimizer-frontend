@@ -125,6 +125,7 @@ export function DataPoints(props: DataPointProps) {
     <TitleCard
       id={id}
       warning={warning}
+      padding={0}
       title={
         <>
           <Box
@@ -188,9 +189,13 @@ export function DataPoints(props: DataPointProps) {
       }
     >
       {enabledValueVariables.length + enabledCategoricalVariables.length ===
-        0 && 'Data points will appear here'}
+        0 && <Box sx={{ p: 2 }}>Data points will appear here</Box>}
       {enabledValueVariables.length + enabledCategoricalVariables.length > 0 &&
-        isLoadingState && <CircularProgress size={24} />}
+        isLoadingState && (
+          <Box sx={{ p: 2 }}>
+            <CircularProgress size={24} />
+          </Box>
+        )}
       {enabledValueVariables.length + enabledCategoricalVariables.length > 0 &&
         !isLoadingState && (
           <>
@@ -200,7 +205,7 @@ export function DataPoints(props: DataPointProps) {
                 onSave={() => setSettingsOpen(false)}
               />
             )}
-            <Box className={classes.tableContainer}>
+            <Box className={classes.tableContainer} sx={{ p: 2 }}>
               <EditableTable
                 newestFirst={newestFirst}
                 rows={
