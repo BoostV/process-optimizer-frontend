@@ -16,7 +16,7 @@ export const useStyles = makeStyles()(theme => ({
     gap: theme.spacing(1),
   },
   tabContainer: {
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
   },
   tabContainers: {
     display: 'flex',

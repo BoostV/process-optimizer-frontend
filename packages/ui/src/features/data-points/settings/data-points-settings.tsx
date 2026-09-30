@@ -269,7 +269,10 @@ export function DataPointsSettings({
       </Tabs>
       <Box className={classes.tabContainer}>
         <Box className={classes.tabContainers}>
-          <Box className={classes.functionContainer}>
+          <Box
+            className={classes.functionContainer}
+            sx={{ mt: activeScore?.name === scoreNames[0] ? 0 : 1 }}
+          >
             {activeScore?.name === scoreNames[0] && (
               <InfoBox
                 text="Your function should map to the scale 0 - 5."
