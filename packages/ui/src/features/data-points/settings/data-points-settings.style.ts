@@ -29,6 +29,8 @@ export const useStyles = makeStyles()(theme => ({
   },
   playgroundContainer: {
     paddingLeft: theme.spacing(2),
+    // align the framed test box with the info box in the left column
+    marginTop: theme.spacing(1),
   },
   playgroundFrame: {
     display: 'inline-block',
