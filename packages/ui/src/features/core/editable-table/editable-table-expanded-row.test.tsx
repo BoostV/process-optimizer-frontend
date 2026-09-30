@@ -1,9 +1,29 @@
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import { EditableTableExpandedRow } from './editable-table-expanded-row'
 import type { TableDataRow } from './types'
 
 afterEach(() => cleanup())
+
+const renderRow = (
+  tableRow: TableDataRow,
+  props: Partial<React.ComponentProps<typeof EditableTableExpandedRow>> = {}
+) =>
+  render(
+    <table>
+      <tbody>
+        <EditableTableExpandedRow
+          colSpan={3}
+          rowId={tableRow.metaId ?? 0}
+          tableRow={tableRow}
+          setExpanded={() => {}}
+          onAdd={() => {}}
+          onSave={() => {}}
+          {...props}
+        />
+      </tbody>
+    </table>
+  )
 
 const row: TableDataRow = {
   isNew: false,
@@ -191,5 +211,76 @@ describe('EditableTableExpandedRow NOTE section', () => {
     })
     fireEvent.click(screen.getByRole('button', { name: /save/i }))
     expect(saved?.note).toBe('forgot the red button')
+  })
+})
+
+describe('EditableTableExpandedRow f(x) toggle', () => {
+  const undefinedQualityRow: TableDataRow = {
+    isNew: false,
+    metaId: 5,
+    enabled: true,
+    valid: true,
+    dataPoints: [
+      { name: 'quality', label: 'Quality (0-5)', value: '2', type: 'rating' },
+    ],
+    scoreFunctions: [
+      {
+        scoreName: 'quality',
+        label: 'Quality (0-5)',
+        hasFunction: false,
+        useFunction: false,
+        responseVars: [],
+        values: {},
+      },
+    ],
+  }
+
+  const undefinedCostRow: TableDataRow = {
+    isNew: false,
+    metaId: 6,
+    enabled: true,
+    valid: true,
+    dataPoints: [{ name: 'cost', label: 'Cost', value: '3', type: 'numeric' }],
+    scoreFunctions: [
+      {
+        scoreName: 'cost',
+        label: 'Cost',
+        hasFunction: false,
+        useFunction: false,
+        responseVars: [],
+        values: {},
+      },
+    ],
+  }
+
+  it('shows a "Define <name> function" f(x) toggle for the quality objective with no function defined', () => {
+    renderRow(undefinedQualityRow)
+    expect(
+      screen.getByRole('button', { name: 'Define quality function' })
+    ).toBeInTheDocument()
+  })
+
+  it('names the define tooltip after the cost objective with no function', () => {
+    renderRow(undefinedCostRow)
+    expect(
+      screen.getByRole('button', { name: 'Define cost function' })
+    ).toBeInTheDocument()
+  })
+
+  it('opens the score functions section when f(x) is clicked for an undefined function', () => {
+    const onOpenScoreFunctions = vi.fn()
+    renderRow(undefinedQualityRow, { onOpenScoreFunctions })
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Define quality function' })
+    )
+    expect(onOpenScoreFunctions).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps the "Use <name> function" toggle (not open-settings) when a function is defined', () => {
+    const onOpenScoreFunctions = vi.fn()
+    renderRow(row, { onOpenScoreFunctions })
+    const toggle = screen.getByRole('button', { name: 'Use quality function' })
+    fireEvent.click(toggle)
+    expect(onOpenScoreFunctions).not.toHaveBeenCalled()
   })
 })

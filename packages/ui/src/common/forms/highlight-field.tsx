@@ -17,8 +17,8 @@ type Props = {
   highlight: (code: string) => string
   placeholder?: string
   minHeight?: number
-  /** When set, the field caps at this height and scrolls. */
   maxHeight?: number
+  paddingRight?: number
   textareaId?: string
   ariaLabel?: string
 }
@@ -59,6 +59,7 @@ export const HighlightField = forwardRef<HighlightFieldHandle, Props>(
       placeholder,
       minHeight = 48,
       maxHeight,
+      paddingRight,
       textareaId,
       ariaLabel,
     },
@@ -116,6 +117,7 @@ export const HighlightField = forwardRef<HighlightFieldHandle, Props>(
           aria-hidden
           style={{
             ...sharedText,
+            ...(paddingRight !== undefined ? { paddingRight } : {}),
             pointerEvents: 'none',
             color: 'rgba(0,0,0,0.87)',
           }}
@@ -135,6 +137,7 @@ export const HighlightField = forwardRef<HighlightFieldHandle, Props>(
           autoCorrect="off"
           style={{
             ...sharedText,
+            ...(paddingRight !== undefined ? { paddingRight } : {}),
             color: 'transparent',
             caretColor: 'rgba(0,0,0,0.87)',
             WebkitTextFillColor: 'transparent',

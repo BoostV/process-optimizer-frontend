@@ -3,20 +3,20 @@ import { colors } from '@mui/material'
 
 export const useStyles = makeStyles()(theme => ({
   main: {
+    // Full-bleed grey panel spanning the whole card width, matching the grey
+    // areas in Factor settings and Results (card is rendered with padding={0};
+    // spacing below comes from the padded table container). The 16px padding
+    // gives all panel content uniform breathing room from the grey edges.
     backgroundColor: colors.grey[200],
-    borderRadius: '4px',
-    // Breathing room between the panel and the data-points table below it.
-    marginBottom: theme.spacing(1),
+    padding: theme.spacing(2),
   },
   header: {
     display: 'flex',
     alignItems: 'center',
     gap: theme.spacing(1),
-    padding: theme.spacing(1),
   },
   tabContainer: {
-    padding: theme.spacing(1),
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
   },
   tabContainers: {
     display: 'flex',
@@ -28,25 +28,26 @@ export const useStyles = makeStyles()(theme => ({
     minWidth: '24rem',
   },
   playgroundContainer: {
-    borderLeft: `1px solid ${theme.palette.divider}`,
     paddingLeft: theme.spacing(2),
+    // align the framed test box with the info box in the left column
+    marginTop: theme.spacing(1),
   },
-  // Full-width section below the two side-by-side columns.
+  playgroundFrame: {
+    display: 'inline-block',
+    border: `1px solid ${colors.grey[400]}`,
+    borderRadius: '4px',
+    padding: theme.spacing(2),
+  },
   bulkContainer: {
-    borderTop: `1px solid ${theme.palette.divider}`,
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
     marginBottom: theme.spacing(2),
   },
-  // Segmented control: the selected option is filled with the brand colour
-  // (matching the Brownie Bee /settings toggles).
   bulkToggle: {
     '& .MuiToggleButton-root': {
       textTransform: 'none',
     },
     '& .MuiToggleButton-root.Mui-selected': {
       backgroundColor: theme.palette.primary.main,
-      // Force white: the bee theme's amber primary is light enough that MUI's
-      // contrastText resolves to black, which reads poorly on the fill.
       color: theme.palette.common.white,
       '&:hover': {
         backgroundColor: theme.palette.primary.dark,
@@ -54,8 +55,13 @@ export const useStyles = makeStyles()(theme => ({
     },
   },
   title: {
-    marginBottom: theme.spacing(2),
+    fontSize: 14,
+    marginBottom: theme.spacing(1),
     marginTop: theme.spacing(1),
+  },
+  test: {
+    marginBottom: theme.spacing(2),
+    marginTop: 0,
   },
   function: {
     display: 'flex',

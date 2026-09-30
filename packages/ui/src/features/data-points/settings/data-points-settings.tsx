@@ -269,7 +269,10 @@ export function DataPointsSettings({
       </Tabs>
       <Box className={classes.tabContainer}>
         <Box className={classes.tabContainers}>
-          <Box className={classes.functionContainer}>
+          <Box
+            className={classes.functionContainer}
+            sx={{ mt: activeScore?.name === scoreNames[0] ? 0 : 1 }}
+          >
             {activeScore?.name === scoreNames[0] && (
               <InfoBox
                 text="Your function should map to the scale 0 - 5."
@@ -278,23 +281,12 @@ export function DataPointsSettings({
               />
             )}
             <Box className={classes.function}>
-              <Tooltip title="Help" disableInteractive>
-                <IconButton
-                  size="small"
-                  aria-label="score function help"
-                  onClick={() => setHelpOpen(true)}
-                >
-                  <HelpOutlineOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              {/* minWidth:0 lets this flex item shrink below the expression's
-                  content width so a long expression wraps instead of
-                  overflowing the column into the playground beside it. */}
-              <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+              <Box sx={{ flexGrow: 1, minWidth: 0, position: 'relative' }}>
                 <ScoreFunctionField
                   ref={fieldRef}
                   value={draft?.expression ?? ''}
                   symbols={symbols}
+                  paddingRight={40}
                   onChange={next => {
                     setShowExpressionError(false)
                     setDraft(d => {
@@ -322,6 +314,22 @@ export function DataPointsSettings({
                   }}
                   onBlur={() => setShowExpressionError(true)}
                 />
+                <Tooltip title="Help" disableInteractive>
+                  <IconButton
+                    size="small"
+                    aria-label="score function help"
+                    onClick={() => setHelpOpen(true)}
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      right: 4,
+                      transform: 'translateY(-50%)',
+                      zIndex: 1,
+                    }}
+                  >
+                    <HelpOutlineOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
               </Box>
             </Box>
             {showExpressionError && expressionError && (
@@ -422,14 +430,20 @@ export function DataPointsSettings({
           </Box>
 
           <Box className={classes.playgroundContainer}>
-            <Box className={classes.title}>Test your function</Box>
-            <ScoreFunctionPlayground scoreFunction={draft} />
+            <Box className={classes.playgroundFrame}>
+              <Box className={[classes.title, classes.test].join(' ')}>
+                Test your function
+              </Box>
+              <ScoreFunctionPlayground scoreFunction={draft} />
+            </Box>
           </Box>
         </Box>
 
         {experiment.dataPoints.length > 0 && (
           <Box className={classes.bulkContainer}>
-            <Box className={classes.title}>For existing data points</Box>
+            <Box className={classes.title}>
+              How to apply score function for all data points
+            </Box>
             <ToggleButtonGroup
               exclusive
               size="small"

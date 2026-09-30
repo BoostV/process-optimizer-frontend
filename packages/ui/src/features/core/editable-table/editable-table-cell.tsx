@@ -26,6 +26,7 @@ type EditableTableCellProps = {
   scoreName?: string
   scoreFunction?: { hasFunction: boolean; useFunction: boolean }
   onToggleUseFunction?: () => void
+  onOpenScoreFunctions?: () => void
 }
 
 export function EditableTableCell({
@@ -39,6 +40,7 @@ export function EditableTableCell({
   scoreName,
   scoreFunction,
   onToggleUseFunction,
+  onOpenScoreFunctions,
 }: EditableTableCellProps) {
   const { classes } = useStyles()
 
@@ -62,13 +64,21 @@ export function EditableTableCell({
       />
     )
 
-  const fxToggle = scoreFunction?.hasFunction ? (
-    <Tooltip disableInteractive title={`Use ${scoreName} function`}>
+  const hasFunction = scoreFunction?.hasFunction ?? false
+  // When defined, "Use <name> function"; when not, "Define <name> function".
+  const fxTitle = hasFunction
+    ? `Use ${scoreName} function`
+    : `Define ${scoreName} function`
+
+  const fxToggle = scoreFunction ? (
+    <Tooltip disableInteractive title={fxTitle}>
       <IconButton
         size="small"
-        aria-label={`Use ${scoreName} function`}
-        color={scoreFunction.useFunction ? 'primary' : 'default'}
-        onClick={() => onToggleUseFunction?.()}
+        aria-label={fxTitle}
+        color={hasFunction && scoreFunction.useFunction ? 'primary' : 'default'}
+        onClick={() =>
+          hasFunction ? onToggleUseFunction?.() : onOpenScoreFunctions?.()
+        }
       >
         <Box component="span" sx={{ fontSize: 13, fontStyle: 'italic' }}>
           f(x)

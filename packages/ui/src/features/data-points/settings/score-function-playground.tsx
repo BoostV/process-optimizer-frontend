@@ -51,43 +51,45 @@ export const ScoreFunctionPlayground = ({ scoreFunction }: Props) => {
   const nameOf = (s: string) =>
     scoreFunction.variables.find(v => v.symbol === s)?.name ?? s
 
+  const hasResult = result !== undefined && Number.isFinite(Number(result))
+  const roundedResult = hasResult ? Number(Number(result).toFixed(3)) : ''
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        gap: 2,
-        alignItems: 'flex-end',
-        flexWrap: 'wrap',
-        marginTop: '-4px',
-      }}
-    >
-      {symbols.map(s => (
-        <TextField
-          key={s}
-          size="small"
-          type="number"
-          label={nameOf(s)}
-          slotProps={{
-            htmlInput: { 'aria-label': nameOf(s) },
-            inputLabel: { shrink: true },
-          }}
-          value={inputs[s] ?? ''}
-          onChange={e => setInputs(prev => ({ ...prev, [s]: e.target.value }))}
-          sx={{ maxWidth: '10rem' }}
-        />
-      ))}
-      <Box>
-        <TextField
-          key="result"
-          size="small"
-          label="Result"
-          slotProps={{
-            htmlInput: { 'aria-label': 'Result', readOnly: true },
-            inputLabel: { shrink: true },
-          }}
-          value={result ?? ''}
-          sx={{ maxWidth: '10rem' }}
-        />
+    <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 2,
+          alignItems: 'flex-end',
+          flexWrap: 'wrap',
+          marginTop: '-4px',
+        }}
+      >
+        {symbols.map(s => (
+          <TextField
+            key={s}
+            size="small"
+            type="number"
+            label={nameOf(s)}
+            slotProps={{
+              htmlInput: { 'aria-label': nameOf(s) },
+              inputLabel: { shrink: true },
+            }}
+            value={inputs[s] ?? ''}
+            onChange={e =>
+              setInputs(prev => ({ ...prev, [s]: e.target.value }))
+            }
+            sx={{ maxWidth: '10rem' }}
+          />
+        ))}
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mt: 2 }}>
+        <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary' }}>
+          Result
+        </Typography>
+        <Typography sx={{ fontSize: '1.75rem', lineHeight: 1.2 }}>
+          {roundedResult}
+        </Typography>
       </Box>
     </Box>
   )

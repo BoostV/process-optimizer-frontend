@@ -141,9 +141,11 @@ describe('DataPointsSettings', () => {
     expect(dispatch).not.toHaveBeenCalled()
   })
 
-  it('renders the "For existing data points" toggle group defaulted to Leave unchanged', () => {
+  it('renders the "How to apply score function for all data points" toggle group defaulted to Leave unchanged', () => {
     render(<DataPointsSettings onCancel={() => {}} onSave={() => {}} />)
-    expect(screen.getByText('For existing data points')).toBeInTheDocument()
+    expect(
+      screen.getByText('How to apply score function for all data points')
+    ).toBeInTheDocument()
     const unchanged = screen.getByRole('button', { name: /leave unchanged/i })
     const enable = screen.getByRole('button', { name: /use for all/i })
     const disable = screen.getByRole('button', {
