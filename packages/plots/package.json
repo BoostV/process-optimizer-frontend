@@ -39,7 +39,8 @@
   "scripts": {
     "build": "tsc && vite build",
     "dev": "vite --host",
-    "prepublishOnly": "vite build"
+    "prepublishOnly": "vite build",
+    "test": "vitest"
   },
   "type": "module",
   "types": "./dist/index.d.ts"

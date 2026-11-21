@@ -1,9 +1,5 @@
 import { useState } from 'react'
-import {
-  displayQuality,
-  displayQualityCI,
-  displayCostCI,
-} from '@boostv/process-optimizer-frontend-core'
+import { displayScoreCI } from '@boostv/process-optimizer-frontend-core'
 import { usePlotColors } from '../colors'
 import { useDataToPixel } from './use-data-to-pixel'
 import { ConfidenceEllipses } from './overlays/confidence-ellipses'
@@ -34,7 +30,10 @@ type ObservedPoint = {
 
 type Props = {
   onSelectIndex?: (i: number) => void
+  // The model front in display units (see toDisplayFront), [x, y] per point.
   frontYData: [number, number][]
+  // Names of the x and y objectives, for the hover labels.
+  objectiveLabels: [string, string]
   frontXData: (number | string)[][]
   variableNames: string[]
   // Show a 95% confidence ellipse for the hovered front point.
@@ -62,6 +61,7 @@ type Props = {
 export const HoverOverlay = ({
   onSelectIndex,
   frontYData,
+  objectiveLabels,
   frontXData,
   variableNames,
   showHoverEllipse = false,
@@ -139,8 +139,7 @@ export const HoverOverlay = ({
     return pxToDataX(local.x)
   }
 
-  // xValue is in display units (positive quality); front_y_data[i][0] is in
-  // backend units (negated quality). Compare in display units.
+  // xValue and frontYData are both in display units.
   const nearestIndex = (xValue: number): number => {
     let nearest = 0
     let minDist = Infinity
@@ -149,7 +148,7 @@ export const HoverOverlay = ({
       if (!yPair) {
         continue
       }
-      const dist = Math.abs(displayQuality(yPair[0]) - xValue)
+      const dist = Math.abs(yPair[0] - xValue)
       if (dist < minDist) {
         minDist = dist
         nearest = i
@@ -189,21 +188,21 @@ export const HoverOverlay = ({
   }
 
   const point = hoverIndex !== null ? frontYData[hoverIndex] : undefined
-  const cx = point ? xToPx(displayQuality(point[0])) : 0
+  const cx = point ? xToPx(point[0]) : 0
   const cy = point ? yToPx(point[1]) : 0
   const coords = hoverIndex !== null ? (frontXData[hoverIndex] ?? []) : []
-  // Show the predicted 95% range for quality and cost (rather than the central
-  // value), matching the 1D single-point display. displayQualityCI handles the
-  // quality sign flip internally. Fall back to the central value when no
-  // uncertainty is available for that objective (the helpers return '').
+  // Show the predicted 95% range for both objectives (rather than the central
+  // value), matching the 1D single-point display. The front is already in
+  // display units, so no sign flip here. Fall back to the central value when
+  // no uncertainty is available for that objective (the helper returns '').
   const qualityStd = hoverIndex !== null ? (obj1Error[hoverIndex] ?? 0) : 0
   const costStd = hoverIndex !== null ? (obj2Error[hoverIndex] ?? 0) : 0
-  const qualityRange = point ? displayQualityCI(point[0], qualityStd) : ''
-  const costRange = point ? displayCostCI(point[1], costStd) : ''
+  const qualityRange = point ? displayScoreCI(point[0], qualityStd, false) : ''
+  const costRange = point ? displayScoreCI(point[1], costStd, false) : ''
   const labelLines = point
     ? [
-        `Quality: ${qualityRange || displayQuality(point[0]).toFixed(2)}`,
-        `Cost: ${costRange || point[1].toFixed(2)}`,
+        `${objectiveLabels[0]}: ${qualityRange || point[0].toFixed(2)}`,
+        `${objectiveLabels[1]}: ${costRange || point[1].toFixed(2)}`,
         ...variableNames.map((name, i) => {
           const v = coords[i]
           return v === undefined
@@ -238,8 +237,8 @@ export const HoverOverlay = ({
   const dpLines = dp
     ? [
         `Point #${dp.id}`,
-        `Quality: ${dp.x.toFixed(2)}`,
-        `Cost: ${dp.y.toFixed(2)}`,
+        `${objectiveLabels[0]}: ${dp.x.toFixed(2)}`,
+        `${objectiveLabels[1]}: ${dp.y.toFixed(2)}`,
         ...variableNames.map((name, i) => {
           const v = dp.settings[i]
           return v === undefined
