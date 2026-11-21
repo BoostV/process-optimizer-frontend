@@ -37,6 +37,7 @@ vi.mock('@boostv/process-optimizer-frontend-core', async importOriginal => {
               label: 'Quality (0-5)',
               description: '',
               enabled: true,
+              maximize: true,
               scoreFunction: {
                 expression: 'resp1/5 + pinElevation',
                 variables: [
@@ -50,7 +51,13 @@ vi.mock('@boostv/process-optimizer-frontend-core', async importOriginal => {
                 ],
               },
             },
-            { name: 'cost', label: 'Cost', description: '', enabled: true },
+            {
+              name: 'cost',
+              label: 'Cost',
+              description: '',
+              enabled: true,
+              maximize: false,
+            },
           ],
           dataPoints: [
             {

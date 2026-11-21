@@ -1,4 +1,4 @@
-import { displayQuality } from '@boostv/process-optimizer-frontend-core'
+import { displayScore } from '@boostv/process-optimizer-frontend-core'
 import { OneDData } from '@boostv/process-optimizer-frontend-plots'
 
 export type PlotEntry = { id: string; plot: string }
@@ -18,19 +18,19 @@ export const parsePlotJson = (plot: string | undefined): unknown => {
   }
 }
 
-// The optimizer minimizes -quality, so the json "quality" plots come back
-// negated: the per-factor band (y) and the histogram value (x). Flip them to
-// display units — the same transform the pareto plot applies via displayQuality.
-// Only call this for the quality objective; minimize objectives (e.g. cost) are
-// sent as-is and must not be flipped.
-export const flipQualityScores = (data: OneDData): OneDData => {
+// The optimizer minimizes, so a maximized score is sent negated and its json
+// plots come back negated: the per-factor band (y) and the histogram value (x).
+// Flip them to display units — the same transform the pareto plot applies.
+// Only call this for a maximized score; a minimized score is sent as-is and
+// must not be flipped.
+export const flipScores = (data: OneDData): OneDData => {
   if (data.type === 'score') {
     // Histogram: x holds the (negated) quality value.
     return {
       ...data,
       points: data.points.map(p => ({
         ...p,
-        x: typeof p.x === 'number' ? displayQuality(p.x) : p.x,
+        x: typeof p.x === 'number' ? displayScore(p.x, true) : p.x,
       })),
     }
   }
@@ -41,14 +41,17 @@ export const flipQualityScores = (data: OneDData): OneDData => {
     points: data.points.map(p => ({
       ...p,
       y: Array.isArray(p.y)
-        ? ([displayQuality(p.y[1] ?? 0), displayQuality(p.y[0] ?? 0)] as [
-            number,
-            number,
-          ])
-        : displayQuality(p.y),
+        ? ([
+            displayScore(p.y[1] ?? 0, true),
+            displayScore(p.y[0] ?? 0, true),
+          ] as [number, number])
+        : displayScore(p.y, true),
     })),
   }
 }
+
+// Former name, from when only quality could be maximized.
+export const flipQualityScores = flipScores
 
 // Collect every comparable value across a group's plots: the histogram (score)
 // plot contributes its x points, the per-factor band plots contribute their y
