@@ -67,6 +67,10 @@ export const calculateData = (
   const enabledScoreNames = scoreVariables
     .filter(it => it.enabled)
     .map(it => it.name)
+  // The optimizer minimizes, so a maximized score is sent negated.
+  const maximizedScoreNames: string[] = scoreVariables
+    .filter(it => it.maximize)
+    .map(it => it.name)
 
   return dataPoints
     .filter(dp => dp.meta.enabled && dp.meta.valid)
@@ -84,7 +88,9 @@ export const calculateData = (
               isValidScoreName(it.name) && enabledScoreNames.includes(it.name)
           )
           .map(it =>
-            it.name === 'quality' ? Number(it.value) * -1 : Number(it.value)
+            maximizedScoreNames.includes(it.name)
+              ? Number(it.value) * -1
+              : Number(it.value)
           ),
       })
     )

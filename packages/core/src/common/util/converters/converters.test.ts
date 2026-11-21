@@ -297,6 +297,32 @@ describe('converters', () => {
       expect(actualData).toEqual(expectedData)
     })
 
+    it('should negate by direction, not by name', () => {
+      const actualData = calculateData(
+        sampleExperiment.categoricalVariables,
+        sampleExperiment.valueVariables,
+        [
+          {
+            name: scoreNames[0],
+            description: '',
+            enabled: true,
+            maximize: false,
+            label: '',
+          },
+          {
+            name: scoreNames[1],
+            description: '',
+            enabled: true,
+            maximize: true,
+            label: '',
+          },
+        ],
+        sampleMultiObjectiveDataPoints
+      )
+      expect(actualData[0]?.yi).toEqual([0.1, -0.3])
+      expect(actualData[1]?.yi).toEqual([0.2, -0.4])
+    })
+
     it('should negate only quality, not cost', () => {
       const actualData = calculateData(
         sampleExperiment.categoricalVariables,
