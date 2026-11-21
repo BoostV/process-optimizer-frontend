@@ -19,6 +19,8 @@ type ValueVariableProps = {
   onAdd: (data: ValueVariableType) => void
   onEdit: (newVariable: ValueVariableType) => void
   onCancel: () => void
+  // Names the variable may not take (the score names).
+  reservedNames?: string[]
 }
 
 type ValueVariableInputType = Omit<ValueVariableType, 'min' | 'max'> & {
@@ -34,6 +36,7 @@ export default function ValueVariable(props: ValueVariableProps) {
     onAdd,
     onEdit,
     onCancel,
+    reservedNames,
   } = props
 
   const { classes } = useStyles()
@@ -96,7 +99,8 @@ export default function ValueVariable(props: ValueVariableProps) {
                 categoricalVariables,
                 name,
                 'value',
-                editingVariable?.index
+                editingVariable?.index,
+                reservedNames
               ),
           }}
         />

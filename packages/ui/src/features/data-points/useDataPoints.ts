@@ -12,6 +12,14 @@ import { TableDataPoint, TableDataRow, TableDataPointType } from '../core'
 import { produce } from 'immer'
 import { isDeepEqual, omit } from 'remeda'
 
+type ScoreColumn = { name: string; label?: string; maximize?: boolean }
+
+// The first score is entered as a 0-5 star rating — but only while it is
+// maximized: for a minimized score five stars would mean "worst", so it is a
+// plain number like the second score.
+const scoreInputType = (score: ScoreColumn, index: number) =>
+  index === 0 && score.maximize !== false ? 'rating' : 'numeric'
+
 export const useDataPoints = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
@@ -22,7 +30,11 @@ export const useDataPoints = (
     () =>
       scoreVariables
         .filter(it => it.enabled)
-        .map(it => ({ name: it.name, label: it.label })),
+        .map(it => ({
+          name: it.name,
+          label: it.label,
+          maximize: it.maximize,
+        })),
     [scoreVariables]
   )
 
@@ -313,7 +325,7 @@ const buildScoreFunctions = (
 const buildEmptyRow = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
-  scoreNames: { name: string; label?: string }[],
+  scoreNames: ScoreColumn[],
   scoreVariables: ScoreVariableType[]
 ) => {
   return {
@@ -332,7 +344,7 @@ const buildEmptyRow = (
           value: undefined,
           options: undefined,
           tooltip: undefined,
-          type: i === 0 ? 'rating' : 'numeric',
+          type: scoreInputType(s, i),
         }))
       ),
     isNew: true,
@@ -362,7 +374,7 @@ export const formatScore = (value: number | string) =>
 const buildRows = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
-  scoreNames: { name: string; label?: string }[],
+  scoreNames: ScoreColumn[],
   scoreVariables: ScoreVariableType[],
   dataPoints: DataEntry[]
 ) => {
@@ -398,7 +410,7 @@ const buildRows = (
       })
       scoreNames.forEach((v, i) => {
         const existingData = item.data.find(d => d.name === v.name)
-        const type = i === 0 ? 'rating' : 'numeric'
+        const type = scoreInputType(v, i)
         const label = v.label
         if (existingData !== undefined) {
           vars.push({

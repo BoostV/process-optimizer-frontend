@@ -20,6 +20,8 @@ type CategoricalVariableProps = {
   onAdd: (data: CategoricalVariableType) => void
   onEdit: (newVariable: CategoricalVariableType) => void
   onCancel: () => void
+  // Names the variable may not take (the score names).
+  reservedNames?: string[]
 }
 
 export default function CategoricalVariable(props: CategoricalVariableProps) {
@@ -32,6 +34,7 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
     onAdd,
     onEdit,
     onCancel,
+    reservedNames,
   } = props
 
   const [options, setOptions] = useState<string[]>(
@@ -91,7 +94,8 @@ export default function CategoricalVariable(props: CategoricalVariableProps) {
                 categoricalVariables,
                 name,
                 'categorical',
-                editingVariable?.index
+                editingVariable?.index,
+                reservedNames
               ),
           })}
           label="Name"

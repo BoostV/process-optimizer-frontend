@@ -273,7 +273,7 @@ export function DataPointsSettings({
             className={classes.functionContainer}
             sx={{ mt: activeScore?.name === scoreNames[0] ? 0 : 1 }}
           >
-            {activeScore?.name === scoreNames[0] && (
+            {activeScore?.name === scoreNames[0] && activeScore.maximize && (
               <InfoBox
                 text="Your function should map to the scale 0 - 5."
                 type="info"

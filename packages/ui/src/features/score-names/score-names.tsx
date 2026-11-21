@@ -26,6 +26,7 @@ export type ScoreNamesTexts = {
   save: string
   errorEmpty: string
   errorDuplicate: string
+  errorReserved: string
 }
 
 const defaultTexts: ScoreNamesTexts = {
@@ -38,6 +39,7 @@ const defaultTexts: ScoreNamesTexts = {
   save: 'Save',
   errorEmpty: 'A score needs a name.',
   errorDuplicate: 'Score names must be different.',
+  errorReserved: 'A factor already has this name.',
 }
 
 export type ScoreNamesProps = {
@@ -53,23 +55,34 @@ export type ScoreNamesProps = {
   onChange?: (scores: ScoreNameRow[], valid: boolean) => void
   disabled?: boolean
   texts?: Partial<ScoreNamesTexts>
+  // Names a score may not take: the factor names.
+  reservedNames?: string[]
 }
 
 type RowsProps = {
   rows: ScoreNameRow[]
   editable: boolean
   texts: ScoreNamesTexts
+  reservedNames: string[]
   onChangeRow: (index: number, row: ScoreNameRow) => void
 }
 
-const ScoreRows = ({ rows, editable, texts, onChangeRow }: RowsProps) => {
-  const { errors } = validateScoreNames(rows)
+const ScoreRows = ({
+  rows,
+  editable,
+  texts,
+  reservedNames,
+  onChangeRow,
+}: RowsProps) => {
+  const { errors } = validateScoreNames(rows, reservedNames)
   const errorText = (error: ScoreNameError | undefined) =>
     error === 'empty'
       ? texts.errorEmpty
       : error === 'duplicate'
         ? texts.errorDuplicate
-        : undefined
+        : error === 'reserved'
+          ? texts.errorReserved
+          : undefined
 
   return (
     <>
@@ -132,6 +145,7 @@ export const ScoreNames = ({
   onChange,
   disabled = false,
   texts: textOverrides,
+  reservedNames = [],
 }: ScoreNamesProps) => {
   const texts = { ...defaultTexts, ...textOverrides }
   // Card variant only: the rows being edited, or undefined while read-only.
@@ -147,9 +161,10 @@ export const ScoreNames = ({
           rows={scores}
           editable={!disabled}
           texts={texts}
+          reservedNames={reservedNames}
           onChangeRow={(index, row) => {
             const next = replaceRow(scores, index, row)
-            onChange?.(next, validateScoreNames(next).valid)
+            onChange?.(next, validateScoreNames(next, reservedNames).valid)
           }}
         />
       </Box>
@@ -158,7 +173,7 @@ export const ScoreNames = ({
 
   const isEditing = draft !== undefined && !disabled
   const rows = isEditing ? draft : scores
-  const canSave = isEditing && validateScoreNames(draft).valid
+  const canSave = isEditing && validateScoreNames(draft, reservedNames).valid
 
   const handleSave = () => {
     if (!isEditing || !canSave) {
@@ -181,6 +196,7 @@ export const ScoreNames = ({
         rows={rows}
         editable={isEditing}
         texts={texts}
+        reservedNames={reservedNames}
         onChangeRow={(index, row) => setDraft(replaceRow(rows, index, row))}
       />
       <Box sx={styles.actions}>

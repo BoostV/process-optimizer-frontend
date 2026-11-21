@@ -38,6 +38,20 @@ describe('validateScoreNames', () => {
   })
 })
 
+describe('validateScoreNames with reserved names', () => {
+  it('rejects a score name that a factor already uses, ignoring case and spaces', () => {
+    const result = validateScoreNames(
+      [{ ...quality, label: ' water ' }, cost],
+      ['Water']
+    )
+    expect(result.valid).toBe(false)
+    expect(result.errors).toEqual({ quality: 'reserved' })
+  })
+  it('accepts names no factor uses', () => {
+    expect(validateScoreNames([quality, cost], ['Water']).valid).toBe(true)
+  })
+})
+
 describe('defaultScoreNameRows', () => {
   it('single objective: quality, maximized', () => {
     expect(defaultScoreNameRows(false)).toEqual([quality])
@@ -189,5 +203,44 @@ describe('ScoreNames bare', () => {
       [{ ...quality, label: '' }],
       false
     )
+  })
+})
+
+describe('ScoreNames reserved names', () => {
+  it('card: a name already used by a factor cannot be saved', () => {
+    const onSave = vi.fn()
+    render(
+      <ScoreNames
+        scores={[quality]}
+        reservedNames={['Water']}
+        onSave={onSave}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: 'water' },
+    })
+    expect(screen.getByText('A factor already has this name.')).toBeDefined()
+    expect(
+      (screen.getByRole('button', { name: 'Save' }) as HTMLButtonElement)
+        .disabled
+    ).toBe(true)
+  })
+
+  it('a project where the names already match can still be opened for editing and fixed', () => {
+    const onSave = vi.fn()
+    render(
+      <ScoreNames
+        scores={[{ ...quality, label: 'Water' }]}
+        reservedNames={['Water']}
+        onSave={onSave}
+      />
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: 'Yield' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    expect(onSave).toHaveBeenCalledWith([{ ...quality, label: 'Yield' }])
   })
 })

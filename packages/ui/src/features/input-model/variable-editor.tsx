@@ -24,6 +24,7 @@ type VariableEditorProps = {
   addCategoricalVariable: (categoricalVariable: CategoricalVariableType) => void
   editCategoricalVariable: (newVariable: CategoricalVariableType) => void
   onCancel: () => void
+  reservedNames?: string[]
 }
 
 export default function VariableEditor(props: VariableEditorProps) {
@@ -52,6 +53,7 @@ function VariableEditorInner(props: VariableEditorProps) {
     addCategoricalVariable,
     editCategoricalVariable,
     onCancel,
+    reservedNames,
   } = props
 
   const isValueTabSelected =
@@ -98,6 +100,7 @@ function VariableEditorInner(props: VariableEditorProps) {
             categoricalVariables={categoricalVariables}
             valueVariables={valueVariables}
             editingVariable={editingValueVariable}
+            reservedNames={reservedNames}
             onAdd={(valueVariable: ValueVariableType) =>
               addValueVariable(valueVariable)
             }
@@ -112,6 +115,7 @@ function VariableEditorInner(props: VariableEditorProps) {
             categoricalVariables={categoricalVariables}
             valueVariables={valueVariables}
             editingVariable={editingCategoricalVariable}
+            reservedNames={reservedNames}
             onAdd={(categoricalVariable: CategoricalVariableType) =>
               addCategoricalVariable(categoricalVariable)
             }

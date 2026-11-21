@@ -157,6 +157,43 @@ const parseCsvLine = (line: string, separator: string): string[] => {
   return fields
 }
 
+// Column names of the CSV format that are not data: the id and the meta fields.
+const reservedCsvHeaders = ['id', 'enabled', 'valid', 'description', 'note']
+
+/**
+ * The CSV column header of each score variable: its label, so the file reads
+ * like the UI. Falls back to the internal score name ('quality'/'cost') when
+ * the label could not be told apart from another column: it is empty, equals a
+ * factor name, a meta column, another score's internal name, or the header
+ * already given to an earlier score. Comparison ignores case and surrounding
+ * spaces. Import accepts either form, so older files keep working.
+ *
+ * @param scoreVariables
+ * @param factorNames names of all value and categorical variables
+ */
+export const scoreCsvHeaders = (
+  scoreVariables: ScoreVariableType[],
+  factorNames: string[]
+): Record<string, string> => {
+  const norm = (name: string) => name.trim().toLowerCase()
+  const taken = new Set([...factorNames, ...reservedCsvHeaders].map(norm))
+  const headers: Record<string, string> = {}
+  scoreVariables.forEach(sv => {
+    const label = sv.label.trim()
+    const otherInternalNames = scoreVariables
+      .filter(other => other.name !== sv.name)
+      .map(other => norm(other.name))
+    const usable =
+      label !== '' &&
+      !taken.has(norm(label)) &&
+      !otherInternalNames.includes(norm(label))
+    const header = usable ? label : sv.name
+    headers[sv.name] = header
+    taken.add(norm(header))
+  })
+  return headers
+}
+
 /**
  * Converts a list of DataEntry objects into a CSV string.
  * The output format:
@@ -166,12 +203,15 @@ const parseCsvLine = (line: string, separator: string): string[] => {
  * @param dataPoints to be converted
  * @param separator the separator character (default ';')
  * @param newline the newline character to use (default '\n')
+ * @param scoreVariables when given, score columns are headed by the score
+ *   labels (see scoreCsvHeaders) instead of the internal score names
  * @returns a newline separated string representation
  */
 export const dataPointsToCSV = (
   dataPoints: DataEntry[],
   separator = ';',
-  newline = '\n'
+  newline = '\n',
+  scoreVariables: ScoreVariableType[] = []
 ): string => {
   const header = [
     ...new Set(dataPoints.flatMap(d => d.data.map(x => x.name))),
@@ -188,10 +228,22 @@ export const dataPointsToCSV = (
       dataPoints.flatMap(d => Object.keys(d.meta).filter(elm => elm !== 'id'))
     ),
   ]
+  const scoreColumnNames = new Set(
+    dataPoints.flatMap(d =>
+      d.data.filter(x => x.type === 'score').map(x => x.name)
+    )
+  )
+  const scoreHeaders = scoreCsvHeaders(
+    scoreVariables,
+    header.filter(h => !scoreColumnNames.has(h))
+  )
+  const displayHeader = header.map(h =>
+    scoreColumnNames.has(h) ? (scoreHeaders[h] ?? h) : h
+  )
   return dataPoints.length === 0
     ? ''
     : [
-        ['id', ...header, ...meta]
+        ['id', ...displayHeader, ...meta]
           .map(field => escapeCsvField(field, separator))
           .join(separator),
       ]
@@ -275,10 +327,27 @@ export const csvToDataPoints = (
     .concat(categorialHeaders)
     .concat(scoreHeaders)
     .map(e => e.trim())
+  // A score column may be headed by the score's label (as exported) or by its
+  // internal name (older files). Translate label headers to internal names.
+  const scoreLabelHeaders = scoreCsvHeaders(
+    scoreVariables,
+    valueHeaders.concat(categorialHeaders)
+  )
+  const labelToName = new Map(
+    scoreVariables.map(sv => [scoreLabelHeaders[sv.name] ?? sv.name, sv.name])
+  )
   const lines = csv.split(newlinePattern)
   if ('' === csv || lines.length < 2) return []
   else {
-    const header = parseCsvLine(lines[0] ?? '', separator).map(h => h.trim())
+    const fileHeader = parseCsvLine(lines[0] ?? '', separator).map(h =>
+      h.trim()
+    )
+    const header = fileHeader.map(h =>
+      // An internal name already present in the file wins over a label.
+      labelToName.has(h) && !fileHeader.includes(labelToName.get(h) ?? '')
+        ? (labelToName.get(h) ?? h)
+        : h
+    )
     if (
       header.length >= expectedHeader.length &&
       expectedHeader.every(value => header.includes(value))
@@ -318,9 +387,13 @@ export const csvToDataPoints = (
       return dataList
     } else {
       throw new Error(
-        `Headers does not match ${expectedHeader.join(',')} !== ${header.join(
-          ','
-        )}`
+        `Headers does not match ${valueHeaders
+          .concat(categorialHeaders)
+          .concat(
+            scoreVariables.map(sv => scoreLabelHeaders[sv.name] ?? sv.name)
+          )
+          .map(e => e.trim())
+          .join(',')} !== ${fileHeader.join(',')}`
       )
     }
   }
