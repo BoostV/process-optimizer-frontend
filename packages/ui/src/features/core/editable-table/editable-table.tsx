@@ -25,6 +25,7 @@ type EditableTableProps = {
   onRowsDeleted: (rowIndices: number[]) => void
   onRowEdited: (rowIndex: number, row: TableDataRow) => void
   onRowEnabledToggled: (rowIndex: number, enabled: boolean) => void
+  onRowNoteChanged: (rowIndex: number, note: string | undefined) => void
   onOpenScoreFunctions?: () => void
   violations?: EditableTableViolation[]
   order: TableOrder
@@ -38,6 +39,7 @@ export const EditableTable = ({
   onRowsDeleted,
   onRowEdited,
   onRowEnabledToggled,
+  onRowNoteChanged,
   onOpenScoreFunctions,
   violations,
   order,
@@ -194,6 +196,12 @@ export const EditableTable = ({
                 onRowEnabledToggled(
                   getRowIndex(newestFirst, rowIndex, rows.length),
                   enabled
+                )
+              }
+              onNoteChanged={note =>
+                onRowNoteChanged(
+                  getRowIndex(newestFirst, rowIndex, rows.length),
+                  note
                 )
               }
               isSelectionExists={isSelectionExists}

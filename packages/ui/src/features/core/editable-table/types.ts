@@ -15,6 +15,7 @@ export type TableDataRow = {
   enabled?: boolean
   valid?: boolean
   metaId?: number
+  note?: string
   scoreFunctions?: {
     scoreName: string
     label: string

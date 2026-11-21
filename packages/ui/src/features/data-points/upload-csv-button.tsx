@@ -21,30 +21,43 @@ const readFile = (file: Blob, dataHandler: (s: string) => void) => {
 interface UploadCSVButtonProps {
   light?: boolean
   onUpload: (dataPoints: DataEntry[]) => void
+  onError?: (error: unknown) => void
   valueVariables: ValueVariableType[]
   categoricalVariables: CategoricalVariableType[]
   scoreVariables: ScoreVariableType[]
+  separator?: string
 }
 
 const UploadCSVButton = ({
   onUpload,
+  onError,
   light,
   valueVariables,
   categoricalVariables,
   scoreVariables,
+  separator = ';',
 }: UploadCSVButtonProps) => {
   const handleFileUpload = (files: File[]) => {
     if (files && files.length > 0 && files[0] !== undefined) {
-      readFile(files[0], data =>
-        onUpload(
-          csvToDataPoints(
+      readFile(files[0], data => {
+        // Parsing can throw on a malformed file or a delimiter mismatch. Catch
+        // it and surface via onError so the consumer can inform the user;
+        // don't call onUpload with a failed parse.
+        let parsed: DataEntry[]
+        try {
+          parsed = csvToDataPoints(
             data,
             valueVariables,
             categoricalVariables,
-            scoreVariables
+            scoreVariables,
+            separator
           )
-        )
-      )
+        } catch (error) {
+          onError?.(error)
+          return
+        }
+        onUpload(parsed)
+      })
     }
   }
 
@@ -58,6 +71,7 @@ const UploadCSVButton = ({
           style={{ display: 'none' }}
           inputProps={{
             accept: '.csv',
+            'data-testid': 'upload-csv-input',
           }}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             handleFileUpload(Array.from(e.target.files || []))

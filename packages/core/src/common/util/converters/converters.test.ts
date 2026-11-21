@@ -380,6 +380,17 @@ describe('converters', () => {
       expect(actual).toEqual(expected)
     })
 
+    it('quotes meta values that contain the separator or a quote', () => {
+      const csv = dataPointsToCSV([
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'a;b "c"' },
+          data: [{ type: 'numeric', name: 'A', value: 1 }],
+        },
+      ])
+      // the note field is quoted, inner quotes doubled; other fields untouched
+      expect(csv).toBe('id;A;enabled;valid;note\n1;1;true;true;"a;b ""c"""')
+    })
+
     it('should convert known value', () => {
       const input: DataEntry[] = [
         {
@@ -870,6 +881,118 @@ describe('converters', () => {
       expect(actual.length).toEqual(2)
       expect(actual[0]?.meta.description).toEqual('I am a description')
       expect(actual[1]?.meta.description).toEqual('I am also a description')
+    })
+  })
+
+  describe('note round-trip', () => {
+    const valueVars = [
+      {
+        type: 'continuous' as const,
+        name: 'A',
+        description: '',
+        min: 0,
+        max: 10,
+        enabled: true,
+      },
+    ]
+
+    it('writes the note as a meta column in CSV', () => {
+      const csv = dataPointsToCSV([
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'seemed fine' },
+          data: [{ type: 'numeric', name: 'A', value: 1 }],
+        },
+      ])
+      expect(csv).toContain('note')
+      expect(csv).toContain('seemed fine')
+    })
+
+    it('parses the note back from CSV', () => {
+      const csv = 'id;A;enabled;valid;note\n1;1;true;true;seemed fine'
+      const actual = csvToDataPoints(csv, valueVars, [], [])
+      expect(actual[0]?.meta.note).toBe('seemed fine')
+    })
+
+    it('round-trips a note through export and import', () => {
+      const input = [
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'seemed fine' },
+          data: [{ type: 'numeric' as const, name: 'A', value: 1 }],
+        },
+      ]
+      const back = csvToDataPoints(dataPointsToCSV(input), valueVars, [], [])
+      expect(back[0]?.meta.note).toBe('seemed fine')
+    })
+
+    it('does not set a note when the CSV note column is empty', () => {
+      const csv = 'id;A;enabled;valid;note\n1;1;true;true;'
+      const actual = csvToDataPoints(csv, valueVars, [], [])
+      expect(actual[0]?.meta.note).toBeUndefined()
+    })
+
+    it('keeps the note aligned when rows have different optional meta keys', () => {
+      // Row 1 has a note but no description; row 2 has a description but no
+      // note. The CSV header is the union of meta keys, so meta values must be
+      // emitted by header order — otherwise row 2's description would land in
+      // the note column and be read back as a note.
+      const input = [
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'has note' },
+          data: [{ type: 'numeric' as const, name: 'A', value: 1 }],
+        },
+        {
+          meta: { id: 2, enabled: true, valid: true, description: 'has desc' },
+          data: [{ type: 'numeric' as const, name: 'A', value: 2 }],
+        },
+      ]
+      const back = csvToDataPoints(dataPointsToCSV(input), valueVars, [], [])
+      expect(back[0]?.meta.note).toBe('has note')
+      expect(back[1]?.meta.note).toBeUndefined()
+    })
+
+    it('round-trips a note containing the separator and quotes', () => {
+      const note = 'I pressed; it broke "hard"'
+      const back = csvToDataPoints(
+        dataPointsToCSV([
+          {
+            meta: { id: 1, enabled: true, valid: true, note },
+            data: [{ type: 'numeric' as const, name: 'A', value: 1 }],
+          },
+        ]),
+        valueVars,
+        [],
+        []
+      )
+      expect(back[0]?.meta.note).toBe(note)
+    })
+  })
+
+  describe.each([';', ',', '\t', '|'])('separator %j round-trip', sep => {
+    it('round-trips values and notes', () => {
+      const valueVars = [
+        {
+          type: 'continuous' as const,
+          name: 'A',
+          description: '',
+          min: 0,
+          max: 10,
+          enabled: true,
+        },
+      ]
+      const input = [
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'x;y,z\tw|q' },
+          data: [{ type: 'numeric' as const, name: 'A', value: 1 }],
+        },
+      ]
+      const back = csvToDataPoints(
+        dataPointsToCSV(input, sep),
+        valueVars,
+        [],
+        [],
+        sep
+      )
+      expect(back[0]?.meta.note).toBe('x;y,z\tw|q')
     })
   })
 })

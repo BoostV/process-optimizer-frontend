@@ -10,6 +10,7 @@ import {
 import { useCallback, useMemo } from 'react'
 import { TableDataPoint, TableDataRow, TableDataPointType } from '../core'
 import { produce } from 'immer'
+import { isDeepEqual, omit } from 'remeda'
 
 export const useDataPoints = (
   valueVariables: ValueVariableType[],
@@ -91,6 +92,12 @@ export const useDataPoints = (
     [dataPoints]
   )
 
+  const setNote = useCallback(
+    (rowIndex: number, note: string | undefined) =>
+      _setNote(dataPoints, rowIndex, note),
+    [dataPoints]
+  )
+
   return {
     state,
     addRow,
@@ -98,6 +105,7 @@ export const useDataPoints = (
     deleteRows,
     editRow,
     setEnabledState,
+    setNote,
   }
 }
 
@@ -154,6 +162,7 @@ const convertToDataEntry = (
     enabled: row.enabled ?? true,
     id: row.metaId ?? 0,
     valid: row.valid ?? true,
+    ...(row.note !== undefined && row.note !== '' ? { note: row.note } : {}),
   } satisfies DataEntry['meta']
   if (
     data.length <
@@ -189,6 +198,7 @@ const _editRow = (original: DataEntry[], rowIndex: number, row: DataEntry) =>
     if (originalRow !== undefined) {
       originalRow.meta.enabled = row.meta.enabled ?? originalRow.meta.enabled
       originalRow.meta.id = row.meta.id ?? originalRow.meta.id
+      originalRow.meta.note = row.meta.note
       row.data.forEach(dp => {
         const originalDataPoint = originalRow.data.find(
           odp => odp.name === dp.name
@@ -214,6 +224,19 @@ const _setEnabledState = (
     const originalRow = result[rowIndex]
     if (originalRow !== undefined) {
       originalRow.meta.enabled = enabled
+    }
+  })
+
+const _setNote = (
+  original: DataEntry[],
+  rowIndex: number,
+  note: string | undefined
+) =>
+  produce(original, result => {
+    const originalRow = result[rowIndex]
+    if (originalRow !== undefined) {
+      // Empty/undefined note ⇒ drop the key so no note is persisted.
+      originalRow.meta.note = note === '' ? undefined : note
     }
   })
 
@@ -325,6 +348,10 @@ const buildEmptyRow = (
   } satisfies TableDataRow
 }
 
+export const isNoteOnlyChange = (before: TableDataRow, after: TableDataRow) =>
+  before.note !== after.note &&
+  isDeepEqual(omit(before, ['note']), omit(after, ['note']))
+
 export const formatScore = (value: number | string) =>
   value
     .toLocaleString('en-US', {
@@ -396,6 +423,7 @@ const buildRows = (
         enabled: item.meta.enabled,
         valid: item.meta.valid,
         metaId: item.meta.id,
+        note: item.meta.note,
         scoreFunctions: buildScoreFunctions(scoreVariables, item),
         // Uncomment the following line to display a meta data property in the table
         // .concat([{ name: 'id', value: `${item.meta.id}` }]),

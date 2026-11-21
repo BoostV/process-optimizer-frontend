@@ -3,7 +3,7 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '21'
+export const currentVersion = '22'
 
 export const scoreNames = ['quality', 'cost'] as const
 // Label is shown in UI, name is used in data
@@ -98,6 +98,7 @@ const dataEntryMetaDataSchema = z.object({
   enabled: z.coerce.boolean().prefault(true),
   valid: z.coerce.boolean().prefault(true),
   description: z.optional(z.string()),
+  note: z.optional(z.string()),
 })
 
 const numericDataPoint = z.object({

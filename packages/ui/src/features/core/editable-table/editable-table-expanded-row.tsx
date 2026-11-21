@@ -90,6 +90,13 @@ export const EditableTableExpandedRow = ({
     })
   }
 
+  const handleNoteEdit = (value: string) => {
+    setEditedRow({
+      ...editedRow,
+      note: value === '' ? undefined : value,
+    })
+  }
+
   // Objectives that show response inputs, and the widest response count, so the
   // inputs can be laid out in a grid where column N of every objective aligns.
   const responseObjectives = (editedRow.scoreFunctions ?? []).filter(
@@ -238,6 +245,18 @@ export const EditableTableExpandedRow = ({
               </Box>
             </Box>
           )}
+
+          <Box sx={{ mt: 2 }}>
+            <Box sx={{ fontWeight: 'bold', mb: 1 }}>Note</Box>
+            <TextField
+              fullWidth
+              size="small"
+              placeholder="Add note here"
+              value={editedRow.note ?? ''}
+              onChange={e => handleNoteEdit(e.target.value)}
+              slotProps={{ htmlInput: { 'aria-label': 'Note' } }}
+            />
+          </Box>
 
           {violations !== undefined &&
             violations.length > 0 &&

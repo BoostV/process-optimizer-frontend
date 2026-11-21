@@ -344,3 +344,63 @@ describe('score-function factor sync', () => {
     ).toHaveLength(0)
   })
 })
+
+describe('variable name trimming', () => {
+  it('trims the name when adding a value variable', () => {
+    const state: State = { experiment: emptyExperiment }
+    const actual = rootReducer(state, {
+      type: 'addValueVariable',
+      payload: {
+        type: 'continuous',
+        name: '  Temp  ',
+        description: '',
+        min: 0,
+        max: 10,
+        enabled: true,
+      },
+    })
+    expect(actual.experiment.valueVariables.at(-1)?.name).toBe('Temp')
+  })
+
+  it('trims on rename and renames matching data points in lockstep', () => {
+    const state: State = { experiment: emptyExperiment }
+    const withVar = rootReducer(state, {
+      type: 'addValueVariable',
+      payload: {
+        type: 'continuous',
+        name: 'Temp',
+        description: '',
+        min: 0,
+        max: 10,
+        enabled: true,
+      },
+    })
+    const withPoint: State = {
+      experiment: {
+        ...withVar.experiment,
+        dataPoints: [
+          {
+            meta: { id: 1, enabled: true, valid: true },
+            data: [{ type: 'numeric', name: 'Temp', value: 5 }],
+          },
+        ],
+      },
+    }
+    const renamed = rootReducer(withPoint, {
+      type: 'editValueVariable',
+      payload: {
+        index: 0,
+        newVariable: {
+          type: 'continuous',
+          name: '  Heat  ',
+          description: '',
+          min: 0,
+          max: 10,
+          enabled: true,
+        },
+      },
+    })
+    expect(renamed.experiment.valueVariables[0]?.name).toBe('Heat')
+    expect(renamed.experiment.dataPoints[0]?.data[0]?.name).toBe('Heat')
+  })
+})

@@ -40,9 +40,9 @@ describe('Type guards', () => {
   })
 })
 
-describe('score function schema (v21)', () => {
-  it('currentVersion is 21', () => {
-    expect(currentVersion).toBe('21')
+describe('score function schema (v22)', () => {
+  it('currentVersion is 22', () => {
+    expect(currentVersion).toBe('22')
   })
 
   it('accepts a scoreVariable with a scoreFunction and a dataEntry with responses', () => {
@@ -53,7 +53,7 @@ describe('score function schema (v21)', () => {
         name: 'n',
         description: '',
         swVersion: 'v',
-        dataFormatVersion: '21',
+        dataFormatVersion: '22',
         version: 0,
         lastModified: '',
         createdAt: '',
@@ -123,7 +123,7 @@ describe('score function schema (v21)', () => {
         name: 'n',
         description: '',
         swVersion: 'v',
-        dataFormatVersion: '21',
+        dataFormatVersion: '22',
         version: 0,
         lastModified: '',
         createdAt: '',
@@ -164,5 +164,32 @@ describe('score function schema (v21)', () => {
       ],
     })
     expect(parsed.success).toBe(true)
+  })
+})
+
+describe('data point note (v22)', () => {
+  it('accepts a dataEntry with a note in meta', () => {
+    const withNote = {
+      ...emptyExperiment,
+      dataPoints: [
+        {
+          meta: { id: 1, enabled: true, valid: true, note: 'measured twice' },
+          data: [],
+        },
+      ],
+    }
+    const parsed = experimentSchema.safeParse(withNote)
+    expect(parsed.success).toBe(true)
+    if (parsed.success) {
+      expect(parsed.data.dataPoints[0]?.meta.note).toBe('measured twice')
+    }
+  })
+
+  it('still accepts a dataEntry without a note', () => {
+    const withoutNote = {
+      ...emptyExperiment,
+      dataPoints: [{ meta: { id: 1, enabled: true, valid: true }, data: [] }],
+    }
+    expect(experimentSchema.safeParse(withoutNote).success).toBe(true)
   })
 })
