@@ -4,15 +4,19 @@ export const styles = {
   description: { mb: 2 },
   row: {
     display: 'flex',
-    alignItems: 'flex-start',
+    // The toggle's middle lines up with the middle of the name (field).
+    alignItems: 'center',
     justifyContent: 'space-between',
     gap: 2,
     py: 1,
   },
-  name: { flex: '1 1 0', minWidth: 0, pt: 0.5, overflowWrap: 'anywhere' },
+  name: { flex: '1 1 0', minWidth: 0, overflowWrap: 'anywhere' },
+  // Shown under the row, not inside the field, so an error does not push the
+  // field off the toggle's centre line.
+  error: { mt: -0.5, mb: 1 },
   nameInput: { flex: '1 1 0', minWidth: 0, maxWidth: 220 },
-  // The selected direction is filled: primary colour while editable, grey when
-  // read-only.
+  // The selected direction is filled, with white text: primary colour while
+  // editable, grey when read-only.
   toggle: {
     flexShrink: 0,
     '& .MuiToggleButton-root': {
@@ -23,7 +27,7 @@ export const styles = {
     },
     '& .MuiToggleButton-root.Mui-selected': {
       bgcolor: 'primary.main',
-      color: 'primary.contrastText',
+      color: 'common.white',
       '&:hover': { bgcolor: 'primary.dark' },
     },
     '& .MuiToggleButton-root.Mui-selected.Mui-disabled': {

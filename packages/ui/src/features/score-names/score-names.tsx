@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Divider,
+  FormHelperText,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
@@ -100,7 +101,6 @@ const ScoreRows = ({
                   onChangeRow(index, { ...row, label: e.target.value })
                 }
                 error={errors[row.name] !== undefined}
-                helperText={errorText(errors[row.name])}
                 sx={styles.nameInput}
                 slotProps={{ htmlInput: { 'aria-label': row.name } }}
               />
@@ -127,6 +127,11 @@ const ScoreRows = ({
               <ToggleButton value="minimize">{texts.minimize}</ToggleButton>
             </ToggleButtonGroup>
           </Box>
+          {editable && errors[row.name] !== undefined && (
+            <FormHelperText error sx={styles.error}>
+              {errorText(errors[row.name])}
+            </FormHelperText>
+          )}
         </Fragment>
       ))}
     </>
