@@ -20,7 +20,7 @@ import {
   isValidScoreName,
   useExperiment,
 } from '@boostv/process-optimizer-frontend-core'
-import { useDataPoints } from './useDataPoints'
+import { isNoteOnlyChange, useDataPoints } from './useDataPoints'
 import { DataPointsSettings } from '@ui/features/data-points/settings/data-points-settings'
 import { useState } from 'react'
 
@@ -123,6 +123,11 @@ export function DataPoints(props: DataPointProps) {
     onUpdateDataPoints(setNote(rowIndex, note))
 
   const rowEdited = (rowIndex: number, row: TableDataRow) => {
+    const before = state.rows[rowIndex]
+    if (before !== undefined && isNoteOnlyChange(before, row)) {
+      rowNoteChanged(rowIndex, row.note)
+      return
+    }
     onUpdateDataPoints(editRow(rowIndex, row))
     if (row.metaId !== undefined) {
       dispatchResponses(row, row.metaId)

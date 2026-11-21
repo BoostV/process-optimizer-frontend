@@ -10,6 +10,7 @@ import {
 import { useCallback, useMemo } from 'react'
 import { TableDataPoint, TableDataRow, TableDataPointType } from '../core'
 import { produce } from 'immer'
+import { isDeepEqual, omit } from 'remeda'
 
 export const useDataPoints = (
   valueVariables: ValueVariableType[],
@@ -346,6 +347,10 @@ const buildEmptyRow = (
     ),
   } satisfies TableDataRow
 }
+
+export const isNoteOnlyChange = (before: TableDataRow, after: TableDataRow) =>
+  before.note !== after.note &&
+  isDeepEqual(omit(before, ['note']), omit(after, ['note']))
 
 export const formatScore = (value: number | string) =>
   value
