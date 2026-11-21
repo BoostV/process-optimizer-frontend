@@ -13,7 +13,8 @@ Score variables can be renamed and set to maximize or minimize.
   Scores are negated for the optimizer by direction instead of by name.
 - plots: `ParetoFrontPlot` takes an optional `objectives` prop with the name and
   direction of both axes.
-- ui: new `ScoreNames` component; results follow each score's direction and name.
+- ui: new `ScoreNames` component (read-only view with Edit, editing with
+  Save and Cancel, and a bare variant for forms); results follow each score's direction and name.
 - core: CSV export heads score columns with the score labels
   (`dataPointsToCSV` takes the score variables; new `scoreCsvHeaders`); import
   accepts the label or the internal name.
