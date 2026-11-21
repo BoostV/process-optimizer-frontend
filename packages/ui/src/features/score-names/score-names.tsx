@@ -164,7 +164,11 @@ export const ScoreNames = ({
     if (!isEditing || !canSave) {
       return
     }
-    onSave?.(draft.map(row => ({ ...row, label: row.label.trim() })))
+    const saved = draft.map(row => ({ ...row, label: row.label.trim() }))
+    // Nothing to report when Save is pressed without a change.
+    if (JSON.stringify(saved) !== JSON.stringify(scores)) {
+      onSave?.(saved)
+    }
     setDraft(undefined)
   }
 

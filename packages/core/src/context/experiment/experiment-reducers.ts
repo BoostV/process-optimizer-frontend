@@ -583,16 +583,32 @@ const experimentReducerInner = produce(
           })
         }
         break
-      case 'updateScoreVariables':
+      case 'updateScoreVariables': {
+        let directionChanged = false
         action.payload.forEach(update => {
           const sv = state.scoreVariables.find(it => it.name === update.name)
           if (sv !== undefined) {
             sv.label = update.label.trim()
+            directionChanged ||= sv.maximize !== update.maximize
             sv.maximize = update.maximize
           }
         })
-        state.optimizerConfig.xi = calculateXi(state)
+        // A rename is display-only and must leave the optimizer request (and
+        // so the evaluation state) untouched. A changed direction changes
+        // what the stored results mean: drop them rather than show them with
+        // the wrong sign until (or in case no) new results arrive.
+        if (directionChanged) {
+          state.optimizerConfig.xi = calculateXi(state)
+          state.results = {
+            ...state.results,
+            next: [],
+            plots: [],
+            pickled: '',
+            expectedMinimum: [],
+          }
+        }
         break
+      }
       case 'experiment/setConstraintSum': {
         const constraint = state.constraints.find(c => c.type === 'sum')
         if (constraint !== undefined) {

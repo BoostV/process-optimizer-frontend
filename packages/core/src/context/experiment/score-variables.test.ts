@@ -115,6 +115,57 @@ describe('updateScoreVariables', () => {
     expect(next.experiment.optimizerConfig.xi).toBe(2)
   })
 
+  it('a name-only change leaves a stale xi alone, so nothing is re-evaluated', () => {
+    // Stored xi is not always what calculateXi would return right now.
+    const start = produce(evaluatedMulti(), draft => {
+      draft.experiment.optimizerConfig.xi = 5
+      draft.experiment.lastEvaluationHash = md5(
+        JSON.stringify(createFetchExperimentResultRequest(draft.experiment))
+      )
+    })
+    const next = rootReducer(start, {
+      type: 'updateScoreVariables',
+      payload: [{ name: 'quality', label: 'Taste', maximize: true }],
+    })
+    expect(next.experiment.optimizerConfig.xi).toBe(5)
+    expect(next.experiment.changedSinceLastEvaluation).toBe(false)
+  })
+
+  it('flipping a direction drops the stored results (they are in the old sign)', () => {
+    const start = produce(evaluatedMulti(), draft => {
+      draft.experiment.results = {
+        id: 'r',
+        next: [[1]],
+        plots: [{ id: 'single_0_0', plot: '{}' }],
+        pickled: 'abc',
+        expectedMinimum: [[5], 1],
+        extras: {},
+      }
+    })
+    const next = rootReducer(start, {
+      type: 'updateScoreVariables',
+      payload: [{ name: 'quality', label: 'Quality (0-5)', maximize: false }],
+    })
+    expect(next.experiment.results).toMatchObject({
+      next: [],
+      plots: [],
+      pickled: '',
+      expectedMinimum: [],
+    })
+  })
+
+  it('a name-only change keeps the stored results', () => {
+    const start = produce(evaluatedMulti(), draft => {
+      draft.experiment.results.pickled = 'abc'
+      draft.experiment.results.plots = [{ id: 'single_0_0', plot: '{}' }]
+    })
+    const next = rootReducer(start, {
+      type: 'updateScoreVariables',
+      payload: [{ name: 'quality', label: 'Taste', maximize: true }],
+    })
+    expect(next.experiment.results).toEqual(start.experiment.results)
+  })
+
   it('a renamed first score survives switching to multi objective, cost gets defaults', () => {
     const renamed = rootReducer(initialState, {
       type: 'updateScoreVariables',

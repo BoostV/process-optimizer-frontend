@@ -91,8 +91,20 @@ describe('ScoreNames card', () => {
     render(<ScoreNames scores={[quality]} onSave={onSave} />)
     fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
     fireEvent.click(screen.getByRole('button', { name: 'Maximize' }))
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: 'Yield' },
+    })
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
-    expect(onSave).toHaveBeenCalledWith([quality])
+    expect(onSave).toHaveBeenCalledWith([{ ...quality, label: 'Yield' }])
+  })
+
+  it('saving without changes reports nothing and returns to read-only', () => {
+    const onSave = vi.fn()
+    render(<ScoreNames scores={[quality, cost]} onSave={onSave} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    expect(onSave).not.toHaveBeenCalled()
+    expect(screen.queryByRole('textbox')).toBeNull()
   })
 
   it('cannot save an empty name', () => {

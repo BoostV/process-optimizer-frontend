@@ -443,3 +443,20 @@ describe('migrateToV23', () => {
     expect(v23.scoreVariables.map(s => s.label)).toEqual(['Q', 'C'])
   })
 })
+
+describe('v23 data without maximize', () => {
+  // A backend or cached client still on the v22 schema strips the unknown
+  // `maximize` field but keeps dataFormatVersion '23'.
+  it('is repaired with the default directions instead of failing to load', async () => {
+    const { loadLatestJson } = loadTestData()
+    const stripped = await loadLatestJson()
+    stripped.scoreVariables.forEach((sv: { maximize?: boolean }) => {
+      delete sv.maximize
+    })
+    const repaired = migrate(stripped)
+    expect(repaired.info.dataFormatVersion).toBe('23')
+    repaired.scoreVariables.forEach(sv =>
+      expect(sv.maximize).toBe(sv.name === 'quality')
+    )
+  })
+})
