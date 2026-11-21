@@ -140,4 +140,15 @@ export const dummyPayloads: Payloads = {
   'experiment/setConstraintSum': 0,
   'experiment/addVariableToConstraintSum': '',
   'experiment/removeVariableFromConstraintSum': '',
+  updateScoreFunction: { scoreName: scoreNames[0], scoreFunction: undefined },
+  updateDataPointResponses: {
+    metaId: 1,
+    scoreName: scoreNames[0],
+    useFunction: false,
+    values: [],
+  },
+  setDataPointsUseFunction: {
+    scoreName: scoreNames[0],
+    useFunction: false,
+  },
 }

@@ -88,17 +88,31 @@ export const EditableTableCollapsedRow = ({
           >
             {rowId}
           </TableCell>
-          {tableRow.dataPoints.map((item, itemIndex) => (
-            <EditableTableCell
-              key={'editablecell' + itemIndex}
-              value={item.value}
-              isEditMode={false}
-              type={item.type}
-              options={item.options}
-              tooltip={item.tooltip}
-              style={rowEnabled ? {} : disabledCell}
-            />
-          ))}
+          {tableRow.dataPoints.map((item, itemIndex) => {
+            const scoreFunction = tableRow.scoreFunctions?.find(
+              sf => sf.scoreName === item.name && sf.hasFunction
+            )
+            return (
+              <EditableTableCell
+                key={'editablecell' + itemIndex}
+                value={item.value}
+                isEditMode={false}
+                type={item.type}
+                options={item.options}
+                tooltip={item.tooltip}
+                scoreName={scoreFunction ? item.name : undefined}
+                scoreFunction={
+                  scoreFunction
+                    ? {
+                        hasFunction: scoreFunction.hasFunction,
+                        useFunction: scoreFunction.useFunction,
+                      }
+                    : undefined
+                }
+                style={rowEnabled ? {} : disabledCell}
+              />
+            )
+          })}
           <TableCell className={classes.editCell}>
             <div className={classes.buttonContainer}>
               <Tooltip disableInteractive title="Edit">

@@ -161,6 +161,20 @@ export const Result = ({
       data,
     }
     dispatch({ type: 'updateDataPoints', payload: [...dataPoints, newRow] })
+    experiment.scoreVariables.forEach(sv => {
+      // Only enabled objectives, matching the table-add default path.
+      if (sv.enabled && sv.scoreFunction !== undefined) {
+        dispatch({
+          type: 'updateDataPointResponses',
+          payload: {
+            metaId: nextId,
+            scoreName: sv.name,
+            useFunction: true,
+            values: [],
+          },
+        })
+      }
+    })
   }
 
   const mapOptionsLabels = (

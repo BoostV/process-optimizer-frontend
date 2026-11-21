@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import * as R from 'remeda'
 import useStyles from './editable-table-expanded-row.style'
 import {
@@ -10,6 +10,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
 } from '@mui/material'
 
 import { TableDataRow } from './types'
@@ -23,6 +24,7 @@ interface EditableTableExpandedRowProps {
   setExpanded: (expanded: boolean) => void
   onAdd: (row: TableDataRow) => void
   onSave: (row: TableDataRow) => void
+  onOpenScoreFunctions?: () => void
   violations?: string[]
 }
 
@@ -33,6 +35,7 @@ export const EditableTableExpandedRow = ({
   setExpanded,
   onAdd,
   onSave,
+  onOpenScoreFunctions,
   violations,
 }: EditableTableExpandedRowProps) => {
   const tableRow = {
@@ -60,6 +63,42 @@ export const EditableTableExpandedRow = ({
       ],
     })
   }
+
+  const handleResponseEdit = (
+    scoreName: string,
+    symbol: string,
+    value: string
+  ) => {
+    setEditedRow({
+      ...editedRow,
+      scoreFunctions: editedRow.scoreFunctions?.map(sf =>
+        sf.scoreName === scoreName
+          ? { ...sf, values: { ...sf.values, [symbol]: value } }
+          : sf
+      ),
+    })
+  }
+
+  const handleToggleUseFunction = (scoreName: string) => {
+    setEditedRow({
+      ...editedRow,
+      scoreFunctions: editedRow.scoreFunctions?.map(sf =>
+        sf.scoreName === scoreName
+          ? { ...sf, useFunction: !sf.useFunction }
+          : sf
+      ),
+    })
+  }
+
+  // Objectives that show response inputs, and the widest response count, so the
+  // inputs can be laid out in a grid where column N of every objective aligns.
+  const responseObjectives = (editedRow.scoreFunctions ?? []).filter(
+    sf => sf.hasFunction && sf.responseVars.length > 0
+  )
+  const maxResponseVars = responseObjectives.reduce(
+    (max, sf) => Math.max(max, sf.responseVars.length),
+    0
+  )
 
   return (
     <TableRow className={classes.row}>
@@ -105,25 +144,100 @@ export const EditableTableExpandedRow = ({
                     ))}
                   </TableRow>
                   <TableRow>
-                    {editedRow.dataPoints.map((d, i) => (
-                      <EditableTableCell
-                        key={'expandedvalues' + i}
-                        value={d.value}
-                        type={d.type}
-                        isEditMode
-                        onChange={(value: string) => handleEdit(i, value)}
-                        options={d.options}
-                        style={{
-                          fontSize: 14,
-                          border: 'none',
-                        }}
-                      />
-                    ))}
+                    {editedRow.dataPoints.map((d, i) => {
+                      // Match by name only (not hasFunction) so the f(x) toggle
+                      // shows for every objective column, even when no score
+                      // function is defined yet.
+                      const scoreFunction = editedRow.scoreFunctions?.find(
+                        sf => sf.scoreName === d.name
+                      )
+                      return (
+                        <EditableTableCell
+                          key={'expandedvalues' + i}
+                          value={d.value}
+                          type={d.type}
+                          isEditMode
+                          onChange={(value: string) => handleEdit(i, value)}
+                          options={d.options}
+                          scoreName={scoreFunction ? d.name : undefined}
+                          scoreFunction={
+                            scoreFunction
+                              ? {
+                                  hasFunction: scoreFunction.hasFunction,
+                                  useFunction: scoreFunction.useFunction,
+                                }
+                              : undefined
+                          }
+                          onToggleUseFunction={
+                            scoreFunction
+                              ? () => handleToggleUseFunction(d.name)
+                              : undefined
+                          }
+                          onOpenScoreFunctions={onOpenScoreFunctions}
+                          style={{
+                            fontSize: 14,
+                            border: 'none',
+                          }}
+                        />
+                      )
+                    })}
                   </TableRow>
                 </TableBody>
               </Table>
             </Box>
           </Box>
+
+          {responseObjectives.length > 0 && (
+            <Box sx={{ mt: 2 }}>
+              <Box sx={{ fontWeight: 'bold', mb: 1 }}>Response</Box>
+              {/* Grid: label column + one column per response slot, so the Nth
+                  input of every objective lines up in the same column. */}
+              <Box
+                sx={{
+                  display: 'grid',
+                  // content-sized input columns (capped per-field via maxWidth)
+                  // instead of 1fr, so inputs stay compact rather than stretch.
+                  gridTemplateColumns: `auto repeat(${maxResponseVars}, auto)`,
+                  columnGap: 2,
+                  rowGap: 1,
+                  alignItems: 'center',
+                  justifyContent: 'start',
+                }}
+              >
+                {responseObjectives.map(sf => (
+                  <Fragment key={sf.scoreName}>
+                    <Box sx={{ whiteSpace: 'nowrap' }}>{sf.label}</Box>
+                    {sf.responseVars.map(rv => (
+                      <TextField
+                        key={rv.symbol}
+                        size="small"
+                        label={rv.name}
+                        slotProps={{
+                          htmlInput: { 'aria-label': rv.name },
+                          inputLabel: { shrink: true },
+                        }}
+                        value={sf.values[rv.symbol] ?? ''}
+                        onChange={e =>
+                          handleResponseEdit(
+                            sf.scoreName,
+                            rv.symbol,
+                            e.target.value
+                          )
+                        }
+                        sx={{ maxWidth: '10rem' }}
+                      />
+                    ))}
+                    {/* pad short rows so later columns stay aligned */}
+                    {Array.from({
+                      length: maxResponseVars - sf.responseVars.length,
+                    }).map((_, i) => (
+                      <Box key={`pad-${sf.scoreName}-${i}`} />
+                    ))}
+                  </Fragment>
+                ))}
+              </Box>
+            </Box>
+          )}
 
           {violations !== undefined &&
             violations.length > 0 &&

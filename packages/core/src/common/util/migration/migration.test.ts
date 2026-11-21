@@ -24,6 +24,7 @@ import { storeLatestSchema, loadTestData } from './test-utils'
 import { scoreName17 } from './migrations/migrateToV17'
 import { migrateToV17, migrateToV18 } from './migrations'
 import { ExperimentTypeV17 } from './migrations/migrateToV18'
+import { migrateToV21 } from './migrations/migrateToV21'
 
 describe('Migration of data format', () => {
   storeLatestSchema()
@@ -369,5 +370,31 @@ describe('Migration of data format', () => {
         expect(version18).toHaveProperty(p)
       )
     })
+  })
+})
+
+describe('migrateToV21', () => {
+  it('bumps dataFormatVersion to 21 and preserves data', () => {
+    const v20 = {
+      info: { dataFormatVersion: '20', name: 'n' },
+      scoreVariables: [
+        {
+          name: 'quality',
+          label: 'Quality (0-5)',
+          description: '',
+          enabled: true,
+        },
+      ],
+      dataPoints: [
+        {
+          meta: { id: 1, enabled: true, valid: true },
+          data: [{ type: 'score', name: 'quality', value: 2 }],
+        },
+      ],
+    }
+    const v21 = migrateToV21(v20 as never)
+    expect(v21.info.dataFormatVersion).toBe('21')
+    expect(v21.scoreVariables).toEqual(v20.scoreVariables)
+    expect(v21.dataPoints).toEqual(v20.dataPoints)
   })
 })

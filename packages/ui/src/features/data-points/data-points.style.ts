@@ -4,10 +4,7 @@ export const useStyles = makeStyles()(() => ({
   tableContainer: {
     overflowX: 'auto',
   },
-  titleButton: {
-    float: 'right',
-  },
-  titleIcon: {
+  iconLight: {
     color: 'white',
   },
 }))

@@ -4,6 +4,7 @@ export * from './save-to-local-file'
 export * from './data-type-detectors'
 export * from './scores/quality'
 export * from './pareto/pareto-plot'
+export * from './score'
 
 export const errorMessage = (e: unknown) => {
   if (typeof e === 'string') {

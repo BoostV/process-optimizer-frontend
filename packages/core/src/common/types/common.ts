@@ -3,7 +3,7 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '20'
+export const currentVersion = '21'
 
 export const scoreNames = ['quality', 'cost'] as const
 // Label is shown in UI, name is used in data
@@ -60,11 +60,29 @@ const valueVariableSchema = z.object({
   enabled: z.boolean(),
 })
 
+const scoreFunctionVariableSchema = z.object({
+  name: z.string(),
+  symbol: z.string(),
+  // z.enum (not z.union of literals) — at this nesting depth, json-schema-faker's
+  // fuzz-testing in migration.test.ts reliably fakes a union-of-literals field as
+  // `null`, failing schema validation 100% of the time; z.enum has an identical
+  // JSON-schema `enum` (not `anyOf`) shape that the faker handles correctly, with
+  // the same runtime validation and inferred `'response' | 'factor'` type.
+  source: z.enum(['response', 'factor']),
+  factorName: z.string().optional(),
+})
+
+const scoreFunctionSchema = z.object({
+  expression: z.string(),
+  variables: z.array(scoreFunctionVariableSchema),
+})
+
 const scoreVariableSchema = z.object({
   name: z.literal(scoreNames[0]).or(z.literal(scoreNames[1])),
   label: z.string(),
   description: z.string(),
   enabled: z.boolean(),
+  scoreFunction: scoreFunctionSchema.optional(),
 })
 
 const optimizerSchema = z.object({
@@ -106,9 +124,21 @@ export const dataPointSchema = z.discriminatedUnion('type', [
   scoreDataPoint,
 ])
 
+const responseValueSchema = z.object({
+  symbol: z.string(),
+  value: z.number(),
+})
+
+const scoreResponsesSchema = z.object({
+  scoreName: z.literal(scoreNames[0]).or(z.literal(scoreNames[1])),
+  useFunction: z.boolean(),
+  values: z.array(responseValueSchema),
+})
+
 const dataEntrySchema = z.object({
   meta: dataEntryMetaDataSchema,
   data: z.array(dataPointSchema),
+  responses: z.array(scoreResponsesSchema).optional(),
 })
 
 export const spaceSchema = z
@@ -168,6 +198,13 @@ export type CategoricalVariableType = z.infer<typeof categorialVariableSchema>
 export type ValueVariableType = z.infer<typeof valueVariableSchema>
 export type ScoreVariableType = z.infer<typeof scoreVariableSchema>
 export type OptimizerConfig = z.infer<typeof optimizerSchema>
+export type ScoreName = (typeof scoreNames)[number]
+export type ScoreFunctionType = z.infer<typeof scoreFunctionSchema>
+export type ScoreFunctionVariableType = z.infer<
+  typeof scoreFunctionVariableSchema
+>
+export type ScoreResponsesType = z.infer<typeof scoreResponsesSchema>
+export type ResponseValueType = z.infer<typeof responseValueSchema>
 
 // Type guards
 export function isExperiment(obj: unknown): obj is ExperimentType {

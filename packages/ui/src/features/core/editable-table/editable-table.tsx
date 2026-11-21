@@ -25,6 +25,7 @@ type EditableTableProps = {
   onRowsDeleted: (rowIndices: number[]) => void
   onRowEdited: (rowIndex: number, row: TableDataRow) => void
   onRowEnabledToggled: (rowIndex: number, enabled: boolean) => void
+  onOpenScoreFunctions?: () => void
   violations?: EditableTableViolation[]
   order: TableOrder
   isEditingDisabled?: boolean
@@ -37,6 +38,7 @@ export const EditableTable = ({
   onRowsDeleted,
   onRowEdited,
   onRowEnabledToggled,
+  onOpenScoreFunctions,
   violations,
   order,
   isEditingDisabled,
@@ -182,6 +184,7 @@ export const EditableTable = ({
               }
               onAdd={(row: TableDataRow) => onRowAdded(row)}
               tableRow={row}
+              onOpenScoreFunctions={onOpenScoreFunctions}
               violations={
                 violations?.find(v => v.rowMetaId === row.metaId)?.messages
               }

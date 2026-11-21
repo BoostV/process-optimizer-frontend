@@ -21,6 +21,7 @@ import {
   migrateToV18,
   migrateToV19,
   migrateToV20,
+  migrateToV21,
 } from './migrations'
 
 export const migrate = (json: any): ExperimentType => {
@@ -106,4 +107,5 @@ export const MIGRATIONS: Migration[] = [
   { version: '18', converter: migrateToV18 },
   { version: '19', converter: migrateToV19 },
   { version: '20', converter: migrateToV20 },
+  { version: '21', converter: migrateToV21 },
 ]

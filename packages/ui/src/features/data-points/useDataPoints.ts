@@ -32,12 +32,19 @@ export const useDataPoints = (
           valueVariables,
           categoricalVariables,
           scoreNames,
+          scoreVariables,
           dataPoints
         ),
 
         meta: dataPoints.map(dp => dp.meta),
       }) as const,
-    [categoricalVariables, dataPoints, scoreNames, valueVariables]
+    [
+      categoricalVariables,
+      dataPoints,
+      scoreNames,
+      scoreVariables,
+      valueVariables,
+    ]
   )
 
   const addRow = useCallback(
@@ -247,10 +254,44 @@ const mapDataPointToTableType = (
   dpType: CombinedVariableInputType
 ): TableDataPointType => (dpType === 'options' ? 'options' : 'numeric')
 
+const buildScoreFunctions = (
+  scoreVariables: ScoreVariableType[],
+  entry: DataEntry,
+  // Whether a row with no stored responses entry yet should default to using
+  // the function. True only for the "add new point" template, so NEW points
+  // use the function by default while pre-existing points stay manual (keeping
+  // their entered value) until the user explicitly switches them.
+  defaultUseFunction = false
+) =>
+  scoreVariables
+    .filter(sv => sv.enabled)
+    .map(sv => {
+      const resp = entry.responses?.find(r => r.scoreName === sv.name)
+      const responseVars =
+        sv.scoreFunction?.variables
+          .filter(v => v.source === 'response')
+          .map(v => ({ symbol: v.symbol, name: v.name })) ?? []
+      return {
+        scoreName: sv.name,
+        label: sv.label,
+        hasFunction: sv.scoreFunction !== undefined,
+        // A stored per-row responses entry always wins; otherwise fall back to
+        // the caller's default (true only for new-point template).
+        useFunction:
+          resp?.useFunction ??
+          (defaultUseFunction && sv.scoreFunction !== undefined),
+        responseVars,
+        values: Object.fromEntries(
+          (resp?.values ?? []).map(v => [v.symbol, String(v.value)])
+        ),
+      }
+    })
+
 const buildEmptyRow = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
-  scoreNames: { name: string; label?: string }[]
+  scoreNames: { name: string; label?: string }[],
+  scoreVariables: ScoreVariableType[]
 ) => {
   return {
     dataPoints: buildCombinedVariables(valueVariables, categoricalVariables)
@@ -272,6 +313,15 @@ const buildEmptyRow = (
         }))
       ),
     isNew: true,
+    scoreFunctions: buildScoreFunctions(
+      scoreVariables,
+      {
+        meta: { id: 0, enabled: true, valid: true },
+        data: [],
+      },
+      // new points default to using the function
+      true
+    ),
   } satisfies TableDataRow
 }
 
@@ -286,6 +336,7 @@ const buildRows = (
   valueVariables: ValueVariableType[],
   categoricalVariables: CategoricalVariableType[],
   scoreNames: { name: string; label?: string }[],
+  scoreVariables: ScoreVariableType[],
   dataPoints: DataEntry[]
 ) => {
   const combinedVariables = buildCombinedVariables(
@@ -345,11 +396,19 @@ const buildRows = (
         enabled: item.meta.enabled,
         valid: item.meta.valid,
         metaId: item.meta.id,
+        scoreFunctions: buildScoreFunctions(scoreVariables, item),
         // Uncomment the following line to display a meta data property in the table
         // .concat([{ name: 'id', value: `${item.meta.id}` }]),
       } satisfies TableDataRow as TableDataRow
     })
-    .concat([buildEmptyRow(valueVariables, categoricalVariables, scoreNames)])
+    .concat([
+      buildEmptyRow(
+        valueVariables,
+        categoricalVariables,
+        scoreNames,
+        scoreVariables
+      ),
+    ])
 
   return dataPointRows
 }
