@@ -31,5 +31,5 @@ export const styles = {
       color: 'common.white',
     },
   },
-  actions: { mt: 1.5 },
+  actions: { mt: 1.5, display: 'flex', gap: 1 },
 } satisfies Record<string, SxProps<Theme>>

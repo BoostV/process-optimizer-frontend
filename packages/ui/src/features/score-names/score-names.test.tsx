@@ -244,3 +244,53 @@ describe('ScoreNames reserved names', () => {
     expect(onSave).toHaveBeenCalledWith([{ ...quality, label: 'Yield' }])
   })
 })
+
+describe('ScoreNames cancel', () => {
+  it('cancel discards the edits, reports nothing and returns to read-only', () => {
+    const onSave = vi.fn()
+    render(<ScoreNames scores={[quality, cost]} onSave={onSave} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    fireEvent.change(screen.getAllByRole('textbox')[0] as HTMLElement, {
+      target: { value: 'Yield' },
+    })
+    fireEvent.click(
+      screen.getAllByRole('button', { name: 'Minimize' })[0] as HTMLElement
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(onSave).not.toHaveBeenCalled()
+    expect(screen.queryByRole('textbox')).toBeNull()
+    expect(screen.getByText('Quality (0-5)')).toBeDefined()
+    expect(
+      screen
+        .getAllByRole('button', { name: 'Maximize' })[0]
+        ?.getAttribute('aria-pressed')
+    ).toBe('true')
+    // Editing again starts from the saved values, not the discarded draft.
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    expect((screen.getAllByRole('textbox')[0] as HTMLInputElement).value).toBe(
+      'Quality (0-5)'
+    )
+  })
+
+  it('cancel works while the draft is invalid', () => {
+    render(<ScoreNames scores={[quality]} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(screen.getByText('Quality (0-5)')).toBeDefined()
+  })
+
+  it('there is no Cancel button while read-only or in the bare variant', () => {
+    render(<ScoreNames scores={[quality]} />)
+    expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull()
+    cleanup()
+    render(<ScoreNames variant="bare" scores={[quality]} />)
+    expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull()
+  })
+
+  it('uses an overridden cancel text', () => {
+    render(<ScoreNames scores={[quality]} texts={{ cancel: 'Annuller' }} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
+    expect(screen.getByRole('button', { name: 'Annuller' })).toBeDefined()
+  })
+})

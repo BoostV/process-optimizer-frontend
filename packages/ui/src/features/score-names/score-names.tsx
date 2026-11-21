@@ -24,6 +24,7 @@ export type ScoreNamesTexts = {
   minimize: string
   edit: string
   save: string
+  cancel: string
   errorEmpty: string
   errorDuplicate: string
   errorReserved: string
@@ -37,6 +38,7 @@ const defaultTexts: ScoreNamesTexts = {
   minimize: 'Minimize',
   edit: 'Edit',
   save: 'Save',
+  cancel: 'Cancel',
   errorEmpty: 'A score needs a name.',
   errorDuplicate: 'Score names must be different.',
   errorReserved: 'A factor already has this name.',
@@ -46,7 +48,7 @@ export type ScoreNamesProps = {
   id?: string
   scores: ScoreNameRow[]
   // 'card': a titled card showing the scores read-only; Edit switches to
-  //   editing and Save reports the result through onSave.
+  //   editing, Save reports the result through onSave, Cancel discards it.
   // 'bare': no card and no buttons, always editable and controlled by
   //   `scores`; every change is reported through onChange. For embedding in
   //   a form such as a "create project" dialog.
@@ -201,14 +203,23 @@ export const ScoreNames = ({
       />
       <Box sx={styles.actions}>
         {isEditing ? (
-          <Button
-            variant="outlined"
-            size="small"
-            disabled={!canSave}
-            onClick={handleSave}
-          >
-            {texts.save}
-          </Button>
+          <>
+            <Button
+              variant="outlined"
+              size="small"
+              disabled={!canSave}
+              onClick={handleSave}
+            >
+              {texts.save}
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => setDraft(undefined)}
+            >
+              {texts.cancel}
+            </Button>
+          </>
         ) : (
           <Button
             variant="outlined"
