@@ -57,6 +57,11 @@ const defaultSorted = (
 
 // Note: This calculation assumes the correct order of scores ("score" as the first entry) as sorted by the defaultSorted function
 const calculateXi = (state: ExperimentType) => {
+  // The formula below assumes the first score is maximized on the 0..maxRating
+  // scale. A minimized first score has no such ceiling, so use the floor.
+  if (state.scoreVariables[0]?.maximize === false) {
+    return 0.1
+  }
   const dataPoints = selectActiveDataPoints({ experiment: state })
   const bestScore =
     dataPoints.length === 0
@@ -165,6 +170,10 @@ export type ExperimentAction =
     }
   | {
       type: 'experiment/toggleMultiObjective'
+    }
+  | {
+      type: 'updateScoreVariables'
+      payload: { name: ScoreName; label: string; maximize: boolean }[]
     }
   | {
       type: 'experiment/setConstraintSum'
@@ -574,6 +583,16 @@ const experimentReducerInner = produce(
           })
         }
         break
+      case 'updateScoreVariables':
+        action.payload.forEach(update => {
+          const sv = state.scoreVariables.find(it => it.name === update.name)
+          if (sv !== undefined) {
+            sv.label = update.label.trim()
+            sv.maximize = update.maximize
+          }
+        })
+        state.optimizerConfig.xi = calculateXi(state)
+        break
       case 'experiment/setConstraintSum': {
         const constraint = state.constraints.find(c => c.type === 'sum')
         if (constraint !== undefined) {
@@ -733,6 +752,9 @@ export const experimentReducer = (
 // by the validation reducer, so this must run AFTER validation (see
 // rootReducer) — comparing pre-validation states would miss a row becoming
 // valid when its score is entered.
+const withoutLabels = (scores: ScoreVariableType[]) =>
+  scores.map(sv => ({ ...sv, label: '' }))
+
 export const invalidateStaleParetoSelection = (
   previous: ExperimentType,
   next: ExperimentType,
@@ -751,7 +773,13 @@ export const invalidateStaleParetoSelection = (
         next.dataPoints !== previous.dataPoints &&
         JSON.stringify(selectActiveDataPointsFromExperiment(next)) !==
           JSON.stringify(selectActiveDataPointsFromExperiment(previous))
-      : next[key] !== previous[key]
+      : key === 'scoreVariables'
+        ? // A score's label is display-only: renaming must not drop the
+          // selection (which would also trigger a re-evaluation).
+          next.scoreVariables !== previous.scoreVariables &&
+          JSON.stringify(withoutLabels(next.scoreVariables)) !==
+            JSON.stringify(withoutLabels(previous.scoreVariables))
+        : next[key] !== previous[key]
   )
   if (!changed) {
     return next

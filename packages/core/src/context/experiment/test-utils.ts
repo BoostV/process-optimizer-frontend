@@ -138,6 +138,7 @@ export const dummyPayloads: Payloads = {
   },
   copySuggestedToDataPoints: { indices: [], removeFromSuggestions: false },
   'experiment/toggleMultiObjective': undefined,
+  updateScoreVariables: [{ name: 'quality', label: 'Quality', maximize: true }],
   'experiment/setConstraintSum': 0,
   'experiment/addVariableToConstraintSum': '',
   'experiment/removeVariableFromConstraintSum': '',
