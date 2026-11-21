@@ -38,6 +38,7 @@ export const createScoreVariable = (
     label: input.label ?? 'label',
     description: input.description ?? '',
     enabled: input.enabled ?? true,
+    maximize: input.maximize ?? input.name === 'quality',
   }) satisfies ScoreVariableType
 
 export const createDataPoints = (

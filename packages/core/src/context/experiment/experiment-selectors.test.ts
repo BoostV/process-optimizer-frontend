@@ -250,16 +250,40 @@ describe('Experiment selectors', () => {
   describe('selectActiveScoreVariableLabels', () => {
     it('should return only enabled score variable labels', () => {
       state.experiment.scoreVariables = [
-        { name: 'quality', label: 'Quality', description: '', enabled: true },
-        { name: 'cost', label: 'Cost', description: '', enabled: false },
+        {
+          name: 'quality',
+          label: 'Quality',
+          description: '',
+          enabled: true,
+          maximize: true,
+        },
+        {
+          name: 'cost',
+          label: 'Cost',
+          description: '',
+          enabled: false,
+          maximize: false,
+        },
       ]
       expect(selectActiveScoreVariableLabels(state)).toEqual(['Quality'])
     })
 
     it('should return all score variable labels when all are enabled', () => {
       state.experiment.scoreVariables = [
-        { name: 'quality', label: 'Quality', description: '', enabled: true },
-        { name: 'cost', label: 'Cost', description: '', enabled: true },
+        {
+          name: 'quality',
+          label: 'Quality',
+          description: '',
+          enabled: true,
+          maximize: true,
+        },
+        {
+          name: 'cost',
+          label: 'Cost',
+          description: '',
+          enabled: true,
+          maximize: false,
+        },
       ]
       expect(selectActiveScoreVariableLabels(state)).toEqual([
         'Quality',
@@ -269,7 +293,13 @@ describe('Experiment selectors', () => {
 
     it('should return empty array when no score variables are enabled', () => {
       state.experiment.scoreVariables = [
-        { name: 'quality', label: 'Quality', description: '', enabled: false },
+        {
+          name: 'quality',
+          label: 'Quality',
+          description: '',
+          enabled: false,
+          maximize: true,
+        },
       ]
       expect(selectActiveScoreVariableLabels(state)).toEqual([])
     })
@@ -287,8 +317,15 @@ describe('Experiment selectors', () => {
           label: 'Quality (0-5)',
           description: '',
           enabled: true,
+          maximize: true,
         },
-        { name: 'cost', label: 'Cost', description: '', enabled: false },
+        {
+          name: 'cost',
+          label: 'Cost',
+          description: '',
+          enabled: false,
+          maximize: false,
+        },
       ]
       expect(selectActiveScoreVariableNames(state)).toEqual(['quality'])
     })
@@ -300,8 +337,15 @@ describe('Experiment selectors', () => {
           label: 'Quality (0-5)',
           description: '',
           enabled: true,
+          maximize: true,
         },
-        { name: 'cost', label: 'Cost', description: '', enabled: true },
+        {
+          name: 'cost',
+          label: 'Cost',
+          description: '',
+          enabled: true,
+          maximize: false,
+        },
       ]
       expect(selectActiveScoreVariableNames(state)).toEqual(['quality', 'cost'])
     })
@@ -313,6 +357,7 @@ describe('Experiment selectors', () => {
           label: 'Quality (0-5)',
           description: '',
           enabled: false,
+          maximize: true,
         },
       ]
       expect(selectActiveScoreVariableNames(state)).toEqual([])

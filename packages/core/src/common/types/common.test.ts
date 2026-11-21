@@ -40,9 +40,9 @@ describe('Type guards', () => {
   })
 })
 
-describe('score function schema (v22)', () => {
-  it('currentVersion is 22', () => {
-    expect(currentVersion).toBe('22')
+describe('score function schema', () => {
+  it('currentVersion is 23', () => {
+    expect(currentVersion).toBe('23')
   })
 
   it('accepts a scoreVariable with a scoreFunction and a dataEntry with responses', () => {
@@ -53,7 +53,7 @@ describe('score function schema (v22)', () => {
         name: 'n',
         description: '',
         swVersion: 'v',
-        dataFormatVersion: '22',
+        dataFormatVersion: '23',
         version: 0,
         lastModified: '',
         createdAt: '',
@@ -68,6 +68,7 @@ describe('score function schema (v22)', () => {
           label: 'Quality (0-5)',
           description: '',
           enabled: true,
+          maximize: true,
           scoreFunction: {
             expression: 'weight/2 + firingAngle',
             variables: [
@@ -123,7 +124,7 @@ describe('score function schema (v22)', () => {
         name: 'n',
         description: '',
         swVersion: 'v',
-        dataFormatVersion: '22',
+        dataFormatVersion: '23',
         version: 0,
         lastModified: '',
         createdAt: '',
@@ -138,6 +139,7 @@ describe('score function schema (v22)', () => {
           label: 'Quality (0-5)',
           description: '',
           enabled: true,
+          maximize: true,
         },
       ],
       constraints: [{ type: 'sum', value: 0, dimensions: [] }],

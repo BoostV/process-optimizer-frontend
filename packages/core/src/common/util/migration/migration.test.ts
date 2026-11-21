@@ -26,6 +26,7 @@ import { migrateToV17, migrateToV18 } from './migrations'
 import { ExperimentTypeV17 } from './migrations/migrateToV18'
 import { migrateToV21 } from './migrations/migrateToV21'
 import { migrateToV22 } from './migrations/migrateToV22'
+import { migrateToV23 } from './migrations/migrateToV23'
 
 describe('Migration of data format', () => {
   storeLatestSchema()
@@ -423,5 +424,22 @@ describe('migrateToV22', () => {
     expect(v22.info.dataFormatVersion).toBe('22')
     expect(v22.scoreVariables).toEqual(v21.scoreVariables)
     expect(v22.dataPoints).toEqual(v21.dataPoints)
+  })
+})
+
+describe('migrateToV23', () => {
+  it('adds maximize: quality true, cost false, and bumps version', () => {
+    const v22 = {
+      info: { dataFormatVersion: '22', name: 'n' },
+      scoreVariables: [
+        { name: 'quality', label: 'Q', description: '', enabled: true },
+        { name: 'cost', label: 'C', description: '', enabled: false },
+      ],
+      dataPoints: [],
+    }
+    const v23 = migrateToV23(v22 as never)
+    expect(v23.info.dataFormatVersion).toBe('23')
+    expect(v23.scoreVariables.map(s => s.maximize)).toEqual([true, false])
+    expect(v23.scoreVariables.map(s => s.label)).toEqual(['Q', 'C'])
   })
 })

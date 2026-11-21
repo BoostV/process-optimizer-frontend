@@ -248,8 +248,20 @@ describe('converters', () => {
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
         [
-          { name: scoreNames[0], description: '', enabled: true, label: '' },
-          { name: scoreNames[1], description: '', enabled: true, label: '' },
+          {
+            name: scoreNames[0],
+            description: '',
+            enabled: true,
+            maximize: true,
+            label: '',
+          },
+          {
+            name: scoreNames[1],
+            description: '',
+            enabled: true,
+            maximize: false,
+            label: '',
+          },
         ],
         sampleMultiObjectiveDataPoints
       )
@@ -265,8 +277,20 @@ describe('converters', () => {
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
         [
-          { name: scoreNames[0], description: '', enabled: true, label: '' },
-          { name: scoreNames[1], description: '', enabled: false, label: '' },
+          {
+            name: scoreNames[0],
+            description: '',
+            enabled: true,
+            maximize: true,
+            label: '',
+          },
+          {
+            name: scoreNames[1],
+            description: '',
+            enabled: false,
+            maximize: false,
+            label: '',
+          },
         ],
         sampleMultiObjectiveDataPoints
       )
@@ -278,8 +302,20 @@ describe('converters', () => {
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
         [
-          { name: scoreNames[0], description: '', enabled: true, label: '' },
-          { name: scoreNames[1], description: '', enabled: true, label: '' },
+          {
+            name: scoreNames[0],
+            description: '',
+            enabled: true,
+            maximize: true,
+            label: '',
+          },
+          {
+            name: scoreNames[1],
+            description: '',
+            enabled: true,
+            maximize: false,
+            label: '',
+          },
         ],
         sampleMultiObjectiveDataPoints
       )
@@ -645,6 +681,7 @@ describe('converters', () => {
         label: 'qualitylabel',
         description: '',
         enabled: true,
+        maximize: true,
       },
     ]
 

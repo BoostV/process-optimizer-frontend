@@ -337,6 +337,7 @@ describe('validateDataPointsUndefined', () => {
           label: 'qualitylabel',
           description: '',
           enabled: true,
+          maximize: true,
         },
       ],
       dataPoints: [
@@ -365,6 +366,7 @@ describe('validateDataPointsUndefined', () => {
           label: 'qualitylabel',
           description: '',
           enabled: true,
+          maximize: true,
         },
       ],
       dataPoints: [
@@ -400,6 +402,7 @@ describe('validateDataPointsUndefined', () => {
           label: 'qualitylabel',
           description: '',
           enabled: true,
+          maximize: true,
         },
       ],
       dataPoints: [
@@ -445,12 +448,14 @@ describe('validateDataPointsUndefined', () => {
           label: 'qualitylabel',
           description: '',
           enabled: true,
+          maximize: true,
         },
         {
           name: 'cost',
           label: 'costlabel',
           description: '',
           enabled: false,
+          maximize: false,
         },
       ],
       dataPoints: [
@@ -835,6 +840,7 @@ it('flags a function-mode point as invalid when a used factor is unavailable', (
         label: 'Quality (0-5)',
         description: '',
         enabled: true,
+        maximize: true,
         scoreFunction: {
           expression: 'pinElevation',
           variables: [

@@ -10,7 +10,7 @@ import {
   ValueVariableType,
   experimentSchema,
   isValidScoreName,
-  scoreLabels,
+  scoreDefaults,
   scoreNames as scoreNamesState,
 } from '@core/common/types'
 import { produce } from 'immer'
@@ -556,7 +556,8 @@ const experimentReducerInner = produce(
         if (state.scoreVariables.length < 2) {
           state.scoreVariables.push({
             name: scoreNamesState[1],
-            label: scoreLabels[1] ?? scoreNamesState[1],
+            label: scoreDefaults[scoreNamesState[1]].label,
+            maximize: scoreDefaults[scoreNamesState[1]].maximize,
             description: '',
             enabled: true,
           })

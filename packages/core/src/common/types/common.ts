@@ -3,11 +3,20 @@ import { z } from 'zod'
 // Change the current version when doing structural
 // changes to any types belonging to ExperimentType
 
-export const currentVersion = '22'
+export const currentVersion = '23'
 
 export const scoreNames = ['quality', 'cost'] as const
 // Label is shown in UI, name is used in data
 export const scoreLabels = ['Quality (0-5)', 'Cost']
+// Default label and optimization direction per score. The optimizer always
+// minimizes; a maximized score is negated before it is sent.
+export const scoreDefaults: Record<
+  (typeof scoreNames)[number],
+  { label: string; maximize: boolean }
+> = {
+  quality: { label: 'Quality (0-5)', maximize: true },
+  cost: { label: 'Cost', maximize: false },
+}
 
 export const isValidScoreName = (
   name: string
@@ -82,6 +91,8 @@ const scoreVariableSchema = z.object({
   label: z.string(),
   description: z.string(),
   enabled: z.boolean(),
+  // true: higher is better. false: lower is better.
+  maximize: z.boolean(),
   scoreFunction: scoreFunctionSchema.optional(),
 })
 
