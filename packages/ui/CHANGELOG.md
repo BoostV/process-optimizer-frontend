@@ -1,5 +1,18 @@
 # @boostv/process-optimizer-frontend-ui
 
+## 3.2.0
+
+### Minor Changes
+
+- c48a3cf: Add per-point notes and robust CSV round-trips (quoting, configurable separator, import errors).
+- 30e432e: Add score functions: compute an objective's score from a per-objective formula.
+
+### Patch Changes
+
+- Updated dependencies [c48a3cf]
+- Updated dependencies [30e432e]
+  - @boostv/process-optimizer-frontend-core@2.17.0
+
 ## 3.1.3
 
 ### Patch Changes

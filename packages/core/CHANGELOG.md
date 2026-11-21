@@ -1,5 +1,12 @@
 # @process-optimizer-frontend/core
 
+## 2.17.0
+
+### Minor Changes
+
+- c48a3cf: Add per-point notes and robust CSV round-trips (quoting, configurable separator, import errors).
+- 30e432e: Add score functions: compute an objective's score from a per-objective formula.
+
 ## 2.16.1
 
 ### Patch Changes
