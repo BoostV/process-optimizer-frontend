@@ -1,8 +1,8 @@
-import { displayQuality } from '@boostv/process-optimizer-frontend-core'
 import { useDataToPixel } from '../use-data-to-pixel'
 
 type Props = {
   ellipseIndices: number[]
+  // The model front in display units, [x, y] per point.
   frontYData: [number, number][]
   obj1Error: number[]
   obj2Error: number[]
@@ -27,7 +27,7 @@ export const ConfidenceEllipses = ({
       {ellipseIndices.map(i => {
         const yPair = frontYData[i]
         if (!yPair) return null
-        const cxData = displayQuality(yPair[0])
+        const cxData = yPair[0]
         const cyData = yPair[1]
         const e1 = obj1Error[i] ?? 0
         const e2 = obj2Error[i] ?? 0

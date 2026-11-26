@@ -26,6 +26,7 @@ import { migrateToV17, migrateToV18 } from './migrations'
 import { ExperimentTypeV17 } from './migrations/migrateToV18'
 import { migrateToV21 } from './migrations/migrateToV21'
 import { migrateToV22 } from './migrations/migrateToV22'
+import { migrateToV23 } from './migrations/migrateToV23'
 
 describe('Migration of data format', () => {
   storeLatestSchema()
@@ -423,5 +424,39 @@ describe('migrateToV22', () => {
     expect(v22.info.dataFormatVersion).toBe('22')
     expect(v22.scoreVariables).toEqual(v21.scoreVariables)
     expect(v22.dataPoints).toEqual(v21.dataPoints)
+  })
+})
+
+describe('migrateToV23', () => {
+  it('adds maximize: quality true, cost false, and bumps version', () => {
+    const v22 = {
+      info: { dataFormatVersion: '22', name: 'n' },
+      scoreVariables: [
+        { name: 'quality', label: 'Q', description: '', enabled: true },
+        { name: 'cost', label: 'C', description: '', enabled: false },
+      ],
+      dataPoints: [],
+    }
+    const v23 = migrateToV23(v22 as never)
+    expect(v23.info.dataFormatVersion).toBe('23')
+    expect(v23.scoreVariables.map(s => s.maximize)).toEqual([true, false])
+    expect(v23.scoreVariables.map(s => s.label)).toEqual(['Q', 'C'])
+  })
+})
+
+describe('v23 data without maximize', () => {
+  // A backend or cached client still on the v22 schema strips the unknown
+  // `maximize` field but keeps dataFormatVersion '23'.
+  it('is repaired with the default directions instead of failing to load', async () => {
+    const { loadLatestJson } = loadTestData()
+    const stripped = await loadLatestJson()
+    stripped.scoreVariables.forEach((sv: { maximize?: boolean }) => {
+      delete sv.maximize
+    })
+    const repaired = migrate(stripped)
+    expect(repaired.info.dataFormatVersion).toBe('23')
+    repaired.scoreVariables.forEach(sv =>
+      expect(sv.maximize).toBe(sv.name === 'quality')
+    )
   })
 })

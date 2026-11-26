@@ -72,6 +72,7 @@ describe('useDataPoints', () => {
               label: 'Quality (0-5)',
               description: '',
               enabled: true,
+              maximize: true,
               scoreFunction: {
                 expression: 'weight*2',
                 variables: [
@@ -125,6 +126,7 @@ describe('useDataPoints', () => {
               label: 'Quality (0-5)',
               description: '',
               enabled: true,
+              maximize: true,
               scoreFunction: {
                 expression: 'weight*2',
                 variables: [
@@ -278,7 +280,15 @@ describe('useDataPoints', () => {
         useDataPoints(
           [],
           [],
-          [{ name: 'cost', label: 'Cost', description: '', enabled: true }],
+          [
+            {
+              name: 'cost',
+              label: 'Cost',
+              description: '',
+              enabled: true,
+              maximize: false,
+            },
+          ],
           original
         )
       )

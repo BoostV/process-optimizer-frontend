@@ -153,7 +153,12 @@ export function DataPoints(props: DataPointProps) {
                 light
                 onClick={() =>
                   saveCSVToLocalFile(
-                    dataPointsToCSV(dataPoints, csvSeparator),
+                    dataPointsToCSV(
+                      dataPoints,
+                      csvSeparator,
+                      '\n',
+                      scoreVariables
+                    ),
                     experimentId + '.csv'
                   )
                 }

@@ -18,22 +18,24 @@ import {
   useSelector,
   experimentResultSchema,
   parseParetoPlot,
-  displayQuality,
-  displayQualityCI,
-  displayCostCI,
-  selectActiveScoreVariableNames,
+  displayScore,
+  displayScoreCI,
+  scoreDisplayName,
+  scoreDefaults,
+  selectActiveScoreVariables,
   type SelectedPoint,
   type DataEntry,
 } from '@boostv/process-optimizer-frontend-core'
 import { Box, Button, Chip, Typography } from '@mui/material'
 import {
-  flipQualityScores,
   groupSinglePlots,
   parsePlotJson,
-  qualityDisplayDomain,
-  costDisplayDomain,
 } from '../../containers/result-data/experimentation-guide.utils'
-import { resolveSelectedIndex } from './result.utils'
+import {
+  objectivePlotData,
+  resolveSelectedIndex,
+  selectedPointCI,
+} from './result.utils'
 import { z } from 'zod'
 import { isArray } from 'remeda'
 import useStyles from './result.style'
@@ -59,11 +61,12 @@ const roundSetting = (v: number | string): number | string =>
   typeof v === 'number' ? Number(v.toFixed(4)) : v
 
 // value - 1.96 * std <-> value + 1.96 * std
-const convertScoreToString = (data: number[]) =>
-  displayQualityCI(data[0] ?? 0, data[1] ?? 0)
+const convertScoreToString = (data: number[], maximize: boolean) =>
+  displayScoreCI(data[0] ?? 0, data[1] ?? 0, maximize)
 
 const convertExpectedMinimumToDisplayValue = (
-  expectedMinimum: z.infer<typeof experimentResultSchema.shape.expectedMinimum>
+  expectedMinimum: z.infer<typeof experimentResultSchema.shape.expectedMinimum>,
+  maximize: boolean
 ) => {
   if (
     expectedMinimum.length === 2 &&
@@ -73,7 +76,7 @@ const convertExpectedMinimumToDisplayValue = (
     return [
       (expectedMinimum[0] as (number | string)[])
         .map(roundSetting)
-        .concat(convertScoreToString(expectedMinimum[1] as number[])),
+        .concat(convertScoreToString(expectedMinimum[1] as number[], maximize)),
     ]
   }
   return expectedMinimum ?? []
@@ -101,7 +104,9 @@ export const Result = ({
   const dataPoints = useSelector(selectActiveDataPoints)
   const variableHeaders = useSelector(selectActiveVariableNames)
   const scoreHeaders = useSelector(selectActiveScoreVariableLabels)
-  const scoreVarNames = useSelector(selectActiveScoreVariableNames)
+  const activeScores = useSelector(selectActiveScoreVariables)
+  // Short display names, e.g. "Quality"/"Cost" or the user's own names.
+  const scoreNames = activeScores.map(scoreDisplayName)
   const expectedMinimum = useSelector(selectExpectedMinimum)
   const isInitializing = useSelector(selectIsInitializing)
   const isMultiObjective = useSelector(selectIsMultiObjective)
@@ -220,10 +225,21 @@ export const Result = ({
     : -1
   const isDefaultSelection = pareto ? selectedIndex === pareto.best_idx : true
   const selectedScores = pareto?.front_y_data[selectedIndex]
-  const selectedQuality = selectedScores
-    ? displayQuality(selectedScores[0])
+  const selectedFirst = selectedScores
+    ? displayScore(selectedScores[0], activeScores[0]?.maximize ?? true)
     : undefined
-  const selectedCost = selectedScores ? selectedScores[1] : undefined
+  const selectedSecond = selectedScores
+    ? displayScore(selectedScores[1], activeScores[1]?.maximize ?? false)
+    : undefined
+
+  // "quality and cost" in running text; a user's own names are kept as written.
+  const balanceNames = activeScores
+    .map((sv, i) =>
+      sv.label === scoreDefaults[sv.name].label
+        ? (scoreNames[i] ?? '').toLowerCase()
+        : (scoreNames[i] ?? '')
+    )
+    .join(' and ')
 
   return (
     <TitleCard
@@ -267,6 +283,20 @@ export const Result = ({
                 plot={pareto}
                 dataPoints={dataPoints}
                 showHoverEllipse={showParetoHoverEllipse}
+                objectives={
+                  activeScores[0] && activeScores[1]
+                    ? [
+                        {
+                          label: scoreDisplayName(activeScores[0]),
+                          maximize: activeScores[0].maximize,
+                        },
+                        {
+                          label: scoreDisplayName(activeScores[1]),
+                          maximize: activeScores[1].maximize,
+                        },
+                      ]
+                    : undefined
+                }
                 renderControls={({ onToggleFitToFront, onResetToDefault }) => (
                   <>
                     <Button
@@ -335,13 +365,13 @@ export const Result = ({
                   }}
                 >
                   {isDefaultSelection ? (
-                    'For the model’s default equal balance of quality and cost. Pick a point on the Pareto front above to target a different trade-off.'
+                    `For the model’s default equal balance of ${balanceNames}. Pick a point on the Pareto front above to target a different trade-off.`
                   ) : (
                     <>
                       {`${scoreHeaders[0] ?? 'Quality'} ≈ ${
-                        selectedQuality?.toFixed(2) ?? '?'
+                        selectedFirst?.toFixed(2) ?? '?'
                       }, ${scoreHeaders[1] ?? 'Cost'} ≈ ${
-                        selectedCost?.toFixed(2) ?? '?'
+                        selectedSecond?.toFixed(2) ?? '?'
                       } · selected on the Pareto front. `}
                       <Button
                         size="small"
@@ -371,57 +401,10 @@ export const Result = ({
               variableHeaders={variableHeaders}
               rows={oneDPlots.map((plot, index) => {
                 const header = scoreHeaders[index] ?? ''
-                const role = scoreVarNames[index]
-                const isQuality = role === 'quality'
-                const isCost = role === 'cost'
-                const plotData: (string | OneDData)[] = (() => {
-                  if (isQuality) {
-                    // Quality is minimized as -quality, so its json plots come
-                    // back negated — flip them back to display units.
-                    const flippedPlots = plot.map(p =>
-                      typeof p === 'string' ? p : flipQualityScores(p)
-                    )
-                    // Pin every quality plot to one shared scale so the
-                    // per-factor Y axes and the histogram X axis line up (as
-                    // the PNG does), instead of each axis auto-scaling on its
-                    // own — which left the factors at 0-8 and the histogram on
-                    // a narrow, hard-to-read range.
-                    const domain = qualityDisplayDomain(flippedPlots)
-                    return flippedPlots.map(p => {
-                      if (typeof p === 'string') {
-                        return p
-                      }
-                      return p.type === 'score'
-                        ? {
-                            ...p,
-                            objective: 'quality' as const,
-                            xDomain: domain,
-                          }
-                        : {
-                            ...p,
-                            objective: 'quality' as const,
-                            yDomain: domain,
-                          }
-                    })
-                  }
-                  if (isCost) {
-                    // Pin the cost factor Y axes and the histogram X axis to one
-                    // shared, data-derived scale (like quality) so the 1D graphs
-                    // and the histogram cover the same range — otherwise, away
-                    // from the default point, the histogram (pinned to the front
-                    // cost range) no longer matched the 1D graphs.
-                    const domain = costDisplayDomain(plot)
-                    return plot.map(p => {
-                      if (typeof p === 'string') {
-                        return p
-                      }
-                      return p.type === 'score'
-                        ? { ...p, objective: 'cost' as const, xDomain: domain }
-                        : { ...p, objective: 'cost' as const, yDomain: domain }
-                    })
-                  }
-                  return plot
-                })()
+                const score = activeScores[index]
+                // Flip to display units when maximized, pin the objective's
+                // plots to one shared scale, theme per objective.
+                const plotData = objectivePlotData(plot, score)
                 const dataPoint: (number | (string | number)[])[] = (() => {
                   // Multi-objective has no single-objective `expectedMinimum`.
                   // Mirror its display from the selected Pareto point: the
@@ -438,31 +421,29 @@ export const Result = ({
                         typeof v === 'number' && options ? (options[v] ?? v) : v
                       return roundSetting(mapped)
                     })
-                    const scores = pareto.front_y_data[selectedIndex]
-                    const ci = isQuality
-                      ? displayQualityCI(
-                          scores?.[0] ?? 0,
-                          pareto.obj1_error[selectedIndex] ?? 0
+                    const ci = score
+                      ? selectedPointCI(
+                          index,
+                          score.maximize,
+                          pareto,
+                          selectedIndex
                         )
-                      : isCost
-                        ? displayCostCI(
-                            scores?.[1] ?? 0,
-                            pareto.obj2_error[selectedIndex] ?? 0
-                          )
-                        : ''
+                      : ''
                     return [[...settings, ci]]
                   }
                   // Single-objective: the predicted best settings + its CI.
                   return hasExpectedMinimum
-                    ? convertExpectedMinimumToDisplayValue(expectedMinimum!)
+                    ? convertExpectedMinimumToDisplayValue(
+                        expectedMinimum!,
+                        activeScores[0]?.maximize ?? true
+                      )
                     : []
                 })()
                 return {
                   scoreHeader: '95% credible interval',
-                  // Generic objective name (e.g. "Quality"/"Cost"), not the full label.
-                  rowLabel: role
-                    ? role.charAt(0).toUpperCase() + role.slice(1)
-                    : header,
+                  // Short objective name (e.g. "Quality"/"Cost"), or the
+                  // user's own name once it has been changed.
+                  rowLabel: scoreNames[index] ?? header,
                   dataPoint,
                   plotData,
                 }

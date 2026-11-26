@@ -102,3 +102,20 @@ describe('isValidVariableName', () => {
     ).toEqual(true)
   })
 })
+
+describe('isValidVariableName with reserved names', () => {
+  it('rejects a factor name that a score already uses, ignoring case and spaces', () => {
+    expect(
+      isValidVariableName([], [], ' yield ', 'value', undefined, ['Yield'])
+    ).toBe('A score already has this name')
+    expect(
+      isValidVariableName([], [], 'Yield', 'categorical', undefined, ['Yield'])
+    ).toBe('A score already has this name')
+  })
+  it('accepts other names, and any name when nothing is reserved', () => {
+    expect(
+      isValidVariableName([], [], 'Water', 'value', undefined, ['Yield'])
+    ).toBe(true)
+    expect(isValidVariableName([], [], 'Yield', 'value')).toBe(true)
+  })
+})

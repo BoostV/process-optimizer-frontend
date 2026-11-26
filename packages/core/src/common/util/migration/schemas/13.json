@@ -30,12 +30,7 @@
               "const": "13"
             }
           },
-          "required": [
-            "name",
-            "description",
-            "swVersion",
-            "dataFormatVersion"
-          ],
+          "required": ["name", "description", "swVersion", "dataFormatVersion"],
           "additionalProperties": false
         },
         "extras": {
@@ -60,11 +55,7 @@
                 }
               }
             },
-            "required": [
-              "name",
-              "description",
-              "options"
-            ],
+            "required": ["name", "description", "options"],
             "additionalProperties": false
           }
         },
@@ -75,10 +66,7 @@
             "properties": {
               "type": {
                 "type": "string",
-                "enum": [
-                  "discrete",
-                  "continuous"
-                ]
+                "enum": ["discrete", "continuous"]
               },
               "name": {
                 "type": "string"
@@ -94,12 +82,7 @@
                 "type": "number"
               }
             },
-            "required": [
-              "type",
-              "name",
-              "min",
-              "max"
-            ],
+            "required": ["type", "name", "min", "max"],
             "additionalProperties": false
           }
         },
@@ -118,11 +101,7 @@
                 "type": "boolean"
               }
             },
-            "required": [
-              "name",
-              "description",
-              "enabled"
-            ],
+            "required": ["name", "description", "enabled"],
             "additionalProperties": false
           }
         },
@@ -172,10 +151,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "id",
-                  "plot"
-                ],
+                "required": ["id", "plot"],
                 "additionalProperties": false
               }
             },
@@ -184,10 +160,7 @@
               "items": {
                 "type": "array",
                 "items": {
-                  "type": [
-                    "number",
-                    "string"
-                  ]
+                  "type": ["number", "string"]
                 }
               }
             },
@@ -201,10 +174,7 @@
                   {
                     "type": "array",
                     "items": {
-                      "type": [
-                        "number",
-                        "string"
-                      ]
+                      "type": ["number", "string"]
                     }
                   },
                   {
@@ -272,11 +242,7 @@
                           "type": "number"
                         }
                       },
-                      "required": [
-                        "type",
-                        "name",
-                        "value"
-                      ],
+                      "required": ["type", "name", "value"],
                       "additionalProperties": false
                     },
                     {
@@ -293,11 +259,7 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "type",
-                        "name",
-                        "value"
-                      ],
+                      "required": ["type", "name", "value"],
                       "additionalProperties": false
                     },
                     {
@@ -314,21 +276,14 @@
                           "type": "number"
                         }
                       },
-                      "required": [
-                        "type",
-                        "name",
-                        "value"
-                      ],
+                      "required": ["type", "name", "value"],
                       "additionalProperties": false
                     }
                   ]
                 }
               }
             },
-            "required": [
-              "meta",
-              "data"
-            ],
+            "required": ["meta", "data"],
             "additionalProperties": false
           }
         }

@@ -38,6 +38,7 @@ export const createScoreVariable = (
     label: input.label ?? 'label',
     description: input.description ?? '',
     enabled: input.enabled ?? true,
+    maximize: input.maximize ?? input.name === 'quality',
   }) satisfies ScoreVariableType
 
 export const createDataPoints = (
@@ -137,6 +138,7 @@ export const dummyPayloads: Payloads = {
   },
   copySuggestedToDataPoints: { indices: [], removeFromSuggestions: false },
   'experiment/toggleMultiObjective': undefined,
+  updateScoreVariables: [{ name: 'quality', label: 'Quality', maximize: true }],
   'experiment/setConstraintSum': 0,
   'experiment/addVariableToConstraintSum': '',
   'experiment/removeVariableFromConstraintSum': '',

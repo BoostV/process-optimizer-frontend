@@ -152,6 +152,7 @@ describe('setDataPointsUseFunction', () => {
         label: 'Quality (0-5)',
         description: '',
         enabled: true,
+        maximize: true,
         scoreFunction: {
           expression: 'w * 2',
           variables: [{ name: 'W', symbol: 'w', source: 'response' as const }],
@@ -241,6 +242,7 @@ describe('copySuggestedToDataPoints defaults to the score function', () => {
         label: 'Quality (0-5)',
         description: '',
         enabled: true,
+        maximize: true,
         scoreFunction: {
           expression: 'f * 2',
           variables: [
@@ -295,6 +297,7 @@ describe('score-function factor sync', () => {
         label: 'Quality (0-5)',
         description: '',
         enabled: true,
+        maximize: true,
         scoreFunction: {
           expression: 'pinElevation',
           variables: [

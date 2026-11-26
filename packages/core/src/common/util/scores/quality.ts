@@ -1,23 +1,12 @@
-// Quality is stored negated (the optimizer minimizes), but shown positive.
-// Centralizes the negation that was previously inlined across plots/ui.
-export const displayQuality = (q: number): number => -q
+import { displayScore, displayScoreCI } from './direction'
 
-export const displayQualityCI = (value: number, stdDev: number): string => {
-  if (!value || !stdDev) {
-    return ''
-  }
-  const lower = -value - 1.96 * stdDev
-  const upper = -value + 1.96 * stdDev
-  return `[${lower.toFixed(2)} to ${upper.toFixed(2)}]`
-}
+// Fixed-direction shorthands from before score direction was configurable
+// (quality maximized, cost minimized). Prefer displayScore / displayScoreCI
+// with the score variable's own `maximize` flag.
+export const displayQuality = (q: number): number => displayScore(q, true)
 
-// Cost is stored as-is (not negated), so its 95% CI is value ± 1.96·σ with no
-// sign flip. Mirrors displayQualityCI for the cost objective.
-export const displayCostCI = (value: number, stdDev: number): string => {
-  if (!value || !stdDev) {
-    return ''
-  }
-  const lower = value - 1.96 * stdDev
-  const upper = value + 1.96 * stdDev
-  return `[${lower.toFixed(2)} to ${upper.toFixed(2)}]`
-}
+export const displayQualityCI = (value: number, stdDev: number): string =>
+  displayScoreCI(value, stdDev, true)
+
+export const displayCostCI = (value: number, stdDev: number): string =>
+  displayScoreCI(value, stdDev, false)

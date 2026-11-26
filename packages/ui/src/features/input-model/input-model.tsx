@@ -37,6 +37,9 @@ type InputModelProps = {
     newVariable: CategoricalVariableType
   ) => void
   setCategoricalVariableEnabled?: (index: number, enabled: boolean) => void
+  // Names a factor may not take, e.g. the score names (they share the data
+  // table and the CSV columns with the factors).
+  reservedNames?: string[]
 }
 
 export function InputModel(props: InputModelProps) {
@@ -52,6 +55,7 @@ export function InputModel(props: InputModelProps) {
     editCategoricalVariable,
     setValueVariableEnabled,
     setCategoricalVariableEnabled,
+    reservedNames,
   } = props
 
   const { classes } = useStyles()
@@ -243,6 +247,7 @@ export function InputModel(props: InputModelProps) {
           }}
         >
           <VariableEditor
+            reservedNames={reservedNames}
             valueVariables={valueVariables}
             categoricalVariables={categoricalVariables}
             addCategoricalVariable={(

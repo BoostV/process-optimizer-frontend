@@ -35,6 +35,7 @@ export const rootReducer = (state: State, action: Action) => {
     case 'updateDataPoints':
     case 'copySuggestedToDataPoints':
     case 'experiment/toggleMultiObjective':
+    case 'updateScoreVariables':
     case 'experiment/setConstraintSum':
     case 'experiment/addVariableToConstraintSum':
     case 'experiment/removeVariableFromConstraintSum':

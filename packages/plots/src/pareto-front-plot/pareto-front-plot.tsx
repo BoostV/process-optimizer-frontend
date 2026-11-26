@@ -12,11 +12,17 @@ import {
 } from 'recharts'
 import { alpha, darken } from '@mui/material/styles'
 import {
-  displayQuality,
   type DataEntry,
   type ParetoPlot,
 } from '@boostv/process-optimizer-frontend-core'
 import useStyles from './pareto-front-plot.style'
+import {
+  defaultObjectives,
+  isParetoOptimal,
+  objectiveLegendName,
+  toDisplayFront,
+  type ObjectiveDisplay,
+} from './objectives'
 import { makePointLabel } from './point-label'
 import { QualityUncertaintyBand } from './overlays/uncertainty-band'
 import { HoverOverlay } from './hover-overlay'
@@ -48,6 +54,9 @@ type Props = {
   styles?: {
     legendBorderColor?: string
   }
+  // Name and direction of the two objectives: [x axis, y axis]. Defaults to
+  // Quality (maximized) against Cost (minimized).
+  objectives?: [ObjectiveDisplay, ObjectiveDisplay]
 }
 
 export default function ParetoFrontPlot({
@@ -63,6 +72,7 @@ export default function ParetoFrontPlot({
   showHoverEllipse = false,
   hideLegend = false,
   styles,
+  objectives = defaultObjectives,
 }: Props) {
   const { classes } = useStyles()
   const plotColors = usePlotColors()
@@ -89,24 +99,22 @@ export default function ParetoFrontPlot({
       }
     })
 
-  // Split observed points by Pareto-optimality (in observed quality/cost space:
-  // higher quality, lower cost is better). Optimal points render filled in
-  // brand color; dominated points stay muted gray.
+  // Split observed points by Pareto-optimality, following each objective's
+  // direction. Optimal points render filled in brand color; dominated points
+  // stay muted gray.
   const isObservedParetoOptimal = (p: { x: number; y: number }) =>
-    !dataPointsMapped.some(
-      o => o !== p && o.x >= p.x && o.y <= p.y && (o.x > p.x || o.y < p.y)
-    )
+    isParetoOptimal(p, dataPointsMapped, objectives)
   const observedParetoOptimal = dataPointsMapped.filter(isObservedParetoOptimal)
   const observedDominated = dataPointsMapped.filter(
     p => !isObservedParetoOptimal(p)
   )
 
-  // Quality is sent to the backend negated (we want to maximize); cost is sent
-  // as-is (we want to minimize). The backend echoes both back in those units,
-  // so for display we flip quality but leave cost alone — see core
-  // `displayQuality`.
-  const chartData = plot.front_y_data.map((yPair, i) => ({
-    x: displayQuality(yPair[0]),
+  // A maximized objective is sent to the backend negated (it minimizes) and is
+  // echoed back in those units; a minimized one is sent as-is. Convert the
+  // front to display units once — everything below works in display units.
+  const displayFront = toDisplayFront(plot.front_y_data, objectives)
+  const chartData = displayFront.map((yPair, i) => ({
+    x: yPair[0],
     y: yPair[1],
     uncertaintyY: [
       yPair[1] - Number(plot.obj2_error[i] || 0),
@@ -114,11 +122,8 @@ export default function ParetoFrontPlot({
     ],
   }))
 
-  const rawSelected = plot.front_y_data[indexOfSelected]
-  const selected = [
-    rawSelected !== undefined ? displayQuality(rawSelected[0]) : undefined,
-    rawSelected?.[1],
-  ]
+  const displaySelected = displayFront[indexOfSelected]
+  const selected = [displaySelected?.[0], displaySelected?.[1]]
 
   const variablesAtSelected = plot.front_x_data[indexOfSelected]
   const isBest = indexOfSelected === plot.best_idx
@@ -144,13 +149,13 @@ export default function ParetoFrontPlot({
   }))
 
   // Create separate datasets for X uncertainty bounds
-  const xLowerBoundData = plot.front_y_data.map((yPair, i) => ({
-    x: displayQuality(yPair[0]) - (plot.obj1_error[i] ?? 0),
+  const xLowerBoundData = displayFront.map((yPair, i) => ({
+    x: yPair[0] - (plot.obj1_error[i] ?? 0),
     y: yPair[1],
   }))
 
-  const xUpperBoundData = plot.front_y_data.map((yPair, i) => ({
-    x: displayQuality(yPair[0]) + (plot.obj1_error[i] ?? 0),
+  const xUpperBoundData = displayFront.map((yPair, i) => ({
+    x: yPair[0] + (plot.obj1_error[i] ?? 0),
     y: yPair[1],
   }))
 
@@ -246,7 +251,11 @@ export default function ParetoFrontPlot({
               // same reasoning as the cost axis below.
               allowDataOverflow={true}
               tickFormatter={formatTick}
-              label={{ value: 'Quality', position: 'insideBottom', offset: -5 }}
+              label={{
+                value: objectives[0].label,
+                position: 'insideBottom',
+                offset: -5,
+              }}
             />
             <YAxis
               type="number"
@@ -260,7 +269,11 @@ export default function ParetoFrontPlot({
               allowDataOverflow={true}
               tick={{ fontSize: 12 }}
               tickFormatter={formatTick}
-              label={{ value: 'Cost', angle: -90, position: 'insideLeft' }}
+              label={{
+                value: objectives[1].label,
+                angle: -90,
+                position: 'insideLeft',
+              }}
             />
             {/* Uncertainty band — always shown */}
             <Customized
@@ -405,7 +418,8 @@ export default function ParetoFrontPlot({
             <ZIndexLayer zIndex={2100}>
               <HoverOverlay
                 onSelectIndex={onSelectIndex}
-                frontYData={plot.front_y_data}
+                frontYData={displayFront}
+                objectiveLabels={[objectives[0].label, objectives[1].label]}
                 frontXData={plot.front_x_data}
                 variableNames={variableNames}
                 showHoverEllipse={showHoverEllipse}
@@ -433,7 +447,7 @@ export default function ParetoFrontPlot({
                   <strong>{selectedLabel}</strong>
                 </div>
                 <div className={classes.selectedPointVariable}>
-                  {`Quality ≈ ${selected[0]?.toFixed(2) ?? '?'}, Cost ≈ ${
+                  {`${objectives[0].label} ≈ ${selected[0]?.toFixed(2) ?? '?'}, ${objectives[1].label} ≈ ${
                     selected[1]?.toFixed(2) ?? '?'
                   }`}
                 </div>
@@ -488,14 +502,14 @@ export default function ParetoFrontPlot({
                 className={classes.legendColor}
                 style={{ background: plotColors.pareto.costBand }}
               />
-              <span>Uncertainty (cost)</span>
+              <span>Uncertainty ({objectiveLegendName(objectives[1], 1)})</span>
             </div>
             <div className={classes.legendItem}>
               <div
                 className={classes.legendColor}
                 style={{ background: plotColors.pareto.qualityBand }}
               />
-              <span>Uncertainty (quality)</span>
+              <span>Uncertainty ({objectiveLegendName(objectives[0], 0)})</span>
             </div>
             {showHoverEllipse && (
               <div className={classes.legendItem}>

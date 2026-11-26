@@ -80,12 +80,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "name",
-          "description",
-          "options",
-          "enabled"
-        ],
+        "required": ["name", "description", "options", "enabled"],
         "additionalProperties": false
       }
     },
@@ -122,14 +117,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "type",
-          "name",
-          "description",
-          "min",
-          "max",
-          "enabled"
-        ],
+        "required": ["type", "name", "description", "min", "max", "enabled"],
         "additionalProperties": false
       }
     },
@@ -160,12 +148,7 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "name",
-          "label",
-          "description",
-          "enabled"
-        ],
+        "required": ["name", "label", "description", "enabled"],
         "additionalProperties": false
       }
     },
@@ -188,11 +171,7 @@
             }
           }
         },
-        "required": [
-          "type",
-          "value",
-          "dimensions"
-        ],
+        "required": ["type", "value", "dimensions"],
         "additionalProperties": false
       }
     },
@@ -215,13 +194,7 @@
           "type": "number"
         }
       },
-      "required": [
-        "baseEstimator",
-        "acqFunc",
-        "initialPoints",
-        "kappa",
-        "xi"
-      ],
+      "required": ["baseEstimator", "acqFunc", "initialPoints", "kappa", "xi"],
       "additionalProperties": false
     },
     "results": {
@@ -242,10 +215,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "id",
-              "plot"
-            ],
+            "required": ["id", "plot"],
             "additionalProperties": false
           }
         },
@@ -330,11 +300,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "id",
-              "enabled",
-              "valid"
-            ],
+            "required": ["id", "enabled", "valid"],
             "additionalProperties": false
           },
           "data": {
@@ -355,11 +321,7 @@
                       "type": "number"
                     }
                   },
-                  "required": [
-                    "type",
-                    "name",
-                    "value"
-                  ],
+                  "required": ["type", "name", "value"],
                   "additionalProperties": false
                 },
                 {
@@ -376,11 +338,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "type",
-                    "name",
-                    "value"
-                  ],
+                  "required": ["type", "name", "value"],
                   "additionalProperties": false
                 },
                 {
@@ -397,21 +355,14 @@
                       "type": "number"
                     }
                   },
-                  "required": [
-                    "type",
-                    "name",
-                    "value"
-                  ],
+                  "required": ["type", "name", "value"],
                   "additionalProperties": false
                 }
               ]
             }
           }
         },
-        "required": [
-          "meta",
-          "data"
-        ],
+        "required": ["meta", "data"],
         "additionalProperties": false
       }
     }

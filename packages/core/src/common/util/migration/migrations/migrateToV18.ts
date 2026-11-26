@@ -87,7 +87,9 @@ export type ExperimentTypeV17 = {
 // newer fields (e.g. v19's info.lastModified) and bump dataFormatVersion. Typed
 // against the v18 shape rather than the current ExperimentType so it stays valid
 // across future version bumps.
-type ExperimentTypeV18 = Omit<ExperimentType, 'info'> & {
+type ExperimentTypeV18 = Omit<ExperimentType, 'info' | 'scoreVariables'> & {
+  // maximize was added in v23
+  scoreVariables: Omit<ExperimentType['scoreVariables'][number], 'maximize'>[]
   info: Omit<
     ExperimentType['info'],
     // fields added after v18: lastModified (v19), createdAt (v20)

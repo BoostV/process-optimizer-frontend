@@ -18,7 +18,10 @@ export const isValidVariableName = (
   categoricalVariables: CategoricalVariableType[],
   newName: string,
   type: 'value' | 'categorical',
-  index?: number
+  index?: number,
+  // Names a factor may not take because something else uses them (the score
+  // names), compared ignoring case and surrounding spaces.
+  reservedNames: string[] = []
 ) => {
   const filterSelf = (
     _: ValueVariableType | CategoricalVariableType,
@@ -36,6 +39,14 @@ export const isValidVariableName = (
     .filter(valueFilter)
     .map(c => c.name)
     .includes(newName.trim())
+
+  if (
+    reservedNames
+      .map(n => n.trim().toLowerCase())
+      .includes(newName.trim().toLowerCase())
+  ) {
+    return 'A score already has this name'
+  }
 
   return (notInCategorical && notInValue) || 'Duplicate names not allowed'
 }

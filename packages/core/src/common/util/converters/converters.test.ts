@@ -248,8 +248,20 @@ describe('converters', () => {
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
         [
-          { name: scoreNames[0], description: '', enabled: true, label: '' },
-          { name: scoreNames[1], description: '', enabled: true, label: '' },
+          {
+            name: scoreNames[0],
+            description: '',
+            enabled: true,
+            maximize: true,
+            label: '',
+          },
+          {
+            name: scoreNames[1],
+            description: '',
+            enabled: true,
+            maximize: false,
+            label: '',
+          },
         ],
         sampleMultiObjectiveDataPoints
       )
@@ -265,12 +277,50 @@ describe('converters', () => {
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
         [
-          { name: scoreNames[0], description: '', enabled: true, label: '' },
-          { name: scoreNames[1], description: '', enabled: false, label: '' },
+          {
+            name: scoreNames[0],
+            description: '',
+            enabled: true,
+            maximize: true,
+            label: '',
+          },
+          {
+            name: scoreNames[1],
+            description: '',
+            enabled: false,
+            maximize: false,
+            label: '',
+          },
         ],
         sampleMultiObjectiveDataPoints
       )
       expect(actualData).toEqual(expectedData)
+    })
+
+    it('should negate by direction, not by name', () => {
+      const actualData = calculateData(
+        sampleExperiment.categoricalVariables,
+        sampleExperiment.valueVariables,
+        [
+          {
+            name: scoreNames[0],
+            description: '',
+            enabled: true,
+            maximize: false,
+            label: '',
+          },
+          {
+            name: scoreNames[1],
+            description: '',
+            enabled: true,
+            maximize: true,
+            label: '',
+          },
+        ],
+        sampleMultiObjectiveDataPoints
+      )
+      expect(actualData[0]?.yi).toEqual([0.1, -0.3])
+      expect(actualData[1]?.yi).toEqual([0.2, -0.4])
     })
 
     it('should negate only quality, not cost', () => {
@@ -278,8 +328,20 @@ describe('converters', () => {
         sampleExperiment.categoricalVariables,
         sampleExperiment.valueVariables,
         [
-          { name: scoreNames[0], description: '', enabled: true, label: '' },
-          { name: scoreNames[1], description: '', enabled: true, label: '' },
+          {
+            name: scoreNames[0],
+            description: '',
+            enabled: true,
+            maximize: true,
+            label: '',
+          },
+          {
+            name: scoreNames[1],
+            description: '',
+            enabled: true,
+            maximize: false,
+            label: '',
+          },
         ],
         sampleMultiObjectiveDataPoints
       )
@@ -645,6 +707,7 @@ describe('converters', () => {
         label: 'qualitylabel',
         description: '',
         enabled: true,
+        maximize: true,
       },
     ]
 

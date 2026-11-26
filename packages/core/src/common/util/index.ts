@@ -3,6 +3,7 @@ export * from './converters'
 export * from './save-to-local-file'
 export * from './data-type-detectors'
 export * from './scores/quality'
+export * from './scores/direction'
 export * from './pareto/pareto-plot'
 export * from './score'
 

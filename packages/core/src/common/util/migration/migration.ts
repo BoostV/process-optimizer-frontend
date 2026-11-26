@@ -23,14 +23,35 @@ import {
   migrateToV20,
   migrateToV21,
   migrateToV22,
+  migrateToV23,
 } from './migrations'
+
+// A backend or cached client that still runs the v22 schema passes v23 data
+// through but strips the `maximize` field it does not know. Fill in the
+// pre-v23 directions (quality maximized, cost minimized) instead of rejecting
+// the experiment.
+const withScoreDirections = (json: unknown): unknown => {
+  const scoreVariables = (json as { scoreVariables?: unknown })?.scoreVariables
+  if (!Array.isArray(scoreVariables)) {
+    return json
+  }
+  return {
+    ...(json as object),
+    scoreVariables: scoreVariables.map(
+      (sv: { name?: string; maximize?: boolean }) =>
+        sv !== null && typeof sv === 'object' && sv.maximize === undefined
+          ? { ...sv, maximize: sv.name === 'quality' }
+          : sv
+    ),
+  }
+}
 
 export const migrate = (json: any): ExperimentType => {
   const migrated = _migrate(
     json,
     MIGRATIONS[MIGRATIONS.length - 1]?.version ?? '0'
   )
-  const parsed = experimentSchema.safeParse(migrated)
+  const parsed = experimentSchema.safeParse(withScoreDirections(migrated))
   if (parsed.success) {
     return parsed.data
   }
@@ -110,4 +131,5 @@ export const MIGRATIONS: Migration[] = [
   { version: '20', converter: migrateToV20 },
   { version: '21', converter: migrateToV21 },
   { version: '22', converter: migrateToV22 },
+  { version: '23', converter: migrateToV23 },
 ]
